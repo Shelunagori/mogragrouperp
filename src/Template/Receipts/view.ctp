@@ -101,6 +101,13 @@ margin-bottom: 0;
 					<?= h($this->Number->format($refbal->debit,[ 'places' => 2])) ?> Dr
 					<?php } ?></td>
 					</tr>
+					<?php 
+					
+					if($refdetail->credit != '0' ){ 
+						$cr_amt=$cr_amt+$refdetail->credit;
+					} elseif( $refdetail->debit != '0'){
+						$dr_amt=$dr_amt+$refdetail->debit;
+					} ?>
 			<?php endforeach; ?>
 			</table>
 		</td>

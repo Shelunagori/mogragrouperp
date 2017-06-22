@@ -198,7 +198,7 @@ $(document).ready(function() {
 			url: url1,
 		}).done(function(response) { 
 		$(t).closest('tr').find('td:nth-child(3)').html(response);
-		$(t).closest('tr').find('td:nth-child(3) select').attr({name:"inventory_transfer_voucher_rows[out]["+row_no+"][serial_number_data][]", id:"inventory_transfer_voucher_rows-"+row_no+"-serial_number_data"});
+		$(t).closest('tr').find('td:nth-child(3) select').attr({name:"inventory_transfer_voucher_rows["+row_no+"][serial_number_data][]", id:"inventory_transfer_voucher_rows-"+row_no+"-serial_number_data"});
 			$(t).closest('tr').find('td:nth-child(3) select').select2({ placeholder: "Serial Number"});
   			
 		});
@@ -253,8 +253,10 @@ $(document).ready(function() {
 			<td width="40%">
 				<?php 
 				$item_option=[];
-				foreach($display_items as $Item){ 
-					$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
+				foreach($display_items as $Item){  
+					if(sizeof($Item->item_companies) > 0 ){
+						$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
+					}
 				}
 				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>' display: block; width:80%;','class' => 'form-control input-sm select_item_out item_id']); ?>
 			</td>

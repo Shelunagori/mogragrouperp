@@ -161,7 +161,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<?php if($chkdate == 'Not Found'){  ?>
 						<label class="btn btn-danger"> You are not in Current Financial Year </label>
 					<?php } else { ?>
-					<button type="submit" class="btn btn-primary" id='submitbtn'>EDIT PAYMENT VOUCHER</button>
+					<button type="submit" class="btn btn-primary">EDIT PAYMENT VOUCHER</button>
 					<?php } ?>	
 				</td>
 				<td></td>

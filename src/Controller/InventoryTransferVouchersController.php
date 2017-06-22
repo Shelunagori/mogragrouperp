@@ -86,12 +86,11 @@ class InventoryTransferVouchersController extends AppController
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		
 			
-		
-		$display_items = $this->InventoryTransferVouchers->Items->find()->matching(
-					'ItemCompanies', function ($q) use($st_company_id) {
+		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
+					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 					} 
-				);
+				]);
 		
 		//pr($display_items->toArray()); exit;
 		$inventoryTransferVoucher = $this->InventoryTransferVouchers->newEntity();
@@ -267,7 +266,7 @@ class InventoryTransferVouchersController extends AppController
 			
 			$selectedSerialNumbers=$this->InventoryTransferVouchers->Items->ItemSerialNumbers->find()->where(['item_id'=>$select_item_id,'status'=>'Out','company_id'=>$st_company_id]);
 			
-			//pr($selectedSerialNumbers);exit;
+			pr($SerialNumbers->toArray());exit;
 			$flag=1;
 		}
 		$this->set(compact('SerialNumbers','flag','select_item_id','selectedSerialNumbers'));
@@ -534,11 +533,12 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
-		$display_items = $this->InventoryTransferVouchers->Items->find()->matching(
-					'ItemCompanies', function ($q) use($st_company_id) {
+		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
+					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 					} 
-				);
+				]);
+		
 		$inventoryTransferVoucher = $this->InventoryTransferVouchers->newEntity();
 		
 		if ($this->request->is(['patch', 'post', 'put'])) {
@@ -604,11 +604,14 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
-		$display_items = $this->InventoryTransferVouchers->Items->find()->matching(
-					'ItemCompanies', function ($q) use($st_company_id) {
+		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
+					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 					} 
-				);
+				]);
+				
+				//pr($item_option); 
+				//exit;
 		$inventoryTransferVoucher = $this->InventoryTransferVouchers->newEntity();
 		
 		if ($this->request->is(['patch', 'post', 'put'])) {
@@ -621,8 +624,9 @@ class InventoryTransferVouchersController extends AppController
 				$inventoryTransferVoucher->voucher_no=1;
 			}
 			$inventoryTransferVoucher->company_id=$st_company_id;
-			$inventoryTransferVoucher->in_out='in';
+			$inventoryTransferVoucher->in_out='Out';
 			$inventoryTransferVoucher->created_by=$s_employee_id;
+			$inventoryTransferVoucher->transaction_date=date('Y-m-d',strtotime($inventoryTransferVoucher->transaction_date));
 			
 				if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
 				

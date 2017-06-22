@@ -348,7 +348,7 @@ class SalesOrdersController extends AppController
 			$salesOrder->company_id=$st_company_id;
 			
 			
-			//pr($salesOrder); exit;
+			
 			
 			if ($this->SalesOrders->save($salesOrder)) {
 				$status_close=$this->request->query('status');

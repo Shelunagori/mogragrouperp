@@ -53,7 +53,7 @@
 									
 									foreach($inventory_transfer_voucher_row->item->item_serial_numbers as $item_serial_number){
 									
-										if($item_serial_number->inventory_transfer_voucher_id == $id &&$item_serial_number->item_id == $inventory_transfer_voucher_row->item_id 
+										if($item_serial_number->inventory_transfer_voucher_id == $id && $item_serial_number->item_id == $inventory_transfer_voucher_row->item_id 
 										&&$item_serial_number->status=='Out'){
 										
 										$selected[$item_serial_number->id]=$item_serial_number->id;
@@ -61,8 +61,11 @@
 									} 
 								
 									foreach($inventory_transfer_voucher_row->item->item_serial_numbers as $item_serial_number){
+										if(
+($item_serial_number->inventory_transfer_voucher_id == $id && $item_serial_number->item_id == $inventory_transfer_voucher_row->item_id ) || $item_serial_number->status=='In'){
 										$options[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
-									}
+										
+									}}
 									if(!empty($options)){
 									 echo $this->Form->input('q', ['label'=>false,'options' => $options,'multiple' => 'multiple','class'=>'form-control input-sm select2me','required ','style'=>'width:100%','value'=>$selected]); 
 									}else{

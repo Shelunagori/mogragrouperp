@@ -95,7 +95,6 @@ class ItemsController extends AppController
         $item = $this->Items->newEntity();
         if ($this->request->is('post')) {
             $item = $this->Items->patchEntity($item, $this->request->data);
-			pr($item); exit;
 			if ($this->Items->save($item)) {
 				
 				 $this->Flash->success(__('The item has been saved.'));

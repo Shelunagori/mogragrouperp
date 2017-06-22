@@ -91,29 +91,64 @@ margin-bottom: 0;
 		<td colspan="3" style="border-top:none !important;">
 			<table width="100%">
 			
-			<?php foreach($ref_details[$paymentRows->received_from_id] as $refdetail): ?>
+			<?php $dr_amt=0; $cr_amt=0; foreach($ref_details[$paymentRows->received_from_id] as $refdetail):
+			
+			?>
 			<tr>
 					<td style="width :180px !important;"> <?= h($refdetail->reference_type). '-' .h($refdetail->reference_no) ?></td>
 					<td>:</td>
 					<td > <?php if($refdetail->credit != '0' ){ ?> 
-					<?php echo number_format($refdetail->credit,2,',','') ?> Cr 
+					<?= h($this->Number->format($refdetail->credit,['places'=>2])) ?> Cr 
 					<?php } elseif( $refdetail->debit != '0'){?>
-					<?php echo number_format($refdetail->debit,2,',','') ?> Dr
+					<?= h($this->Number->format($refdetail->debit,['places'=>2])) ?> Dr
 					<?php } ?></td>
 					</tr>
-			<?php endforeach; ?>
+					
+					<?php 
+					
+					if($refdetail->credit != '0' ){ 
+						$cr_amt=$cr_amt+$refdetail->credit;
+					} elseif( $refdetail->debit != '0'){
+						$dr_amt=$dr_amt+$refdetail->debit;
+					} ?>
+					
+			<?php endforeach; 	?>
+			 <?php 
+				if($paymentRows->cr_dr == 'Dr' ){ 
+					$on_acc=$paymentRows->amount-($dr_amt-$cr_amt);
+
+					if($on_acc > 0) {?>
+						<tr>
+							<td style="width :180px !important;"> <?php echo "On Account";  ?></td>
+							<td>:</td>
+							<td > <?= h($this->Number->foramt($on_acc,['places'=>2])); ?>Dr
+								
+							</td>
+						</tr>
+					<?php }} elseif( $paymentRows->cr_dr == 'Cr'){
+						$on_acc1=$paymentRows->amount-($cr_amt-$dr_amt);
+
+					if($on_acc1 > 0) {?>
+						<tr>
+							<td style="width :180px !important;"> <?php echo "On Account";  ?></td>
+							<td>:</td>
+							<td > <?= h($this->Number->foramt($on_acc1,['places'=>2])); ?>Cr
+					<?php }} ?>
+							</td>
+						</tr>
+			 
 			</table>
 		</td>
-		
 		</tr><?php endif; ?>
 		<?php if($paymentRows->cr_dr=="Cr"){
 			$total_cr=$total_cr+$paymentRows->amount;
 		}else{
 			$total_dr=$total_dr+$paymentRows->amount;
+
 		}
 		$total=$total_dr-$total_cr; endforeach; ?>
 	</table>
-	
+	<?php ?>
 	
 	
 	<div style="border:solid 1px ;"></div>
