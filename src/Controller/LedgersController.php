@@ -50,8 +50,36 @@ class LedgersController extends AppController
         ];
         $ledgers = $this->paginate($this->Ledgers->find()->where($where)->order(['Ledgers.transaction_date' => 'DESC']));
 		
+					$url_link=[];
+			foreach($ledgers as $ledger){
+				if($ledger->voucher_source=="Journal Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->JournalVouchers->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Payment Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->Payments->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Petty Cash Payment Voucher"){
+					$url_link[$ledger->id]="/petty-cash-vouchers/view/".$ledger->voucher_id;
+				}else if($ledger->voucher_source=="Contra Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->ContraVouchers->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Receipt Voucher"){
+				$url_link[$ledger->id]=$this->Ledgers->Receipts->get($ledger->voucher_id); 
+				}else if($ledger->voucher_source=="Invoice"){
+					$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Invoice Booking"){
+					$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Non Print Payment Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->Nppayments->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Debit Note"){
+					$url_link[$ledger->id]=$this->Ledgers->DebitNotes->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Credit Note"){
+					$url_link[$ledger->id]=$this->Ledgers->CreditNotes->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Purchase Return"){
+					$url_link[$ledger->id]=$this->Ledgers->PurchaseReturns->get($ledger->voucher_id);
+				}
+			}
+		
+		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
-        $this->set(compact('ledgers','ledgerAccounts'));
+        $this->set(compact('ledgers','ledgerAccounts','url_link'));
         $this->set('_serialize', ['ledgers']);
 		$this->set(compact('url'));
     }

@@ -365,7 +365,7 @@ $(document).ready(function() {
 		$('input[name="cst_vat"]').val('VAT');
 		$('#ledger_account_for_vat').show();
 		$(".rmvcls").addClass("vattext");
-			$('.vattext').val(0);
+			//$('.vattext').val(0);
 			$('.vattext').die().live("blur",function() {
 			var text = $(this).val();
 				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
@@ -382,7 +382,7 @@ $(document).ready(function() {
 		$('input[name="cst_vat"]').val('VAT');
 		$('#ledger_account_for_vat').show();
 		$(".rmvcls").addClass("vattext");
-		$('.vattext').val(0);
+		//$('.vattext').val(0);
 			$('.vattext').die().live("blur",function() {
 			var text = $(this).val();
 				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){

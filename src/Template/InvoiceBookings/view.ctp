@@ -141,7 +141,7 @@ margin-bottom: 0;
 		
 		$amount_after_excise=$amount_after_pnf*(100+$invoice_booking_row->excise_duty)/100;
 		
-		if($invoiceBooking->purchase_ledger_account==538){
+		if($invoiceBooking->purchase_ledger_account==538 || $invoiceBooking->purchase_ledger_account==308 || $invoiceBooking->purchase_ledger_account==160){
 			$vat=$amount_after_excise*$invoice_booking_row->sale_tax/100;
 		}
 		
@@ -151,7 +151,7 @@ margin-bottom: 0;
 	</tbody>
 	<tfoot>
 		
-		<?php if($invoiceBooking->purchase_ledger_account==538){ ?>
+		<?php if($invoiceBooking->purchase_ledger_account==538 || $invoiceBooking->purchase_ledger_account==308 || $invoiceBooking->purchase_ledger_account==160 ){ ?>
 		<tr>
 			<td colspan="3"></td>
 			<td style="font-size:14px;"  align="right"> VAT Amount
@@ -161,7 +161,7 @@ margin-bottom: 0;
 						: <?php echo $LedgerAccount->name; ?> (<?php echo $LedgerAccount->alias; ?>)
 					<?php } ?>
 			</td>
-			<td style="font-size:14px;"  align="right"><?= $total_sale_tax ?></td>
+			<td style="font-size:14px;"  align="right"><?= h($this->Number->format($total_sale_tax,[ 'places' => 2])) ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
