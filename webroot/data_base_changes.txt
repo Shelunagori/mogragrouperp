@@ -1,0 +1,26 @@
+<--------------Gopal------------>
+Add New Field iun Ledger Account auto_inc int(10).
+Add New Field in ledgers reconciliation_date
+
+
+
+<----------------Dimpal--------->
+create new table inventory_transfer_voucher & inventory_transfer_voucher_rows [see structure of webroot]
+
+create new field in item_serial_ number table => inventory_transfer_voucher_id (int)
+
+
+
+
+<!----- Shailendra ------>
+need to import debit_note & debit_note_rows table
+you can the file in web root (debit_note.sql)
+
+
+<!-----Dimpal ---- 27/5/2017--->
+create new field in employee table => otp_no (int)
+
+
+<!----Dimpal--- 3/6/2017--->
+create new field in quotation_rows => proceed_qty(int)
+

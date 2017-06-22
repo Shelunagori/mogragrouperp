@@ -1,0 +1,1 @@
+<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select Ledger Account--','options' => $ledgerAccount,'label' => false,'class' => 'form-control input-sm select2me']); ?>
