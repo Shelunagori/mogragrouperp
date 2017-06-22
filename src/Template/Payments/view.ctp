@@ -121,7 +121,7 @@ margin-bottom: 0;
 						<tr>
 							<td style="width :180px !important;"> <?php echo "On Account";  ?></td>
 							<td>:</td>
-							<td > <?= h($this->Number->foramt($on_acc,['places'=>2])); ?>Dr
+							<td > <?= h($this->Number->format($on_acc,['places'=>2])); ?>Dr
 								
 							</td>
 						</tr>
@@ -132,7 +132,7 @@ margin-bottom: 0;
 						<tr>
 							<td style="width :180px !important;"> <?php echo "On Account";  ?></td>
 							<td>:</td>
-							<td > <?= h($this->Number->foramt($on_acc1,['places'=>2])); ?>Cr
+							<td > <?= h($this->Number->format($on_acc1,['places'=>2])); ?>Cr
 					<?php }} ?>
 							</td>
 						</tr>
