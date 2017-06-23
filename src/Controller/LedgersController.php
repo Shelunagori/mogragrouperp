@@ -115,16 +115,35 @@ class LedgersController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['transaction_date <=']=$To;
 		}
-		
+		$from = date("Y-m-d",strtotime($this->request->query('From')));
+		$To = date("Y-m-d",strtotime($this->request->query('To')));
+		$ledger_account_id = $this->request->query['ledger_account_id'];
+	//pr($ledger_account_id); exit;
+			
+			$OB = $this->Ledgers->find()
+				->where(['ledger_account_id'=>$ledger_account_id,'transaction_date <'=>$from]);
+				
+				$opening_balance_ar=[];
+					foreach($OB as $Ledger)
+						{
+							if($Ledger->voucher_source == 'Opening Balance')
+							{
+								@$opening_balance_ar['debit']+=$Ledger->debit;
+								@$opening_balance_ar['credit']+=$Ledger->credit;
+							}
+						}
+			//	pr($opening_balance_ar); exit;
 		$where['Ledgers.company_id']=$st_company_id;
        
 		
 		$ledgers = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->order(['transaction_date'=>'DESC']);
 		
-		//pr($ledgers->toArray());exit;
+		$ledger_acc = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->first();
+		
+		$ledger_acc_name=$ledger_acc->ledger_account->name;
 		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
-         $this->set(compact('ledgers','ledgerAccounts'));
+        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name'));
         $this->set('_serialize', ['ledgers']);
     }
 	 public function exportExcel()
@@ -567,7 +586,7 @@ class LedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
-		pr($url); exit;
+		//pr($url); exit;
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
         $st_year_id = $session->read('st_year_id');
@@ -688,7 +707,7 @@ class LedgersController extends AppController
 			$transaction_to_date= date('Y-m-d', strtotime($this->request->query['To']));
 
 			$Bank_Ledgers = $this->Ledgers->find()
-				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date '=>0000-00-00])
+				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date '=>'0000-00-00'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
 				});
@@ -753,7 +772,7 @@ class LedgersController extends AppController
 			$transaction_to_date= date('Y-m-d', strtotime($this->request->query['To']));
 
 			$Bank_Ledgers = $this->Ledgers->find()
-				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date >'=>0000-00-00])
+				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date >'=>'0000-00-00'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
 				});

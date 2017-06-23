@@ -123,10 +123,6 @@ $url_excel="/?".$url;
 								$close_cr=@$opening_balance_total['credit'];
 								
 							}					
-						
-						
-
-						
 				?>  
 			</b>
 			
@@ -244,3 +240,4 @@ $url_excel="/?".$url;
 		</div>
 <?php } ?>
 </div></div>
+</div>

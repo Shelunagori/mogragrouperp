@@ -386,7 +386,7 @@ class PaymentsController extends AppController
 			$old_ref_rows[$payment_row->received_from_id]=$ReferenceDetails->toArray();
 			$old_received_from_ids[]=$payment_row->received_from_id;
 		}
-		
+		//pr($old_ref_rows); exit;
         if ($this->request->is(['patch', 'post', 'put'])) {
             $payment = $this->Payments->patchEntity($payment, $this->request->data);
 			$payment->company_id=$st_company_id;
@@ -620,6 +620,7 @@ class PaymentsController extends AppController
 	public function fetchRefNumbersEdit($received_from_id=null,$reference_no=null,$debit=null,$credit=null,$cr_dr=null){
 		$this->viewBuilder()->layout('');
 		$ReferenceBalances=$this->Payments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
+		//pr($ReferenceBalances->toArray());
 		$this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr'));
 	}
 	

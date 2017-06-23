@@ -110,8 +110,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
 									<td class="ref_no">
 									<?php if($old_ref_row->reference_type=="Against Reference"){
+										
 										echo $this->requestAction('Payments/fetchRefNumbersEdit/'.$payment_row->received_from_id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$payment_row->cr_dr);
-									}else{
+									}else{ 
 										echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
 									}?>
 									</td>
