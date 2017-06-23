@@ -21,5 +21,6 @@ foreach($ReferenceBalances as $ReferenceBalance){
 	if($due_amount>0){
 		$options[]=['text' =>$ReferenceBalance->reference_no.' ( Due: '.$due_amount.', Total: '.$total.')', 'value' => $ReferenceBalance->reference_no, 'due_amount' => $due_amount];
 	}
+	//pr($reference_no->toArray());
 }
 echo $this->Form->input('ref_no', ['empty'=>'--Select-','options'=>$options,'label' => false,'class' => 'form-control input-sm ref_list','value'=>$reference_no]); ?>

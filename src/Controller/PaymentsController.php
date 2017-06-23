@@ -614,13 +614,19 @@ class PaymentsController extends AppController
 	public function fetchRefNumbers($received_from_id=null,$cr_dr=null){
 		$this->viewBuilder()->layout('');
 		$ReferenceBalances=$this->Payments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
+		
 		$this->set(compact('ReferenceBalances','cr_dr'));
 	}
 	
-	public function fetchRefNumbersEdit($received_from_id=null,$reference_no=null,$debit=null,$credit=null,$cr_dr=null){
+	public function fetchRefNumbersEdit($received_from_id=null,$cr_dr=null,$reference_no=null,$debit=null,$credit=null){
 		$this->viewBuilder()->layout('');
+		$reference_no = explode('/', trim($reference_no,'/'));
+		 //$reference_no = (rtrim($reference_no, '/'));
+		//$link2  = explode('/','12/13');
+		//$reference_no=$this->request->query['reference_no'];
 		$ReferenceBalances=$this->Payments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
-		//pr($ReferenceBalances->toArray());
+	 
+		//pr($reference_no);
 		$this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr'));
 	}
 	
