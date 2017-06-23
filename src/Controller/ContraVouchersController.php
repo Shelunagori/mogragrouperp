@@ -379,7 +379,7 @@ class ContraVouchersController extends AppController
             //Save receipt
             //pr($payment); exit;
             if ($this->ContraVouchers->save($contravoucher)) {
-                $this->ContraVouchers->Ledgers->deleteAll(['voucher_id' => $contravoucher->id, 'voucher_source' => 'Payment Voucher']);
+                $this->ContraVouchers->Ledgers->deleteAll(['voucher_id' => $contravoucher->id, 'voucher_source' => 'Contra Voucher']);
                 $total_cr=0; $total_dr=0;
                 foreach($contravoucher->contra_voucher_rows as $contra_voucher_row){
                     
