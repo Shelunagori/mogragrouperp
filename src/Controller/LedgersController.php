@@ -91,6 +91,42 @@ class LedgersController extends AppController
      * @return \Cake\Network\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+	 
+	 public function exportOb()
+    {
+		$this->viewBuilder()->layout('');
+		$where=[];
+		$ledger=$this->request->query('ledger_account_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$this->set(compact('ledger','From','To'));
+		if(!empty($ledger)){
+			$where['ledger_account_id']=$ledger;
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['transaction_date <=']=$To;
+		}
+		
+		$where['Ledgers.company_id']=$st_company_id;
+       
+		
+		$ledgers = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->order(['transaction_date'=>'DESC']);
+		
+		//pr($ledgers->toArray());exit;
+		
+        $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
+         $this->set(compact('ledgers','ledgerAccounts'));
+        $this->set('_serialize', ['ledgers']);
+    }
 	 public function exportExcel()
     {
 		$this->viewBuilder()->layout('');
@@ -529,12 +565,19 @@ class LedgersController extends AppController
 	
 	public function AccountStatement (){
 		$this->viewBuilder()->layout('index_layout');
-		
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		pr($url); exit;
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
         $st_year_id = $session->read('st_year_id');
 		$ledger_account_id=$this->request->query('ledger_account_id');
 		$financial_year = $this->Ledgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
+		$To = date("Y-m-d"); 
+		
+		//pr($To); exit;
 		if($ledger_account_id)
 		{
 			$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [
@@ -545,8 +588,22 @@ class LedgersController extends AppController
 			$To = $this->request->query['To'];
 			
 			$transaction_from_date= date('Y-m-d', strtotime($from));
+			//pr($transaction_from_date); exit;
 			$transaction_to_date= date('Y-m-d', strtotime($To));
 			$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
+			
+			$OB = $this->Ledgers->find()
+				->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
+				//pr($OB->toArray()); exit;
+				$opening_balance_ar=[];
+					foreach($OB as $Ledger)
+						{
+							if($Ledger->voucher_source == 'Opening Balance')
+							{
+								@$opening_balance_ar['debit']+=$Ledger->debit;
+								@$opening_balance_ar['credit']+=$Ledger->credit;
+							}
+						}
 			$Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
@@ -595,10 +652,13 @@ class LedgersController extends AppController
 					}
 					
 				}])->where(['company_id'=>$st_company_id]);
-		//pr($ledger->toArray()); exit;
-			$this->set(compact('Ledgers','ledger','ledger_account_id','Ledger_Account_data','url_link','transaction_from_date','transaction_to_date','financial_year'));		
+		//pr($opening_balance_ar); exit;
+			$this->set(compact('Ledgers','ledger','ledger_account_id','Ledger_Account_data','url_link','transaction_from_date','transaction_to_date','financial_year','from','To','opening_balance_ar'));	
+			$this->set(compact('url'));			
 		
 	}
+	
+
 	
 	public function openingBalanceView (){
 		$this->viewBuilder()->layout('index_layout');

@@ -210,7 +210,7 @@ if(!empty($copy))
 				<tbody id="main_tbody">
 					<?php  
 					if(!empty($process_status=="Pulled From Quotation") || !empty($quotation)) 
-					{ pr ($copy); exit;
+					{ 
 					if(!empty($quotation->quotation_rows)){
 					$q=0; foreach ($quotation->quotation_rows as $quotation_rows): 
 					if($quotation_rows->quantity==$quotation_rows->proceed_qty){$disable_class="disabledbutton";

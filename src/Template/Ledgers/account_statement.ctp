@@ -1,4 +1,6 @@
-<?php //pr($Ledgers->toArray());exit;
+<?php 
+$url_excel="/?".$url;
+
 	if(empty(@$transaction_from_date)){
 			$transaction_from_date=" ";
 		}else{
@@ -11,7 +13,7 @@
 			$transaction_to_date=$transaction_to_date;
 		}
 
-	$opening_balance_ar=[];
+	$opening_balance_ar1=[];
 	$closing_balance_ar=[];
 	if(!empty(@$Ledgers))
 	{
@@ -19,17 +21,19 @@
 		{
 			if($Ledger->voucher_source == 'Opening Balance')
 			{
-				@$opening_balance_ar['debit']+=$Ledger->debit;
-				@$opening_balance_ar['credit']+=$Ledger->credit;
+				@$opening_balance_ar1['debit']+=$Ledger->debit;
+				@$opening_balance_ar1['credit']+=$Ledger->credit;
 			}
 			else
 			{
 				@$opening_balance_total['debit']+=$Ledger->debit;
 				@$opening_balance_total['credit']+=$Ledger->credit;			
 			}
+			
 			@$closing_balance_ar['debit']+=$Ledger->debit;
 			@$closing_balance_ar['credit']+=$Ledger->credit;
-		}		
+		}	
+		
 	}
 
 ?>
@@ -39,10 +43,13 @@
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Account Statement</span>
 		</div>
-		
-	
-	
-	<div class="portlet-body form">
+		<div class="col-md-12">
+			<div class="col-md-11"></div>
+				<div class="col-md-1" align="right">
+					<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Ledgers/Export-Ob/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+				</div>
+			</div><br/>
+		<div class="portlet-body form">
 	<form method="GET" >
 				<table class="table table-condensed" >
 				<tbody>
@@ -53,11 +60,11 @@
 									<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm select2me','required','value'=>@$ledger_account_id]); ?>
 							</div>
 							<div class="col-md-4">
-								<?php echo $this->Form->input('From', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($transaction_from_date)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
+								<?php echo $this->Form->input('From', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($from)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
 								
 							</div>
 							<div class="col-md-4">
-								<?php echo $this->Form->input('To', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($transaction_from_date)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
+								<?php echo $this->Form->input('To', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($To)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
 							</div>
 						</div>
 					</td>
@@ -87,30 +94,37 @@
 		<div class="col-md-12">
 			<div class="col-md-8"></div>	
 			<div class="col-md-4 caption-subject " align="left" style="background-color:#E7E2CB; font-size: 16px;"><b>Opening Balance : 
-				<?php 
-						$opening_balance_ar=[];
-						
-						
-						foreach($Ledgers as $Ledger)
-						{
-							if($Ledger->voucher_source == 'Opening Balance')
-							{
-								@$opening_balance_ar['debit']+=$Ledger->debit;
-								@$opening_balance_ar['credit']+=$Ledger->credit;
-							}
-						}
-						
+				<?php //pr($opening_balance_ar); exit;
+						//$opening_balance_ar=[];
 						if(!empty(@$opening_balance_ar)){
 						
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
-								echo $this->Number->format(@$opening_balance_ar['debit'].'Dr',[ 'places' => 2]);		
+								echo $this->Number->format(@$opening_balance_ar['debit'].'Dr',[ 'places' => 2]);	echo " Dr";
 							}
 							else{
-								echo $this->Number->format(@$opening_balance_ar['credit'].'Cr',[ 'places' => 2]);
+								echo $this->Number->format(@$opening_balance_ar['credit'].'Cr',[ 'places' => 2]); echo " Cr";
 							}						
 						
 						}
 						else { echo $this->Number->format('0',[ 'places' => 2]); }
+						$close_dr=0;
+						$close_cr=0;
+						if(!empty(@$opening_balance_ar)){ 
+							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
+								$close_cr=@$opening_balance_ar['debit']+@$opening_balance_total['debit'];
+								$close_dr=@$opening_balance_total['credit'];
+							}
+							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ //pr(@$opening_balance_total['credit']);
+								$close_cr=@$opening_balance_ar['credit']+@$opening_balance_total['credit'];
+								$close_dr=@$opening_balance_total['debit'];
+							}
+						}elseif(empty($opening_balance_ar)){
+								$close_dr=@$opening_balance_total['debit'];
+								$close_cr=@$opening_balance_total['credit'];
+								
+							}					
+						
+						
 
 						
 				?>  
@@ -215,7 +229,7 @@
 			<div class="col-md-12">
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:- </b>
-				<?php $closing_balance=@$closing_balance_ar['debit']-@$closing_balance_ar['credit'];
+				<?php $closing_balance=@$close_dr-@$close_cr;
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
 						if($closing_balance>0){
 							echo 'Dr';
