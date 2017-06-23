@@ -38,7 +38,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<td><?php echo $invoice_row->item->name; ?></td>
 						<td><?php echo $invoice_row->quantity; ?></td>
 						<td>
-							<input type="text" name="iv_left_rows[<?php echo $invoice_row->id; ?>][invoice_row_id]" placeholder="Serial number" required value="<?php echo $invoice_row->id; ?>"/>
+							<input type="hidden" name="iv_left_rows[<?php echo $invoice_row->id; ?>][invoice_row_id]" placeholder="Serial number" required value="<?php echo $invoice_row->id; ?>"/>
 							<?php if(!empty($invoice_row->item->item_companies[0]->serial_number_enable)){
 								for($i=0; $i<$invoice_row->quantity; $i++){ ?>
 									<input type="text" name="iv_left_rows[<?php echo $invoice_row->id; ?>][iv_left_serial_numbers][<?php echo $i; ?>][sr_number]" placeholder="Serial number" required/><br/>
@@ -91,6 +91,10 @@ $(document).ready(function() {
 		var clicked_object=$(this);
 		var invoice_row_id=$(this).attr('invoice_row_id');
 		addrow(clicked_object,invoice_row_id);
+    });
+	$('.deleterow').die().live("click",function() {
+		$(this).closest('tr').remove();
+		rename_rows();
     });
 	function addrow(clicked_object,invoice_row_id){
 		var tr=$('table.sample_table').find('tbody tr').clone();

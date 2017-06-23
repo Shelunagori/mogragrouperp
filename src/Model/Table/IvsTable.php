@@ -38,6 +38,8 @@ class IvsTable extends Table
         $this->displayField('id');
         $this->primaryKey('id');
 
+		$this->belongsTo('ItemLedgers');
+		$this->belongsTo('ItemSerialNumbers');
         $this->belongsTo('Invoices', [
             'foreignKey' => 'invoice_id',
             'joinType' => 'INNER'
