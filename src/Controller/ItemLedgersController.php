@@ -53,7 +53,7 @@ class ItemLedgersController extends AppController
 			$Grn=$this->ItemLedgers->InvoiceBookings->find()->where(['grn_id'=>$source_id])->first();
 			//pr($Grn); exit;
 			$Vendor=$this->ItemLedgers->Vendors->get($Grn->vendor_id);
-			return ['voucher_info'=>$Grn,'party_type'=>'Supplier','party_info'=>$Vendor];
+			return ['voucher_info'=>$Grn,'party_type'=>'-','party_info'=>$Vendor];
 		}
 		
 		if($source_model=="Inventory Vouchers"){ //echo "IV"; exit;
@@ -191,6 +191,25 @@ class ItemLedgersController extends AppController
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
 		$item_name=$this->request->query('item_name');
+		$item_category=$this->request->query('item_category');
+		$item_group=$this->request->query('item_group_id');
+		$stock=$this->request->query('stock');
+		$item_sub_group=$this->request->query('item_sub_group');
+		//pr($item_category);exit;
+		$where=[];
+		$this->set(compact('item_category','item_group','item_sub_group','stock'));
+		if(!empty($item_category)){
+			$where['item_category_id LIKE']=$item_category;
+		}
+		if(!empty($item_group)){
+			$where['item_group_id LIKE']=$item_group;
+		}
+		if(!empty($item_sub_group)){
+			$where['item_sub_group_id LIKE']=$item_sub_group;
+		}
+		
+		//pr($stock);exit;
+				
 		$item_stocks =[];$items_names =[];
 		$query = $this->ItemLedgers->find();
 		$totalInCase = $query->newExpr()
@@ -213,20 +232,38 @@ class ItemLedgersController extends AppController
 		->where(['company_id'=>$st_company_id])
 		->group('item_id')
 		->autoFields(true)
-		->order(['name'=>'ASC'])
-		->contain(['Items'=>function($q) use($item_name){
-			return $q->where(['name LIKE'=>'%'.$item_name.'%']);
-		}]);
+		->order(['Items.name'=>'ASC'])
+		->contain(['Items'=> function ($q)use($where) {
+				return $q->where($where);
+				}]);
 		$results =$query->toArray();
 		//pr($results);exit;
-		foreach($results as $result){
-			if($result->total_in - $result->total_out != 0){
-				$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
-				$items_names[$result->item_id] = $result->item->name;
-			}
+		if($stock == "Negative"){
+			foreach($results as $result){
+				if($result->total_in - $result->total_out < 0){
+					$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
+					$items_names[$result->item_id] = $result->item->name;
+					//pr($item_stocks);
+				}
 		}
-		$itemLedgers = $this->paginate($query);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names'));
+			
+		}else{
+			foreach($results as $result){
+				if($result->total_in - $result->total_out != 0){
+					$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
+					$items_names[$result->item_id] = $result->item->name;
+					//pr($item_stocks);
+				}
+		}
+		}
+		//$ItemLedgers =$this->ItemLedgers->Items->find()->contain(['ItemCategories'])->where(['Items.item_category_id'=>$item_category]);
+				;
+			//	pr($ItemLedgers->toArray());exit;
+		//$itemLedgers = $this->paginate($query);
+		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
+		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
+		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups'));
 		$this->set('_serialize', ['itemLedgers']);
     }
 	

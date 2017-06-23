@@ -28,10 +28,15 @@ class JobCardsController extends AppController
 		$Required_To=$this->request->query('Required_To');
 		$Created_From=$this->request->query('Created_From');
 		$Created_To=$this->request->query('Created_To');
-		
-		$this->set(compact('jc_no','so_no','jc_file_no','so_file_no','Required_From','Required_To','Created_From','Created_To'));
+		$items=$this->request->query('items');
+		$customer_id=$this->request->query('customers');
+
+		$this->set(compact('items','jc_no','so_no','jc_file_no','so_file_no','Required_From','Required_To','Created_From','Created_To','customer_id'));
 		if(!empty($jc_no)){
 			$where1['JobCards.jc2 LIKE']='%'.$jc_no.'%';
+		}
+		if(!empty($customers)){
+			$where1['Customers.id LIKE']=$customers;
 		}
 		if(!empty($so_no)){
 			$where1['SalesOrders.so2 LIKE']='%'.$so_no.'%';
@@ -65,12 +70,34 @@ class JobCardsController extends AppController
         $this->paginate = [
             'contain' => ['SalesOrders']
         ];
-		if($inventory_voucher_status=='true'){
-			$jobCards = $this->paginate($this->JobCards->find()->where($where1)->where(['status' => 'Pending','JobCards.company_id'=>$st_company_id]));
+		if(!empty($items)){ 
+		
+			$jobCards=$this->paginate($this->JobCards->find()
+			->contain(['SalesOrders','JobCardRows'=>['Items']])
+			->matching(
+					'JobCardRows.Items', function ($q) use($items) {
+						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+					}
+				)
+			);
+			
+		}else if($inventory_voucher_status=='true'){
+			$jobCards = $this->paginate($this->JobCards->find()->contain(['SalesOrders','JobCardRows'=>['Items']])->where($where1)->where(['status' => 'Pending','JobCards.company_id'=>$st_company_id]));
 		}else{
-			$jobCards = $this->paginate($this->JobCards->find()->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.id' => 'DESC']));
+			$jobCards = $this->paginate($this->JobCards->find()->contain(['SalesOrders'=>['Customers'],'JobCardRows'=>['Items']])
+			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.id' => 'DESC'])
+			->matching(
+					'SalesOrders.Customers', function ($q) use($customer_id) {
+						return $q->where(['Customers.id' =>$customer_id]);
+					}
+				)
+			);
+			
+			//pr($jobCards->toArray()); exit;
 		}
-        $this->set(compact('jobCards','status'));
+		
+		$Customers = $this->JobCards->Customers->find('list')->order(['Customers.customer_name' => 'ASC']);
+        $this->set(compact('jobCards','status','Customers'));
         $this->set('_serialize', ['jobCards']);
     }
 

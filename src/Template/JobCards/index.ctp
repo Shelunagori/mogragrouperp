@@ -45,7 +45,12 @@
 									<td>
 										<input type="text" name="so_file_no" class="form-control input-sm" placeholder="File" value="<?php echo @$so_file_no; ?>">
 									</td>
-									
+									<td width="15%">
+											<?php echo $this->Form->input('customers', ['empty'=>'--Customer--','options' => $Customers,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$customer_id) ]); ?>
+									</td>
+									<td width="12%">
+										<input type="text" name="items" class="form-control input-sm" placeholder="Item" value="<?php echo @$items; ?>">
+									</td>
 								<td>
 										<input type="text" name="Required_From" class="form-control input-sm date-picker" placeholder="Required From" value="<?php echo @$Required_From; ?>" data-date-format="dd-mm-yyyy" >
 									</td><td>
@@ -73,6 +78,7 @@
 					<th >Sr.No.</th>
 					<th>Job Card No.</th>
 					<th>Sales Order</th>
+					<th width="10%">Items Name</th>
 					<th>Required Date</th>
 					<th>Created Date</th>
 					<th>Action</th>
@@ -84,6 +90,16 @@
 					<td><?= h(++$page_no) ?></td>
 					<td><?= h(($jobCard->jc1.'/JC-'.str_pad($jobCard->jc2, 3, '0', STR_PAD_LEFT).'/'.$jobCard->jc3.'/'.$jobCard->jc4))?></td>
 					<td><?= h(($jobCard->sales_order->so1.'/SO-'.str_pad($jobCard->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$jobCard->sales_order->so3.'/'.$jobCard->sales_order->so4))?></td> 
+					<td>
+								<div class="btn-group">
+									<button id="btnGroupVerticalDrop5" type="button" class="btn  btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Items <i class="fa fa-angle-down"></i></button>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop5">
+										<?php  foreach($jobCard->job_card_rows as $job_card_rows){ ?>
+											<li><p><?= h($job_card_rows->item->name) ?></p></li>
+											<?php }?>
+										</ul>
+								</div>
+							</td>
  					<td><?= date("d-m-Y",strtotime($jobCard->required_date));?></td>
 					<td><?= date("d-m-Y",strtotime($jobCard->created_on));?></td>
 					<td class="actions">

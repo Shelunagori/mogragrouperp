@@ -7,7 +7,38 @@
 		<div class="portlet-body">
 			<div class="row">
 				<div class="col-md-12">
-				<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 20%;">
+					<form method="GET" >
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+									<td width="15%">
+											<label class="control-label">Category </label>
+											<?php echo $this->Form->input('item_category', ['empty'=>'--Select--','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
+									</td>
+									<td width="15%">
+										<label class="control-label">Group</label>
+										<div id="item_group_div">
+										<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' => $ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+									</td>
+									<td width="15%">
+										<label class="control-label">Sub-Group</label>
+										<div id="item_sub_group_div">
+										<?php echo $this->Form->input('item_sub_group', ['empty'=>'--Select--','options' => $ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+									</td>
+									<td width="15%">
+										<label class="control-label">Stock</label>
+										<div id="item_sub_group_div">
+										<?php 
+											$options = [];
+											$options = [['text'=>'All','value'=>'All'],['text'=>'Negative','value'=>'Negative']];
+										echo $this->Form->input('stock', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
+									</td>
+									<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				
 				
 				<div class="col-md-12"><br/></div>
 				<table class="table table-bordered table-striped table-hover" id="main_tble">
@@ -53,6 +84,34 @@ var $rows = $('#main_tble tbody tr');
     			$rows.show();
     		}
     	});
+	////////
+	$('select[name="item_category"]').on("change",function() {
+		$('#item_group_div').html('Loading...');
+		var itemCategoryId=$('select[name="item_category"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemGroups','action'=>'ItemGroupDropdown']); ?>";
+		url=url+'/'+itemCategoryId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_group_div').html(response);
+		});
+	});	
+	//////
+	$('select[name="item_group"]').die().live("change",function() {
+		$('#item_sub_group_div').html('Loading...');
+		var itemGroupId=$('select[name="item_group"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemSubGroups','action'=>'ItemSubGroupDropdown']); ?>";
+		url=url+'/'+itemGroupId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_sub_group_div').html(response);
+		});
+	});
+	
+		
 });
 		
 </script>
