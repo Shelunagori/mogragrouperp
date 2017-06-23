@@ -1,5 +1,6 @@
 <?php
 $options=[];
+pr($ReferenceBalances->toArray());
 foreach($ReferenceBalances as $ReferenceBalance){
 	if($cr_dr=="Dr"){
 		if($ReferenceBalance->reference_no==$reference_no){
