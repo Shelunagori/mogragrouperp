@@ -190,6 +190,66 @@ class UserRightsController extends AppController
 						])
 						->execute();
 			}
+			if($user_rights[141]['page_id']>0){
+				$query = $this->UserRights->query();
+					$query->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 142
+						])
+						->execute();
+			}
+			
+			if($user_rights[137]['page_id']>0){
+				$query = $this->UserRights->query();
+				$query->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 145
+						])
+						->execute();
+				$query1 = $this->UserRights->query();
+				$query1->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 146
+						])
+						->execute();
+			}
+			
+			if($user_rights[139]['page_id']>0){
+				$query = $this->UserRights->query();
+				$query->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 143
+						])
+						->execute();
+				$query1 = $this->UserRights->query();
+				$query1->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 144
+						])
+						->execute();
+			}
+			
+			if($user_rights[138]['page_id']>0){
+				$query = $this->UserRights->query();
+				$query->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 147
+						])
+						->execute();
+				$query1 = $this->UserRights->query();
+				$query1->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 148
+						])
+						->execute();
+			}
 			if($user_rights[86]['page_id']>0){
 				$query = $this->UserRights->query();
 					$query->insert(['login_id', 'page_id'])

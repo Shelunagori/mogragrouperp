@@ -36,18 +36,28 @@
 							<th>Sr. No.</th>
 							<th>Vocher No</th>
 							<th>Transaction Date</th>
+							<th>Action</th>
 							
 							
 						</tr>
 					</thead>
 					<tbody>
 						<?php $i=0; foreach ($inventory_transfer_vouchs as $inventory_transfer_vouch_data): $i++; 
-						
+						//pr($inventory_transfer_vouch_data); exit;
 					?>
 						<tr>
 							<td><?= h(++$page_no) ?></td>
 							<td><?= h('#'.str_pad($inventory_transfer_vouch_data->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
 							<td><?= h(date("d-m-Y",strtotime($inventory_transfer_vouch_data->transaction_date)))?></td>
+							<td>
+							<?php if($inventory_transfer_vouch_data->in_out=='Out'){ ?>
+							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'outView', $inventory_transfer_vouch_data->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View '));  ?>
+							<?php }else if($inventory_transfer_vouch_data->in_out=='in') { ?>
+							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'inView', $inventory_transfer_vouch_data->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View '));  ?>
+							<?php }else { ?>
+							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $inventory_transfer_vouch_data->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View '));  ?>
+							<?php } ?>
+							</td>
 							
 						
 						</tr>

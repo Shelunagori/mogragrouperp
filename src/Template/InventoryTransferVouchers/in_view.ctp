@@ -21,12 +21,12 @@ margin-bottom: 0;
 }
 </style>
 <a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
-<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 100%;font-size: 12px;" class="maindiv">
+<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 70%;font-size: 12px;" class="maindiv">
 <table width="100%" class="divHeader">
 		<tr>
 			<td width="30%"><?php echo $this->Html->image('/logos/'.$inventoryTransferVoucher->company->logo, ['width' => '40%']); ?></td>
-			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER</div></td>
-			<td align="right" width="40%" style="font-size: 12px;">
+			<td align="center" width="40%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER IN</div></td>
+			<td align="right" width="30%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($inventoryTransferVoucher->company->name) ?></span>
 			<span><?= $this->Text->autoParagraph(h($inventoryTransferVoucher->company->address)) ?>
 			<?= h($inventoryTransferVoucher->company->mobile_no) ?></span>
@@ -38,7 +38,6 @@ margin-bottom: 0;
 			</td>
 		</tr>
 	</table>
-
 </br>
 <table width="100%">
 	<tr>
@@ -60,50 +59,18 @@ margin-bottom: 0;
 <div class="portlet-body form">
 <table class="table table-bordered table-condensed">
 	<thead> 
-		<th width="50%">Out Item</th>
-		<th>In Item</th>
+		<th width="10%">Sr.No.</th>
+		<th width="60%">Item</th>
+		<th>Quantity</th>
 	</thead>
 	<tbody>
-		<tr >
-			<td valign="top">
-				<table class="table table-bordered table-condensed">
-					<thead> 
-						<th width="20%">Sr. No.</th>
-						<th>Item</th>
-						<th>Quantity</th>
-					</thead>
-					<tbody>
-						<?php $i=1; foreach($out_item as $out_item){ ?>
-						<tr>
-							<td valign="top"><?php echo $i; ?></td>
-							<td valign="top"><?php echo $out_item->item->name ?></td>
-							<td valign="top"><?php echo $out_item->quantity ?></td>
-						</tr>
-						<?php $i++; } ?>
-					</tbody>
-				</table>
-			</td>
-			
-			<td valign="top">
-				<table class="table table-bordered table-condensed">
-					<thead> 
-						<th width="20%">Sr. No.</th>
-						<th>Item</th>
-						<th>Quantity</th>
-					</thead>
-					<tbody>
-						<?php $j=1; foreach($in_item as $in_item){ ?>
-						<tr >
-							<td valign="top"><?php echo $j; ?></td>
-							<td valign="top"><?php echo $in_item->item->name ?></td>
-							<td valign="top"><?php echo $in_item->quantity ?></td>
-
-						</tr>
-						<?php $j++; } ?>
-					</tbody>
-				</table>
-			</td>
-		</tr>
+		<?php  $i=1; foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $out_item){ ?>
+			<tr>
+				<td valign="top"><?php echo $i; ?></td>
+				<td valign="top"><?php echo $out_item->item->name ?></td>
+				<td valign="top"><?php echo $out_item->quantity ?></td>
+			</tr>
+		<?php $i++; } ?>
 		
 	</tbody>
 </table>

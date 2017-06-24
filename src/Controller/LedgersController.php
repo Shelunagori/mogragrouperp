@@ -610,17 +610,26 @@ class LedgersController extends AppController
 			$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
 			//pr($from); exit;
 			if($from == '01-04-2017'){
-			$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  '=>$transaction_from_date]);
-			}else{
-				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
-			}
-			$opening_balance_ar=[];
+				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  '=>$transaction_from_date]);
+				$opening_balance_ar=[];
 			foreach($OB as $Ledger)
 				{
-					
+					if($Ledger->voucher_source== "Opening Balance"){
 						@$opening_balance_ar['debit']+=$Ledger->debit;
 						@$opening_balance_ar['credit']+=$Ledger->credit;
+					}
 				}	
+			}else{
+				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
+				$opening_balance_ar=[];
+				foreach($OB as $Ledger)
+					{
+						
+							@$opening_balance_ar['debit']+=$Ledger->debit;
+							@$opening_balance_ar['credit']+=$Ledger->credit;
+					}	
+			}
+			
 			
 			$Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
@@ -707,7 +716,6 @@ class LedgersController extends AppController
 		{
 			$transaction_from_date= date('Y-m-d', strtotime($this->request->query['From']));
 			$transaction_to_date= date('Y-m-d', strtotime($this->request->query['To']));
-
 			$Bank_Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date '=>'0000-00-00'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){

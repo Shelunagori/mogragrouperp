@@ -319,8 +319,34 @@ fieldset legend {
 					</div>
 					</fieldset>
 				</div>
-				
-					<div class="col-md-6">
+				<div class="col-md-6">
+                    	<fieldset>
+        				<legend>InventoryTransferVouchers</b></legend>
+						<div class="checkbox-list">
+						<label class="checkbox-inline">
+							<?php 
+							if(in_array(137,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.137.page_id', ['label' => 'Create','class' => '','type'=>'checkbox','value'=>137,$checked_status]); ?>
+						</label>
+						<label class="checkbox-inline">
+							<?php 
+							if(in_array(139,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.139.page_id', ['label' => 'Edit','class' => '','type'=>'checkbox','value'=>139,$checked_status]); ?>
+						</label>
+						<label class="checkbox-inline">
+							<?php 
+							if(in_array(138,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.138.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>138,$checked_status]); ?>
+						</label>
+						<label class="checkbox-inline">
+							<?php 
+							if(in_array(140,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.140.page_id', ['label' => 'Index','class' => '','type'=>'checkbox','value'=>140,$checked_status]); ?>
+						</label>
+						</div>
+					</fieldset>
+				</div></br>
+				<div class="col-md-6">
                     	<fieldset>
         				<legend>User-Rights/Logins</b></legend>
 						<div class="checkbox-list">
@@ -336,7 +362,7 @@ fieldset legend {
 						</label>
 						</div>
 					</fieldset>
-		</div></br>
+				</div></br>
         <div class="col-md-12">
         <fieldset>
         <legend>Report</b></legend>
@@ -424,6 +450,16 @@ fieldset legend {
 								<?php 
 								if(in_array(128,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
 								echo $this->Form->input('user_rights.128.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>128,$checked_status]); ?>
+							</label>
+						</div>
+				</div>
+				<div class="col-md-3">
+					<div class="titletext"><b>Over Due Report</b></div>
+						<div class="checkbox-list">
+							<label class="checkbox-inline">
+								<?php 
+								if(in_array(141,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+								echo $this->Form->input('user_rights.141.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>141,$checked_status]); ?>
 							</label>
 						</div>
 				</div>

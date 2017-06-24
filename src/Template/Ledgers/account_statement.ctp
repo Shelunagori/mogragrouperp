@@ -95,27 +95,27 @@ $url_excel="/?".$url;
 			<div class="col-md-8"></div>	
 			<div class="col-md-4 caption-subject " align="left" style="background-color:#E7E2CB; font-size: 16px;"><b>Opening Balance : 
 				<?php //pr($opening_balance_ar); exit;
-						//$opening_balance_ar=[];
+						$opening_balance_data=0;;
 						if(!empty(@$opening_balance_ar)){
-						
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
-								echo $this->Number->format(@$opening_balance_ar['debit'].'Dr',[ 'places' => 2]);	echo " Dr";
+								$opening_balance_data=@$opening_balance_ar['debit'] - @$opening_balance_ar['credit'];
+								echo $this->Number->format(@$opening_balance_data.'Dr',[ 'places' => 2]);	echo " Dr";
 							}
 							else{
-								echo $this->Number->format(@$opening_balance_ar['credit'].'Cr',[ 'places' => 2]); echo " Cr";
+								$opening_balance_data=@$opening_balance_ar['credit'] - @$opening_balance_ar['debit'];
+								echo $this->Number->format(@$opening_balance_data.'Cr',[ 'places' => 2]); echo " Cr";
 							}						
-						
 						}
 						else { echo $this->Number->format('0',[ 'places' => 2]); }
 						$close_dr=0;
-						$close_cr=0;
-						if(!empty(@$opening_balance_ar)){ 
+						$close_cr=0; 
+						if(!empty(@$opening_balance_ar)){  //pr($opening_balance_data); exit;
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
-								$close_cr=@$opening_balance_ar['debit']+@$opening_balance_total['debit'];
+								$close_cr=@$opening_balance_data+@$opening_balance_total['debit'];
 								$close_dr=@$opening_balance_total['credit'];
 							}
 							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ //pr(@$opening_balance_total['credit']);
-								$close_cr=@$opening_balance_ar['credit']+@$opening_balance_total['credit'];
+								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
 								$close_dr=@$opening_balance_total['debit'];
 							}
 						}elseif(empty($opening_balance_ar)){

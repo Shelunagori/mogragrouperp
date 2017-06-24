@@ -368,6 +368,7 @@ select
 					</ul>
 				</li>
 				<?php } ?>
+				<?php if(in_array(137,$allowed_pages)||in_array(138,$allowed_pages)|| in_array(139,$allowed_pages) ||in_array(140,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
 					<i class="icon-docs"></i>
@@ -375,16 +376,18 @@ select
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						
+						<?php if(in_array(137,$allowed_pages)){ ?>
 						<?php echo '<li>'.$this->Html->link( 'Create', '/InventoryTransferVouchers/add' ).'</li>';
 						 ?>
+						 <?php } ?>
+						 <?php if(in_array(140,$allowed_pages)){ ?>
 						<?php
 						echo '<li>'.$this->Html->link( 'View', '/InventoryTransferVouchers' ).'</li>';
 						 ?>
-						
+						 <?php } ?>
 					</ul>
 				</li>
-				
+				<?php } ?>
 				<?php if(in_array(9,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
@@ -651,6 +654,7 @@ select
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
+						<?php if(in_array(141,$allowed_pages)){ ?>
 						<li>
 							<a href="javascript:;">
 							<i class="fa fa-file-code-o"></i>
@@ -662,6 +666,7 @@ select
 								<?php echo '<li>'.$this->Html->link( 'Overdue Report for Supplier', '/Customers/Breakup-Range-Overdue?request=vendor' ).'</li>';?>
 							</ul>
 						</li>
+						<?php } ?>
 						<?php if(in_array(128,$allowed_pages)){?>
 						<li><?php $today =date('d-m-Y');
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>

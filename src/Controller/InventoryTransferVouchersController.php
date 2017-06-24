@@ -65,14 +65,49 @@ class InventoryTransferVouchersController extends AppController
      */
     public function view($id = null)
     {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
         $inventoryTransferVoucher = $this->InventoryTransferVouchers->get($id, [
-            'contain' => ['Companies', 'InventoryTransferVoucherRows']
+            'contain' => ['Creator','Companies', 'InventoryTransferVoucherRows'=>['Items']]
         ]);
-
+		$in_item=[];
+		$out_item=[];
+		foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){
+			if($inventory_transfer_voucher_row->status=='out'){
+				$out_item[$inventory_transfer_voucher_row->id]=$inventory_transfer_voucher_row;
+			}else{
+				$in_item[$inventory_transfer_voucher_row->id]=$inventory_transfer_voucher_row;
+			}
+		}
+		//pr($out_item);pr($in_item); exit;
+		$this->set(compact('out_item','in_item'));
         $this->set('inventoryTransferVoucher', $inventoryTransferVoucher);
         $this->set('_serialize', ['inventoryTransferVoucher']);
     }
+    public function outView($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $inventoryTransferVoucher = $this->InventoryTransferVouchers->get($id, [
+            'contain' => ['Creator','Companies', 'InventoryTransferVoucherRows'=>['Items']]
+        ]);
 
+		$this->set(compact('out_item','in_item'));
+        $this->set('inventoryTransferVoucher', $inventoryTransferVoucher);
+        $this->set('_serialize', ['inventoryTransferVoucher']);
+    }
+	  public function inView($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $inventoryTransferVoucher = $this->InventoryTransferVouchers->get($id, [
+            'contain' => ['Creator','Companies', 'InventoryTransferVoucherRows'=>['Items']]
+        ]);
+
+		$this->set(compact('out_item','in_item'));
+        $this->set('inventoryTransferVoucher', $inventoryTransferVoucher);
+        $this->set('_serialize', ['inventoryTransferVoucher']);
+    }
     /**
      * Add method
      *
@@ -266,7 +301,7 @@ class InventoryTransferVouchersController extends AppController
 			
 			$selectedSerialNumbers=$this->InventoryTransferVouchers->Items->ItemSerialNumbers->find()->where(['item_id'=>$select_item_id,'status'=>'Out','company_id'=>$st_company_id]);
 			
-			pr($SerialNumbers->toArray());exit;
+			//pr($SerialNumbers->toArray());exit;
 			$flag=1;
 		}
 		$this->set(compact('SerialNumbers','flag','select_item_id','selectedSerialNumbers'));
