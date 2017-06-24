@@ -147,14 +147,17 @@ $url_excel="/?".$url;
 				$url_path="";
 				if($ledger->voucher_source=="Journal Voucher"){
 					$Receipt=$url_link[$ledger->id];
+					//pr($Receipt->voucher_no); 
 					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/JournalVouchers/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Payment Voucher"){
 					$Receipt=$url_link[$ledger->id];
+					//pr($Receipt->voucher_no);exit;
 					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/Payments/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Petty Cash Payment Voucher"){
 					$Receipt=$url_link[$ledger->id];
+					//pr($url_link[$ledger->id]);exit;
 					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/petty-cash-vouchers/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Contra Voucher"){

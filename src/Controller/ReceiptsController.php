@@ -666,8 +666,13 @@ class ReceiptsController extends AppController
 	
 	public function fetchRefNumbersEdit($received_from_id=null,$reference_no=null,$credit=null,$debit=null,$cr_dr=null){
 		$this->viewBuilder()->layout('');
+		$received_from_id=$this->request->query['received_from_id'];
+		$cr_dr=$this->request->query['cr_dr'];
+		$reference_no=$this->request->query['reference_no'];
+		$debit=$this->request->query['debit'];
+		$credit=$this->request->query['credit'];
 		$ReferenceBalances=$this->Receipts->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
-		$this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr'));
+		$this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr','received_from_id'));
 	}
 	
 	function checkRefNumberUnique($received_from_id,$i){

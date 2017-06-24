@@ -68,6 +68,7 @@ class UserRightsController extends AppController
 				->execute();
 	
 			$user_rights=$this->request->data["user_rights"];
+			//pr($user_rights); exit;
 			foreach($user_rights as	$data){
 				if(!empty($data["page_id"])){
 					$query = $this->UserRights->query();

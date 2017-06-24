@@ -605,24 +605,23 @@ class LedgersController extends AppController
 			
 			$from = $this->request->query['From'];
 			$To = $this->request->query['To'];
-			
 			$transaction_from_date= date('Y-m-d', strtotime($from));
-			//pr($transaction_from_date); exit;
 			$transaction_to_date= date('Y-m-d', strtotime($To));
 			$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
+			//pr($from); exit;
+			if($from == '01-04-2017'){
+			$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  '=>$transaction_from_date]);
+			}else{
+				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
+			}
+			$opening_balance_ar=[];
+			foreach($OB as $Ledger)
+				{
+					
+						@$opening_balance_ar['debit']+=$Ledger->debit;
+						@$opening_balance_ar['credit']+=$Ledger->credit;
+				}	
 			
-			$OB = $this->Ledgers->find()
-				->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
-				//pr($OB->toArray()); exit;
-				$opening_balance_ar=[];
-					foreach($OB as $Ledger)
-						{
-							if($Ledger->voucher_source == 'Opening Balance')
-							{
-								@$opening_balance_ar['debit']+=$Ledger->debit;
-								@$opening_balance_ar['credit']+=$Ledger->credit;
-							}
-						}
 			$Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
@@ -637,13 +636,16 @@ class LedgersController extends AppController
 				}else if($ledger->voucher_source=="Payment Voucher"){
 					$url_link[$ledger->id]=$this->Ledgers->Payments->get($ledger->voucher_id);
 				}else if($ledger->voucher_source=="Petty Cash Payment Voucher"){
-					$url_link[$ledger->id]="/petty-cash-vouchers/view/".$ledger->voucher_id;
+					$url_link[$ledger->id]=$this->Ledgers->PettyCashVouchers->get($ledger->voucher_id);
+					//pr($url_link[$ledger->id]); exit;
 				}else if($ledger->voucher_source=="Contra Voucher"){
 					$url_link[$ledger->id]=$this->Ledgers->ContraVouchers->get($ledger->voucher_id);
 				}else if($ledger->voucher_source=="Receipt Voucher"){
 				$url_link[$ledger->id]=$this->Ledgers->Receipts->get($ledger->voucher_id); 
-				}else if($ledger->voucher_source=="Invoice"){
+				}else if($ledger->voucher_source=="Invoice"){ 
+				
 					$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id);
+					
 				}else if($ledger->voucher_source=="Invoice Booking"){
 					$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
 				}else if($ledger->voucher_source=="Non Print Payment Voucher"){

@@ -421,7 +421,24 @@ select
 					</ul>
 				</li>
 				<?php } ?>
-				<li><?php echo $this->Html->link('<i class="icon-home"></i> Material Indents','/MaterialIndents',array('escape'=>false)); ?></li>
+				<?php if(in_array(124,$allowed_pages) || in_array(125,$allowed_pages) ){ ?>
+				<li>
+					<a href="javascript:;">
+					<i class="fa fa-puzzle-piece"></i>
+					<span class="title">Material Indents</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<?php if(in_array(124,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/MaterialIndents/AddNew',array('escape'=>false)).'</li>';
+						} ?>
+						<?php if(in_array(125,$allowed_pages) || in_array(31,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/MaterialIndents/',array('escape'=>false)).'</li>';
+						} ?>
+					</ul>
+				</li>
+				<?php } ?>
+			
 				<?php if(in_array(13,$allowed_pages) || in_array(14,$allowed_pages) || in_array(31,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
@@ -645,8 +662,10 @@ select
 								<?php echo '<li>'.$this->Html->link( 'Overdue Report for Supplier', '/Customers/Breakup-Range-Overdue?request=vendor' ).'</li>';?>
 							</ul>
 						</li>
+						<?php if(in_array(128,$allowed_pages)){?>
 						<li><?php $today =date('d-m-Y');
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
+						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report',array('escape'=>false)); ?></li>	
 						<?php } ?>
@@ -667,11 +686,15 @@ select
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement','/Ledgers/Account-Statement',array('escape'=>false)); ?></li>	
 						<?php } ?>
 						<?php echo '<li>'.$this->Html->link( '<i class="fa fa-users"></i>User Logs Report', '/UserLogs/',array('escape'=>false) ).'</li>';?>
+						<?php if(in_array(126,$allowed_pages)){?>
 						<li><?php $today =date('d-m-Y');
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Bank Reconciliation Add',array('controller'=>'Ledgers','action'=>'bankReconciliationAdd','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
+						<?php } ?>
+						
 					
 					</ul>
 				</li>
+				<?php if(in_array(133,$allowed_pages)||in_array(134,$allowed_pages)|| in_array(135,$allowed_pages) ||in_array(136,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
@@ -687,6 +710,8 @@ select
 						?>
 					</ul>
 				</li>
+				<?php } ?>
+				<?php if(in_array(129,$allowed_pages)||in_array(130,$allowed_pages)|| in_array(131,$allowed_pages) ||in_array(132,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
@@ -702,7 +727,7 @@ select
 						?>
 					</ul>
 				</li>
-				
+				<?php } ?>
 				<?php if(in_array(17,$allowed_pages) || in_array(18,$allowed_pages) || in_array(123,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
