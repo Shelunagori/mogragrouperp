@@ -50,7 +50,7 @@
 								<input type="text" name="customer" class="form-control input-sm" placeholder="Customer" value="<?php echo @$customer; ?>">
 							</td>
 							<td width="10%">
-								<input type="text" name="items" class="form-control input-sm" placeholder="Items" value="<?php echo @$items; ?>">
+								<?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 							</td>
 							<td width="10%">
 								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Date From" value="<?php echo @$From; ?>" data-date-format="dd-mm-yyyy">

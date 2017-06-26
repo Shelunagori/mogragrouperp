@@ -66,7 +66,7 @@
 								<input type="text" name="po_no" class="form-control input-sm" placeholder="PO No." value="<?php echo @$po_no; ?>">
 							</td>
 							<td width="12%">
-								<input type="text" name="items" class="form-control input-sm" placeholder="Item" value="<?php echo @$items; ?>">
+								<?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 							</td>
 							<td width="9%">
 								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="From" value="<?php echo @$From; ?>" data-date-format="dd-mm-yyyy" >

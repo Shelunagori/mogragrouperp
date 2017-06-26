@@ -49,7 +49,7 @@
 											<?php echo $this->Form->input('customers', ['empty'=>'--Customer--','options' => $Customers,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$customer_id) ]); ?>
 									</td>
 									<td width="12%">
-										<input type="text" name="items" class="form-control input-sm" placeholder="Item" value="<?php echo @$items; ?>">
+										<?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 									</td>
 								<td>
 										<input type="text" name="Required_From" class="form-control input-sm date-picker" placeholder="Required From" value="<?php echo @$Required_From; ?>" data-date-format="dd-mm-yyyy" >

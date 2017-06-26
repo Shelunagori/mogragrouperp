@@ -40,13 +40,9 @@ if(!empty($status)){
 					['class' => $class3]
 				); ?>
 				<?php echo $this->Html->link('<i class="fa fa-file-excel-o"></i> Excel','/Quotations/Export-Excel/'.$url_excel,['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
-			<div class="btn-group">
-				
-			<?php }  ?>
+				<?php }  ?>
 			
-					
-			</div>
-		</div>
+		</div>	
 	
 	<div class="portlet-body">
 		<div class="row">
@@ -73,22 +69,22 @@ if(!empty($status)){
 							<td width="15%">
 								<input type="text" name="product" class="form-control input-sm" placeholder="Product" value="<?php echo @$product; ?>">
 							</td>
-							<td width="12%">
-								<input type="text" name="items" class="form-control input-sm" placeholder="Item" value="<?php echo @$items; ?>">
+							<td width="10%">
+								<?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 							</td>
 							<?php if($pull_request=="true"){ ?>
-							<td >
+							<td width="15%">
 								<input type="text" name="q_dateFrom" class="form-control input-sm date-picker" placeholder="From" value="<?php echo @$q_dateFrom; ?>"  data-date-format="dd-mm-yyyy" >
 							</td>
-							<td>
+							<td width="15%">
 										<input type="text" name="q_dateTo" class="form-control input-sm date-picker" placeholder="To" value="<?php echo @$q_dateTo; ?>"  data-date-format="dd-mm-yyyy" >
 							</td>
 							<?php }else{ ?>
-								<td>
+								<td width="10%">
 									
 										<input type="text" name="From" class="form-control input-sm date-picker" placeholder="From" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
 								</td>
-								<td>
+								<td width="10%">
 										<input type="text" name="To" class="form-control input-sm date-picker" placeholder="To" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
 									
 								</td>
@@ -158,8 +154,10 @@ if(!empty($status)){
 							<td><?php echo date("d-m-Y",strtotime($quotation->finalisation_date)); ?></td>
 							<?php } ?>
 							<?php if($quotation->status=='Closed'){ ?>
-							<td><?= h($quotation->reason) ?></td>
-							<td><?php echo date("d-m-Y",strtotime($quotation->closing_date)); ?></td>	
+							<td><?= h($quotation->reason) ?> </td>
+							<td><?php 
+									echo date("d-m-Y",strtotime($quotation->closing_date));
+								?></td>	
 							<?php } ?>
 							<td class="actions">
 							<?php if(in_array(21,$allowed_pages)){ ?>
@@ -198,7 +196,7 @@ if(!empty($status)){
 								<?php if($copy_request=="copy"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Copy','/Quotations/Add?copy='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
-								<?php if($quotation->status=='Closed'){
+								<?php if($quotation->status=='Closed' ){
 								echo $this->Form->postLink('<i class="fa fa-minus-circle"></i> ',['action' =>'reopen', $quotation->id],['escape' => false,'class' => 'btn btn-xs green tooltips','data-original-title'=>'Reopen','confirm' => __('Are you sure, you want to reopen ?', $quotation->id)]
 								);
 								} ?>

@@ -83,8 +83,8 @@ class InvoicesController extends AppController
 			$invoices=$this->paginate($this->Invoices->find()
 			->contain(['SalesOrders','InvoiceRows'=>['Items']])
 			->matching(
-					'InvoiceRows.Items', function ($q) use($items) {
-						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+					'InvoiceRows.Items', function ($q) use($items,$where) {
+						return $q->where(['Items.id' =>$items])->where($where);
 					}
 				)
 			);
@@ -104,7 +104,9 @@ class InvoicesController extends AppController
 			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']));
 		} 
 		//pr($invoices); exit;
-		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows'));
+		$Items = $this->Invoices->InvoiceRows->Items->find('list')->order(['Items.name' => 'ASC']);
+		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows','Items'));
+		
         $this->set('_serialize', ['invoices']);
 		$this->set(compact('url'));
     }

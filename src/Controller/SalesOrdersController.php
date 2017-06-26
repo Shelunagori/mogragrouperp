@@ -78,14 +78,13 @@ class SalesOrdersController extends AppController
 			$having=['total_rows =' => 0];
 		}
 		
-		
 		if(!empty($items)){
 			
 			$salesOrders=$this->paginate($this->SalesOrders->find()
 			->contain(['Quotations','SalesOrderRows'=>['Items']])
 			->matching(
-					'SalesOrderRows.Items', function ($q) use($items) {
-						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+					'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+						return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
 					}
 				)
 				);
@@ -111,8 +110,10 @@ class SalesOrdersController extends AppController
 				->where(['job_card'=>'Pending'])->order(['SalesOrders.id' => 'DESC'])
 			);
 		}
+		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
+
 		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find()->toArray();
-        $this->set(compact('salesOrders','status','copy_request','job_card','SalesOrderRows'));
+        $this->set(compact('salesOrders','status','copy_request','job_card','SalesOrderRows','Items'));
         $this->set('_serialize', ['salesOrders']);
 		$this->set(compact('url'));
     }

@@ -76,7 +76,7 @@ class JobCardsController extends AppController
 			->contain(['SalesOrders','JobCardRows'=>['Items']])
 			->matching(
 					'JobCardRows.Items', function ($q) use($items) {
-						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+						return $q->where(['Items.id' =>$items]);
 					}
 				)
 			);
@@ -97,7 +97,8 @@ class JobCardsController extends AppController
 		}
 		
 		$Customers = $this->JobCards->Customers->find('list')->order(['Customers.customer_name' => 'ASC']);
-        $this->set(compact('jobCards','status','Customers'));
+		$Items = $this->JobCards->JobCardRows->Items->find('list')->order(['Items.name' => 'ASC']);
+		$this->set(compact('jobCards','status','Customers','Items'));
         $this->set('_serialize', ['jobCards']);
     }
 

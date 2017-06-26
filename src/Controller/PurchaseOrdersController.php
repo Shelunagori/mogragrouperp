@@ -72,7 +72,7 @@ class PurchaseOrdersController extends AppController
 			->contain(['PurchaseOrderRows'=>['Items']])
 			->matching(
 					'PurchaseOrderRows.Items', function ($q) use($items) {
-						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+						return $q->where(['Items.id' =>$items]);
 					}
 				)
 				);
@@ -93,8 +93,8 @@ class PurchaseOrdersController extends AppController
 			);
 }
 		$PurchaseOrderRows = $this->PurchaseOrders->PurchaseOrderRows->find()->toArray();
-		//pr($PurchaseOrderRows);exit;
-        $this->set(compact('purchaseOrders','pull_request','status','PurchaseOrderRows','PurchaseItems'));
+		$Items = $this->PurchaseOrders->PurchaseOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
+        $this->set(compact('purchaseOrders','pull_request','status','PurchaseOrderRows','PurchaseItems','Items'));
         $this->set('_serialize', ['purchaseOrders']);
 		$this->set(compact('url'));
     }

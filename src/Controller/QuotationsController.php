@@ -91,9 +91,9 @@ class QuotationsController extends AppController
 		
 		if(sizeof($max_ids)>0){
 			$quotations = $this->paginate($this->Quotations->find()->contain(['QuotationRows'=>['Items']])->where($where)->where(['Quotations.id IN' =>$max_ids])->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC']));
-			 
+				
 		}else{ 
-			$quotations = $this->paginate($this->Quotations->find()->contain(['QuotationRows'=>['Items']])->where($where)->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC']));
+			$quotations = $this->paginate($this->Quotations->find()->contain(['QuotationRows'=>['Items']])->where($where)->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC'])); 
 		}
 		
 		if(sizeof($max_ids)>0){ 
@@ -104,24 +104,21 @@ class QuotationsController extends AppController
 			$quotations=$this->paginate($this->Quotations->find()
 			->contain(['QuotationRows'=>['Items']])
 			->matching(
-					'QuotationRows.Items', function ($q) use($items) {
-						return $q->where(['Items.name LIKE' =>'%'.$items.'%']);
+					'QuotationRows.Items', function ($q) use($items,$st_company_id,$where) {
+						return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id])->where($where);
 					}
 				)
 				);
-				//pr($quotations);exit;
-				
 		}else{
-		
         $quotations = $this->paginate($this->Quotations->find()->contain(['QuotationRows'=>['Items']])->where($where)->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC']));
 		
 										
 		}
 		 
 		$companies = $this->Quotations->Companies->find('list');
-		
+		$Items = $this->Quotations->QuotationRows->Items->find('list')->order(['Items.name' => 'ASC']);
 		$closeReasons = $this->Quotations->QuotationCloseReasons->find('all');
-        $this->set(compact('quotations','status','copy_request','companies','closeReasons','closed_month'));
+        $this->set(compact('quotations','status','copy_request','companies','closeReasons','closed_month','close_status','Items'));
         $this->set('_serialize', ['quotations']);
 		$this->set(compact('url'));
 	}
