@@ -325,21 +325,23 @@ class InventoryVouchersController extends AppController
 				return $q->where(['InvoiceRows.inventory_voucher_applicable'=>'Yes','InvoiceRows.inventory_voucher_status'=>'Pending']);
 				}]]);
 		
-			
+		//$aw=pr(sizeof($Invoice->invoice_rows)); exit;
+		//pr($aw); exit;
 		if(sizeof($Invoice->invoice_rows)==0){
+			$query1 = $this->InventoryVouchers->Invoices->query();
+			$query1->update()
+				->set(['inventory_voucher_status' => 'Completed'])
+				->where(['id' => $invoice_id])
+				->execute();
+			
 			$query = $this->InventoryVouchers->query();
 			$query->update()
 				->set(['status' => 'Completed'])
 				->where(['invoice_id' => $invoice_id])
 				->execute();
 				
-			$query = $this->InventoryVouchers->Invoices->query();
-			$query->update()
-				->set(['Invoices.inventory_voucher_status' => 'Completed'])
-				->where(['Invoices.id' => $invoice_id])
-				->execute();
 		}
-		
+
 		if(empty($q_item_id) && !empty($invoice_id)){
 			$Invoice=$this->InventoryVouchers->Invoices->get($invoice_id, [
 				'contain' => ['InvoiceRows'=> function ($q) {

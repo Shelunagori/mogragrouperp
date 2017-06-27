@@ -12,7 +12,6 @@ $url_excel="/?".$url;
 		}else{
 			$transaction_to_date=$transaction_to_date;
 		}
-
 	$opening_balance_ar1=[];
 	$closing_balance_ar=[];
 	if(!empty(@$Ledgers))

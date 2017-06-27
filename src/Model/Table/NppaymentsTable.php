@@ -51,7 +51,8 @@ class NppaymentsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->hasMany('NppaymentRows', [
-            'foreignKey' => 'nppayment_id'
+            'foreignKey' => 'nppayment_id',
+			'saveStrategy' => 'replace'
         ]);
         $this->hasMany('ReferenceDetails', [
             'foreignKey' => 'nppayment_id'

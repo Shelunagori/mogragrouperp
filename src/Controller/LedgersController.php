@@ -118,32 +118,72 @@ class LedgersController extends AppController
 		$from = date("Y-m-d",strtotime($this->request->query('From')));
 		$To = date("Y-m-d",strtotime($this->request->query('To')));
 		$ledger_account_id = $this->request->query['ledger_account_id'];
-	//pr($ledger_account_id); exit;
-			
-			$OB = $this->Ledgers->find()
-				->where(['ledger_account_id'=>$ledger_account_id,'transaction_date <'=>$from]);
-				
+		$transaction_from_date= date('Y-m-d', strtotime($from));
+		$transaction_to_date= date('Y-m-d', strtotime($To));
+		
+			if($from == '2017-04-01'){ 
+				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  '=>$transaction_from_date]);
+				//pr($OB); exit;
 				$opening_balance_ar=[];
-					foreach($OB as $Ledger)
-						{
-							if($Ledger->voucher_source == 'Opening Balance')
-							{
-								@$opening_balance_ar['debit']+=$Ledger->debit;
-								@$opening_balance_ar['credit']+=$Ledger->credit;
-							}
-						}
-			//	pr($opening_balance_ar); exit;
+			foreach($OB as $Ledger)
+				{
+					if($Ledger->voucher_source== "Opening Balance"){
+						@$opening_balance_ar['debit']+=$Ledger->debit;
+						@$opening_balance_ar['credit']+=$Ledger->credit;
+					}
+				}	
+			}else{
+				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
+				$opening_balance_ar=[];
+				foreach($OB as $Ledger)
+					{
+						
+							@$opening_balance_ar['debit']+=$Ledger->debit;
+							@$opening_balance_ar['credit']+=$Ledger->credit;
+					}	
+			}
+				//pr($opening_balance_ar); exit;
 		$where['Ledgers.company_id']=$st_company_id;
        
 		
 		$ledgers = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->order(['transaction_date'=>'DESC']);
 		
+		$url_link=[];
+			foreach($ledgers as $ledger){
+				if($ledger->voucher_source=="Journal Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->JournalVouchers->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Payment Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->Payments->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Petty Cash Payment Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->PettyCashVouchers->get($ledger->voucher_id);
+					//pr($url_link[$ledger->id]); exit;
+				}else if($ledger->voucher_source=="Contra Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->ContraVouchers->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Receipt Voucher"){
+				$url_link[$ledger->id]=$this->Ledgers->Receipts->get($ledger->voucher_id); 
+				}else if($ledger->voucher_source=="Invoice"){ 
+				
+					$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id);
+					
+				}else if($ledger->voucher_source=="Invoice Booking"){
+					$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Non Print Payment Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->Nppayments->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Debit Note"){
+					$url_link[$ledger->id]=$this->Ledgers->DebitNotes->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Credit Note"){
+					$url_link[$ledger->id]=$this->Ledgers->CreditNotes->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Purchase Return"){
+					$url_link[$ledger->id]=$this->Ledgers->PurchaseReturns->get($ledger->voucher_id);
+				}
+			}
+		//pr($url_link); exit;
 		$ledger_acc = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->first();
 		
 		$ledger_acc_name=$ledger_acc->ledger_account->name;
 		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
-        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name'));
+        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name','url_link'));
         $this->set('_serialize', ['ledgers']);
     }
 	 public function exportExcel()

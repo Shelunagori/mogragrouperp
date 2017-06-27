@@ -21,8 +21,6 @@ class ItemLedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-		
-		
         $this->paginate = [
             'contain' => ['Items']
         ];
@@ -256,6 +254,18 @@ class ItemLedgersController extends AppController
 				}
 		}
 		}
+		$ItemLedgers = $this->ItemLedgers->find();
+		//pr($ItemLedgers->toArray()); exit;
+		$item_rate=[];
+		$in_qty=[];
+		foreach($ItemLedgers as $ItemLedger){
+				if($ItemLedger->in_out == 'In'){
+					@$item_rate[$ItemLedger->item_id] += ($ItemLedger->quantity*$ItemLedger->rate);
+					//@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
+					
+				}
+		}
+		//pr($item_rate); exit;
 		//$ItemLedgers =$this->ItemLedgers->Items->find()->contain(['ItemCategories'])->where(['Items.item_category_id'=>$item_category]);
 				;
 			//	pr($ItemLedgers->toArray());exit;
@@ -263,7 +273,7 @@ class ItemLedgersController extends AppController
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty'));
 		$this->set('_serialize', ['itemLedgers']);
     }
 	

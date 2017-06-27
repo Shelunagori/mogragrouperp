@@ -47,18 +47,30 @@
 							<th>Sr. No.</th>
 							<th>Item</th>
 							<th>Current Stock</th>
+							<th>Unit Rate</th>
+							<th>Amount</th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php $page_no=0; foreach ($item_stocks as $key=> $item_stock): ?>
+						<?php $total_inv=0; $page_no=0; foreach ($item_stocks as $key=> $item_stock): 
+						$per_unit=@$item_rate[$key]/$item_stock;
+						$amount=@$item_stock*$per_unit;
+						$total_inv+=$amount;
+						?>
 							
 						<tr>
 							<td><?= h(++$page_no) ?></td>
 							<td><?= $this->Html->link($items_names[$key], ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?></td>
 							<td><?= h($item_stock) ?></td>
+							<td><?= h($this->Number->format($per_unit,['places'=>2])) ?></td>
+							<td align="right"><?= h($this->Number->format($amount,['places'=>2])) ?></td>
 						</tr>
 						
 						<?php endforeach; ?>
+						<tr>
+							<td colspan="4" align="right">Total</td>
+							<td><?= h($this->Number->format($total_inv,['places'=>2])) ?></td>
+						</tr>
 					</tbody>
 				</table>
 				</div>

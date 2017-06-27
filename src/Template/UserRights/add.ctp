@@ -281,7 +281,7 @@ fieldset legend {
 						<label class="checkbox-inline">
 							<?php 
 							if(in_array(133,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
-							echo $this->Form->input('user_rights.17.page_id', ['label' => 'Create','class' => '','type'=>'checkbox','value'=>17,$checked_status]); ?>
+							echo $this->Form->input('user_rights.133.page_id', ['label' => 'Create','class' => '','type'=>'checkbox','value'=>133,$checked_status]); ?>
 						</label>
 						<label class="checkbox-inline">
 							<?php 
