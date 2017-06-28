@@ -137,9 +137,6 @@ class ReceiptsController extends AppController
         $receipt = $this->Receipts->get($id, [
             'contain' => ['BankCashes', 'Companies', 'ReceiptRows' => ['ReceivedFroms'], 'Creator']
         ]);
-		
-	
-		
 		$ref_bal=[];
 		foreach($receipt->receipt_rows as $receipt_rows){
 			$ReferenceBalancess=$this->Receipts->ReferenceDetails->find()->where(['ledger_account_id'=>$receipt_rows->received_from_id,'receipt_id'=>$receipt->id]);

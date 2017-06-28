@@ -619,14 +619,10 @@ class LedgersController extends AppController
 		$this->response->body($output);
 		return $this->response;
 	}
-	
-	
-	
-	public function AccountStatement (){
+	public function AccountStatementRefrence (){
 		$this->viewBuilder()->layout('index_layout');
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
-		//pr($url); exit;
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
         $st_year_id = $session->read('st_year_id');
@@ -635,8 +631,47 @@ class LedgersController extends AppController
 		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 		$To = date("Y-m-d"); 
+		$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
 		
-		//pr($To); exit;
+		if($ledger_account_id)
+		{
+		$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [
+        'contain' => ['AccountSecondSubgroups'=>['AccountFirstSubgroups'=>['AccountGroups'=>['AccountCategories']]]] ]);
+		$ReferenceBalances = $this->Ledgers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ledger_account_id]);
+		//pr($ReferenceBalances->toArray()); exit;
+		}
+		
+		$ledger=$this->Ledgers->LedgerAccounts->find('list',
+			['keyField' => function ($row) {
+				return $row['id'];
+			},
+			'valueField' => function ($row) {
+				if(!empty($row['alias'])){
+					return  $row['name'] . ' (' . $row['alias'] . ')';
+				}else{
+					return $row['name'];
+				}
+				
+			}])->where(['company_id'=>$st_company_id]);
+			
+			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data'));
+		
+		}
+	
+	
+	
+	public function AccountStatement (){
+		$this->viewBuilder()->layout('index_layout');
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+        $st_year_id = $session->read('st_year_id');
+		$ledger_account_id=$this->request->query('ledger_account_id');
+		$financial_year = $this->Ledgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
+		$To = date("Y-m-d"); 
 		if($ledger_account_id)
 		{
 			$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [

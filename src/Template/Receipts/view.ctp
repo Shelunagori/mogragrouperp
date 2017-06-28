@@ -91,7 +91,7 @@ margin-bottom: 0;
 		<td colspan="3" style="border-top:none !important;">
 			<table width="100%">
 			
-			<?php foreach($ref_bal[$receiptRows->received_from_id] as $refbal): ?>
+			<?php $dr_amt=0; $cr_amt=0; foreach($ref_bal[$receiptRows->received_from_id] as $refbal): ?>
 			<tr>
 					<td style="width :180px !important;"> <?= h($refbal->reference_type). '-' .h($refbal->reference_no) ?></td>
 					
@@ -102,11 +102,11 @@ margin-bottom: 0;
 					<?php } ?></td>
 					</tr>
 					<?php 
-					
-					if($refdetail->credit != '0' ){ 
-						$cr_amt=$cr_amt+$refdetail->credit;
-					} elseif( $refdetail->debit != '0'){
-						$dr_amt=$dr_amt+$refdetail->debit;
+					//pr($ref_bal); exit;
+					if($refbal->credit != '0' ){ 
+						$cr_amt=$cr_amt+$refbal->credit;
+					} elseif( $refbal->debit != '0'){
+						$dr_amt=$dr_amt+$refbal->debit;
 					} ?>
 			<?php endforeach; ?>
 			</table>

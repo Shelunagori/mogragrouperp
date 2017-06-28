@@ -99,7 +99,7 @@ class PaymentsController extends AppController
 			$ref_details[$payment_row->received_from_id]=$ReferenceDetails->toArray();
 		}
 		
-		//pr($ref_details); exit;						
+		pr($ref_details); exit;						
 		
 		$this->set(compact('ref_details'));
         $this->set('payment', $payment);
