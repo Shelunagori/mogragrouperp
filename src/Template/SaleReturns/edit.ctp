@@ -118,28 +118,24 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 						</tr>
 						
-						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){ ?>
+						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){ 
+						//pr($invoice_row->item->item_serial_numbers);
+						?>
 						<tr class="tr2" row_no="<?= h($q) ?>">
 						<?php $options1=[]; $choosen=[];
-							if(sizeof(@$ItemSerialNumber[@$invoice_row->item_id])>0){
-								foreach($ItemSerialNumber[@$invoice_row->item_id] as $item_serial_number){
-									if($item_serial_number->status=="In" && $item_serial_number->sale_return_id==$saleReturn->id){
-										$choosen[]=$item_serial_number->id;
-									}
-									$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
-								} 
-							}else if(sizeof(@$ItemSerialNumber2[@$invoice_row->item_id])>0){
-								foreach($ItemSerialNumber2[@$invoice_row->item_id] as $item_serial_number){
-									$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
-								} 
+							if(sizeof(@$invoice_row->item->item_serial_numbers)>0){
+								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers)
+									$options1[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
 							}
+							$item_serial_no=$invoice_row->item_serial_number;
+									$choosen=explode(",",$item_serial_no);
 						?>
 							<td></td>
 							<td colspan="6">
-							<?php echo $this->Form->input('item_serial_number', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
+							<?php echo $this->Form->input('sale_return_rows.'.$q.'.item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
 						</tr>
-					<?php } }?>
-					<?php $q++;   ?>
+					<?php $q++;  } }?>
+					<?php   ?>
 				</tbody>
 			</table>
 			<table class="table tableitm" id="tbl2">

@@ -157,7 +157,7 @@ class SaleReturnsController extends AppController
 			$saleReturn->sales_ledger_account = $invoice->sales_ledger_account;;
 			$saleReturn->fright_ledger_account = $invoice->fright_ledger_account;;
 			$saleReturn->transporter_id = $invoice->transporter_id;;
-			$saleReturn->employee_id = $invoice->s_employee_id;;
+			$saleReturn->employee_id = $s_employee_id;;
 			
 			
 			//exit;
@@ -232,12 +232,10 @@ class SaleReturnsController extends AppController
 				$total_amt=0;
 				
 				foreach($saleReturn->sale_return_rows as $sale_return_row){
-					//pr($sale_return_row); exit;
 					$item_serial_no=$sale_return_row->item_serial_number;
-					//pr($item_serial_no); exit;
 					if($item_serial_no){
 					$serial_no=explode(",",$item_serial_no);
-					foreach($serial_no as $serial){ //pr($serial); exit;
+					foreach($serial_no as $serial){ pr($serial); exit;
 					$ItemSerialNumber_data=$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->get($serial);
 					$ItemSerialNumbers = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->newEntity();
 					$ItemSerialNumbers->status='In';
@@ -353,7 +351,7 @@ class SaleReturnsController extends AppController
 				}
 			
                
-            } else {
+            } else { pr($saleReturn); exit;
                 $this->Flash->error(__('The sale return could not be saved. Please, try again.'));
             }
         }
@@ -500,11 +498,15 @@ class SaleReturnsController extends AppController
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes']
         ]); */
-		
+		$invoice = $this->SaleReturns->get($id);
 		$saleReturn = $this->SaleReturns->get($id, [
-            'contain' => ['Customers','SaleTaxes','Employees','SaleReturnRows' => ['Items'=>['ItemSerialNumbers','ItemCompanies']]]
+            'contain' => ['Customers','SaleTaxes','Employees','SaleReturnRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($id,$invoice){
+							return $q->where(['ItemSerialNumbers.Status' => 'Out','invoice_id'=>$invoice->invoice_id]);
+							},'ItemCompanies'=>function($q) use($st_company_id){
+							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
+							}]]]
         ]); 
-		//pr($saleReturn->sale_tax); exit;
+		//pr($saleReturn->toArray()); exit;
 		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
 		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$id]);
 		 
@@ -521,11 +523,14 @@ class SaleReturnsController extends AppController
 					
 			}
 			$saleReturn->date_created=date("Y-m-d");
-			$saleReturn->invoice_id=$saleReturn->id;
+			$saleReturn->invoice_id=$saleReturn->invoice_id;
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 
+			
         if ($this->SaleReturns->save($saleReturn)) {
 				$this->SaleReturns->Ledgers->deleteAll(['voucher_id' => $saleReturn->id, 'voucher_source' => 'Sale Return']);
+				$this->SaleReturns->ItemSerialNumbers->deleteAll(['sale_return_id' => $saleReturn->id]);
+
 				$this->SaleReturns->ItemLedgers->deleteAll(['source_id' => $saleReturn->id, 'source_model' => 'Sale Return','company_id'=>$st_company_id]);
 				$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
 				$ledger_grand=$saleReturn->grand_total;
@@ -604,17 +609,22 @@ class SaleReturnsController extends AppController
 					
 					}
 				}
-				/* foreach($saleReturn->sale_return_rows as $sale_return_row){
+				foreach($saleReturn->sale_return_rows as $sale_return_row){ 
 					$item_serial_no=$sale_return_row->item_serial_number;
 					$serial_no=explode(",",$item_serial_no);
-					foreach($serial_no as $serial){
-					$query = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->query();
-						$query->update()
-							->set(['status' => 'In','sale_return_id'=>$saleReturn->id])
-							->where(['id' => $serial,'invoice_id' => $invoice->id])
-							->execute();
+					foreach($serial_no as $item_serial_number){
+					$item_serial_number_data=$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->get($item_serial_number);
+					$ItemSerialNumbers = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->newEntity();
+						$ItemSerialNumbers->status='In';
+						$ItemSerialNumbers->sale_return_id=$id;
+						$ItemSerialNumbers->serial_no=$item_serial_number_data->serial_no;
+						$ItemSerialNumbers->item_id=$item_serial_number_data->item_id;
+						$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->save($ItemSerialNumbers);
 					}
-				} */
+				}
+				
+				
+			
 				foreach($saleReturn->sale_return_rows as $sale_return_row){
 					$query = $this->SaleReturns->Invoices->InvoiceRows->query();
 						$query->update()
