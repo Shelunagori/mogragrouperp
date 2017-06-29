@@ -631,14 +631,34 @@ class LedgersController extends AppController
 		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 		$To = date("Y-m-d"); 
-		$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
+		$this->set(compact('ledger_account_id'));
 		
 		if($ledger_account_id)
 		{
 		$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [
         'contain' => ['AccountSecondSubgroups'=>['AccountFirstSubgroups'=>['AccountGroups'=>['AccountCategories']]]] ]);
+		$Ledgers = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
+		
+		$ledger_amt = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
+		$ledger_amt->select([
+			'Debit' => $ledger_amt->func()->sum('Debit'),
+			'Credit' => $ledger_amt->func()->sum('Credit')
+		]);
+		
+		
 		$ReferenceBalances = $this->Ledgers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ledger_account_id]);
-		//pr($ReferenceBalances->toArray()); exit;
+		
+		$ref_amt = $this->Ledgers->ReferenceDetails->find()->where(['ReferenceDetails.ledger_account_id'=>$ledger_account_id]);
+		$ref_amt->select([
+			'Debit' => $ref_amt->func()->sum('Debit'),
+			'Credit' => $ref_amt->func()->sum('Credit')
+		]);
+		
+		$ref_amt=$ref_amt->first(); 
+		$ledger_amt=$ledger_amt->first();
+		/* pr($ref_amt);
+		pr($ledger_amt); */
+		
 		}
 		
 		$ledger=$this->Ledgers->LedgerAccounts->find('list',
@@ -654,7 +674,7 @@ class LedgersController extends AppController
 				
 			}])->where(['company_id'=>$st_company_id]);
 			
-			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data'));
+			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data','ref_amt','ledger_amt'));
 		
 		}
 	

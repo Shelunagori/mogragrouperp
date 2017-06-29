@@ -5,32 +5,24 @@
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Account Statement</span>
 		</div>
-		<div class="col-md-12">
-			<div class="col-md-11"></div>
-				<div class="col-md-1" align="right">
-					<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Ledgers/Export-Ob/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
-				</div>
-			</div><br/>
-		<div class="portlet-body form">
+		
+<div class="portlet-body form">
 	<form method="GET" >
 				<table class="table table-condensed" >
 				<tbody>
 					<tr>
 					<td>
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-6">
 									<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm select2me','required','value'=>@$ledger_account_id]); ?>
 							</div>
-							<div class="col-md-4">
-								<?php echo $this->Form->input('From', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($from)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
-								
+							<div class="col-md-6">
+									<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 							</div>
-							<div class="col-md-4">
-								<?php echo $this->Form->input('To', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($To)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
-							</div>
+							
 						</div>
 					</td>
-					<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
+					
 					</tr>
 				</tbody>
 			</table>
@@ -39,15 +31,15 @@
 <?php if(!empty($Ledger_Account_data)){  ?>
 		<div class="row ">
 			<div class="col-md-12">
-				<div class="col-md-3"></div>
-				<div class="col-md-6">
-					<div class="col-md-12 " style="text-align:center; font-size: 20px;"><?php echo $Ledger_Account_data->name; ?></div>
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
+					<div class="col-md-12 uppercase " style="text-align:center; font-size: 20px;"><?php echo $Ledger_Account_data->name; ?></div>
 					<div class="col-md-12" style="text-align:left; font-size: 16px;"> <?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->account_group->account_category->name; ?>->
 					<?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->account_group->name; ?>->
 					<?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->name; ?>->
 					<?php echo $Ledger_Account_data->account_second_subgroup->name; ?></div>
 				</div>
-				<div class="col-md-3"></div>
+				<div class="col-md-2"></div>
 			</div>
 		</div><br/>
 
@@ -63,7 +55,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				<?php foreach($ReferenceBalances as $ReferenceBalance){  
+				<?php $total_debit=0; $total_credit=0; foreach($ReferenceBalances as $ReferenceBalance){  
 					if($ReferenceBalance->credit != $ReferenceBalance->debit){
 				?>
 				
@@ -71,26 +63,74 @@
 						<td><?php echo $ReferenceBalance->reference_no; ?></td>
 						<td align="right"><?= $this->Number->format($ReferenceBalance->debit,[ 'places' => 2]); ?></td>
 						<td align="right"><?= $this->Number->format($ReferenceBalance->credit,[ 'places' => 2]);  ?></td>
+						<?php $total_debit+=$ReferenceBalance->debit;
+							  $total_credit+=$ReferenceBalance->credit  ?>
 
 				</tr>
 				<?php } } ?>
 				<tr>
-										
+					<td align="right">Total</td>
+					<td align="right"><?= $this->Number->format($total_debit,[ 'places' => 2]); ?>Dr.</td>
+					<td align="right"><?= $this->Number->format($total_credit,[ 'places' => 2]); ?>Cr.</td>
+				</tr>
+				<tr>
+					<td  align="right">On Account</td>	
+					<?php if(($ledger_amt['Debit']==$ref_amt['Debit']) && ($ledger_amt['Credit']==$ref_amt['Credit'])){ 
+						$total_dr=$ledger_amt['Debit']+$ref_amt['Debit'];
+						$total_cr=$ledger_amt['Credit']+$ref_amt['Credit']; ?>
+						<td align="right">0</td>	
+						<td align="right">0</td>	
+					<?php } else if(($ledger_amt['Debit']!=$ref_amt['Debit']) && ($ledger_amt['Credit']!=$ref_amt['Credit'])){ 
+						//pr($ref_amt['Debit']);
+						$total_dr=abs($ledger_amt['Debit']-$ref_amt['Debit']);
+						$total_cr=abs($ledger_amt['Credit']-$ref_amt['Credit']);
+						//pr($total_cr);
+						//pr($ledger_amt['Debit']);
+							if($total_dr > $total_cr){ ?>
+								<td align="right"><?php echo $total_dr - $total_cr ?>Dr.</td>	
+								<td align="right">0 Cr.</td>
+							<?php } else{ ?>
+								<td align="right">0 Dr.</td>
+								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
+					<?php } } else if(($ledger_amt['Debit']!=$ref_amt['Debit']) && ($ledger_amt['Credit']==$ref_amt['Credit'])){  
+					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
+					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
+						if($total_dr > $total_cr){  ?>
+							<td align="right"><?php echo $total_dr- $total_cr ?>Dr.</td>	
+							<td align="right">0 Cr.</td>
+						<?php } else{ ?>
+								<td align="right">0 Dr.</td>
+								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
+					<?php } }  else if(($ledger_amt['Debit']==$ref_amt['Debit']) && ($ledger_amt['Credit']!=$ref_amt['Credit'])){
+					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
+					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
+						if($total_dr > $total_cr){  ?>
+							<td align="right"><?php echo $total_dr- $total_cr ?>Dr.</td>	
+							<td align="right">0 Cr.</td>
+						<?php } else{ ?>
+								<td align="right">0 Dr.</td>
+								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
+					<?php } }  ?>
 				</tr>
 				</tbody>
 			</table>
 			</div>
+			<?php
 			
+					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
+					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
+					$closing_balance_dr=$total_debit+$total_dr;
+					$closing_balance_cr=$total_credit+$total_cr;
+				
+			?>
 			<div class="col-md-12">
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:- </b>
-				<?php $closing_balance=@$close_dr-@$close_cr;
-						echo $this->Number->format(abs($closing_balance),['places'=>2]);
-						if($closing_balance>0){
-							echo 'Dr';
-						}else if($closing_balance <0){
-							echo 'Cr';
-						}
+				<?php if($closing_balance_dr > $closing_balance_cr ){
+						echo $this->Number->format(abs($closing_balance_dr -$closing_balance_cr),['places'=>2]); echo 'Dr.';
+				}else{
+					echo $this->Number->format(abs($closing_balance_cr -$closing_balance_dr),['places'=>2]); echo 'Cr.';
+				}
 						
 				?>
 				</div>
