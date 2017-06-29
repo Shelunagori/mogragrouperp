@@ -1,61 +1,143 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Riv'), ['action' => 'edit', $riv->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Riv'), ['action' => 'delete', $riv->id], ['confirm' => __('Are you sure you want to delete # {0}?', $riv->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Rivs'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Riv'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Sale Returns'), ['controller' => 'SaleReturns', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Sale Return'), ['controller' => 'SaleReturns', 'action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Left Rivs'), ['controller' => 'LeftRivs', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Left Riv'), ['controller' => 'LeftRivs', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
-<div class="rivs view large-9 medium-8 columns content">
-    <h3><?= h($riv->id) ?></h3>
-    <table class="vertical-table">
-        <tr>
-            <th><?= __('Sale Return') ?></th>
-            <td><?= $riv->has('sale_return') ? $this->Html->link($riv->sale_return->id, ['controller' => 'SaleReturns', 'action' => 'view', $riv->sale_return->id]) : '' ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Id') ?></th>
-            <td><?= $this->Number->format($riv->id) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Voucher No') ?></th>
-            <td><?= $this->Number->format($riv->voucher_no) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Created On') ?></th>
-            <td><?= h($riv->created_on) ?></td>
-        </tr>
-    </table>
-    <div class="related">
-        <h4><?= __('Related Left Rivs') ?></h4>
-        <?php if (!empty($riv->left_rivs)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th><?= __('Id') ?></th>
-                <th><?= __('Riv Id') ?></th>
-                <th><?= __('Item Id') ?></th>
-                <th><?= __('Quantity') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($riv->left_rivs as $leftRivs): ?>
-            <tr>
-                <td><?= h($leftRivs->id) ?></td>
-                <td><?= h($leftRivs->riv_id) ?></td>
-                <td><?= h($leftRivs->item_id) ?></td>
-                <td><?= h($leftRivs->quantity) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'LeftRivs', 'action' => 'view', $leftRivs->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'LeftRivs', 'action' => 'edit', $leftRivs->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'LeftRivs', 'action' => 'delete', $leftRivs->id], ['confirm' => __('Are you sure you want to delete # {0}?', $leftRivs->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
-    </div>
+<style>
+@media print{
+	.maindiv{
+		width:100% !important;
+	}	
+	.hidden-print{
+		display:none;
+	}
+}
+p{
+margin-bottom: 0;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px !important;
+}
+</style>
+<style type="text/css" media="print">
+@page {
+    size: auto;   /* auto is the initial value */
+    margin: 0 5px 0 20px;  /* this affects the margin in the printer settings */
+}
+</style>
+<a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
+<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 100%;font-size: 12px;" class="maindiv">
+<table width="100%" class="divHeader">
+		<tr>
+			<td width="30%"><?php echo $this->Html->image('/logos/'.$inventoryTransferVoucher->company->logo, ['width' => '40%']); ?></td>
+			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER</div></td>
+			<td align="right" width="40%" style="font-size: 12px;">
+			<span style="font-size: 14px;"><?= h($inventoryTransferVoucher->company->name) ?></span>
+			<span><?= $this->Text->autoParagraph(h($inventoryTransferVoucher->company->address)) ?>
+			<?= h($inventoryTransferVoucher->company->mobile_no) ?></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<div style="border:solid 2px #0685a8;margin-bottom:5px;margin-top: 5px;"></div>
+			</td>
+		</tr>
+	</table>
+
+</br>
+<table width="100%">
+	<tr>
+		<td  valign="top" align="left">
+			<table border="0">
+				<tr>
+					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Inventory Transfer Voucher No</label></td>
+					<td>:</td>
+					<td><?= h('#'.str_pad($inventoryTransferVoucher->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+					<td align="left"></td>
+					<td></td>
+				</tr>
+			</table>
+	   </td>
+	</tr>
+</table>	
+</br>
+<?php if(!empty($inventoryTransferVoucher)){ ?>
+<div class="portlet-body form">
+<table class="table table-bordered table-condensed">
+	<thead> 
+		<th width="50%">Out Item</th>
+		<th>In Item</th>
+	</thead>
+	<tbody>
+		<tr >
+			<td valign="top">
+				<table class="table table-bordered table-condensed">
+					<thead> 
+						<th width="20%">Sr. No.</th>
+						<th>Item</th>
+						<th>Quantity</th>
+					</thead>
+					<tbody>
+						<?php $i=1; foreach($out_item as $out_item){ ?>
+						<tr>
+							<td valign="top"><?php echo $i; ?></td>
+							<td valign="top"><?php echo $out_item->item->name ?></td>
+							<td valign="top"><?php echo $out_item->quantity ?></td>
+						</tr>
+						<?php $i++; } ?>
+					</tbody>
+				</table>
+			</td>
+			
+			<td valign="top">
+				<table class="table table-bordered table-condensed">
+					<thead> 
+						<th width="20%">Sr. No.</th>
+						<th>Item</th>
+						<th>Quantity</th>
+					</thead>
+					<tbody>
+						<?php $j=1; foreach($in_item as $in_item){ ?>
+						<tr >
+							<td valign="top"><?php echo $j; ?></td>
+							<td valign="top"><?php echo $in_item->item->name ?></td>
+							<td valign="top"><?php echo $in_item->quantity ?></td>
+
+						</tr>
+						<?php $j++; } ?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		
+	</tbody>
+</table>
+</br>
+<table width="96%">
+	<tr>
+		<td align="right">
+		<table >
+			<tr>
+			    <td align="center">
+				<span style="font-size:14px;">For</span> <span style="font-size: 14px;font-weight: bold;"><?= h($inventoryTransferVoucher->company->name)?><br/></span>
+				<?php 
+				 echo $this->Html->Image('/signatures/'.$inventoryTransferVoucher->creator->signature,['height'=>'50px','style'=>'height:50px;']); 
+				 ?></br>
+				<span style="font-size: 14px;font-weight: bold;">Authorised Signatory</span>
+				</br>
+				<span style="font-size:14px;"><?= h($inventoryTransferVoucher->creator->name) ?></span><br/>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
 </div>
+<?php } ?>
+	
+<table width="100%" class="divFooter">
+	<tr>
+		<td align="right">
+	
+		</td>
+	</tr>
+</table>	
+</div>
+
+ 
+ 

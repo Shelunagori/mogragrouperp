@@ -726,9 +726,7 @@ select
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						<?php 
-						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/Rivs/Add',array('escape'=>false)).'</li>';
-						?>
+						
 						<?php 
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/Rivs/',array('escape'=>false)).'</li>';
 						 ?>

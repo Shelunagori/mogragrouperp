@@ -38,10 +38,13 @@ class RivsController extends AppController
      */
     public function view($id = null)
     {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
         $riv = $this->Rivs->get($id, [
-            'contain' => ['SaleReturns', 'LeftRivs']
+            'contain' => ['SaleReturns', 'LeftRivs'=>['Items','RightRivs'=>['Items']]]
         ]);
-
+		//pr($riv); exit;
         $this->set('riv', $riv);
         $this->set('_serialize', ['riv']);
     }
