@@ -333,7 +333,7 @@ class SaleReturnsController extends AppController
 				if($flag >0){
 						$data=json_encode($data);
 						//pr($data); exit;
-						$this->redirect(['controller'=>'SaleReturns','action' => 'inventory_return/'.$saleReturn->id,$data]);
+						$this->redirect(['controller'=>'Rivs','action' => 'Add/'.$saleReturn->id,$data]);
 				}
 				else{
 						$this->Flash->success(__('The sale return has been saved.'));
@@ -389,7 +389,7 @@ class SaleReturnsController extends AppController
 			//pr($this->request); exit;
 		if ($this->request->is(['patch', 'post', 'put'])) {
 			$sale_return_data1 = $this->SaleReturns->patchEntity($sale_return_data, $this->request->data);
-			//pr($sale_return_data1->item_ledgers); exit;
+			pr($sale_return_data1->item_ledgers); exit;
 			foreach($sale_return_data1->sale_return_rows as $sale_return_row){
 			$itemLedger = $this->SaleReturns->ItemLedgers->newEntity();
 					$itemLedger->item_id = $sale_return_row->item_id;
