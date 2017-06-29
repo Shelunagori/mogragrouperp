@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 29, 2017 at 08:24 AM
+-- Generation Time: Jun 29, 2017 at 11:17 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -41,7 +41,7 @@ INSERT INTO `left_rivs` (`id`, `riv_id`, `item_id`, `quantity`) VALUES
 (3, 3, 903, 1),
 (4, 4, 1208, 1),
 (11, 5, 1208, 1),
-(12, 6, 1482, 1);
+(13, 6, 1482, 1);
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,24 @@ INSERT INTO `right_rivs` (`id`, `left_riv_id`, `item_id`, `quantity`) VALUES
 (74, 12, 1017, 2),
 (75, 12, 1029, 2),
 (76, 12, 1034, 2),
-(77, 12, 1392, 2);
+(77, 12, 1392, 2),
+(78, 13, 724, 1),
+(79, 13, 1485, 1),
+(80, 13, 863, 1),
+(81, 13, 888, 1),
+(82, 13, 897, 1),
+(83, 13, 1048, 1),
+(84, 13, 1024, 4),
+(85, 13, 1031, 4),
+(86, 13, 1036, 4),
+(87, 13, 1021, 4),
+(88, 13, 1020, 2),
+(89, 13, 1030, 6),
+(90, 13, 1035, 6),
+(91, 13, 1017, 2),
+(92, 13, 1029, 2),
+(93, 13, 1034, 2),
+(94, 13, 1392, 2);
 
 -- --------------------------------------------------------
 
@@ -183,12 +200,12 @@ ALTER TABLE `rivs`
 -- AUTO_INCREMENT for table `left_rivs`
 --
 ALTER TABLE `left_rivs`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `right_rivs`
 --
 ALTER TABLE `right_rivs`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 --
 -- AUTO_INCREMENT for table `rivs`
 --
