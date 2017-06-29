@@ -162,6 +162,16 @@ class RivsController extends AppController
      * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
+	 
+	public function Prnding()
+    {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$sale_return_data=$this->Rivs->SaleReturns->get($id,[
+			'contain'=>['SaleReturnRows'=>['Items']]
+	]);
+	}
     public function edit($id = null)
     {
 		$this->viewBuilder()->layout('index_layout');

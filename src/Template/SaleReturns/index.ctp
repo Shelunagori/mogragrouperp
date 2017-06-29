@@ -60,7 +60,7 @@
 						<td align="right"><?= h($this->Number->format($saleReturn->total_after_pnf,[ 'places' => 2])) ?></td>
 						<td class="actions">
 							<?php
-							/* echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit?invoice='.$saleReturn->invoice_id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));  */
+							echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit/'.$saleReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
 							 ?>
 							
 						</td>

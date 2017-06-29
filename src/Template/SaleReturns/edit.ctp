@@ -37,7 +37,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-3 control-label">Date</label>
 						<div class="col-md-9">
-							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => date("d-m-Y",strtotime($invoice->date_created)),'readonly']); ?>
+							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => date("d-m-Y",strtotime($saleReturn->date_created)),'readonly']); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -52,116 +52,29 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-3 control-label">Customer</label>
 						<div class="col-md-9">
-							<?php echo $this->Form->input('customer_id', ['type'=>'hidden','value' => @$invoice->customer->id]); ?>
-							<?php echo $invoice->customer->customer_name.'('; echo $invoice->customer->alias.')'; ?>
+							<?php echo $this->Form->input('customer_id', ['type'=>'hidden','value' => @$saleReturn->customer->id]); ?>
+							<?php echo $saleReturn->customer->customer_name.'('; echo $saleReturn->customer->alias.')'; ?>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="form-group">
-						<label class="col-md-3 control-label">Invoice No.</label>
+						<label class="col-md-3 control-label">Sales Return No.</label>
 						<div class="col-md-3 padding-right-decrease">
-							<?php echo $this->Form->input('in1', ['label' => false,'class' => 'form-control input-sm','readonly','value' => @$invoice->in1]); ?>
+							<?php echo $this->Form->input('in1', ['label' => false,'class' => 'form-control input-sm','readonly','value' => @$saleReturn->sr1]); ?>
 						</div>
 						<div class="col-md-3 padding-right-decrease">
-							<?php echo @$invoice->in3; ?>
+							<?php echo @$saleReturn->sr3; ?>
 						</div>
 						<div class="col-md-3">
-							<?php echo $this->Form->input('in4', ['label' => false,'class' => 'form-control input-sm','readonly','value' => @$invoice->in4]); ?>
+							<?php echo $this->Form->input('in4', ['label' => false,'class' => 'form-control input-sm','readonly','value' => @$saleReturn->sr4]); ?>
 						</div>
 					</div>
 				</div>
 			</div>
 			<br/>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="col-md-3 control-label">Address</label>
-						<div class="col-md-9">
-							<?php echo $invoice->customer_address; ?>
-							
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="col-md-3 control-label">LR No.</label>
-						<div class="col-md-9">
-							<?php echo $invoice->lr_no; ?>
-						</div>
-					</div>
-					<br/><br/>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Salesman  <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo @$invoice->employee->name; ?>
-						</div>
-					</div><br/>
-					<div class="form-group">
-						<label class="col-md-3 control-label">Carrier <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo $Transporter->transporter_name; ?>
-						</div>
-					</div>
-				</div>
-				</div><br/>
-				<div class="row">
-				<div class="col-md-6">
-				
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="col-md-3  control-label">Delivery Description <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-						<?php echo $invoice->delivery_description; ?>
-						</div>
-					</div>
-				</div>
-				
-			</div><br/>
-				
-			</div><br/>
-			<div class="row">
-				<div class="col-md-6">
-				<div class="form-group">
-						<label class="col-md-3 control-label">Customer PO NO  <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo $invoice->customer_po_no; ?>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="col-md-3 control-label">PO DATE  <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo @date("d-m-Y",strtotime($invoice->po_date)); ?>
-						</div>
-					</div>
-				</div>
-			</div><br/>
-			
-						<div class="row">
-			<?php if(!empty($invoice->form47)) {?>
-				<div class="col-md-6">
-				<div class="form-group">
-						<label class="col-md-3 control-label">Road Permit No  <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo $this->Form->input('form47', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Form 47','required']); ?>
-						</div>
-					</div>
-				</div>
-			<?php } ?>
-				<?php if(!empty($invoice->form49)) {?>
-				<div class="col-md-6">
-				<div class="form-group">
-						<label class="col-md-3 control-label">Form 49 <span class="required" aria-required="true">*</span></label>
-						<div class="col-md-9">
-							<?php echo $this->Form->input('form49', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Form 49','required']); ?>
-						</div>
-					</div>
-				</div>
-				<?php } ?>
-			</div><br/>
+
+
 			
 			<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" />
 			<table class="table tableitm" id="main_tb">
@@ -176,10 +89,10 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<th width="70"></th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id='main_tbody'>
 					<?php 
 					$q=0; 
-					foreach ($invoice->invoice_rows as $invoice_row){  ?>
+					foreach ($saleReturn->sale_return_rows as $invoice_row){  ?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
 							<td ><?php echo ++$q; $q--; ?></td>
 							<td>
@@ -200,19 +113,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								<?php echo $this->Form->input('sale_return_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01]); ?>
 							</td>
 							<td>
-								<?php echo @$invoice->sale_tax->tax_figure; ?>
-							</td>
-							<?php $checked2="";
-							if($invoice_row->sale_return_quantity > 0)
-							{
-								$checked2='Checked';
-							}else{	
-								$checked2="";
-							} 
-							?> 
-							<td>
-								<label><?php 
-								echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_row->item_id,$checked2]); ?></label>
+								
+								<?php echo $this->Form->input('sale_return_rows.'.$q.'.sale_tax_per', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01,'value'=>$saleReturn->sale_tax->tax_figure]); ?>
 							</td>
 						</tr>
 						
@@ -244,38 +146,38 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tr>
 					<td  align="right">
 						<?php 
-						if($invoice->discount_type==1){ $checked2="Checked";
+						if($saleReturn->discount_type==1){ $checked2="Checked";
 							 } 
 						else{	$checked2="";
 							 } 
 					?> 
 					<b>Discount <label style="display:none"><?php echo $this->Form->input('discount_type', ['type' => 'checkbox','label' => false,'class' => 'form-control input-sm','id'=>'discount_per','Checked'=>$checked2]); ?></label>(in %)</b>
 						<div class="input-group col-md-2"  id="discount_text">
-						<input type="text" name="discount_per" class="form-control input-sm" placeholder="5.5"  'step'=0.01 readonly value="<?php echo $invoice->discount_per; ?> "><span class="input-group-addon">%</span>
+						<input type="text" name="discount_per" class="form-control input-sm" placeholder="5.5"  'step'=0.01 readonly value="<?php echo $saleReturn->discount_per; ?> "><span class="input-group-addon">%</span>
 						</div>
 					</td>
-					<td><?php echo $this->Form->input('discount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Discount','step'=>0.01,'value'=>$invoice->discount]); ?></td>
+					<td><?php echo $this->Form->input('discount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Discount','step'=>0.01,'value'=>$saleReturn->discount]); ?></td>
 				</tr>
 				
 				<tr style="background-color:#e6faf9;">
-					<td align="right"><b><?php echo $this->Form->input('ed_description', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm','value'=>$invoice->ed_description,'placeholder' => 'Excise-Duty Description','style'=>['text-align:left']]); ?> </b></td>
-					<td><?php echo $this->Form->input('exceise_duty', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Excise-Duty','value'=>$invoice->exceise_duty]); ?></td>
+					<td align="right"><b><?php echo $this->Form->input('ed_description', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm','value'=>$saleReturn->ed_description,'placeholder' => 'Excise-Duty Description','style'=>['text-align:left']]); ?> </b></td>
+					<td><?php echo $this->Form->input('exceise_duty', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Excise-Duty','value'=>$saleReturn->exceise_duty]); ?></td>
 				</tr>
 				<tr>
 					<td align="right"><b>Total</b></td>
-					<td width="20%"><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','step'=>0.01,'readonly','value'=>$invoice->total]); ?></td>
+					<td width="20%"><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','step'=>0.01,'readonly','value'=>$saleReturn->total]); ?></td>
 				</tr>
 				<tr>
 				<?php 
-					if($invoice->pnf_type==1){ $checked3="Checked";
+					if($saleReturn->pnf_type==1){ $checked3="Checked";
 					}else{	$checked3="";
 					} 
 					?> 
 					<td  align="right">
 					<b>P&F <label style="display:none"><?php echo $this->Form->input('pnf_type', ['type' => 'checkbox','label' => false,'class' => 'form-control input-sm','id'=>'pnfper','Checked'=>$checked2]); ?></label>(in %)</b>
-					<?php if($invoice->pnf_type=='1'){ ?>
+					<?php if($saleReturn->pnf_type=='1'){ ?>
 						<div class="input-group col-md-2"  id="pnf_text">
-							<input type="text" name="pnf_per" class="form-control input-sm" placeholder="5.5"  'step'=0.01  readonly value='<?= h($invoice->pnf_per) ?>'><span class="input-group-addon">%</span>
+							<input type="text" name="pnf_per" class="form-control input-sm" placeholder="5.5"  'step'=0.01  readonly value='<?= h($saleReturn->pnf_per) ?>'><span class="input-group-addon">%</span>
 						</div>
 					<?php }else{ ?>
 						<div class="input-group col-md-2"  id="pnf_text" style="display:none;">
@@ -293,20 +195,20 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tr>
 					<td  align="right"><b>Sale Tax Amount </b></td>
 
-					<td><?php echo $this->Form->input('sale_tax_per', ['type' => 'hidden','label' => false,'class' => 'form-control input-sm','readonly','step'=>0.01,'value'=>$invoice->sale_tax_per]); ?>
+					<td><?php echo $this->Form->input('sale_tax_per', ['type' => 'hidden','label' => false,'class' => 'form-control input-sm','readonly','step'=>0.01,'value'=>$saleReturn->sale_tax_per]); ?>
 					<?php echo $this->Form->input('sale_tax_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','step'=>0.01]); ?></td>
 				</tr>
 				<tr>
 					<td  align="left">
-					<?php echo $this->Form->input('fright_text', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','value'=>$invoice->fright_text,'placeholder'=>'Additional text for Fright Amount','style'=>['text-align:left']]); ?>
+					<?php echo $this->Form->input('fright_text', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','value'=>$saleReturn->fright_text,'placeholder'=>'Additional text for Fright Amount','style'=>['text-align:left']]); ?>
 					</td>
 					<td>
 					<?php echo $ledger_account_details_for_fright->name; ?>
-					<?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Fright Amount','value'=>$invoice->fright_amount]); ?></td>
+					<?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Fright Amount','value'=>$saleReturn->fright_amount]); ?></td>
 				</tr>
 				<tr>
 					<td  align="right"><b>Grand Total </b></td>
-					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$invoice->grand_total]); ?></td>
+					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$saleReturn->grand_total]); ?></td>
 				</tr>
 			</table>
 			<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
@@ -388,34 +290,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>
-$(document).ready(function() {
-	jQuery.validator.addMethod("noSpace", function(value, element) { 
-	  return value.indexOf(" ") < 0 && value != ""; 
-	}, "No space please and don't leave it empty");
-	
-	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
-		// get all the elements passed here with the same class
-		var elems = $(element).parents('form').find(options[0]);
-		// the value of the current element
-		var valueToCompare = value;
-		// count
-		var matchesFound = 0;
-		// loop each element and compare its value with the current value
-		// and increase the count every time we find one
-		jQuery.each(elems, function () {
-			thisVal = $(this).val();
-			if (thisVal == valueToCompare) {
-				matchesFound++;
-			}
-		});
-		// count should be either 0 or 1 max
-		if (this.optional(element) || matchesFound <= 1) {
-			//elems.removeClass('error');
-			return true;
-		} else {
-			//elems.addClass('error');
-		}
-	}, jQuery.format("Please enter a Unique Value."));
+$(document).ready(function() { 
 	
 	//--------- FORM VALIDATION
 	var form3 = $('#form_sample_3');
@@ -429,21 +304,6 @@ $(document).ready(function() {
 			company_id:{
 				required: true,
 			},
-			'reference_no[]':{
-					required: true,
-					noSpace: true,
-					notEqualToGroup: ['.distinctreference'],
-					remote : {
-                    url: '<?php echo $this->Url->build(['controller'=>'Ledgers','action'=>'check_reference_no']); ?>',
-                    type: "get",
-                    data:
-                        {
-                            ledger_account_id: '<?php echo $c_LedgerAccount->id; ?>'
-                        }
-					}
-				}
-			
-			
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
@@ -506,111 +366,20 @@ $(document).ready(function() {
 	});
 	
 	//--	 END OF VALIDATION
-
-	
-	$("#pnfper").on('click',function(){
-		if($(this).is(':checked')){
-			$("#pnf_text").show();
-			$('input[name="pnf"]').attr('readonly','readonly');
-			$('input[name="pnf_per"]').val(0);
-
-		}else{
-			$("#pnf_text").hide();
-			//$('input[name="pnf"]').removeAttr('readonly');
-			$('input[name="pnf"]').val(0);
-			$('input[name="pnfper"]').val(0);
-			
-		}
-		calculate_total();
-	});
-	
-	$('input[name="discount_per"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	$('input[name="discount"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	$('input[name="pnf_per"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	$('input[name="pnf"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	$('input[name="exceise_duty"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	$('input[name="fright_amount"]').die().live("keyup",function() {
-		calculate_total();
-    });
-	
-	$('.rename_check').die().live("click",function() {
-		rename_rows(); calculate_total();
-    });
-
-rename_rows();
-function rename_rows(){
-		var i=1; 
-		var row_no=0;
-		$("#main_tb tbody tr.tr1").each(function(){  
-			
-			var val=$(this).find('td:nth-child(7) input[type="checkbox"]:checked').val();
-			if(val){
-				$(this).find("td:nth-child(1)").html(i); 
-				$(this).find('td:nth-child(2) input').attr("name","sale_return_rows["+row_no+"][item_id]").attr("id","sale_return_rows-"+row_no+"-item_id").rules("add", "required");
-				$(this).find('td:nth-child(3) input').attr("name","sale_return_rows["+row_no+"][quantity]").attr("id","sale_return_rows-"+row_no+"-quantity").removeAttr("readonly").rules("add", "required");
-				$(this).find('td:nth-child(4) input').attr("name","sale_return_rows["+row_no+"][rate]").attr("id","sale_return_rows-"+row_no+"-rate").rules("add", "required");
-				$(this).find('td:nth-child(5) input').attr("name","sale_return_rows["+row_no+"][amount]").attr("id","sale_return_rows-"+row_no+"-amount").rules("add", "required");
-				$(this).css('background-color','#fffcda');
-				var qty=$(this).find('td:nth-child(3) input[type="text"]').val();
-				var serial_l=$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').length;
-			
-				if(serial_l>0){ 	//alert(serial_l);
-					$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+row_no+"][item_serial_numbers][]").attr("id","sale_return_rows-"+row_no+"-item_serial_no").attr('maxlength',qty).rules('add', {
-						    required: true,
-							minlength: qty,
-							maxlength: qty,
-							messages: {
-								maxlength: "select serial number equal to quantity.",
-								minlength: "select serial number equal to quantity."
-							}
-					});
-					$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#fffcda');
-				}
-			}else{
-				$(this).find("td:nth-child(1)").html(i); 
-				$(this).find('td:nth-child(3) input').attr({ name:"q" , readonly:"readonly"}).rules( "remove", "required" );
-				$(this).find('td:nth-child(4) input').attr({ name:"q", readonly:"readonly"}).rules( "remove", "required" );
-				$(this).find('td:nth-child(5) input').attr({ name:"q", readonly:"readonly"}).rules( "remove", "required" );
-				$(this).css('background-color','#FFF');
-				var serial_l=$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').length;
-				if(serial_l>0){
-				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
-				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#FFF');
-				}
-			}
-			
-			i++;	
-				
-		});
-	}
-	
-		$('.quantity').die().live("keyup",function() {
-			calculate_total();
+ 
+$('.quantity').die().live("keyup",function() {
+			calculate_total();  
     });	
-			
-	calculate_total();
-	function calculate_total(){
+
+	function calculate_total(){  
 		var total=0; var grand_total=0;
-		$("#main_tb tbody tr.tr1").each(function(){
-			var val=$(this).find('td:nth-child(7) input[type="checkbox"]:checked').val();
-			if(val){
+		$("#main_tb tbody#main_tbody tr.tr1").each(function(){
 			var qty=parseInt($(this).find("td:nth-child(3) input").val());
 			var Rate=parseFloat($(this).find("td:nth-child(4) input").val());
 			var Amount=qty*Rate;
 			$(this).find("td:nth-child(5) input").val(Amount.toFixed(2));
 			total=total+Amount;
-			}
-		});
+			});
 		if($("#discount_per").is(':checked')){
 			var discount_per=parseFloat($('input[name="discount_per"]').val());
 			var discount_amount=(total*discount_per)/100;
@@ -620,13 +389,11 @@ function rename_rows(){
 			var discount_amount=parseFloat($('input[name="discount"]').val());
 			if(isNaN(discount_amount)) { var discount_amount = 0; }
 		}
-		total=total-discount_amount
-		
+		total=total-discount_amount;
 		var exceise_duty=parseFloat($('input[name="exceise_duty"]').val());
 		if(isNaN(exceise_duty)) { var exceise_duty = 0; }
 		total=total+exceise_duty
 		$('input[name="total"]').val(total.toFixed(2));
-		
 		if($("#pnfper").is(':checked')){
 			var pnf_per=parseFloat($('input[name="pnf_per"]').val());
 			var pnf_amount=(total*pnf_per)/100;
@@ -652,10 +419,8 @@ function rename_rows(){
 		
 		grand_total=total_after_pnf+sale_tax+fright_amount;
 		$('input[name="grand_total"]').val(grand_total.toFixed(2));
-		
 	}
-	
-	$('.addrefrow').live("click",function() { 
+		$('.addrefrow').live("click",function() { 
 		add_ref_row();
 	});
 	function add_ref_row(){
@@ -800,7 +565,8 @@ do_ref_total();
 		}).done(function(response) {
 			//alert(response);
 		});
-	}
+	}		
+
 });
 </script>
 

@@ -441,6 +441,8 @@ select
 					</ul>
 				</li>
 				<?php } ?>
+				
+			
 			
 				<?php if(in_array(13,$allowed_pages) || in_array(14,$allowed_pages) || in_array(31,$allowed_pages)){ ?>
 				<li>
@@ -716,6 +718,22 @@ select
 					</ul>
 				</li>
 				<?php } ?>
+				
+					<li>
+					<a href="javascript:;">
+					<i class="fa fa-puzzle-piece"></i>
+					<span class="title">Return Inventory Voucher</span>
+					<span class="arrow "></span>
+					</a>
+					<ul class="sub-menu">
+						<?php 
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/Rivs/Add',array('escape'=>false)).'</li>';
+						?>
+						<?php 
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/Rivs/',array('escape'=>false)).'</li>';
+						 ?>
+					</ul>
+				</li>
 				<?php if(in_array(129,$allowed_pages)||in_array(130,$allowed_pages)|| in_array(131,$allowed_pages) ||in_array(132,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">

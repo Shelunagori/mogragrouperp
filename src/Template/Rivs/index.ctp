@@ -5,6 +5,10 @@
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Inventory Vouchers</span> 
 		</div>
+		<div class="actions">
+			<?php  echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Pending',array('controller'=>'Rivs','action'=>'Pending'),array('escape'=>false,'class'=>'btn btn-primary')); ?>
+				
+		</div>
 	<div class="portlet-body">
 		<div class="row">
 			<div class="col-md-12">
