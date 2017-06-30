@@ -1418,6 +1418,10 @@ class InvoicesController extends AppController
 					$chkdate = 'Not Found';	
 				}
 
+				$invoice = $this->Invoices->newEntity();
+				
+				
+				
 
 		$salesOrders = $this->Invoices->SalesOrders->find()->select(['total_rows' => 
 		$this->Invoices->SalesOrders->find()->func()->count('SalesOrderRows.id')])
@@ -1475,6 +1479,6 @@ class InvoicesController extends AppController
 
 		$this->set(compact('sales_order','process_status','sales_order_id','chkdate'));
 		
-		$invoice = $this->Invoices->newEntity();
+		
 	}
 }
