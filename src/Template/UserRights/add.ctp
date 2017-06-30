@@ -437,23 +437,7 @@ fieldset legend {
 							</label>
 						</div>
 				</div>
-				<div class="col-md-3">
-					<div class="titletext"><b>Bank Reconciliation Report</b></div>
-						<div class="checkbox-list">
-							<label class="checkbox-inline">
-								<?php 
-								if(in_array(126,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
-								echo $this->Form->input('user_rights.126.page_id', ['label' => 'Add','class' => '','type'=>'checkbox','value'=>126,$checked_status]); ?>
-							</label>
-							
-							<label class="checkbox-inline">
-								<?php 
-								if(in_array(127,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
-								echo $this->Form->input('user_rights.127.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>127,$checked_status]); ?>
-							</label>
-							
-						</div>
-				</div>
+
 				<div class="col-md-3">
 					<div class="titletext"><b>Sales Report</b></div>
 						<div class="checkbox-list">
@@ -472,6 +456,24 @@ fieldset legend {
 								if(in_array(141,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
 								echo $this->Form->input('user_rights.141.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>141,$checked_status]); ?>
 							</label>
+						</div>
+				</div>
+				
+				<div class="col-md-4">
+					<div class="titletext"><b>Bank Reconciliation Report</b></div>
+						<div class="checkbox-list">
+							<label class="checkbox-inline">
+								<?php 
+								if(in_array(126,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+								echo $this->Form->input('user_rights.126.page_id', ['label' => 'Add','class' => '','type'=>'checkbox','value'=>126,$checked_status]); ?>
+							</label>
+							
+							<label class="checkbox-inline">
+								<?php 
+								if(in_array(127,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+								echo $this->Form->input('user_rights.127.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>127,$checked_status]); ?>
+							</label>
+							
 						</div>
 				</div>
              </fieldset> 

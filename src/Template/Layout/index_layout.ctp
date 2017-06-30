@@ -692,6 +692,9 @@ select
 						<?php if(in_array(40,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement','/Ledgers/Account-Statement',array('escape'=>false)); ?></li>	
 						<?php } ?>
+						<?php if(in_array(40,$allowed_pages)){?>
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement Ref.','/Ledgers/AccountStatementRefrence',array('escape'=>false)); ?></li>	
+						<?php } ?>
 						<?php echo '<li>'.$this->Html->link( '<i class="fa fa-users"></i>User Logs Report', '/UserLogs/',array('escape'=>false) ).'</li>';?>
 						<?php if(in_array(126,$allowed_pages)){?>
 						<li><?php $today =date('d-m-Y');
