@@ -352,7 +352,6 @@ class InventoryVouchersController extends AppController
 			$invoice_row_id=$invoice_row->id;
 			$qty=$invoice_row->quantity;
 			return $this->redirect(['action' => 'edit?invoice='.$invoice_id.'&item_id='.$item_id.'&item-qty='.$qty]);
-			
 		}
 		
 		$InventoryVoucher = $this->InventoryVouchers->newEntity();

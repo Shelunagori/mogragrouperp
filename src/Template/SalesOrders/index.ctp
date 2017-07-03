@@ -145,6 +145,9 @@
 								<?php if($pull_request=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Invoice','/Invoices/Add?sales-order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
+								<?php if($gst=="true"){
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Invoice','/Invoices/gstAdd?sales-order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+								} ?>
 								<!--<?= $this->Form->postLink('<i class="fa fa-trash"></i> ',
 									['action' => 'delete', $salesOrder->id], 
 									[

@@ -30,7 +30,7 @@
 										<div id="item_sub_group_div">
 										<?php 
 											$options = [];
-											$options = [['text'=>'All','value'=>'All'],['text'=>'Negative','value'=>'Negative']];
+											$options = [['text'=>'All','value'=>'All'],['text'=>'Negative','value'=>'Negative'],['text'=>'Close Stock','value'=>'Zero']];
 										echo $this->Form->input('stock', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
 									</td>
 									<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>

@@ -118,7 +118,7 @@ $html.='
 								<span>TIN : '. h($invoice->customer->tin_no) .'</span><br/>
 								<span>PAN : '. h($invoice->customer->pan_no) .'</span>
 							</td>
-							<td  width="50%" valign="top" align="right" >
+							<td width="50%" valign="top" align="right" >
 								<table width="100%">
 									<tr>
 										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" width="55" valign="top" style="vertical-align: top;">Invoice No.</td>

@@ -360,6 +360,9 @@ select
 						<?php if(in_array(7,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create', '/SalesOrders/index?pull-request=true' ).'</li>';
 						} ?>
+						<?php if(in_array(7,$allowed_pages)){
+						echo '<li>'.$this->Html->link( 'GST Invoice', '/SalesOrders/index?gst=true' ).'</li>';
+						} ?>
 						<?php if(in_array(23,$allowed_pages) || in_array(8,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'View', '/Invoices' ).'</li>';
 						} ?>

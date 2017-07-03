@@ -28,6 +28,7 @@ class SalesOrdersController extends AppController
 		$copy_request=$this->request->query('copy-request');
 		$job_card=$this->request->query('job-card');
 		
+		$gst=$this->request->query('gst');
 		$where=[];
 		//$company_alise=$this->request->query('company_alise');
 		$sales_order_no=$this->request->query('sales_order_no');
@@ -38,7 +39,7 @@ class SalesOrdersController extends AppController
 		$To=$this->request->query('To');
 		$items=$this->request->query('items');
 		$pull_request=$this->request->query('pull-request');
-		$this->set(compact('sales_order_no','customer','po_no','product','From','To','file','pull_request','items'));
+		$this->set(compact('sales_order_no','customer','po_no','product','From','To','file','pull_request','items','gst'));
 		/* if(!empty($company_alise)){
 			$where['SalesOrders.so1 LIKE']='%'.$company_alise.'%';
 		} */

@@ -45,7 +45,7 @@ class SaleTaxesTable extends Table
 		
 
 		$this->belongsToMany('Companies', [
-            'foreignKey' => 'sale_taxe_id',
+            'foreignKey' => 'sale_tax_id',
             'targetForeignKey' => 'company_id',
             'joinTable' => 'sale_tax_companies'
         ]);

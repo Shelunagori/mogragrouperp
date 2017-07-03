@@ -179,25 +179,19 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					$existing_rows=[];
 					$current_rows=[];
 					$current_row_items=[];
+					
 					foreach($invoice->sales_order->invoices as $all_invoice){
 						foreach($all_invoice->invoice_rows as $all_invoice_row){
 							$existing_rows[$all_invoice_row->item_id]=@$existing_rows[$all_invoice_row->item_id]+$all_invoice_row->quantity;
 						}
 					}
-					
 					foreach($invoice->invoice_rows as $current_invoice_row){
-						
 						@$existing_rows[$current_invoice_row->item_id]=$existing_rows[$current_invoice_row->item_id]-$current_invoice_row->quantity;
 						$current_rows[]=$current_invoice_row->item_id;
 						$current_row_items[$current_invoice_row->item_id]=$current_invoice_row->quantity;
-
-						//$current_descryption[$current_invoice_row->item_id]=$current_invoice_row->description;
-
 						$descriptions[$current_invoice_row->item_id]=$current_invoice_row->description;
-
+						
 					}
-					
-					
 					$q=0; 
 					foreach ($invoice->sales_order->sales_order_rows as $sales_order_row){  ?>
 						<?php if(@$existing_rows[$sales_order_row->item_id]!=$sales_order_row->quantity) { ?> 

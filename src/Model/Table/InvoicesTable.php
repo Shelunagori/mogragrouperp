@@ -125,10 +125,7 @@ class InvoicesTable extends Table
             ->notEmpty('customer_address');
 
 
-        $validator
-            ->decimal('total')
-            ->requirePresence('total', 'create')
-            ->notEmpty('total');
+        
 
         $validator
             ->requirePresence('process_status', 'create')
