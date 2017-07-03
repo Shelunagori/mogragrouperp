@@ -24,7 +24,9 @@ class InventoryVouchersController extends AppController
         $this->paginate = [
             'contain' => ['Invoices'=>['Customers'],'InventoryVoucherRows']
         ];
-        $inventoryVouchers = $this->paginate($this->InventoryVouchers->find()->contain(['Invoices'])->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']));
+		
+		$inventoryVouchers = $this->paginate($this->InventoryVouchers->find()->contain(['Invoices'])->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']));
+		
 
         $this->set(compact('inventoryVouchers'));
         $this->set('_serialize', ['inventoryVouchers']);
@@ -354,6 +356,8 @@ class InventoryVouchersController extends AppController
 			return $this->redirect(['action' => 'edit?invoice='.$invoice_id.'&item_id='.$item_id.'&item-qty='.$qty]);
 		}
 		
+	
+		
 		$InventoryVoucher = $this->InventoryVouchers->newEntity();
 		if ($this->request->is(['post','put','patch'])) {
 			
@@ -503,7 +507,16 @@ class InventoryVouchersController extends AppController
 			$query5->update()
 				->set(['inventory_voucher_status' => 'Done'])
 				->where(['invoice_id'=>$invoice_id,'item_id'=>$q_item_id])
-				->execute();
+				->execute();  
+				
+			$InvoiceRowsData = $this->InventoryVouchers->InvoiceRows->find()->where(['InvoiceRows.invoice_id'=>$invoice_id,'InvoiceRows.inventory_voucher_status'=>'Pending']);	
+			
+			if(sizeof($InvoiceRowsData->toArray())>0){
+				return $this->redirect(['action' => 'edit?invoice='.$invoice_id.'&item_id='.$q_item_id.'&item-qty='.$qty]);
+			}else{
+					return $this->redirect(['action' => 'index']);
+			}
+				
 			if(sizeof($q_serial_no)>0){
 				foreach($q_serial_no as $sr){
 					$query= $this->InventoryVouchers->ItemSerialNumbers->query();
