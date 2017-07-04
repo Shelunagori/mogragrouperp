@@ -1438,6 +1438,8 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($sales_order->po_date)); 
 			$invoice->date_created=date("Y-m-d");
 			$invoice->invoice_type='GST';
+			$invoice->total_after_pnf=$invoice->total_taxable_value;
+			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
 			
 			/* if($invoice->payment_mode=='New_ref'){
 			$invoice->due_payment=$invoice->grand_total;
@@ -1536,8 +1538,7 @@ class InvoicesController extends AppController
 				$ledger->voucher_source = 'Invoice';
 				$this->Invoices->Ledgers->save($ledger); 
 				
-				
-				$ledger_fright= $invoice->fright_amount;
+				$ledger_fright=@(int)$invoice->fright_amount;
 				$ledger = $this->Invoices->Ledgers->newEntity();
 				$ledger->ledger_account_id = $invoice->fright_ledger_account;
 				$ledger->debit = 0;
@@ -1546,7 +1547,7 @@ class InvoicesController extends AppController
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
 				$ledger->voucher_source = 'Invoice';
-				if($ledger_fright>0)
+				if($ledger_fright > 0)
 				{
 					$this->Invoices->Ledgers->save($ledger); 
 				}
@@ -1650,7 +1651,7 @@ class InvoicesController extends AppController
 				
                 $this->Flash->success(__('The invoice has been saved.'));
 
-                return $this->redirect(['action' => 'confirm/'.$invoice->id]);
+                return $this->redirect(['action' => 'GstConfirm/'.$invoice->id]);
             } else { pr($invoice); exit;
                 $this->Flash->error(__('The invoice could not be saved. Please, try again.'));
             }
@@ -1795,6 +1796,9 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
+			//pr($invoice->total_taxable_value); exit;
+			$invoice->total_after_pnf=$invoice->total_taxable_value;
+			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
@@ -1949,6 +1953,7 @@ class InvoicesController extends AppController
 				
 				
 				//Ledger posting for Fright Amount
+				$ledger_fright=@(int)$invoice->fright_amount;
 				$ledger = $this->Invoices->Ledgers->newEntity();
 				$ledger->ledger_account_id = $invoice->fright_ledger_account;
 				$ledger->debit = 0;
@@ -1957,7 +1962,11 @@ class InvoicesController extends AppController
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
 				$ledger->voucher_source = 'Invoice';
-				$this->Invoices->Ledgers->save($ledger); 
+				if($ledger_fright > 0)
+				{
+					$this->Invoices->Ledgers->save($ledger); 
+				}
+				
 				
 				$this->Invoices->ItemLedgers->deleteAll(['source_id' => $invoice->id, 'source_model'=>'Invoices']);
 				
@@ -2197,10 +2206,26 @@ class InvoicesController extends AppController
 						->where(['CompanyBanks.default_bank' => 1]);}], 
 					'InvoiceRows' => ['Items'=>['Units']]]
 			]);
-		//pr($invoice); exit;
-        $this->set('invoice', $invoice);
 		
-        $this->set('_serialize', ['invoice']);
+		$cgst_per=[];
+		$sgst_per=[];
+		$igst_per=[];
+		foreach($invoice->invoice_rows as $invoice_row){
+			if($invoice_row->cgst_percentage>0){
+				$cgst_per[$invoice_row->id]=$this->Invoices->SaleTaxes->get(@$invoice_row->cgst_percentage);
+			}
+			if($invoice_row->sgst_percentage>0){
+				$sgst_per[$invoice_row->id]=$this->Invoices->SaleTaxes->get(@$invoice_row->sgst_percentage);
+			}
+			if($invoice_row->igst_percentage>0){
+				$igst_per[$invoice_row->id]=$this->Invoices->SaleTaxes->get(@$invoice_row->igst_percentage);
+			}
+		}
+		
+	//pr($igst_per); exit;
+        //$this->set('invoice', $invoice);
+		$this->set(compact('invoice','cgst_per','sgst_per','igst_per'));
+       // $this->set('_serialize', ['invoice','cgst_per','sgst_per','igst_per']);
     }
 	
 	
