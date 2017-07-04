@@ -46,7 +46,7 @@
 							<td><?= h(++$page_no) ?></td>
 							<td><?= h(date("d-m-Y",strtotime($payment->transaction_date)))?></td>
 							<td><?= h('#'.str_pad($payment->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
-							<td align="right"><?= h($this->Number->format($payment->payment_rows[0]->total_dr-$payment->payment_rows[0]->total_cr,[ 'places' => 2])) ?></td>
+							<td align="right"><?= h($this->Number->format(@$payment->payment_rows[0]->total_dr-@$payment->payment_rows[0]->total_cr,[ 'places' => 2])) ?></td>
 							<td class="actions">
 							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $payment->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
 							 <?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $payment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>

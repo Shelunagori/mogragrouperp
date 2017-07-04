@@ -28,9 +28,10 @@ class SalesOrdersController extends AppController
 		$copy_request=$this->request->query('copy-request');
 		$job_card=$this->request->query('job-card');
 		
-		$gst=$this->request->query('gst');
+		
 		$where=[];
 		//$company_alise=$this->request->query('company_alise');
+		$gst=$this->request->query('gst');
 		$sales_order_no=$this->request->query('sales_order_no');
 		$file=$this->request->query('file');
 		$customer=$this->request->query('customer');
@@ -114,7 +115,7 @@ class SalesOrdersController extends AppController
 		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
 
 		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find()->toArray();
-        $this->set(compact('salesOrders','status','copy_request','job_card','SalesOrderRows','Items'));
+        $this->set(compact('salesOrders','status','copy_request','job_card','SalesOrderRows','Items','gst'));
         $this->set('_serialize', ['salesOrders']);
 		$this->set(compact('url'));
     }

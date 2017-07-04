@@ -17,7 +17,7 @@
 							</td>
 							<td>
 								<div class="input-group" style="" id="pnf_text">
-									<span class="input-group-addon">IN-</span>
+									<span class="input-group-addon">SR-</span>
 									<input type="text" name="in_no" class="form-control input-sm" placeholder="Invoice No" value="<?php echo @$in_no; ?>">
 								</div>	
 							</td>
@@ -40,7 +40,7 @@
 				<thead>
 					<tr>
 						<th>Sr. No.</th>
-						<th>Voucher No.</th>
+						<th>Sales Return No.</th>
 						<th>Invoice No.</th>
 						<th>Date Created</th>
 						<th style="text-align:right;">Total</th>
@@ -53,9 +53,8 @@
 						?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>
-						<td><?= h('#'.str_pad($saleReturn->sr2, 4, '0', STR_PAD_LEFT)) ?></td>
-						<td><?= h(($saleReturn->sr1.'/IN-'.str_pad($saleReturn->sr2, 3, '0', STR_PAD_LEFT).'/'.$saleReturn->sr3.'/'.$saleReturn->sr4)) ?></td>
-						
+						<td><?= h(($saleReturn->sr1.'/SR-'.str_pad($saleReturn->sr2, 3, '0', STR_PAD_LEFT).'/'.$saleReturn->sr3.'/'.$saleReturn->sr4)) ?></td>
+						<td><?= h(($saleReturn->invoice->in1.'/SR-'.str_pad($saleReturn->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$saleReturn->invoice->in3.'/'.$saleReturn->invoice->in4)) ?></td>
 						<td><?php echo date("d-m-Y",strtotime($saleReturn->date_created)); ?></td>
 						<td align="right"><?= h($this->Number->format($saleReturn->total_after_pnf,[ 'places' => 2])) ?></td>
 						<td class="actions">

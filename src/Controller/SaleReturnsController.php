@@ -52,7 +52,7 @@ class SaleReturnsController extends AppController
 		if(!empty($total)){
 			$where['SaleReturns.total_after_pnf']=$total;
 		}
-		$saleReturns = $this->paginate($this->SaleReturns->find()->where($where)->where(['company_id'=>$st_company_id])->order(['SaleReturns.id' => 'DESC']));
+		$saleReturns = $this->paginate($this->SaleReturns->find()->where($where)->where(['SaleReturns.company_id'=>$st_company_id])->contain(['Invoices'])->order(['SaleReturns.id' => 'DESC']));
 		//pr($saleReturns); exit;
 
         $this->set(compact('saleReturns'));
@@ -235,7 +235,7 @@ class SaleReturnsController extends AppController
 					$item_serial_no=$sale_return_row->item_serial_number;
 					if($item_serial_no){
 					$serial_no=explode(",",$item_serial_no);
-					foreach($serial_no as $serial){ pr($serial); exit;
+					foreach($serial_no as $serial){
 					$ItemSerialNumber_data=$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->get($serial);
 					$ItemSerialNumbers = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->newEntity();
 					$ItemSerialNumbers->status='In';

@@ -114,20 +114,21 @@
 							<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
 							<td align="right"><?= h($this->Number->format($invoice->total_after_pnf,['places'=>2])) ?></td>
 							<td class="actions">
-								<?php if(in_array(23,$allowed_pages) and $sales_return!="true" and $invoice->invoice_type=='Non-GST'){ ?>
-								<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'confirm', $invoice->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
-								<?php } elseif(in_array(23,$allowed_pages) and $sales_return!="true" and $invoice->invoice_type=='GST'){?>
+								<?php if($invoice->invoice_type=='GST'){ ?>
 									<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'GstConfirm', $invoice->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
-									
+								<?php } else {?>
+									<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'confirm', $invoice->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
 								<?php } ?>
 								<?php if($invoice->status !='Cancel' and $sales_return!="true" and $inventory_voucher!="true" and in_array(8,$allowed_pages)){
 									
-								if($invoice->invoice_type=='Non-GST' and !in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month))
+								if($invoice->invoice_type=='GST' and !in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month))
 								 { 
-								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $invoice->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
-								 }elseif($invoice->invoice_type=='GST' and !in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month)){
-									echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'GstEdit', $invoice->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));  
+								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'GstEdit', $invoice->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));  
+								
+								 }else {
+									echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $invoice->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
 								 }
+								 
 								if( in_array(33,$allowed_pages)){
 								echo $this->Html->link('<i class="fa fa-minus-circle"></i> ',['action' => '#'],array('escape'=>false,'class'=>'btn btn-xs red tooltips close_btn','data-original-title'=>'Close','role'=>'button','invoice_id'=>$invoice->id));
 								}
@@ -139,8 +140,6 @@
 								} ?><?php 
 								if($sales_return=="true" && $invoice->sale_return_status=='No'){
 								echo $this->Html->link('<i class="fa fa-repeat"></i>  Sale Return','/SaleReturns/Add?invoice='.$invoice->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
-								}elseif($sales_return=="true" && $invoice->sale_return_status=='Yes'){
-									echo $this->Html->link('<i class="fa fa-repeat"></i> Edit Sale Return','/SaleReturns/Edit?invoice='.$invoice->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
 								
 							</td>

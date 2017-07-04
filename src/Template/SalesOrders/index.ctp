@@ -47,6 +47,7 @@
 			<div class="col-md-12">
 				<form method="GET" >
 				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
+				<input type="hidden" name="gst" value="<?php echo @$gst; ?>">
 				<input type="hidden" name="job-card" value="<?php echo @$job_card; ?>">
 				<table class="table table-condensed">
 					<tbody>
@@ -144,8 +145,7 @@
 								
 								<?php if($pull_request=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Invoice','/Invoices/Add?sales-order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
-								} ?>
-								<?php if($gst=="true"){
+								} else if($gst=="true") {
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Invoice','/Invoices/gstAdd?sales-order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
 								<!--<?= $this->Form->postLink('<i class="fa fa-trash"></i> ',

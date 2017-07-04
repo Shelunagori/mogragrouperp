@@ -1609,6 +1609,42 @@ class InvoicesController extends AppController
 					}
 				}
 				
+				if($invoice->fright_cgst_amount > 0){
+					$cg_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'SaleTaxes','source_id'=>$invoice->fright_cgst_percent])->first();
+					$ledger = $this->Invoices->Ledgers->newEntity();
+					$ledger->ledger_account_id = $cg_LedgerAccount->id;
+					$ledger->credit = $invoice->fright_cgst_amount;
+					$ledger->debit = 0;
+					$ledger->voucher_id = $invoice->id;
+					$ledger->voucher_source = 'Invoice';
+					$ledger->company_id = $invoice->company_id;
+					$ledger->transaction_date = $invoice->date_created;
+					$this->Invoices->Ledgers->save($ledger); 
+				}
+				if($invoice->fright_sgst_amount > 0){
+					$s_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'SaleTaxes','source_id'=>$invoice->fright_sgst_percent])->first();
+					$ledger = $this->Invoices->Ledgers->newEntity();
+					$ledger->ledger_account_id = $s_LedgerAccount->id;
+					$ledger->credit = $invoice->fright_sgst_amount;
+					$ledger->debit = 0;
+					$ledger->voucher_id = $invoice->id;
+					$ledger->voucher_source = 'Invoice';
+					$ledger->company_id = $invoice->company_id;
+					$ledger->transaction_date = $invoice->date_created;
+					$this->Invoices->Ledgers->save($ledger); 
+				}
+				if($invoice->fright_igst_amount > 0){
+					$i_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'SaleTaxes','source_id'=>$invoice->fright_igst_percent])->first();
+					$ledger = $this->Invoices->Ledgers->newEntity();
+					$ledger->ledger_account_id = $i_LedgerAccount->id;
+					$ledger->credit = $invoice->fright_igst_amount;
+					$ledger->debit = 0;
+					$ledger->voucher_id = $invoice->id;
+					$ledger->voucher_source = 'Invoice';
+					$ledger->company_id = $invoice->company_id;
+					$ledger->transaction_date = $invoice->date_created;
+					$this->Invoices->Ledgers->save($ledger); 
+				}
 				//Reference Number coding
 					if(sizeof(@$ref_rows)>0){ 
 			
@@ -1796,7 +1832,7 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
-			//pr($invoice->total_taxable_value); exit;
+			
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
 
