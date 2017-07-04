@@ -331,8 +331,8 @@ $html.='
 
 $name='Invoice-'.h(($invoice->in1.'_IN'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'_'.$invoice->in3.'_'.$invoice->in4));
 $dompdf->loadHtml($html);
-
-$dompdf->setPaper('A4', 'portrait');
+$dompdf->set_paper('letter', 'landscape');
+//$dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 $dompdf->stream($name,array('Attachment'=>0));
 exit(0);
