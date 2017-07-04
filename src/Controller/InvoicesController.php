@@ -95,7 +95,7 @@ class InvoicesController extends AppController
 			$invoices=[]; 
 			$invoices=$this->paginate($this->Invoices->find()->where($where)->contain(['SalesOrders','InvoiceRows'=>['Items'=>function ($q) {
 				return $q->where(['source !='=>'Purchessed']);
-				}]])->where(['Invoices.company_id'=>$st_company_id,'inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'Yes'])->order(['Invoices.id' => 'DESC']));
+				}]])->where(['Invoices.company_id'=>$st_company_id,'inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'No'])->order(['Invoices.id' => 'DESC']));
 		}else if($sales_return=='true'){
 			
 			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']));
@@ -1707,7 +1707,7 @@ class InvoicesController extends AppController
 		$ledger_account_details_for_fright = $this->Invoices->LedgerAccounts->find('list')->contain(['AccountSecondSubgroups'=>['AccountFirstSubgroups' => function($q) use($account_first_subgroup_id_for_fright){
 			return $q->where(['AccountFirstSubgroups.id'=>$account_first_subgroup_id_for_fright]);
 		}]])->where(['LedgerAccounts.company_id'=>$st_company_id])->order(['LedgerAccounts.name' => 'ASC']);
-		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['account_second_subgroup_id'=>54,'SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
@@ -2164,11 +2164,12 @@ class InvoicesController extends AppController
 		$items = $this->Invoices->Items->find('list');
 		$transporters = $this->Invoices->Transporters->find('list');
 		$termsConditions = $this->Invoices->TermsConditions->find('all');
-		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['account_second_subgroup_id'=>54,'SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				);
+				
 		$employees = $this->Invoices->Employees->find('list');
         $this->set(compact('invoice_id','ReferenceDetails','ReferenceBalances','invoice', 'customers', 'companies', 'salesOrders','old_due_payment','items','transporters','termsConditions','serviceTaxs','exciseDuty','SaleTaxes','employees','dueInvoices','serial_no','ItemSerialNumber','SelectItemSerialNumber','ItemSerialNumber2','financial_year_data','ledger_account_details','ledger_account_details_for_fright','sale_tax_ledger_accounts','c_LedgerAccount','chkdate','GstTaxes'));
         $this->set('_serialize', ['invoice']);
