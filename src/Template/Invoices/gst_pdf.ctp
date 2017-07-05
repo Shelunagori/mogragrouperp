@@ -239,7 +239,7 @@ $html.='<tr>
 			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($fright_total).'</td>
 		</tr>';
 	$html.='</tbody>';
-	$html.='</table>';
+$html.='</table>';
 	
 $grand_total=explode('.',$invoice->grand_total);
 $rupees=$grand_total[0];
