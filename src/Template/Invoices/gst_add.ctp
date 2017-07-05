@@ -42,7 +42,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<label class="control-label">Sales Account. <span class="required" aria-required="true">*</span></label>
 							<div class="row">
 								<div class="col-md-12">
-									<?php echo $this->Form->input('sales_ledger_account', ['empty' => "--Select--",'label' => false,'options' => $ledger_account_details,'class' => 'form-control input-sm select2me','required']); ?>
+									<?php echo $this->Form->input('sales_ledger_account', ['label' => false,'options' => $ledger_account_details,'class' => 'form-control input-sm select2me','required']); ?>
 								</div>
 							</div>
 						</div>
@@ -178,8 +178,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<?php } ?>
 				</div>
 			
-	<div style='overflow-x:scroll;width:932px;'>	
-		<div style="width:974px;">
+	<div style="overflow: auto;">
 		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" />
 			<table  class="table tableitm" id="main_tb" border="1">
 				<thead>
@@ -304,7 +303,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</tfoot>
 			</table>
 			</div>
-		</div><br/>
+		<br/>
 		
 		
 		<div class="row">
@@ -329,6 +328,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<div class="col-md-9" align="right"><b>TOTAL IGST</b></div>
 				<div class="col-md-3">
 				<?php echo $this->Form->input('total_igst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
+		</div><br/>
+		<div class="row">
+				<div class="col-md-9" align="right"><b>FRIGHT AMOUNT</b></div>
+				<div class="col-md-3">
+				<?php echo $this->Form->input('fright_amt', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
 				</div>
 		</div><br/>
 		<div class="row">
@@ -542,7 +547,10 @@ $(document).ready(function() {
 		var qty =$(this).val();
 		rename_rows(); calculate_total();
     });
-
+	
+	$('#add_submit').on("mouseover", function () {
+		put_code_description();
+    });
 	
 	$('.pnf_percentage').die().live("keyup",function() {
 		var qty =$(this).val();
@@ -678,7 +686,7 @@ $(document).ready(function() {
 				var val=$(this).find('td:nth-child(7) input[type="checkbox"]:checked').val();
 				
 				if(val){
-				var code=$('#main_tb tbody tr.tr2').find('div#summer'+val).code();
+				var code=$('#main_tb tbody tr.secondtr[row_no="'+row_no+'"]').find('div#summer'+row_no).code();
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').find('td:nth-child(1) textarea').val(code);
 				}
 			i++; 
@@ -811,26 +819,29 @@ $(document).ready(function() {
 			var fright_amount=parseFloat($('input[name="fright_amount"]').val());
 			if(isNaN(fright_amount)){ var fright_amount = 0;  }
 			
-			//alert(fcgst);
-			total=fright_amount+total_taxable_value;
+			var total_fright_amount=parseFloat($('input[name="total_fright_amount"]').val());
+			if(isNaN(total_fright_amount)){ var total_fright_amount = 0;  }
+			total_tax=total_taxable_value+fright_amount;
 			
 			$('input[name="total_amt"]').val(total_amt.toFixed(2));
 			$('input[name="total_discount"]').val(total_discount.toFixed(2));
 			$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
-			$('input[name="total_taxable_value"]').val(total.toFixed(2));
+			$('input[name="total_taxable_value"]').val(total_tax.toFixed(2));
 			
+			total_debit=total_row_amount+total_fright_amount;
 			total_cgst_amt=total_cgst+fcgst;
 			total_sgst_amt=total_sgst+fsgst;
 			total_igst_amt=total_igst+figst;
+			$('input[name="fright_amt"]').val(fright_amount.toFixed(2));
 			$('input[name="total_cgst"]').val(total_cgst_amt.toFixed(2));
 			$('input[name="total_sgst"]').val(total_sgst_amt.toFixed(2));
 			$('input[name="total_igst"]').val(total_igst_amt.toFixed(2));
-			$('input[name="all_row_total"]').val(total_row_amount.toFixed(2));
+			$('input[name="all_row_total"]').val(total_debit.toFixed(2));
 			
 			var all_row_total=parseFloat($('input[name="all_row_total"]').val());
 
-			grand_total=total+total_cgst_amt+total_sgst_amt+total_igst_amt;
-			$('input[name="total"]').val(total.toFixed(2));
+			grand_total=total_taxable_value+total_cgst_amt+total_sgst_amt+total_igst_amt+fright_amount;
+			$('input[name="total"]').val(total_taxable_value.toFixed(2));
 			$('input[name="total_cgst_amount"]').val(total_cgst_amt.toFixed(2));
 			$('input[name="total_igst_amount"]').val(total_igst_amt.toFixed(2));
 			$('input[name="total_sgst_amount"]').val(total_sgst_amt.toFixed(2));

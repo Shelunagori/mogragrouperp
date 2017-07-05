@@ -107,6 +107,12 @@
 					$url_path="/credit-notes/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Purchase Return"){
 					$url_path="/purchase-returns/view/".$ledger->voucher_id;
+				}else if($ledger->voucher_source=="Sale Return"){
+					$invoice=$url_link[$ledger->id];
+					$voucher_no=h(($invoice->sr1.'/SR-'.str_pad($invoice->sr2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sr3.'/'.$invoice->sr4));
+					$url_path="/purchase-returns/view/".$ledger->voucher_id;
+					$url_path="Sale Return";
+					//pr($voucher_no); exit;
 				}
 				
 				?>
@@ -116,7 +122,9 @@
 						<td><?= h($ledger->voucher_source); ?></td>
 						<td>
 						
-						<?php if(!empty($url_path)){
+						<?php if($url_path=='Sale Return'){
+								echo $voucher_no;
+							}else if(!empty($url_path)){
 								echo $this->Html->link($voucher_no ,$url_path,['target' => '_blank']);
 							}else{
 								echo str_pad($ledger->voucher_id,4,'0',STR_PAD_LEFT);

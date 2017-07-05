@@ -56,6 +56,7 @@ class LedgersTable extends Table
 		$this->belongsTo('ContraVouchers');
 		$this->belongsTo('Payments');
 		$this->belongsTo('PettyCashVouchers');
+		$this->belongsTo('SaleReturns');
     }
 
     /**

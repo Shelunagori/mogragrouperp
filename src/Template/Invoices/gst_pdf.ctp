@@ -42,7 +42,9 @@ $html = '
 		page-break-inside: avoid;
 	}
 	.table_rows, .table_rows th, .table_rows td {
-	    border: 1px solid  #000; border-collapse: collapse;padding:2px; 
+	    border: 1px solid  #000; 
+		border-collapse: collapse;
+		padding:2px; 
 	}
 	.itemrow tbody td{
 		border-bottom: none;border-top: none;
@@ -58,7 +60,12 @@ $html = '
 		border: 0px solid  #000;padding:0px; 
 	}
 	.table_rows th{
-		font-size:12px;
+		border: 1px solid  #000;
+		font-size:'. h($invoice->pdf_font_size).' !important;
+	}
+	.table_rows td{
+		border: 1px solid  #000;
+		font-size:'. h($invoice->pdf_font_size).' !important;
 	}
 	.avoid_break{
 		page-break-inside: avoid;
@@ -69,14 +76,12 @@ $html = '
 	table.table-bordered td {
 		border: hidden;
 	}
-	table td, table th{
-		font-size:10px !important;
-	}
-
+	
 	</style>
+
 <body>
   <div id="header" ><br/>	
-		<table width="100%" class="table_top">
+		<table width="100%">
 			<tr>
 				<td width="35%" rowspan="2" valign="bottom">
 				<img src='.ROOT . DS  . 'webroot' . DS  .'logos/'.$invoice->company->logo.' height="80px" style="height:80px;"/>
@@ -108,6 +113,12 @@ $html = '
   <div id="content"> ';
   
   $html.='
+  
+<style>	
+ 
+
+</style>
+
 <table width="100%" class="table_rows itemrow">
 	<thead>
 		<tr>
@@ -115,15 +126,15 @@ $html = '
 				$html.='
 					<table  valign="center" width="100%" style="margin-top: 0px;" class="table2">
 						<tr>
-							<td width="50%" >
+							<td width="60%" >
 								
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								<div style="height:5px;"></div>
 								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
-								<span>TIN : '. h($invoice->customer->tin_no) .'</span><br/>
+								<span>GST  : '. h($invoice->customer->gst_no) .'</span><br/>
 								<span>PAN : '. h($invoice->customer->pan_no) .'</span>
 							</td>
-							<td  width="50%" valign="top" align="right" >
+							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
 									<tr>
 										<td width="55" valign="top" style="vertical-align: top;">Invoice No.</td>
@@ -143,7 +154,7 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;">Carrier</td>
 										<td valign="top">:</td>
-										<td valign="top">'. h($invoice->transporter->transporter_name) .'</td>
+										<td valign="top" >'. h($invoice->transporter->transporter_name) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
@@ -160,7 +171,7 @@ $html = '
 </table>';
 
 $html.='
-<table width="100%" class="table_rows itemrow">
+<table width="100%" class="table_rows ">
 		<thead>
 			<tr>
 				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
@@ -184,7 +195,7 @@ $html.='
 				<th style="text-align: center;" >Amt</th>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center; " > %</th>
+				<th style="text-align: center; " >%</th>
 				<th style="text-align: center;" >Amt</th>
 			</tr>
 		</thead>
@@ -199,9 +210,9 @@ $html.='
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_percentage) .'</td>
+		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_percentage) .'%</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_percentage) .'</td>
+		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_percentage) .'%</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_amount,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->taxable_value,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
@@ -214,6 +225,19 @@ $html.='
 	</tr>';
 	
 endforeach; 
+$fright_total=$invoice->fright_amount+$invoice->fright_cgst_amount+$invoice->fright_sgst_amount+$invoice->fright_igst_amount;
+
+$html.='<tr>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right" colspan="9" >Fright  Amount</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_amount).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h(@$fright_ledger_cgst->tax_figure).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_cgst_amount).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h(@$fright_ledger_sgst->tax_figure).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_sgst_amount).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($fright_ledger_igst->tax_figure).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_igst_amount).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($fright_total).'</td>
+		</tr>';
 	$html.='</tbody>';
 	$html.='</table>';
 	
@@ -231,39 +255,33 @@ $html.='
 <table width="100%" class="table_rows" >
 	<tbody>
 			<tr>
-				<td  width="70%">
+				<td  width="80%">
 					<b style="font-size:13px;"><u>Our Bank Details</u></b>
 					<table width="100%" class="table2">
 						<tr>
-							<td  width="30%" style="white-space: nowrap;">Bank Name</td>
+							<td width="" style="white-space: nowrap;">Bank Name</td>
 							<td  style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->bank_name).'</td>
-						</tr>
-						<tr>
 							<td  >Branch</td>
-							<td  style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->branch).'</td>
+							<td style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->branch).'</td>
 						</tr>
+						
 						<tr>
 							<td  style="white-space: nowrap;">Account No</td>
-							<td  style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->account_no).'</td>
-						</tr>
-						<tr>
-							<td  style="white-space: nowrap;">IFSC Code</td>
+							<td style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->account_no).'</td>
+							<td >IFSC Code</td>
 							<td  style="white-space: nowrap;">: '.h($invoice->company->company_banks[0]->ifsc_code).'</td>
 						</tr>
+						
 					</table>
 				</td>
 				
-				<td  width="30%">
+				<td  width="20%">
 					<table width="100%" class="table2">
-						<tr>
-							<td  width="30%" ">Fright Amount</td>
-							<td>:</td>
-							<td  style="text-align:right;">'.h($invoice->fright_amount).'</td>
-						</tr>
+						
 						<tr>
 							<td  >Total</td>
 							<td>:</td>
-							<td style="text-align:right;">'.h($invoice->grand_total).'</td>
+							<td style="text-align:right;" valign="">'.h($invoice->grand_total).'</td>
 						</tr>
 						</table>
 				</td>
@@ -273,13 +291,14 @@ $html.='
 	<table width="100%" class="table_rows ">
 		<tr>
 			<td valign="top" width="18%">Amount in words</td>
-			
 			<td  valign="top"> '. h(ucwords($this->NumberWords->convert_number_to_words($rupees))) .'  Rupees ' .h($paisa_text).'</td>
 		</tr>
 		<tr>
 			<td valign="top" width="18%">Additional Note</td>
 			<td  valign="top">'. $this->Text->autoParagraph($invoice->additional_note).'</td>
+
 		</tr>
+		
 		<tr>
 				<td colspan="2" >
 					<table width="100%" class="table2">
@@ -287,26 +306,26 @@ $html.='
 							<td  >
 								<table>
 									<tr>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" >Interest @15% per annum shall be charged if not paid  <br/>with in agreed terms. <br/> Invoice is Subject to Udaipur jurisdiction</td>
+										<td >Interest @15% per annum shall be charged if not paid  with in agreed terms. <br/> Invoice is Subject to Udaipur jurisdiction</td>
 									</tr>
 								</table>
 								<table>
 									<tr>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">TIN</td>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">: '. h($invoice->company->tin_no) .'</td>
+										<td >GST</td>
+										<td >: '. h($invoice->company->gst_no) .'</td>
 									</tr>
 									<tr width="30">
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">PAN</td>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">: '. h($invoice->company->pan_no) .'</td>
+										<td >PAN</td>
+										<td >: '. h($invoice->company->pan_no) .'</td>
 									</tr>
 									<tr>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">CIN</td>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';">: '. h($invoice->company->cin_no) .'</td>
+										<td >CIN</td>
+										<td >: '. h($invoice->company->cin_no) .'</td>
 									</tr>
 								</table>
 							</td>
 							<td align="right" >
-								<div align="center" style="font-size:'. h(($invoice->pdf_font_size)) .';">
+								<div align="center">
 									<span>For <b>'. h($invoice->company->name) .'</b></span><br/>
 									<img src='.ROOT . DS  . 'webroot' . DS  .'signatures/'.$invoice->creator->signature.' height="50px" style="height:50px;"/>
 									<br/>

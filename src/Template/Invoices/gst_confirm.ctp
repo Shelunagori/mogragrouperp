@@ -1,7 +1,12 @@
 <?php 
 $pdf_url=$this->Url->build(['controller'=>'Invoices','action'=>'GstPdf']);
 $list_url=$this->Url->build(['controller'=>'Invoices','action'=>'index']);
-$Edit_url=$this->Url->build(['controller'=>'Invoices','action'=>'Edit']);
+if($invoice->invoice_type=="GST"){
+	$Edit_url=$this->Url->build(['controller'=>'Invoices','action'=>'GstEdit']);
+}else{
+	$Edit_url=$this->Url->build(['controller'=>'Invoices','action'=>'Edit']);
+}
+
 //pr($pdf_url); exit;
 ?>
 <table width="100%">

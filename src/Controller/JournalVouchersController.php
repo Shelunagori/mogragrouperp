@@ -350,7 +350,7 @@ class JournalVouchersController extends AppController
 				$total_cr=0; $total_dr=0;
 				$i=0;
 				foreach($journalVoucher->journal_voucher_rows as $journal_voucher_row){
-					
+					pr($journal_voucher_row); exit;
 					$ledger = $this->JournalVouchers->Ledgers->newEntity();
 					$ledger->ledger_account_id = $journal_voucher_row->received_from_id;
 					if($journal_voucher_row->cr_dr=="Dr"){

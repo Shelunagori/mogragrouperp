@@ -87,6 +87,8 @@
 						{ 
 							$party_name='-';
 							$voucher_no='#'.str_pad($itemLedger->voucher_info->iv_number, 4, '0', STR_PAD_LEFT);
+							$url_path="/inventory-vouchers/view/".$itemLedger->voucher_info->id;
+							//pr($voucher_no);
 						}
 						
 						else if($source_model=='Grns')

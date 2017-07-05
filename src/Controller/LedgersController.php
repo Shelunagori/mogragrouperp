@@ -74,6 +74,8 @@ class LedgersController extends AppController
 					$url_link[$ledger->id]=$this->Ledgers->CreditNotes->get($ledger->voucher_id);
 				}else if($ledger->voucher_source=="Purchase Return"){
 					$url_link[$ledger->id]=$this->Ledgers->PurchaseReturns->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Sale Return"){
+					$url_link[$ledger->id]=$this->Ledgers->SaleReturns->get($ledger->voucher_id);
 				}
 			}
 		

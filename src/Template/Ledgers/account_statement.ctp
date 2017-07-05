@@ -110,8 +110,8 @@ $url_excel="/?".$url;
 						$close_cr=0; 
 						if(!empty(@$opening_balance_ar)){  //pr($opening_balance_data); exit;
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
-								$close_cr=@$opening_balance_data+@$opening_balance_total['debit'];
-								$close_dr=@$opening_balance_total['credit'];
+								$close_dr=@$opening_balance_data+@$opening_balance_total['debit'];
+								$close_cr=@$opening_balance_total['credit'];
 							}
 							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ //pr(@$opening_balance_total['credit']);
 								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
@@ -228,6 +228,7 @@ $url_excel="/?".$url;
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:- </b>
 				<?php $closing_balance=@$close_dr-@$close_cr;
+					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
 						if($closing_balance>0){
 							echo 'Dr';

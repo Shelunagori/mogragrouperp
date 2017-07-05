@@ -42,7 +42,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<label class="control-label">Sales Account. <span class="required" aria-required="true">*</span></label>
 							<div class="row">
 								<div class="col-md-12">
-									<?php echo $this->Form->input('sales_ledger_account', ['empty' => "--Select--",'label' => false,'options' => $ledger_account_details,'class' => 'form-control input-sm select2me','required']); ?>
+									<?php echo $this->Form->input('sales_ledger_account', ['label' => false,'options' => $ledger_account_details,'class' => 'form-control input-sm select2me','required']); ?>
 								</div>
 							</div>
 						</div>
@@ -180,8 +180,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<?php } ?>
 				</div>
 			
-	<div style='overflow-x:scroll;width:932px;'>	
-		<div style="width:974px;">
+	<div style="overflow: auto;">
 		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value="1"/>
 			<table  class="table tableitm" id="main_tb" border="1">
 				<thead>
@@ -291,7 +290,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<tr class="tr2  secondtr" row_no="<?= h($q) ?>">
 							<td colspan="16">
 							<div contenteditable="true" class="note-editable" id="summer<?php echo $q; ?>" ><?php echo @$descriptions[$sales_order_row->item_id]; ?></div>
-							<?php echo $this->Form->input('q', ['label' => false,'type' => 'textarea','class' => 'form-control input-sm ','placeholder'=>'Description','style'=>['display:none'],'value' => @$descriptions[$sales_order_row->item_id],'readonly','required']); ?>
+							<?php echo $this->Form->input('q', ['label' => false,'type' => 'textarea','class' => 'form-control input-sm  ','placeholder'=>'Description','style'=>['display:none'],'value' => @$descriptions[$sales_order_row->item_id],'readonly','required']); ?>
 							</td>
 							<td></td>
 						</tr>
@@ -316,7 +315,26 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</tr><?php } ?>
 						<?php } $q++;  } ?>
 				</tbody>
-				<tfoot>
+				<tfoot><?php 
+							$options2=array();
+							foreach($GstTaxes as $GstTaxe){
+								$merge=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+								$options2[]=['text' =>$merge, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+							}
+						?>
+					<tr>
+						<td align="right" colspan="8">Fright Ledger Account</td>
+						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
+						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
+						<td><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
+						<td colspan="2"><?php echo $this->Form->input('total_fright_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
+						
+					</tr>
 					<tr>
 						<td align="right" colspan="5"><?php echo $this->Form->input('total_amt', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td align="right" colspan="2"><?php echo $this->Form->input('total_discount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Discount','readonly','step'=>0.01]); ?></td>
@@ -326,33 +344,41 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<td align="right" colspan="2"><?php echo $this->Form->input('total_sgst', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total SGST','readonly','step'=>0.01]); ?></td>
 						<td align="right" colspan="2"><?php echo $this->Form->input('total_igst', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total IGST','readonly','step'=>0.01]); ?></td>
 						<td align="left" colspan="2"><?php echo $this->Form->input('all_row_total', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
-					<tr>
+					</tr>
 				</tfoot>
 			</table>
 			</div>
+		<br/>
+		<div class="row">
+				<div class="col-md-9" align="right"><b>TOTAL</b></div>
+				<div class="col-md-3">
+				<?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
 		</div><br/>
 		<div class="row">
-				<div class="col-md-9">
-					<?php echo $this->Form->input('fright_text', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Additional text for Fright Amount','style'=>['text-align:right']]); ?>
-				</div>
+				<div class="col-md-9" align="right"><b>TOTAL CGST</b></div>
 				<div class="col-md-3">
-					<div class="form-group">
-							<label class="control-label">Fright Ledger Account</label>
-							<div class="row">
-								<div class="col-md-12">
-									<?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required','value'=>@$invoice->fright_ledger_account]); ?>
-								</div>
-							</div>
-							<br/>
-							<div class="row">
-								<div class="col-md-12">
-									<?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$invoice->fright_amount]); ?>
-								</div>
-							</div>
-						</div>
-					</div>
-		</div>
-		
+				<?php echo $this->Form->input('total_cgst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
+		</div><br/>
+		<div class="row">
+				<div class="col-md-9" align="right"><b>TOTAL SGST</b></div>
+				<div class="col-md-3">
+				<?php echo $this->Form->input('total_sgst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
+		</div><br/>
+		<div class="row">
+				<div class="col-md-9" align="right"><b>TOTAL IGST</b></div>
+				<div class="col-md-3">
+				<?php echo $this->Form->input('total_igst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
+		</div><br/>
+		<div class="row">
+				<div class="col-md-9" align="right"><b>FRIGHT AMOUNT</b></div>
+				<div class="col-md-3">
+				<?php echo $this->Form->input('fright_amt', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01]); ?>
+				</div>
+		</div><br/>
 		<div class="row">
 				<div class="col-md-9" align="right"><b>GRAND TOTAL</b></div>
 				<div class="col-md-3">
@@ -558,7 +584,6 @@ $(document).ready(function() {
 		submitHandler: function (form) {
 			$('#add_submit').prop('disabled', true);
 			$('#add_submit').text('Submitting.....');
-		
 			put_code_description();
 			success3.show();
 			error3.hide();
@@ -574,7 +599,10 @@ $(document).ready(function() {
 		var qty =$(this).val();
 		rename_rows(); calculate_total();
     });
-
+	
+	$('#add_submit').on("mouseover", function () {
+		put_code_description();
+    });
 	
 	$('.pnf_percentage').die().live("keyup",function() {
 		var qty =$(this).val();
@@ -594,12 +622,28 @@ $(document).ready(function() {
 	})
 	
 
+	$("select.fright_cgst_percent").die().live("change",function(){ 
+		calculate_fright_amount_total(); calculate_total();
+	})
+	
+	$("select.fright_sgst_percent").die().live("change",function(){ 
+		calculate_fright_amount_total(); calculate_total();
+	})
+	
+	$("select.fright_igst_percent").die().live("change",function(){ 
+		calculate_fright_amount_total(); calculate_total();
+	})
+	
+
 	$('.fright_amount').die().live("keyup",function() {
-		var qty =$(this).val();
-		rename_rows(); calculate_total(); do_ref_total();
+		var qty =$(this).val(); 
+		rename_rows(); calculate_total(); calculate_fright_amount_total(); do_ref_total();
     });
 	
-		
+	$('.total_fright_amount').die().live("keyup",function() {
+		calculate_fright_amount_total();  calculate_total();
+    });
+	
 	$('.rename_check').die().live("click",function() { 
 		rename_rows();   calculate_total();
 		 put_code_description();
@@ -636,7 +680,7 @@ $(document).ready(function() {
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').closest('td').html('');
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').append('<div id=summer'+row_no+'>'+htm+'</div>');
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').find('div#summer'+row_no).summernote();
-				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').append('<textarea name="invoice_rows['+val+'][description]"style="display:none;"></textarea>');
+				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').append('<textarea name="invoice_rows['+val+'][description]" class="descriptions" style="display:none;"></textarea>');
 				$(this).css('background-color','#fffcda');
 				
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]');
@@ -691,20 +735,56 @@ $(document).ready(function() {
 			});
 		}
 		
-	function put_code_description(){
+	function put_code_description(){ 
 		var i=0;
 			$("#main_tb tbody tr.tr1").each(function(){ 
-				var row_no=$(this).attr('row_no');			
-				var val=$(this).find('td:nth-child(7) input[type="checkbox"]:checked').val();
-				
-				if(val){
-				var code=$('#main_tb tbody tr.tr2').find('div#summer'+val).code();
+				var row_no=$(this).attr('row_no');
+				var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+				if(val){ 
+				var code=$('#main_tb tbody tr.secondtr[row_no="'+row_no+'"]').find('div#summer'+row_no).code();
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').find('td:nth-child(1) textarea').val(code);
 				}
 			i++; 
 		});
 		
 	}
+	
+	calculate_fright_amount_total();
+	function calculate_fright_amount_total(){ 
+		//var t=$(this);
+		var fright_cgst_percent=parseFloat($('select[name="fright_cgst_percent"] option:selected').attr("percentage"));
+			if(isNaN(fright_cgst_percent)){ 
+				 var fright_cgst_amount = 0; 
+				$('input[name="fright_cgst_amount"]').val(fright_cgst_amount.toFixed(2));
+			}else{ 
+				var fright_amount=parseFloat($('input[name="fright_amount"]').val());
+				var fright_cgst_amount = (fright_amount*fright_cgst_percent)/100;
+				$('input[name="fright_cgst_amount"]').val(fright_cgst_amount.toFixed(2));
+			}
+		
+		var fright_sgst_percent=parseFloat($('select[name="fright_sgst_percent"] option:selected').attr("percentage"));
+			if(isNaN(fright_sgst_percent)){ 
+				 var fright_sgst_amount = 0; 
+				$('input[name="fright_sgst_amount"]').val(fright_sgst_amount.toFixed(2));
+			}else{ 
+				var fright_amount=parseFloat($('input[name="fright_amount"]').val());
+				var fright_sgst_amount = (fright_amount*fright_sgst_percent)/100;
+				$('input[name="fright_sgst_amount"]').val(fright_sgst_amount.toFixed(2));
+			}
+			
+		var fright_igst_percent=parseFloat($('select[name="fright_igst_percent"] option:selected').attr("percentage"));
+			if(isNaN(fright_igst_percent)){ 
+				 var fright_igst_amount = 0; 
+				$('input[name="fright_igst_amount"]').val(fright_igst_amount.toFixed(2));
+			}else{ 
+				var fright_amount=parseFloat($('input[name="fright_amount"]').val());
+				var fright_igst_amount = (fright_amount*fright_igst_percent)/100;
+				$('input[name="fright_igst_amount"]').val(fright_igst_amount.toFixed(2));
+			}
+			var total_fright=fright_amount+fright_cgst_amount+fright_igst_amount+fright_sgst_amount;
+			$('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+	}
+	
 	calculate_total();	
 	function calculate_total(){ 
 		var total=0; var grand_total=0; var total_amt=0; var total_discount=0; var total_pnf=0; var total_taxable_value=0; var total_cgst=0; var total_sgst=0; var total_igst=0;  var total_row_amount=0
@@ -784,26 +864,51 @@ $(document).ready(function() {
 					grand_total=grand_total+row_total;
 			}
 			
+						var fcgst=parseFloat($('input[name="fright_cgst_amount"]').val());
+			if(isNaN(fcgst)){ var fcgst = 0;  }
+			
+			var fsgst=parseFloat($('input[name="fright_sgst_amount"]').val());
+			if(isNaN(fsgst)){ var fsgst = 0;  }
+			
+			var figst=parseFloat($('input[name="fright_igst_amount"]').val());
+			if(isNaN(figst)){ var figst = 0;  }
+			
+			var fright_amount=parseFloat($('input[name="fright_amount"]').val());
+			if(isNaN(fright_amount)){ var fright_amount = 0;  }
+			
+			var total_fright_amount=parseFloat($('input[name="total_fright_amount"]').val());
+			if(isNaN(total_fright_amount)){ var total_fright_amount = 0;  }
+			total_tax=total_taxable_value+fright_amount;
 			
 			$('input[name="total_amt"]').val(total_amt.toFixed(2));
 			$('input[name="total_discount"]').val(total_discount.toFixed(2));
 			$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
-			$('input[name="total_taxable_value"]').val(total_taxable_value.toFixed(2));
-			$('input[name="total_cgst"]').val(total_cgst.toFixed(2));
-			$('input[name="total_sgst"]').val(total_sgst.toFixed(2));
-			$('input[name="total_igst"]').val(total_igst.toFixed(2));
-			$('input[name="all_row_total"]').val(total_row_amount.toFixed(2));
+			$('input[name="total_taxable_value"]').val(total_tax.toFixed(2));
+			
+			total_debit=total_row_amount+total_fright_amount;
+			total_cgst_amt=total_cgst+fcgst;
+			total_sgst_amt=total_sgst+fsgst;
+			total_igst_amt=total_igst+figst;
+			$('input[name="fright_amt"]').val(fright_amount.toFixed(2));
+			$('input[name="total_cgst"]').val(total_cgst_amt.toFixed(2));
+			$('input[name="total_sgst"]').val(total_sgst_amt.toFixed(2));
+			$('input[name="total_igst"]').val(total_igst_amt.toFixed(2));
+			$('input[name="all_row_total"]').val(total_debit.toFixed(2));
 			
 			var all_row_total=parseFloat($('input[name="all_row_total"]').val());
-			var fright_amount=parseFloat($('input[name="fright_amount"]').val());
-			if(isNaN(fright_amount)) { var fright_amount = 0; }
-			grand_total=all_row_total+fright_amount;
+
+			grand_total=total_taxable_value+total_cgst_amt+total_sgst_amt+total_igst_amt+fright_amount;
+			$('input[name="total"]').val(total_taxable_value.toFixed(2));
+			$('input[name="total_cgst_amount"]').val(total_cgst_amt.toFixed(2));
+			$('input[name="total_igst_amount"]').val(total_igst_amt.toFixed(2));
+			$('input[name="total_sgst_amount"]').val(total_sgst_amt.toFixed(2));
 			$('input[name="grand_total"]').val(grand_total.toFixed(2));
 		});
+		do_ref_total();
 	}
 	
 	
-		$('.addrefrow').live("click",function() {
+	$('.addrefrow').live("click",function() {
 		add_ref_row();
 	});
 	
@@ -812,6 +917,7 @@ $(document).ready(function() {
 		$("table.main_ref_table tbody").append(tr);
 		rename_ref_rows();
 	}
+	
 	rename_ref_rows();
 	function rename_ref_rows(){
 		var i=0; var customer_suppiler_id = $('#customer_suppiler_id').val();
@@ -944,7 +1050,6 @@ $(document).ready(function() {
 			//alert(response);
 		});
 	}
-	
 	
 });
 </script>

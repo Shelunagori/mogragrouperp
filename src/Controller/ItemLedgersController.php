@@ -189,6 +189,7 @@ class ItemLedgersController extends AppController
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
 		$item_name=$this->request->query('item_name');
+		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
 		$stock=$this->request->query('stock');
@@ -196,6 +197,9 @@ class ItemLedgersController extends AppController
 		//pr($item_category);exit;
 		$where=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock'));
+		if(!empty($item_name)){
+			$where['item_category_id LIKE']=$item_category;
+		}
 		if(!empty($item_category)){
 			$where['item_category_id LIKE']=$item_category;
 		}
@@ -282,7 +286,9 @@ class ItemLedgersController extends AppController
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty'));
+		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
+		//pr($Items->toArray()); exit;
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items'));
 		$this->set('_serialize', ['itemLedgers']);
     }
 	
