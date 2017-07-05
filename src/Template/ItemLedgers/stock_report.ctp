@@ -13,7 +13,7 @@
 								<tr>
 									<td width="15%">
 											<label class="control-label">Items </label>
-											<?php echo $this->Form->input('item_name', ['empty'=>'--Select--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$Item) ]); ?>
+											<?php echo $this->Form->input('item_name', ['empty'=>'--Select--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
 									</td>
 									<td width="15%">
 											<label class="control-label">Category </label>

@@ -188,17 +188,18 @@ class ItemLedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-		$item_name=$this->request->query('item_name');
+		//$item_name=$this->request->query('item_name');
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
 		$stock=$this->request->query('stock');
 		$item_sub_group=$this->request->query('item_sub_group');
-		//pr($item_category);exit;
+		
 		$where=[];
-		$this->set(compact('item_category','item_group','item_sub_group','stock'));
-		if(!empty($item_name)){
-			$where['item_category_id LIKE']=$item_category;
+		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
+		if(!empty($item_name)){  //pr($item_name);exit;
+			$where['Items.id']=$item_name;
+			
 		}
 		if(!empty($item_category)){
 			$where['item_category_id LIKE']=$item_category;
@@ -209,7 +210,7 @@ class ItemLedgersController extends AppController
 		if(!empty($item_sub_group)){
 			$where['item_sub_group_id LIKE']=$item_sub_group;
 		}
-		
+		//pr($where); exit;
 		//pr($stock);exit;
 				
 		$item_stocks =[];$items_names =[];
@@ -227,6 +228,7 @@ class ItemLedgersController extends AppController
 				'integer'
 			);
 
+			
 		$query->select([
 			'total_in' => $query->func()->sum($totalInCase),
 			'total_out' => $query->func()->sum($totalOutCase),'id','item_id'
@@ -235,11 +237,11 @@ class ItemLedgersController extends AppController
 		->group('item_id')
 		->autoFields(true)
 		->order(['Items.name'=>'ASC'])
-		->contain(['Items'=> function ($q)use($where) {
+		->contain(['Items'=> function ($q)use($where) { //pr($where);exit;
 				return $q->where($where);
 				}]);
 		$results =$query->toArray();
-		//pr($results);exit;
+		
 		if($stock == "Negative"){
 			foreach($results as $result){
 				if($result->total_in - $result->total_out < 0){
