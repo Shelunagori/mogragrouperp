@@ -66,6 +66,12 @@ $this->Form->templates([
 							<?php echo $this->Form->input('cin_no', ['label' => false,'class' => 'form-control input-sm nospace']); ?>
 						</div>
 					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="control-label">GST No</label>
+							<?php echo $this->Form->input('gst_no', ['label' => false,'class' => 'form-control input-sm nospace']); ?>
+						</div>
+					</div>
 				</div>
 			
 				<div class="row">

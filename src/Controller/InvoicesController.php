@@ -126,9 +126,18 @@ class InvoicesController extends AppController
 			if(!empty($invoice_no)){
 				$where['Invoices.in2 LIKE']=$invoice_no;
 			}
-				//pr($invoice_no);exit;
+			$invoice_detail = $this->Invoices->find()->contain(['InvoiceRows'=> function ($p){
+				return $p->where(['inventory_voucher_applicable'=>'Yes']);
+			}])->where($where)->where(['Invoices.company_id'=>$st_company_id])->first();
+			
+			$p=0;
+			foreach(@$invoice_detail->invoice_rows as $invoice_row){
+				$p=1;
+			}
+			if($p==1){
 				$invoices = $this->Invoices->find()->contain(['Customers','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id]);
 				$status=1;
+			}
 		}
 		//pr($status);exit;
 		$this->set(compact('invoices','status','sales_return','InvoiceRows','invoice_no'));
@@ -1414,9 +1423,10 @@ class InvoicesController extends AppController
 				}
 
 		$invoice = $this->Invoices->newEntity();
-		        $invoice = $this->Invoices->newEntity();
+		$invoice = $this->Invoices->newEntity();
         if ($this->request->is('post')) {
 			$invoice = $this->Invoices->patchEntity($invoice, $this->request->data);
+			//pr($invoice);exit;
 			foreach($invoice->invoice_rows as $invoice_row){
 				if($invoice_row->item_serial_numbers){
 					$item_serial_no=implode(",",$invoice_row->item_serial_numbers );

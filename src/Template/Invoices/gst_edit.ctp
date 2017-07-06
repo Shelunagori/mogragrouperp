@@ -215,11 +215,23 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</thead>
 				<tbody>
 				<?php 
-					$options=array();
-						foreach($GstTaxes as $GstTaxe){
-							$merge=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
-							$options[]=['text' =>$merge, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+					$cgst_options=array();
+					$sgst_options=array();
+					$igst_options=array();
+					foreach($GstTaxes as $GstTaxe){
+						if($GstTaxe->cgst=="Yes"){
+							$merge_cgst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+							$cgst_options[]=['text' =>$merge_cgst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+						}else if($GstTaxe->sgst=="Yes"){
+							$merge_sgst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+							$sgst_options[]=['text' =>$merge_sgst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+						}else if($GstTaxe->igst=="Yes"){
+							$merge_igst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+							$igst_options[]=['text' =>$merge_igst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
 						}
+						
+					}
+						
 					$existing_rows=[];
 					$current_rows=[];
 					$current_row_items=[];
@@ -270,11 +282,11 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox pnf_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_pnf[$sales_order_row->item_id]]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Taxable Value','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm  row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_cgst[$sales_order_row->item_id]]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm  row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_cgst[$sales_order_row->item_id]]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_sgst[$sales_order_row->item_id]]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_sgst[$sales_order_row->item_id]]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_igst[$sales_order_row->item_id]]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value'=>@$current_igst[$sales_order_row->item_id]]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
 							<td><label><?php 
@@ -316,21 +328,32 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<?php } $q++;  } ?>
 				</tbody>
 				<tfoot><?php 
-							$options2=array();
+							$cgst_options=array();
+							$sgst_options=array();
+							$igst_options=array();
 							foreach($GstTaxes as $GstTaxe){
-								$merge=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
-								$options2[]=['text' =>$merge, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+								if($GstTaxe->cgst=="Yes"){
+									$merge_cgst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+									$cgst_options[]=['text' =>$merge_cgst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+								}else if($GstTaxe->sgst=="Yes"){
+									$merge_sgst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+									$sgst_options[]=['text' =>$merge_sgst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+								}else if($GstTaxe->igst=="Yes"){
+									$merge_igst=$GstTaxe->tax_figure.' ('.$GstTaxe->invoice_description.')';
+									$igst_options[]=['text' =>$merge_igst, 'value' => $GstTaxe->id,'percentage'=>$GstTaxe->tax_figure];
+								}
+								
 							}
 						?>
 					<tr>
 						<td align="right" colspan="8">Fright Ledger Account</td>
 						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
 						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
-						<td><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$options2,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td colspan="2"><?php echo $this->Form->input('total_fright_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
 						
@@ -601,8 +624,9 @@ $(document).ready(function() {
     });
 	
 	$('#add_submit').on("mouseover", function () {
+		do_ref_total();	
 		put_code_description();
-    });
+	});
 	
 	$('.pnf_percentage').die().live("keyup",function() {
 		var qty =$(this).val();

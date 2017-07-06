@@ -47,7 +47,13 @@
 					?>
 						<tr>
 							<td><?= h(++$page_no) ?></td>
-							<td><?= h('#'.str_pad($inventory_transfer_vouch_data->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+							<?php if($inventory_transfer_vouch_data->in_out=='in_out'){ ?>
+							<td><?= h('ITV-'.str_pad($inventory_transfer_vouch_data->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+							<?php }else if($inventory_transfer_vouch_data->in_out=='in') { ?>
+							<td><?= h('ITVI-'.str_pad($inventory_transfer_vouch_data->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+							<?php }else { ?>
+							<td><?= h('ITVO-'.str_pad($inventory_transfer_vouch_data->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+							<?php } ?>
 							<td><?= h(date("d-m-Y",strtotime($inventory_transfer_vouch_data->transaction_date)))?></td>
 							<td>
 							<?php if($inventory_transfer_vouch_data->in_out=='Out'){ ?>

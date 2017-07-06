@@ -29,11 +29,11 @@
 		<div class="col-md-3">
 		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" >
 		</div>
-		<div class="col-md-3">
-			
-				
+		<div class="col-md-6">
+			<label>Narration</label>
+			<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
 		</div>
-	</div>
+	</div><br/>
 		<div class="row">
 		
 			<div class="col-md-6">
@@ -45,7 +45,6 @@
 								<th>Item</th>
 								<th >Quantity</th>
 								<th >Serial Number</th>
-								<th></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -302,7 +301,7 @@ $(document).ready(function() {
 			if($(this).find('td:nth-child(3) select').length>0){
 				$(this).find('td:nth-child(3) select').attr({name:"inventory_transfer_voucher_rows[out]["+i+"][serial_number_data][]", id:"inventory_transfer_voucher_rows-"+i+"-serial_number_data"}).rules("add", "required");
 			}
-			$(this).find('td:nth-child(4) input').attr({name:"inventory_transfer_voucher_rows[out]["+i+"][narration]", id:"inventory_transfer_voucher_rows-"+i+"-narration"}).rules("add", "required");
+			
 			i++; 
 		});
 	}
@@ -336,7 +335,7 @@ $(document).ready(function() {
 <table id="sampletable" style="display:none;">
 	<tbody>
 		<tr class="main">
-			<td>
+			<td  width="40%">
 				<?php 
 				$item_option=[];
 				foreach($display_items as $Item){  
@@ -344,23 +343,21 @@ $(document).ready(function() {
 						$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
 					}
 				}
-				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>' display: block; width:80%;','class' => 'form-control input-sm select_item_out item_id']); ?>
+				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>' display: block; ','class' => 'form-control input-sm select_item_out item_id']); ?>
 			</td>
-			<td>
-				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity','style'=>'width: 53px;']); ?>
+			<td  width="15%">
+				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity']); ?>
 			</td>
-			<td></td>
-			<td>
-				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
-			</td>
-			<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
+			<td  width="35%"></td>
+			
+			<td  width="10%"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
 	</tbody>
 </table>
 <table id="sampletable_1" style="display:none;">
 	<tbody>
 		<tr class="main">
-			<td width="20%">
+			<td width="30%">
 				<?php 
 				$item_option=[];
 				foreach($display_items as $Item){  
@@ -368,7 +365,7 @@ $(document).ready(function() {
 						$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
 					}
 				}
-				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>'width: 80px; display: block;','class' => 'form-control input-sm select_item_in item_id']); ?>
+				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>'display: block;','class' => 'form-control input-sm select_item_in item_id']); ?>
 			</td>
 			<td width="20%"> 
 				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx_in','placeholder' => 'Quantity']); ?>

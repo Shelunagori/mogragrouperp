@@ -94,7 +94,7 @@ $html = '
 				<td width="30%" valign="bottom">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">INVOICE</div>
 				</td>
-				<td align="right" width="35%" style="font-size: 12px;">
+				<td align="right" width="35%" style="font-size: 12px; padding-top:-7px;">
 				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" style="height:11px;margin-top:5px;"/> '. h($invoice->company->mobile_no).'</span> | 
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($invoice->company->email).'</span>
@@ -175,17 +175,17 @@ $html.='
 		<thead>
 			<tr>
 				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
-				<th rowspan="2" width="100%">Items</th>
-				<th rowspan="2"  >Quantity</th>
-				<th rowspan="2" >Rate</th>
-				<th rowspan="2" > Amount</th>
+				<th style="text-align: center;" rowspan="2" width="100%">Items</th>
+				<th style="text-align: center;" rowspan="2"  >Quantity</th>
+				<th style="text-align: center;" rowspan="2" >Rate</th>
+				<th style="text-align: center;" rowspan="2" > Amount</th>
 				<th style="text-align: center;" colspan="2" >Discount</th>
 				<th style="text-align: center;" colspan="2" >P&F </th>
-				<th rowspan="2" >Taxable Value</th>
+				<th style="text-align: center;" rowspan="2" >Taxable Value</th>
 				<th style="text-align: center;" colspan="2">CGST</th>
 				<th style="text-align: center;" colspan="2" >SGST</th>
 				<th style="text-align: center;" colspan="2" >IGST</th>
-				<th rowspan="2" >Total</th>
+				<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
 			<tr> <th style="text-align: center;" > %</th>
 				<th style="text-align: center;">Amt</th>
@@ -202,42 +202,112 @@ $html.='
 		<tbody>
 ';
 
-$sr=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++; 
+$sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++; 
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_percentage) .'%</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_percentage) .'%</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->taxable_value,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->cgst_amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$sgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->sgst_amount,[ 'places' => 2]) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$igst_per[$invoiceRows->id]['tax_figure']) .' %</td>
-		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->igst_amount,[ 'places' => 2]) .'</td>
+		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';
+		
+		if($invoiceRows->discount_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_percentage) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->discount_amount,[ 'places' => 2]) .'</td>';	
+		}
+		
+		if($invoiceRows->pnf_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_percentage) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->pnf_amount,[ 'places' => 2]) .'</td>';	
+		
+		}
+		
+		$html.='
+		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->taxable_value,[ 'places' => 2]) .'</td>';
+		if($invoiceRows->cgst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->cgst_amount,[ 'places' => 2]) .'</td>';
+		
+		}
+		if($invoiceRows->sgst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$sgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->sgst_amount,[ 'places' => 2]) .'</td>';
+		}
+		if($invoiceRows->igst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$igst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->igst_amount,[ 'places' => 2]) .'</td>';
+		}
+		$html.='
+
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->row_total,[ 'places' => 2]) .'</td>
 	</tr>';
-	
+	$total_taxable_value+=$invoiceRows->taxable_value;
 endforeach; 
 $fright_total=$invoice->fright_amount+$invoice->fright_cgst_amount+$invoice->fright_sgst_amount+$invoice->fright_igst_amount;
-
+if($invoice->fright_amount != 0){ 
 $html.='<tr>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right" colspan="9" >Fright  Amount</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_amount).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h(@$fright_ledger_cgst->tax_figure).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_cgst_amount).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h(@$fright_ledger_sgst->tax_figure).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_sgst_amount).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($fright_ledger_igst->tax_figure).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($invoice->fright_igst_amount).'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center"  >'.h($fright_total).'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right" colspan="9" >Freight  Amount</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_amount,[ 'places' => 2]) .'</td>';
+		
+		if($invoice->fright_cgst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_cgst->tax_figure) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_cgst_amount,[ 'places' => 2]) .'</td>';
+		}
+		
+		if($invoice->fright_sgst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_sgst->tax_figure) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_sgst_amount,[ 'places' => 2]) .'</td>';
+		}
+		
+		if($invoice->fright_igst_amount==0){ 
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+		}else{
+		$html.='
+			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_igst->tax_figure) .'%</td>
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_igst_amount,[ 'places' => 2]) .'</td>';
+		}
+		$html.='	
+			
+			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($fright_total,[ 'places' => 2]) .'</td>
 		</tr>';
+}
 	$html.='</tbody>';
 $html.='</table>';
 	
@@ -251,11 +321,12 @@ if(sizeof($grand_total)==2)
 	$paisa_text=' and ' . h(ucwords($this->NumberWords->convert_number_to_words($paisa))) .' Paisa';
 }else{ $paisa_text=""; }
 
+$basic_value=$invoice->fright_amount+$total_taxable_value;
 $html.='
 <table width="100%" class="table_rows" >
 	<tbody>
 			<tr>
-				<td  width="80%">
+				<td  width="75%">
 					<b style="font-size:13px;"><u>Our Bank Details</u></b>
 					<table width="100%" class="table2">
 						<tr>
@@ -275,13 +346,39 @@ $html.='
 					</table>
 				</td>
 				
-				<td  width="20%">
+				<td  width="25%">
 					<table width="100%" class="table2">
-						
-						<tr>
-							<td  >Total</td>
+					<tr>
+							<td >Total</td>
 							<td>:</td>
-							<td style="text-align:right;" valign="">'.h($invoice->grand_total).'</td>
+							<td style="text-align:right;" valign="">'. $this->Number->format($basic_value,[ 'places' => 2]) .'</td>
+						</tr>';
+					if($invoice->total_igst_amount == 0){
+					$html.='
+							<tr>
+								<td  >Total CGST</td>
+								<td>:</td>
+								<td style="text-align:right;" valign="">'. $this->Number->format($invoice->total_cgst_amount,[ 'places' => 2]) .'</td>
+								
+							</tr>
+							<tr>
+								<td  >Total SGST</td>
+								<td>:</td>
+								<td style="text-align:right;" valign="">'. $this->Number->format($invoice->total_sgst_amount,[ 'places' => 2]) .'</td>
+							</tr>';
+					}else{
+						$html.='
+							<tr>
+								<td  >Total IGST</td>
+								<td>:</td>
+								<td style="text-align:right;" valign="">'. $this->Number->format($invoice->total_igst_amount,[ 'places' => 2]) .'</td>
+							</tr>';
+						}
+						$html.='
+						<tr>
+							<td >Grand Total</td>
+							<td>:</td>
+							<td style="text-align:right;" valign="">'. $this->Number->format($invoice->grand_total,[ 'places' => 2]) .'</td>
 						</tr>
 						</table>
 				</td>

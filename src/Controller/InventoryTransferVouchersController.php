@@ -43,14 +43,14 @@ class InventoryTransferVouchersController extends AppController
 			$where['InventoryTransferVouchers.transaction_date <=']=$To;
 		}
 		
-		$inventory_transfer_vouchs = $this->InventoryTransferVouchers->find()->where($where);
+		$inventory_transfer_vouchs = $this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id]);
 		//pr($inventory_transfer_vouchs->toArray());exit;
 		
 		
 		$this->paginate = [
             'contain' => ['Companies']
         ];
-        $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers);
+        $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id]));
 
         $this->set(compact('inventoryTransferVouchers','inventory_transfer_vouchs'));
         $this->set('_serialize', ['inventoryTransferVouchers']);
@@ -588,6 +588,7 @@ class InventoryTransferVouchersController extends AppController
 			$inventoryTransferVoucher->company_id=$st_company_id;
 			$inventoryTransferVoucher->in_out='in';
 			$inventoryTransferVoucher->created_by=$s_employee_id;
+			$inventoryTransferVoucher->transaction_date=date("Y-m-d",strtotime($inventoryTransferVoucher->transaction_date));
 			
 			if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
 			
@@ -665,7 +666,7 @@ class InventoryTransferVouchersController extends AppController
 			
 				if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
 				
-					foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){
+			foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){
 				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row->item_id,'in_out'=>'In']);
 				
 				$ledger_data=$Itemledgers->count();

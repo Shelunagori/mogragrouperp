@@ -51,6 +51,13 @@ margin-bottom: 0;
 					<td align="left"></td>
 					<td></td>
 				</tr>
+				<tr>
+					<td valign="top" align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Narration</label></td>
+					<td valign="top">:</td>
+					<td valign="top"><?= h($inventoryTransferVoucher->narration) ?></td>
+					<td align="left"></td>
+					<td></td>
+				</tr>
 			</table>
 	   </td>
 	</tr>
