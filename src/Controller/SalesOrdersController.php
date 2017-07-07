@@ -93,7 +93,6 @@ class SalesOrdersController extends AppController
 					}
 				)
 				);
-				//pr($salesOrders);exit;	
 		}else{
 		$salesOrders=$this->paginate(
 			$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
@@ -109,7 +108,7 @@ class SalesOrdersController extends AppController
 					->order(['SalesOrders.so2' => 'DESC'])
 			);
 			
-		}//pr($salesOrders);exit;	
+		}	
 		if(!empty($job_card)){
 			$salesOrders=$this->paginate(
 				$this->SalesOrders->find()->contain(['SalesOrderRows'])
