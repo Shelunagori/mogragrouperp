@@ -92,9 +92,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tbody id='main_tbody'>
 					<?php 
 					$q=0; 
-					foreach ($saleReturn->sale_return_rows as $invoice_row){  ?>
+					foreach ($saleReturn->sale_return_rows as $invoice_row){  pr($invoice_row); exit;?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
-							<td ><?php echo ++$q; $q--; ?></td>
+							<td ><?php echo ++$q; ?></td>
 							<td>
 								<?php 
 								echo $this->Form->input('sale_return_rows.'.$q.'.item_id', ['type'=>'hidden','value'=>$invoice_row->item_id]);
@@ -103,7 +103,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 							<td>
 								<?php  
-								echo $this->Form->input('sale_return_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','max'=>$invoice_row->quantity-$invoice_row->sa,'value'=>$invoice_row->sale_return_quantity]); 
+								echo $this->Form->input('sale_return_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity'
+								,'max'=>$invoice_row->quantity-$invoice_row->sale_return_quantity,'value'=>$invoice_row->sale_return_quantity]); 
 								?>
 							</td>
 							<td>

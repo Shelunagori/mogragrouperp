@@ -33,7 +33,7 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 1;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 13px !important;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -126,12 +126,12 @@ $html = '
 				$html.='
 					<table  valign="center" width="100%" style="margin-top: 0px;" class="table2">
 						<tr>
-							<td width="60%" >
+							<td width="80%" >
 								
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								<div style="height:5px;"></div>
 								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
-								<span>GST  : '. h($invoice->customer->gst_no) .'</span><br/>
+								<span>GST  : '. h($invoice->customer->gst_no) .'</span>
 								<span>PAN : '. h($invoice->customer->pan_no) .'</span>
 							</td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
@@ -206,7 +206,7 @@ $sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invo
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;" valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
+		<td style="padding-top:8px;padding-bottom:5px; " valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';

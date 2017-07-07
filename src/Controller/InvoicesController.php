@@ -91,11 +91,12 @@ class InvoicesController extends AppController
 			
 		}
 		
-		else if($inventory_voucher=='true'){ 
+		else if($inventory_voucher=='true'){  
 			$invoices=[]; 
 			$invoices=$this->paginate($this->Invoices->find()->where($where)->contain(['SalesOrders','InvoiceRows'=>['Items'=>function ($q) {
 				return $q->where(['source !='=>'Purchessed']);
-				}]])->where(['Invoices.company_id'=>$st_company_id,'inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'No'])->order(['Invoices.id' => 'DESC']));
+				}]])->where(['Invoices.company_id'=>$st_company_id,'inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'Yes'])->order(['Invoices.id' => 'DESC']));
+				//pr($invoices); exit;
 		}else if($sales_return=='true'){
 			
 			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']));
@@ -1422,7 +1423,7 @@ class InvoicesController extends AppController
 					$chkdate = 'Not Found';	
 				}
 
-		$invoice = $this->Invoices->newEntity();
+		//$invoice = $this->Invoices->newEntity();
 		$invoice = $this->Invoices->newEntity();
         if ($this->request->is('post')) {
 			$invoice = $this->Invoices->patchEntity($invoice, $this->request->data);
@@ -2306,16 +2307,18 @@ class InvoicesController extends AppController
 		}
 		
 		
-		if($invoice->fright_cgst_percent > 0){
-				$fright_ledger_cgst=$this->Invoices->SaleTaxes->get(@$invoice->fright_cgst_percent);
-			}
-			if($invoice->fright_sgst_percent > 0){
-				$fright_ledger_sgst=$this->Invoices->SaleTaxes->get(@$invoice->fright_sgst_percent);
-			}
-			if($invoice->fright_igst_percent > 0){
-				$fright_ledger_igst=$this->Invoices->SaleTaxes->get(@$invoice->fright_igst_percent);
-			}
-		$fright_ledger_account=$this->Invoices->LedgerAccounts->get(@$invoice->fright_ledger_account);
+		if($invoice->fright_ledger_account > 0){
+			if($invoice->fright_cgst_percent > 0){
+					$fright_ledger_cgst=$this->Invoices->SaleTaxes->get(@$invoice->fright_cgst_percent);
+				}
+				if($invoice->fright_sgst_percent > 0){
+					$fright_ledger_sgst=$this->Invoices->SaleTaxes->get(@$invoice->fright_sgst_percent);
+				}
+				if($invoice->fright_igst_percent > 0){
+					$fright_ledger_igst=$this->Invoices->SaleTaxes->get(@$invoice->fright_igst_percent);
+				}
+			$fright_ledger_account=$this->Invoices->LedgerAccounts->get(@$invoice->fright_ledger_account);
+		}
 	//pr($fright_ledger_cgst); exit;
         //$this->set('invoice', $invoice);
 		$this->set(compact('invoice','cgst_per','sgst_per','igst_per','fright_ledger_cgst','fright_ledger_sgst','fright_ledger_igst','fright_ledger_account'));

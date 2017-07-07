@@ -88,7 +88,7 @@ class InventoryVouchersController extends AppController
 				->where(['invoice_id' => $invoice_id,'item_id'=>$item_id])
 				->execute();
 		}
-			
+		
 						
 		if(empty($item_id) && !empty($invoice_id)){
 			$row=$this->InventoryVouchers->Invoices->get($invoice_id, [
@@ -304,6 +304,7 @@ class InventoryVouchersController extends AppController
 		foreach($invoice_data->invoice_rows as $invoice_row){ 
 		
 			$SalesOrderRow=$this->InventoryVouchers->SalesOrderRows->find()->where(['sales_order_id'=>$sales_order_id,'item_id'=>$invoice_row->item_id])->first();
+			//pr($invoice_row->item->source); 
 			if($invoice_row->item->source=='Purchessed/Manufactured'){ 
 				if($SalesOrderRow->source_type=="Manufactured" || $SalesOrderRow->source_type=="" ){
 					$display_items[$invoice_row->item->id]=$invoice_row->item->name; 
@@ -313,7 +314,7 @@ class InventoryVouchersController extends AppController
 			}
 		}
 		
-		
+		//pr($display_items); exit;
 		
 		foreach($display_items as $item_id=>$item_name){
 			$query = $this->InventoryVouchers->InvoiceRows->query();
@@ -328,7 +329,7 @@ class InventoryVouchersController extends AppController
 				}]]);
 		
 		//$aw=pr(sizeof($Invoice->invoice_rows)); exit;
-		//pr($aw); exit;
+		
 		if(sizeof($Invoice->invoice_rows)==0){
 			$query1 = $this->InventoryVouchers->Invoices->query();
 			$query1->update()
@@ -349,6 +350,7 @@ class InventoryVouchersController extends AppController
 				'contain' => ['InvoiceRows'=> function ($q) {
 				return $q->where(['InvoiceRows.inventory_voucher_applicable'=>'Yes']);
 				}]]);
+				//pr($Invoice); exit;
 			$invoice_row = @$Invoice->invoice_rows[0];
 			$item_id=$invoice_row->item_id;
 			$invoice_row_id=$invoice_row->id;

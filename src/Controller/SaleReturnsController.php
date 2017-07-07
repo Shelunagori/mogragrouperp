@@ -351,7 +351,7 @@ class SaleReturnsController extends AppController
 				}
 			
                
-            } else { pr($saleReturn); exit;
+            } else { //pr($saleReturn); exit;
                 $this->Flash->error(__('The sale return could not be saved. Please, try again.'));
             }
         }
