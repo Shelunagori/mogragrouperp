@@ -84,12 +84,16 @@ class SalesOrdersController extends AppController
 			
 			$salesOrders=$this->paginate($this->SalesOrders->find()
 			->contain(['Quotations','SalesOrderRows'=>['Items']])
+			->leftJoinWith('SalesOrderRows', function ($q) {
+						return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+					})
 			->matching(
 					'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
 						return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
 					}
 				)
 				);
+				//pr($salesOrders);exit;	
 		}else{
 		$salesOrders=$this->paginate(
 			$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
