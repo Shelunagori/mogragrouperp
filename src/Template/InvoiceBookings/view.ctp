@@ -165,7 +165,7 @@ margin-bottom: 0;
 		</tr>
 		<?php } ?>
 		<tr>
-			<td colspan="3"></td>
+			<td colspan="3"><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
 			<td style="font-size:14px; font-weight:bold;"  align="right"> Total</td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');

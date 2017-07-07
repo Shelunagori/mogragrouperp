@@ -87,12 +87,22 @@
 				
 					</tbody>
 				</table>
-
-				<?php if($chkdate == 'Not Found'){  ?>
+                <div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="control-label">Narration </label>
+								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2']); ?>							
+						</div>
+					</div>
+					<div class="col-md-6" style="margin-top: 24px;">
+					<?php if($chkdate == 'Not Found'){  ?>
 					<label class="btn btn-danger"> You are not in Current Financial Year </label>
 				<?php } else { ?>
 					<button type="submit" class="btn btn-primary" id='submitbtn' >Save & Next</button>
 				<?php } ?>	
+				</div>
+				</div>
+				
 
 				
 				<?= $this->Form->end() ?>

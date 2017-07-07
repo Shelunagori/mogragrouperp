@@ -364,9 +364,9 @@ class InventoryVouchersController extends AppController
 		if ($this->request->is(['post','put','patch'])) {
 			
 			$q_serial_no=@$this->request->data['serial_numbers'];
+			$narration=@$this->request->data['narration'];
 			
 			$InventoryVoucher=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id]);
-			
 			if($InventoryVoucher->count()==0){
 				$last_iv_number=$this->InventoryVouchers->find()->select(['iv_number'])->where(['company_id' => $st_company_id])->order(['iv_number' => 'DESC'])->first();
 				if($last_iv_number){
@@ -381,7 +381,8 @@ class InventoryVouchersController extends AppController
 					'invoice_id' => $invoice_id,
 					'iv_number' => $iv_number,
 					'created_by' => $s_employee_id,
-					'company_id'=>$st_company_id
+					'company_id'=>$st_company_id,
+					'narration'=>$narration
 				])
 				->execute();
 				
