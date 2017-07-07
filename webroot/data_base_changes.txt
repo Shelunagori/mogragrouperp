@@ -24,3 +24,6 @@ create new field in employee table => otp_no (int)
 <!----Dimpal--- 3/6/2017--->
 create new field in quotation_rows => proceed_qty(int)
 
+<!---Manoj---7/7/2017----->
+insert new field in invoice_bookings => narration(text)
+

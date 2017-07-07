@@ -277,6 +277,12 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						</tfoot>
 					</table>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label">Narration </label>
+								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2']); ?>							
+						</div>
+					</div>
 				</div>
 		<div class="form-actions">
 						<div class="row">
