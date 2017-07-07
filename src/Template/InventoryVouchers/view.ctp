@@ -19,11 +19,29 @@
 <table width="100%">
 	<tr>
 		<td  valign="top" align="left">
-			<table border="0">
+			<table border="0" width='100%'>
 				<tr>
 					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Inventory Voucher No</label></td>
 					<td>:</td>
-					<td align="right"><?= h($inventoryVoucher->iv1.'/IV'.str_pad($inventoryVoucher->iv2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->iv3.'/'.$inventoryVoucher->iv4) ?></td>
+					<td align="center">
+					<?= h('IV/'.str_pad($inventoryVoucher->iv_number, 4, '0', STR_PAD_LEFT)) ?>
+					</td>
+					<td align="left"></td>
+					<td width="10%"></td>
+					
+					<td align="center" width=" "<label style="font-size: 14px;font-weight: bold;">Invoice No</label></td>
+					<td>:</td>
+					<td align="center">
+					<?= h($inventoryVoucher->invoice->in1.'/IN'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4) ?>
+					</td>
+					<td align="center"></td>
+					<td width="10%"></td>
+					
+					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Narration</label></td>
+					<td>:</td>
+					<td align="center">
+					<?= h($inventoryVoucher->narration) ?>
+					</td>
 					<td align="left"></td>
 					<td></td>
 				</tr>
