@@ -250,7 +250,7 @@ class SaleReturnsController extends AppController
 					$query = $this->SaleReturns->Invoices->InvoiceRows->query();
 						$query->update()
 							->set(['sale_return_quantity'=>$sale_return_row->quantity])
-							->where(['invoice_id' => $invoice->id])
+							->where(['invoice_id' => $invoice->id,$sale_return_row->item_id])
 							->execute();
 					}
 				 $saleReturn->check=array_filter($saleReturn->check);

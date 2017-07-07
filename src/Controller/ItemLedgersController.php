@@ -49,8 +49,8 @@ class ItemLedgersController extends AppController
 		//return $source_model.$source_id;
 		if($source_model=="Grns"){
 			$Grn=$this->ItemLedgers->InvoiceBookings->find()->where(['grn_id'=>$source_id])->first();
-			//pr($Grn); exit;
 			$Vendor=$this->ItemLedgers->Vendors->get($Grn->vendor_id);
+			
 			return ['voucher_info'=>$Grn,'party_type'=>'-','party_info'=>$Vendor];
 		}
 		
@@ -69,13 +69,14 @@ class ItemLedgersController extends AppController
 			
 			if($Challan->challan_for=='Customer'){
 			$Party=$this->ItemLedgers->Customers->get($Challan->customer_id);
-			}else{
+			}else{ 
 			$Party=$this->ItemLedgers->Vendors->get($Challan->vendor_id);
 			}
 			return ['voucher_info'=>$Challan,'party_type'=>$Challan->challan_for,'party_info'=>$Party];
 		}
 		if($source_model=="Purchase Return"){
 			$PurchaseReturn=$this->ItemLedgers->PurchaseReturns->get($source_id);
+			
 			$Vendor=$this->ItemLedgers->Vendors->get($PurchaseReturn->vendor_id);
 			return ['voucher_info'=>$PurchaseReturn,'party_type'=>'Purchase','party_info'=>$Vendor];
 		}

@@ -63,7 +63,7 @@
 							$per_unit=0;
 						}
 						
-						$amount=@$item_stock*$per_unit;
+						$amount=abs(@$item_stock)*$per_unit;
 						$total_inv+=$amount;
 						?>
 							

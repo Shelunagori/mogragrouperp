@@ -91,10 +91,10 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</thead>
 				<tbody id='main_tbody'>
 					<?php 
-					$q=0; 
-					foreach ($saleReturn->sale_return_rows as $invoice_row){  pr($invoice_row); exit;?>
+					$q=0; $p=1; 
+					foreach ($saleReturn->sale_return_rows as $invoice_row){ ?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
-							<td ><?php echo ++$q; ?></td>
+							<td ><?php echo $p++; ?></td>
 							<td>
 								<?php 
 								echo $this->Form->input('sale_return_rows.'.$q.'.item_id', ['type'=>'hidden','value'=>$invoice_row->item_id]);
@@ -104,14 +104,14 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td>
 								<?php  
 								echo $this->Form->input('sale_return_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity'
-								,'max'=>$invoice_row->quantity-$invoice_row->sale_return_quantity,'value'=>$invoice_row->sale_return_quantity]); 
+								,'max'=>$invoice_row->quantity ,'value'=>$invoice_row->quantity]); 
 								?>
 							</td>
 							<td>
 								<?php echo $this->Form->input('sale_return_rows.'.$q.'.rate', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Rate','step'=>0.01,'value'=>$invoice_row->rate]); ?>
 							</td>
 							<td>
-								<?php echo $this->Form->input('sale_return_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01]); ?>
+								<?php echo $this->Form->input('sale_return_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01,'value'=>$invoice_row->amount]); ?>
 							</td>
 							<td>
 								
@@ -135,7 +135,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td colspan="6">
 							<?php echo $this->Form->input('sale_return_rows.'.$q.'.item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
 						</tr>
-					<?php $q++;  } }?>
+					<?php  } 
+					$q++; 
+					}?>
 					<?php   ?>
 				</tbody>
 			</table>
