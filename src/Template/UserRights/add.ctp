@@ -458,7 +458,16 @@ fieldset legend {
 							</label>
 						</div>
 				</div>
-				
+				<div class="col-md-3">
+					<div class="titletext"><b>User Logs Report</b></div>
+						<div class="checkbox-list">
+							<label class="checkbox-inline">
+								<?php 
+								if(in_array(149,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+								echo $this->Form->input('user_rights.149.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>149,$checked_status]); ?>
+							</label>
+						</div>
+				</div>
 				<div class="col-md-4">
 					<div class="titletext"><b>Bank Reconciliation Report</b></div>
 						<div class="checkbox-list">
@@ -476,6 +485,7 @@ fieldset legend {
 							
 						</div>
 				</div>
+				
              </fieldset> 
 		</div>
 		<br/>

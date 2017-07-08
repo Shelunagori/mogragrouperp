@@ -261,6 +261,15 @@ class ItemLedgersController extends AppController
 				}
 		}
 			
+		}elseif($stock == "Positive"){
+			foreach($results as $result){
+				if($result->total_in - $result->total_out > 0){
+					$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
+					$items_names[$result->item_id] = $result->item->name;
+					//pr($item_stocks);
+				}
+		}
+			
 		}else{
 			foreach($results as $result){
 				
