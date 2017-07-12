@@ -6,6 +6,9 @@
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
 	vertical-align: top !important;
 }
+
+
+
 </style>
 
 <div class="portlet light bordered">
@@ -34,32 +37,33 @@
 			<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
 		</div>
 	</div>
-		<div class="row">
-		
-			<div class="col-md-6">
+	<div style="width: 100%;overflow: auto;">
+		<table>
+		  <tr>
+			<td valign="top">
 			<h5>For Out -</h5>
 				
-					<table id="main_table"  class="table table-condensed">
+					<table id="main_table"  class="table table-condensed" style="width: 1000px;">
 						<thead>
 							<tr>
-								<th style="white-space: nowrap; width:30%;">Item</th>
-								<th style=" width:10%;" >Quantity</th>
-								<th style=" width:20%;" >Serial Number</th>
-								<th style=" width:40%;"></th>
+								<th >Item</th>
+								<th  >Quantity</th>
+								<th >Serial Number</th>
+								<th >Narration</th>
 								<th></th>
 							</tr>
 						</thead>
 					<tbody id="maintbody"></tbody>
 				</table>
-			</div>
+			</td>
 			
-			<div class="col-md-6">
+			<td valign="top">
 			<h5>For In -</h5>
 
-				<table id="main_table_1" class="table table-condensed">
+				<table id="main_table_1" class="table table-condensed" style="width: 1000px;">
 					<thead>
 						<tr>
-							<th>Item</th>
+							<th >Item</th>
 							<th >Quantity</th>
 							<th >Serial Number</th>
 							<th >Rate</th>
@@ -69,9 +73,11 @@
 					</thead>
 					<tbody id="maintbody_1"></tbody>
 				</table>
-			</div>
-		</div>
-
+			</td>
+		  </tr>
+		</table>
+	</div>
+	
 		<button type="submit" class="btn btn-primary">Submit</button>
 <?= $this->Form->end() ?>		
 	</div>
@@ -334,10 +340,10 @@ $(document).ready(function() {
 	
 </script>	
 
-<table id="sampletable" style="display:none;">
+<table id="sampletable" style="display:none;" width="100%">
 	<tbody>
 		<tr class="main">
-			<td>
+			<td style="width: 200px;">
 				<?php 
 				$item_option=[];
 				foreach($display_items as $Item){  
@@ -345,23 +351,23 @@ $(document).ready(function() {
 						$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
 					}
 				}
-				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>' display: block; width:80%;','class' => 'form-control input-sm select_item_out item_id']); ?>
+				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>' display: block; width:100%;','class' => 'form-control input-sm select_item_out item_id']); ?>
 			</td>
-			<td>
-				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity','style'=>'width: 53px;']); ?>
+			<td style="width: 100px;">
+				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity','style'=>'width:100%;']); ?>
 			</td>
-			<td></td>
-			<td>
-				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
+			<td style="width: 200px;"></td>
+			<td style="width: 300px;">
+				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control','placeholder' => 'Narration','style' => 'width:100%;']); ?>
 			</td>
 			<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
 	</tbody>
 </table>
-<table id="sampletable_1" style="display:none;">
+<table id="sampletable_1" style="display:none;" width="100%">
 	<tbody>
 		<tr class="main">
-			<td width="20%">
+			<td style="width: 200px;">
 				<?php 
 				$item_option=[];
 				foreach($display_items as $Item){  
@@ -369,16 +375,16 @@ $(document).ready(function() {
 						$item_option[]=['text' =>$Item->name, 'value' => $Item->id, 'serial_number_enable' => (int)@$Item->item_companies[0]->serial_number_enable];
 					}
 				}
-				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>'width: 80px; display: block;','class' => 'form-control input-sm select_item_in item_id']); ?>
+				echo $this->Form->input('q', ['empty'=>'Select','options' => $item_option,'label' => false,'style'=>'width: 100%; display: block;','class' => 'form-control input-sm select_item_in item_id']); ?>
 			</td>
-			<td width="20%"> 
+			<td style="width: 100px;"> 
 				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx_in','placeholder' => 'Quantity']); ?>
 			</td>
-			<td width="20%" ><div class="sr_container"></div></td>
-			<td width="20%">
+			<td style="width: 200px;"><div class="sr_container"></div></td>
+			<td style="width: 300px;">
 				<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
 			</td>
-			<td width="20%"><a class="btn btn-xs btn-default addrow_1" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow_1" href="#" role='button'><i class="fa fa-times"></i></a></td>
+			<td><a class="btn btn-xs btn-default addrow_1" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow_1" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
 	</tbody>
 </table>

@@ -652,6 +652,7 @@ select
 					</ul>
 				</li>
 				<?php } ?>
+				<?php if(in_array(141,$allowed_pages)||in_array(149,$allowed_pages)|| in_array(128,$allowed_pages) ||in_array(36,$allowed_pages) || in_array(37,$allowed_pages) || in_array(38,$allowed_pages) || in_array(41,$allowed_pages) || in_array(39,$allowed_pages) || in_array(40,$allowed_pages) || in_array(126,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
 					<i class="fa fa-bar-chart-o"></i>
@@ -698,15 +699,16 @@ select
 						<?php if(in_array(40,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement Ref.','/Ledgers/AccountStatementRefrence',array('escape'=>false)); ?></li>	
 						<?php } ?>
-						<?php echo '<li>'.$this->Html->link( '<i class="fa fa-users"></i>User Logs Report', '/UserLogs/',array('escape'=>false) ).'</li>';?>
+						<?php if(in_array(149,$allowed_pages)){ echo '<li>'.$this->Html->link( '<i class="fa fa-users"></i>User Logs Report', '/UserLogs/',array('escape'=>false) ).'</li>';}?>
 						<?php if(in_array(126,$allowed_pages)){?>
 						<li><?php $today =date('d-m-Y');
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Bank Reconciliation Add',array('controller'=>'Ledgers','action'=>'bankReconciliationAdd','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
 						
+						
 					
 					</ul>
-				</li>
+				</li><?php } ?>
 				<?php if(in_array(133,$allowed_pages)||in_array(134,$allowed_pages)|| in_array(135,$allowed_pages) ||in_array(136,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
@@ -716,10 +718,14 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php 
+						 if(in_array(133,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/Invoices/SalesReturnIndex?sales_return=true',array('escape'=>false)).'</li>';
+						 }
 						 ?>
 						<?php 
+						if(in_array(135,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/SaleReturns/',array('escape'=>false)).'</li>';
+						}
 						?>
 					</ul>
 				</li>
@@ -747,11 +753,13 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php 
+						if(in_array(129,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/InvoiceBookings/PurchaseReturnIndex?purchase-return=true',array('escape'=>false)).'</li>';
-						 ?>
+						}?>
 						<?php 
+						if(in_array(131,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/PurchaseReturns/',['escape'=>false]).'</li>';
-						?>
+						}?>
 					</ul>
 				</li>
 				<?php } ?>
