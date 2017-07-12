@@ -80,9 +80,8 @@ class ItemLedgersController extends AppController
 			$Vendor=$this->ItemLedgers->Vendors->get($PurchaseReturn->vendor_id);
 			return ['voucher_info'=>$PurchaseReturn,'party_type'=>'Purchase','party_info'=>$Vendor];
 		}
-		if($source_model=="Sale Return"){ 
+		if($source_model=="Sale Return"){
 			$SaleReturn=$this->ItemLedgers->SaleReturns->get($source_id);
-			//pr($SaleReturn); exit;
 			$Customer=$this->ItemLedgers->Customers->get($SaleReturn->customer_id);
 			return ['voucher_info'=>$SaleReturn,'party_type'=>'Sale','party_info'=>$Customer];
 		}
@@ -90,6 +89,11 @@ class ItemLedgersController extends AppController
 			$InventoryTransferVouchers=$this->ItemLedgers->InventoryTransferVouchers->get($source_id);//pr($source_id);exit;
 			//$Item=$this->ItemLedgers->Items->get($source_id);
 			return ['voucher_info'=>$InventoryTransferVouchers,'party_type'=>'-','party_info'=>'-'];
+		} 
+		if($source_model=="Inventory Return"){ 
+			$Inventoryreturn=$this->ItemLedgers->Rivs->get($source_id);//pr($source_id);exit;
+			//pr($Inventoryreturn);exit;
+			return ['voucher_info'=>$Inventoryreturn,'party_type'=>'-','party_info'=>'-'];
 		} 
        return $source_model.$source_id;
     }

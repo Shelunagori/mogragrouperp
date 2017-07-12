@@ -48,6 +48,17 @@ class RivsTable extends Table
 		 $this->belongsTo('RightRivs');
 		 $this->belongsTo('ItemSerialNumbers');
 		 $this->belongsTo('ItemLedgers');
+
+		$this->belongsTo('Creator', [
+			'className' => 'Employees',
+			'foreignKey' => 'created_by',
+			'propertyName' => 'creator',
+		]);
+		
+		$this->belongsTo('Companies', [
+			'foreignKey' => 'company_id',
+			'joinType' => 'INNER'
+		]);
     }
 
     /**

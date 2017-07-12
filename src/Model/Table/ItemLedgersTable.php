@@ -60,6 +60,7 @@ class ItemLedgersTable extends Table
 		$this->belongsTo('PurchaseReturns');
 		$this->belongsTo('InventoryTransferVouchers');
 		$this->belongsTo('InvoiceBookings');
+		$this->belongsTo('Rivs');
 		
     }
 

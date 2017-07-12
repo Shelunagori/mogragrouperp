@@ -24,12 +24,12 @@ margin-bottom: 0;
 <div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 100%;font-size: 12px;" class="maindiv">
 <table width="100%" class="divHeader">
 		<tr>
-			<td width="30%"><?php echo $this->Html->image('/logos/'.$inventoryTransferVoucher->company->logo, ['width' => '40%']); ?></td>
-			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER</div></td>
+			<td width="30%"><?php echo $this->Html->image('/logos/'.$riv->company->logo, ['width' => '40%']); ?></td>
+			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">REVERSE INVENTORY VOUCHER</div></td>
 			<td align="right" width="40%" style="font-size: 12px;">
-			<span style="font-size: 14px;"><?= h($inventoryTransferVoucher->company->name) ?></span>
-			<span><?= $this->Text->autoParagraph(h($inventoryTransferVoucher->company->address)) ?>
-			<?= h($inventoryTransferVoucher->company->mobile_no) ?></span>
+			<span style="font-size: 14px;"><?= h($riv->company->name) ?></span>
+			<span><?= $this->Text->autoParagraph(h($riv->company->address)) ?>
+			<?= h($riv->company->mobile_no) ?></span>
 			</td>
 		</tr>
 		<tr>
@@ -45,18 +45,19 @@ margin-bottom: 0;
 		<td  valign="top" align="left">
 			<table border="0">
 				<tr>
-					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Inventory Transfer Voucher No</label></td>
+					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Reverse Inventory Voucher No</label></td>
 					<td>:</td>
-					<td><?= h('#'.str_pad($inventoryTransferVoucher->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
+					<td><?= h('#'.str_pad($riv->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
 					<td align="left"></td>
-					<td></td>
+					<td>
+					</td>
 				</tr>
 			</table>
 	   </td>
 	</tr>
 </table>	
 </br>
-<?php if(!empty($inventoryTransferVoucher)){ ?>
+<?php if(!empty($riv)){ ?>
 <div class="portlet-body form">
 <table class="table table-bordered table-condensed">
 	<thead> 
@@ -64,24 +65,10 @@ margin-bottom: 0;
 		<th>In Item</th>
 	</thead>
 	<tbody>
+<?php $p=0; foreach($riv->left_rivs as $key=>$left_riv){ ?>
 		<tr >
 			<td valign="top">
-				<table class="table table-bordered table-condensed">
-					<thead> 
-						<th width="20%">Sr. No.</th>
-						<th>Item</th>
-						<th>Quantity</th>
-					</thead>
-					<tbody>
-						<?php $i=1; foreach($out_item as $out_item){ ?>
-						<tr>
-							<td valign="top"><?php echo $i; ?></td>
-							<td valign="top"><?php echo $out_item->item->name ?></td>
-							<td valign="top"><?php echo $out_item->quantity ?></td>
-						</tr>
-						<?php $i++; } ?>
-					</tbody>
-				</table>
+				<?= h($left_riv->item->name) ?> ( <?= h($left_riv->quantity) ?> )</b>
 			</td>
 			
 			<td valign="top">
@@ -92,11 +79,11 @@ margin-bottom: 0;
 						<th>Quantity</th>
 					</thead>
 					<tbody>
-						<?php $j=1; foreach($in_item as $in_item){ ?>
-						<tr >
+						<?php $j=1;  foreach($left_riv->right_rivs as $right_riv)  { ?>
+						<tr>
 							<td valign="top"><?php echo $j; ?></td>
-							<td valign="top"><?php echo $in_item->item->name ?></td>
-							<td valign="top"><?php echo $in_item->quantity ?></td>
+							<td valign="top"><?php echo $right_riv->item->name ?></td>
+							<td valign="top"><?php echo $right_riv->quantity ?></td>
 
 						</tr>
 						<?php $j++; } ?>
@@ -104,7 +91,7 @@ margin-bottom: 0;
 				</table>
 			</td>
 		</tr>
-		
+		<?php } ?>
 	</tbody>
 </table>
 </br>
@@ -114,13 +101,13 @@ margin-bottom: 0;
 		<table >
 			<tr>
 			    <td align="center">
-				<span style="font-size:14px;">For</span> <span style="font-size: 14px;font-weight: bold;"><?= h($inventoryTransferVoucher->company->name)?><br/></span>
+				<span style="font-size:14px;">For</span> <span style="font-size: 14px;font-weight: bold;"><?= h($riv->company->name)?><br/></span>
 				<?php 
-				 echo $this->Html->Image('/signatures/'.$inventoryTransferVoucher->creator->signature,['height'=>'50px','style'=>'height:50px;']); 
+				 echo $this->Html->Image('/signatures/'.$riv->creator->signature,['height'=>'50px','style'=>'height:50px;']); 
 				 ?></br>
 				<span style="font-size: 14px;font-weight: bold;">Authorised Signatory</span>
 				</br>
-				<span style="font-size:14px;"><?= h($inventoryTransferVoucher->creator->name) ?></span><br/>
+				<span style="font-size:14px;"><?= h($riv->creator->name) ?></span><br/>
 				</td>
 			</tr>
 		</table>

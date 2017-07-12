@@ -32,7 +32,7 @@
 						$party=$itemLedger->party_type;
 						$url_path="";
 						$source_model=$itemLedger->source_model;
-						//pr($party);exit;
+						//pr($source_model);exit;
 						if($source_model=='Challan')
 						{
 							if($itemLedger->party_type=='Vendor'){
@@ -75,6 +75,7 @@
 							$party_name=$itemLedger->party_info->customer_name;
 							
 							$voucher_no=$itemLedger->voucher_info->sr1.'/SR-'.str_pad($itemLedger->voucher_info->sr2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->sr3.'/'.$itemLedger->voucher_info->sr4;
+							$url_path="/saleReturns/View/".$itemLedger->voucher_info->id;
 							
 						}
 						else if($source_model=='Inventory Transfer Voucher')
@@ -82,14 +83,29 @@
 							//$party_name=$itemLedger->party_info->customer_name;
 							$party_name='-';
 							$voucher_no='#'.str_pad($itemLedger->voucher_info->voucher_no, 4, '0', STR_PAD_LEFT);
+							if($itemLedger->in_out=='in_out'){
+								$url_path="/inventory-transfer-vouchers/view/".$itemLedger->voucher_info->id;
+							}else if($itemLedger->in_out=='In'){
+								$url_path="/inventory-transfer-vouchers/inView/".$itemLedger->voucher_info->id;
+							}else{
+								$url_path="/inventory-transfer-vouchers/outView/".$itemLedger->voucher_info->id;
+							}
 						}
 						else if($source_model=='Inventory Vouchers')
 						{ 
+							
 							$party_name='-';
 							$voucher_no='#'.str_pad($itemLedger->voucher_info->iv_number, 4, '0', STR_PAD_LEFT);
+
 							$url_path="/inventory-vouchers/view/".$itemLedger->voucher_info->id;
+							//pr($itemLedger);
+						} else if($source_model=='Inventory Return')
+						{
+							$party_name='-';
+							$voucher_no='#'.str_pad($itemLedger->voucher_info->voucher_no, 4, '0', STR_PAD_LEFT);
+							$url_path="/Rivs/view/".$itemLedger->voucher_info->id;
 							//pr($voucher_no);
-						}
+						} 
 						
 						else if($source_model=='Grns')
 						{ 

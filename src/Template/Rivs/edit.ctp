@@ -11,8 +11,8 @@
 				<?= $this->Form->create($riv,['id'=>'form_sample_3']) ?>
 				<table class="table table-bordered " width="100%" id="main_tb" border="1">
 					<thead>
-						<th width="30%" class="text-center"><label class="control-label">Production</label></th>
-						<th align="center" class="text-center"><label class="control-label">Consumption</label></th>
+						<th width="30%" class="text-center"><label class="control-label">Out</label></th>
+						<th align="center" class="text-center"><label class="control-label">In</label></th>
 					</thead>
 					<tbody id="maintbody">
 					<?php $p=0; foreach($riv->left_rivs as $key=>$left_riv){ ?>

@@ -193,7 +193,8 @@
 						
 						<td>
 						<?php if($salesOrder->quotation_id > 0){
-							$max_val=@$qt_data[$sales_order_rows->item_id]-$qt_data1[$sales_order_rows->item_id]+$sales_order_rows->quantity;
+							
+							$max_val=@$qt_data[$sales_order_rows->item_id]-@$qt_data1[$sales_order_rows->item_id]+@$sales_order_rows->quantity;
 						}else{
 							$max_val='';
 						}?>

@@ -43,14 +43,14 @@ class InventoryTransferVouchersController extends AppController
 			$where['InventoryTransferVouchers.transaction_date <=']=$To;
 		}
 		
-		$inventory_transfer_vouchs = $this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id]);
+		$inventory_transfer_vouchs = $this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']);
 		//pr($inventory_transfer_vouchs->toArray());exit;
 		
 		
 		$this->paginate = [
             'contain' => ['Companies']
         ];
-        $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id]));
+        $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']));
 
         $this->set(compact('inventoryTransferVouchers','inventory_transfer_vouchs'));
         $this->set('_serialize', ['inventoryTransferVouchers']);
@@ -676,7 +676,7 @@ class InventoryTransferVouchersController extends AppController
 						}
 				}
 				$this->Flash->success(__('The Inventory Transfer Vouchers has been saved.'));
-                return $this->redirect(['action' => 'InventoryIn']);
+                return $this->redirect(['action' => 'Index']);
 			}
 			
 		}
@@ -779,7 +779,7 @@ class InventoryTransferVouchersController extends AppController
 					
 					$this->Flash->success(__('The Inventory Transfer Vouchers has been saved.'));
 
-                return $this->redirect(['action' => 'InventoryOut']);
+                return $this->redirect(['action' => 'Index']);
 				}
 		
 		}

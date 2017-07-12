@@ -488,6 +488,7 @@ class SalesOrdersController extends AppController
 				$qt_data1[$quotation_row->item_id]=$quotation_row->proceed_qty;
 			}
 		}
+//pr($qt_data1); exit;
 		$closed_month=$this->viewVars['closed_month'];
 		
 		if(!in_array(date("m-Y",strtotime($salesOrder->created_on)),$closed_month))
