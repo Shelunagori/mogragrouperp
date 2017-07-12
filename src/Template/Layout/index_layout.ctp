@@ -306,12 +306,11 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php if(in_array(1,$allowed_pages)){
-						echo '<li>'.$this->Html->link( 'Create', '/Quotations/add' ).'</li>';
+							echo '<li>'.$this->Html->link( 'Create', '/Quotations/add' ).'</li>';
 						} ?>
 						<?php if(in_array(21,$allowed_pages) || in_array(2,$allowed_pages)){
-						echo '<li>'.$this->Html->link( 'View', '/Quotations' ).'</li>';
+							echo '<li>'.$this->Html->link( 'View', '/Quotations' ).'</li>';
 						} ?>
-						
 					</ul>
 				</li>
 				<?php } ?>
@@ -385,7 +384,7 @@ select
 						 <?php } ?>
 						 <?php if(in_array(140,$allowed_pages)){ ?>
 						<?php
-						echo '<li>'.$this->Html->link( 'View', '/InventoryTransferVouchers' ).'</li>';
+						echo '<li>'.$this->Html->link('View', '/InventoryTransferVouchers' ).'</li>';
 						 ?>
 						 <?php } ?>
 					</ul>
@@ -400,10 +399,10 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php if(in_array(9,$allowed_pages)){
-						echo '<li>'.$this->Html->link( 'Create', '/Invoices?inventory_voucher=true' ).'</li>';
+						echo '<li>'.$this->Html->link('Create', '/Invoices?inventory_voucher=true' ).'</li>';
 						} ?>
 						<?php if(in_array(10,$allowed_pages)){
-						echo '<li>'.$this->Html->link( 'View', '/InventoryVouchers' ).'</li>';
+						echo '<li>'.$this->Html->link('View', '/InventoryVouchers' ).'</li>';
 						} ?>
 						
 					</ul>
@@ -427,7 +426,7 @@ select
 					</ul>
 				</li>
 				<?php } ?>
-				<?php if(in_array(124,$allowed_pages) || in_array(125,$allowed_pages) ){ ?>
+				<?php if(in_array(124,$allowed_pages) || in_array(125,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
@@ -444,9 +443,6 @@ select
 					</ul>
 				</li>
 				<?php } ?>
-				
-			
-			
 				<?php if(in_array(13,$allowed_pages) || in_array(14,$allowed_pages) || in_array(31,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
@@ -495,6 +491,10 @@ select
 						<?php if(in_array(18,$allowed_pages) || in_array(123,$allowed_pages)){
                         echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/InvoiceBookings/',array('escape'=>false)).'</li>';
                         } ?>
+						<?php if(in_array(17,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create Gst Invoice Booking','/Grns/index?grn-pull-request=true',array('escape'=>false)).'</li>';
+						} ?>
+						
 					</ul>
 				</li>
 				<?php } ?>
@@ -526,8 +526,6 @@ select
 							<?php } ?>
 							</ul>
 						</li>
-
-
 						<li>
 							<a href="javascript:;">
 							<i class="icon-basket"></i>
@@ -543,8 +541,6 @@ select
 							<?php } ?>
 							</ul>
 						</li>
-
-
 						<?php } ?>
 						<?php if(in_array(94,$allowed_pages)||in_array(95,$allowed_pages)|| in_array(96,$allowed_pages) ||in_array(97,$allowed_pages)){ ?>
 						<li>
@@ -558,7 +554,7 @@ select
 								<li><?php echo $this->Html->link( 'Add', '/Receipts/add' ); ?></li>
 							<?php } ?>
 							<?php if(in_array(95,$allowed_pages)|| in_array(96,$allowed_pages) ||in_array(97,$allowed_pages)){ ?>
-								<li><?php echo $this->Html->link( 'View', '/Receipts' ); ?></li>
+								<li> <?php echo $this->Html->link( 'View', '/Receipts' ); ?> </li>
 							<?php } ?>
 							</ul>
 						</li>
@@ -568,7 +564,7 @@ select
 							<a href="javascript:;">
 							<i class="icon-basket"></i>
 							<span class="title">PettyCash Voucher</span>
-							<span class="arrow "></span>
+							<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
 							<?php if(in_array(98,$allowed_pages)){ ?>
@@ -704,9 +700,6 @@ select
 						<li><?php $today =date('d-m-Y');
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Bank Reconciliation Add',array('controller'=>'Ledgers','action'=>'bankReconciliationAdd','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
-						
-						
-					
 					</ul>
 				</li><?php } ?>
 				<?php if(in_array(133,$allowed_pages)||in_array(134,$allowed_pages)|| in_array(135,$allowed_pages) ||in_array(136,$allowed_pages)){ ?>
@@ -785,12 +778,8 @@ select
 							<span class="arrow "></span>
 							</a>
 							<ul class="sub-menu">
-							
-								<li><?php echo $this->Html->link( 'Add', '/RequestLeaves/add' ); ?></li>
-							
-							
-								<li><?php echo $this->Html->link( 'View', '/RequestLeaves' ); ?></li>
-							
+						    	<li><?php echo $this->Html->link( 'Add', '/RequestLeaves/add' ); ?></li>
+							    <li><?php echo $this->Html->link( 'View', '/RequestLeaves' ); ?></li>
 							</ul>
 						</li>
 						</ul>

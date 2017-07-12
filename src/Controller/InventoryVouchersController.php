@@ -366,10 +366,10 @@ class InventoryVouchersController extends AppController
 		if ($this->request->is(['post','put','patch'])) {
 			
 			$q_serial_no=@$this->request->data['serial_numbers'];
-			$narration=@$this->request->data['narration'];
+			 $narration=@$this->request->data['narration']; 
 			
 			$InventoryVoucher=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id]);
-			if($InventoryVoucher->count()==0){
+			if($InventoryVoucher->count()==0){ 
 				$last_iv_number=$this->InventoryVouchers->find()->select(['iv_number'])->where(['company_id' => $st_company_id])->order(['iv_number' => 'DESC'])->first();
 				if($last_iv_number){
 					$iv_number=$last_iv_number->iv_number+1;
@@ -378,7 +378,7 @@ class InventoryVouchersController extends AppController
 				}
 				
 				$query2 = $this->InventoryVouchers->query();
-				$query2->insert(['invoice_id', 'iv_number', 'created_by', 'company_id'])
+				$query2->insert(['invoice_id', 'iv_number', 'created_by', 'company_id', 'narration'])
 				->values([
 					'invoice_id' => $invoice_id,
 					'iv_number' => $iv_number,
@@ -387,6 +387,15 @@ class InventoryVouchersController extends AppController
 					'narration'=>$narration
 				])
 				->execute();
+			}
+			else
+			{ 
+				
+				$query2 = $this->InventoryVouchers->query();
+				$query2->update()
+					->set(['narration' => $narration])
+					->where(['company_id' => $st_company_id,'invoice_id'=>$invoice_id])
+					->execute();
 				
 			}
 			$InventoryVoucher=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id])->first();
@@ -643,8 +652,9 @@ class InventoryVouchersController extends AppController
 					}
 				);
 				
-		//pr($Items->toArray()); exit;		
-		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status'));
+		//pr($Items->toArray()); exit;	
+        $InventoryVoucher_detail=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id])->toArray();	
+		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status','InventoryVoucher_detail'));
     }
 
     /**

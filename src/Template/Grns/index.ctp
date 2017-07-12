@@ -80,10 +80,14 @@
 							</td>
 							<td><?= h($grn->vendor->company_name) ?></td>
 							<td><?php echo date("d-m-Y",strtotime($grn->date_created)); ?></td>
-							<td class="actions">
+							<td class="actions"> 
 							<?php if($pull_request=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Book Invoice','/InvoiceBookings/Add?grn='.$grn->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
-								} else { ?>
+								}else if($grn_pull_request=="true")
+								{
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Grn Book Invoice','/InvoiceBookings/gstInvoiceBooking?grn='.$grn->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+								}
+  							else { ?>
 							<?php if(in_array(35,$allowed_pages)){ ?>
 							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $grn->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View '));  ?>	
 							 <?php } ?>

@@ -75,8 +75,8 @@ class InvoiceBookingsTable extends Table
 		$this->belongsTo('Items', [
             'foreignKey' => 'item_id',
             'joinType' => 'INNER'
-        ]);
-		
+        ]); 
+		$this->belongsTo('SaleTaxes');
 		$this->belongsTo('ItemLedgers');
 		$this->belongsTo('AccountReferences');
 		$this->belongsTo('Ledgers');

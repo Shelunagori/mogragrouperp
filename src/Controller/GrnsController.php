@@ -26,6 +26,7 @@ class GrnsController extends AppController
             'contain' => ['PurchaseOrders', 'Companies','Vendors']
         ];
 		$pull_request=$this->request->query('pull-request');
+		$grn_pull_request=$this->request->query('grn-pull-request');
 		
 		$where1=[];
 		$grn_no=$this->request->query('grn_no');
@@ -61,7 +62,7 @@ class GrnsController extends AppController
 			$where['status']='Invoice-Booked';
 		}
 		$grns = $this->paginate($this->Grns->find()->where($where)->where($where1)->where(['Grns.company_id'=>$st_company_id])->order(['Grns.id' => 'DESC']));
-        $this->set(compact('grns','pull_request','status'));
+        $this->set(compact('grns','pull_request','status','grn_pull_request'));
         $this->set('_serialize', ['grns']);
     }
 

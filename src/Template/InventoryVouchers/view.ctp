@@ -36,12 +36,6 @@
 					</td>
 					<td align="center"></td>
 					<td width="10%"></td>
-					
-					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Narration</label></td>
-					<td>:</td>
-					<td align="center">
-					<?= h($inventoryVoucher->narration) ?>
-					</td>
 					<td align="left"></td>
 					<td></td>
 				</tr>
@@ -94,8 +88,10 @@
 	
 <table width="100%" class="divFooter">
 	<tr>
-		<td align="right">
-	
+		<td align="left" width="10%"><label style="font-size: 14px;font-weight: bold;">Narration</label></td>
+		<td  width="2%">:</td>
+		<td>
+		<?= h($inventoryVoucher->narration) ?>
 		</td>
 	</tr>
 </table>	

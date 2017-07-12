@@ -791,9 +791,9 @@ $(document).ready(function() {
 				total_taxable_value=total_taxable_value+taxable_value;
 				var cgst_percentage=parseFloat($(this).find("td:nth-child(11) option:selected").attr("percentage"));
 				if(isNaN(cgst_percentage)){ 
-					 var cgst_amount = 0; 
+					 var cgst_amount = 0;  
 					$(this).find("td:nth-child(12) input").val(cgst_amount.toFixed(2));
-				}else{ 
+				}else{  
 					var taxable_value=parseFloat($(this).find("td:nth-child(10) input").val());
 					var cgst_amount = (taxable_value*cgst_percentage)/100;
 					$(this).find("td:nth-child(12) input").val(cgst_amount.toFixed(2));

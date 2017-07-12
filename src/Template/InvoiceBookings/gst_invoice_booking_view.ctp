@@ -10,7 +10,6 @@
 p{
 margin-bottom: 0;
 }
-
 .table_rows th{
 		border: 1px solid  #000;
 		font-size:'. h($invoice->pdf_font_size).' !important;
@@ -27,7 +26,7 @@ margin-bottom: 0;
 }
 </style>
 <a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
-<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 70%;font-size:14px;" class="maindiv">	
+<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 90%;font-size:14px;" class="maindiv">	
 	<table width="100%" class="divHeader">
 		<tr>
 			<td width="30%"><?php echo $this->Html->image('/logos/'.$invoiceBooking->company->logo, ['width' => '40%']); ?></td>
@@ -113,14 +112,32 @@ margin-bottom: 0;
 <?php $page_no=$this->Paginator->current('InvoiceBookings'); $page_no=($page_no-1)*20; ?>
 <table width="100%" class="table_rows"  border="0">	
 	<thead>
-		<tr>
-			<th >S.No</th>
-			<th >Item Name</th>
-			<th style="text-align: center;">Quantity</th>
-			<th style="text-align: right;">Rate</th>
-			<th style="text-align: right;">Amount</th>
-		</tr>
-	</thead>
+			<tr>
+				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
+				<th style="text-align: center;" rowspan="2" width="100%">Items</th>
+				<th style="text-align: center;" rowspan="2"  >Quantity</th>
+				<th style="text-align: center;" rowspan="2" >Rate</th>
+				<th style="text-align: center;" rowspan="2" > Amount</th>
+				<th style="text-align: center;" colspan="2" >Discount</th>
+				<th style="text-align: center;" colspan="2" >P&F </th>
+				<th style="text-align: center;" rowspan="2" >Taxable Value</th>
+				<th style="text-align: center;" colspan="2">CGST</th>
+				<th style="text-align: center;" colspan="2" >SGST</th>
+				<th style="text-align: center;" colspan="2" >IGST</th>
+				<th style="text-align: center;" rowspan="2" >Total</th>
+			</tr>
+			<tr> <th style="text-align: center;" > %</th>
+				<th style="text-align: center;">Amt</th>
+				<th style="text-align: center;" > %</th>
+				<th style="text-align: center;" >Amt</th>
+				<th style="text-align: center;" > %</th>
+				<th style="text-align: center;" >Amt</th>
+				<th style="text-align: center;" > %</th>
+				<th style="text-align: center;" >Amt</th>
+				<th style="text-align: center; " >%</th>
+				<th style="text-align: center;" >Amt</th>
+			</tr>
+		</thead>
 	<tbody>
 	<?php $total_sale_tax=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 		<tr>
@@ -129,6 +146,18 @@ margin-bottom: 0;
 			<td align="center"><?= $invoice_booking_row->quantity; ?></td>
 			<td align="right"><?=  number_format($invoice_booking_row->rate, 2, '.', '');?></td>
 			<td align="right"><?= number_format($invoice_booking_row->quantity*$invoice_booking_row->rate, 2, '.', '');?></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
+			<td align="right"></td>
 		</tr>
 		<?php 
 		$amount_after_misc=($invoice_booking_row->quantity*$invoice_booking_row->unit_rate_from_po)+$invoice_booking_row->misc;
@@ -171,7 +200,7 @@ margin-bottom: 0;
 		</tr>
 		<?php } ?>
 		<tr>
-			<td colspan="3"><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
+			<td colspan="15"><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
 			<td style="font-size:14px; font-weight:bold;"  align="right"> Total</td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');

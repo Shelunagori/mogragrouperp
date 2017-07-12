@@ -91,7 +91,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label class="control-label">Narration </label>
-								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2']); ?>							
+								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2','value' => $InventoryVoucher_detail[0]->narration]); ?>							
 						</div>
 					</div>
 					<div class="col-md-6" style="margin-top: 24px;">
