@@ -67,7 +67,7 @@
 										
 									}}
 									if(!empty($options)){
-									 echo $this->Form->input('q', ['label'=>false,'options' => $options,'multiple' => 'multiple','class'=>'form-control input-sm select2me','required ','style'=>'width:100%','value'=>$selected]); 
+									 echo $this->Form->input('q', ['label'=>false,'options' => $options,'multiple' => 'multiple','class'=>'form-control input-sm ','required ','style'=>'width:100%','value'=>$selected]); 
 									}else{
 										//echo "Serial No Not Selected";
 									} 
@@ -334,7 +334,6 @@ $(document).ready(function() {
 			var serial_number_enable=tr_obj.find('td:nth-child(1) input').attr('item_sr');
 		}
 		var old_qty=tr_obj.find('td:nth-child(2) input').attr('old_qty');
-		alert(old_qty);		
 		if(serial_number_enable==1){
 			var qty=tr_obj.find('td:nth-child(2) input').val();
 			var row_no=tr_obj.attr('row_no');

@@ -162,7 +162,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tbody>
 					<?php 
 					$q=0; 
-					foreach ($invoice->invoice_rows as $invoice_row){  ?>
+					foreach ($invoice->invoice_rows as $invoice_row){ 
+					if($invoice_row->quantity > $invoice_row->sale_return_quantity ){
+					?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
 							<td ><?php echo ++$q; $q--; ?></td>
 							<td>
@@ -173,7 +175,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 							<td>
 								<?php  
-								echo $this->Form->input('sale_return_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','max'=>$invoice_row->quantity,'value'=>0,'required']); 
+								echo $this->Form->input('sale_return_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','max'=>$invoice_row->quantity-$invoice_row->sale_return_quantity,'value'=>0,'required']); 
 								?>
 							</td>
 							<td>
@@ -203,8 +205,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td colspan="6">
 							<?php echo $this->Form->input('item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
 						</tr>
-						<?php } ?>
-					<?php $q++; }  ?>
+					<?php }  ?>
+					<?php $q++; } }  ?>
 				</tbody>
 			</table>
 			<table class="table tableitm" id="tbl2">
@@ -681,6 +683,7 @@ $(document).ready(function() {
 		var ref_type=$(this).find('option:selected').val();
 		if(ref_type=="Against Reference"){
 			var url="<?php echo $this->Url->build(['controller'=>'SaleReturns','action'=>'fetchRefNumbers']); ?>";
+			//alert(<?php echo $c_LedgerAccount->id; ?>);
 			url=url,
 			$.ajax({
 				url: url+'/<?php echo $c_LedgerAccount->id; ?>',

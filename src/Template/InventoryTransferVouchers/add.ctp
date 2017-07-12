@@ -34,7 +34,6 @@
 			<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
 		</div>
 	</div>
-	<div style="overflow: auto;">
 		<div class="row">
 		
 			<div class="col-md-6">
@@ -43,10 +42,10 @@
 					<table id="main_table"  class="table table-condensed">
 						<thead>
 							<tr>
-								<th style="white-space: nowrap; width:50%;">Item</th>
-								<th style=" width:20%;" >Quantity</th>
+								<th style="white-space: nowrap; width:30%;">Item</th>
+								<th style=" width:10%;" >Quantity</th>
 								<th style=" width:20%;" >Serial Number</th>
-								<th style=" width:10%;"></th>
+								<th style=" width:40%;"></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -72,7 +71,7 @@
 				</table>
 			</div>
 		</div>
-	</div>
+
 		<button type="submit" class="btn btn-primary">Submit</button>
 <?= $this->Form->end() ?>		
 	</div>
@@ -338,7 +337,7 @@ $(document).ready(function() {
 <table id="sampletable" style="display:none;">
 	<tbody>
 		<tr class="main">
-			<td >
+			<td>
 				<?php 
 				$item_option=[];
 				foreach($display_items as $Item){  

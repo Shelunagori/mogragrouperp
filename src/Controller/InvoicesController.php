@@ -101,7 +101,7 @@ class InvoicesController extends AppController
 			
 			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']));
 		} else{ 
-			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']));
+			$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.in2' => 'DESC']));
 		} 
 		//pr($invoices); exit;
 		$Items = $this->Invoices->InvoiceRows->Items->find('list')->order(['Items.name' => 'ASC']);
@@ -131,14 +131,10 @@ class InvoicesController extends AppController
 				return $p->where(['inventory_voucher_applicable'=>'Yes']);
 			}])->where($where)->where(['Invoices.company_id'=>$st_company_id])->first();
 			
-			$p=0;
-			foreach(@$invoice_detail->invoice_rows as $invoice_row){
-				$p=1;
-			}
-			if($p==1){
+			
 				$invoices = $this->Invoices->find()->contain(['Customers','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id]);
 				$status=1;
-			}
+			
 		}
 		//pr($status);exit;
 		$this->set(compact('invoices','status','sales_return','InvoiceRows','invoice_no'));

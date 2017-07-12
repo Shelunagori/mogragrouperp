@@ -88,7 +88,12 @@
 				}else if($ledger->voucher_source=="Invoice"){ 
 					$invoice=$url_link[$ledger->id];
 					$voucher_no=h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4));
-					$url_path="/invoices/confirm/".$ledger->voucher_id;
+					if($invoice->invoice_type=='GST'){
+						$url_path="/invoices/gst-confirm/".$ledger->voucher_id;
+					}else{
+						$url_path="/invoices/confirm/".$ledger->voucher_id;
+					}
+					
 				}else if($ledger->voucher_source=="Invoice Booking"){
 					$invoice=$url_link[$ledger->id];
 					$voucher_no=h(($invoice->ib1.'/IB-'.str_pad($invoice->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoice->ib3.'/'.$invoice->ib4));

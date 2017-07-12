@@ -728,7 +728,7 @@ select
 					<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
-					<span class="title">Return Inventory Voucher</span>
+					<span class="title">Reverse Inventory Voucher</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">

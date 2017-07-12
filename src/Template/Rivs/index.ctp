@@ -18,7 +18,7 @@
 						<tr>
 							<th>Sr. No.</th>
 							<th>Inventory Voucher No</th>
-							<th>Invoice No</th>
+							<th>Sales Return No</th>
 							<th class="actions"><?= __('Actions') ?></th>
 						</tr>
 					</thead>
@@ -28,7 +28,7 @@
 							<td><?= h(++$page_no) ?></td>
 							<td><?= h('#'.str_pad($riv->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
 
-							<td><?= h($riv->sale_return->sr1.'/IN-'.str_pad($riv->sale_return->sr2, 3, '0', STR_PAD_LEFT).'/'.$riv->sale_return->sr3.'/'.$riv->sale_return->sr4); ?>
+							<td><?= h($riv->sale_return->sr1.'/SR-'.str_pad($riv->sale_return->sr2, 3, '0', STR_PAD_LEFT).'/'.$riv->sale_return->sr3.'/'.$riv->sale_return->sr4); ?>
 							<td>
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit/'.$riv->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
 							</td>
