@@ -494,7 +494,7 @@ class InventoryVouchersController extends AppController
 					'rate'=>$total_rate_out,
 					'company_id'=>$st_company_id,
 					'left_item_id'=>$q_item_id,
-					'processed_on'=>date("Y-m-d"),
+					'processed_on'=>$transaction_date,
 					'rate_updated'=>'Yes'
 				])
 				->execute();
