@@ -689,6 +689,9 @@ select
 						<?php if(in_array(39,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Material Indent Report','/Item-Ledgers/material-indent-report',array('escape'=>false)); ?></li>
 						<?php } ?>
+						<?php if(in_array(150,$allowed_pages)){?>
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
+						<?php } ?>
 						<?php if(in_array(40,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement','/Ledgers/Account-Statement',array('escape'=>false)); ?></li>	
 						<?php } ?>
