@@ -197,6 +197,7 @@ class ItemLedgersController extends AppController
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
+		$search_date=$this->request->query('search_date');
 		$stock=$this->request->query('stock');
 		$item_sub_group=$this->request->query('item_sub_group');
 		
@@ -214,6 +215,10 @@ class ItemLedgersController extends AppController
 		}
 		if(!empty($item_sub_group)){
 			$where['item_sub_group_id LIKE']=$item_sub_group;
+		}
+		if(!empty($search_date)){
+			$search_date=date("Y-m-d",strtotime($search_date));
+            $where['processed_on <=']=$search_date;
 		}
 		//pr($where); exit;
 		//pr($stock);exit;
@@ -304,7 +309,7 @@ class ItemLedgersController extends AppController
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
 		//pr($Items->toArray()); exit;
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date'));
 		$this->set('_serialize', ['itemLedgers']);
     }
 	
