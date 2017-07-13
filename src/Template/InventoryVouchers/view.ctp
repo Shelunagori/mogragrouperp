@@ -95,6 +95,26 @@
 		</td>
 	</tr>
 </table>	
+
+<table width="96%">
+	<tr>
+		<td align="right">
+		<table >
+			<tr>
+			    <td align="center">
+				<span style="font-size:14px;">For</span> <span style="font-size: 14px;font-weight: bold;"><?= h($inventoryVoucher->company->name)?><br/></span>
+				<?php 
+				 echo $this->Html->Image('/signatures/'.$inventoryVoucher->creator->signature,['height'=>'50px','style'=>'height:50px;']); 
+				 ?></br>
+				<span style="font-size: 14px;font-weight: bold;">Authorised Signatory</span>
+				</br>
+				<span style="font-size:14px;"><?= h($inventoryVoucher->creator->name) ?></span><br/>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
 </div>
 
  

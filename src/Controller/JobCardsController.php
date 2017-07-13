@@ -142,19 +142,22 @@ class JobCardsController extends AppController
 			]);
 		}
 		
-		$last_jc_no=$this->JobCards->find()->select(['jc2'])->where(['company_id' => $st_company_id])->order(['jc2' => 'DESC'])->first();
+		
+		$jobCard = $this->JobCards->newEntity();
+        if ($this->request->is('post')) {
+			$jobCard = $this->JobCards->patchEntity($jobCard, $this->request->data);
+			
+			$last_jc_no=$this->JobCards->find()->select(['jc2'])->where(['company_id' => $st_company_id])->order(['jc2' => 'DESC'])->first();
+
 			if($last_jc_no){
 				@$last_jc_no->jc2=$last_jc_no->jc2+1;
 			}else{
 				@$last_jc_no->jc2=1;
 			}
-		$jobCard = $this->JobCards->newEntity();
-        if ($this->request->is('post')) {
-			$jobCard = $this->JobCards->patchEntity($jobCard, $this->request->data);
-			
 			$jobCard->required_date=date("Y-m-d",strtotime($jobCard->required_date)); 
 			//pr($jobCard->required_date); exit;
 			$jobCard->created_by=$s_employee_id; 
+			$jobCard->jc2=$last_jc_no->jc2; 
 			$jobCard->sales_order_id=$sales_order_id;
 			$jobCard->company_id=$st_company_id;
 			$jobCard->customer_po_no=$jobCard->customer_po_no;

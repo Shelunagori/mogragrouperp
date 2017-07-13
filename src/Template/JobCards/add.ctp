@@ -18,19 +18,8 @@
 			<div class="form-body">
 
 			<div class="row">
-				<div class="col-md-4">
-					<div class="form-group">
-						<label class="col-md-4 control-label">Job Card No. </label>
-						<div class="col-md-8">
-						<?php echo $this->Form->input('jc1', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so1]); ?>
-						<?php echo $this->Form->input('jc2', ['label' => false,'type'=>'hidden','value'=>$last_jc_no->jc2]); ?>
-						<?php echo $this->Form->input('jc3', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so3]); ?>
-						<?php echo $this->Form->input('jc4', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so4]); ?>
-						<?php echo $salesOrder->so1.'/JC-'.str_pad($last_jc_no->jc2, 3, '0', STR_PAD_LEFT).'/'.$salesOrder->so3.'/'.$salesOrder->so4; ?>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
+				
+				<div class="col-md-5">
 					<div class="form-group">
 						<label class="col-md-3 control-label">SO No</label>
 						<div class="col-md-9">
@@ -39,12 +28,24 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-5">
 					<div class="form-group">
 						<label class="col-md-4 control-label"> Customer </label>
 						<div class="col-md-8">
 						<?php echo $this->Form->input('customer_id', ['type'=>'hidden','value' => @$salesOrder->customer_id]); ?>
 						<?php echo $salesOrder->customer->customer_name.'('; echo$salesOrder->customer->alias.')'; ?>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						
+						<div class="col-md-8">
+						<?php echo $this->Form->input('jc1', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so1]); ?>
+						
+						<?php echo $this->Form->input('jc3', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so3]); ?>
+						<?php echo $this->Form->input('jc4', ['label' => false,'type'=>'hidden','value'=>$salesOrder->so4]); ?>
+						
 						</div>
 					</div>
 				</div>
