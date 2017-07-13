@@ -365,8 +365,9 @@ class InventoryVouchersController extends AppController
 		$InventoryVoucher = $this->InventoryVouchers->newEntity();
 		if ($this->request->is(['post','put','patch'])) {
 			
-			$q_serial_no=@$this->request->data['serial_numbers'];
-			 $narration=@$this->request->data['narration']; 
+			 $q_serial_no=@$this->request->data['serial_numbers'];
+			 $narration=@$this->request->data['narration'];
+             $transaction_date=date("Y-m-d",strtotime(@$this->request->data['transaction_date']));			 
 			
 			$InventoryVoucher=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id]);
 			if($InventoryVoucher->count()==0){ 
@@ -378,12 +379,13 @@ class InventoryVouchersController extends AppController
 				}
 				
 				$query2 = $this->InventoryVouchers->query();
-				$query2->insert(['invoice_id', 'iv_number', 'created_by', 'company_id', 'narration'])
+				$query2->insert(['invoice_id', 'iv_number', 'created_by', 'company_id', 'transaction_date', 'narration'])
 				->values([
 					'invoice_id' => $invoice_id,
 					'iv_number' => $iv_number,
 					'created_by' => $s_employee_id,
 					'company_id'=>$st_company_id,
+					'transaction_date'=>$transaction_date,
 					'narration'=>$narration
 				])
 				->execute();
@@ -393,7 +395,7 @@ class InventoryVouchersController extends AppController
 				
 				$query2 = $this->InventoryVouchers->query();
 				$query2->update()
-					->set(['narration' => $narration])
+					->set(['narration' => $narration,'transaction_date' => $transaction_date])
 					->where(['company_id' => $st_company_id,'invoice_id'=>$invoice_id])
 					->execute();
 				
