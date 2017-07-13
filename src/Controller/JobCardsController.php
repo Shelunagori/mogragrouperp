@@ -33,13 +33,13 @@ class JobCardsController extends AppController
 
 		$this->set(compact('items','jc_no','so_no','jc_file_no','so_file_no','Required_From','Required_To','Created_From','Created_To','customer_id'));
 		if(!empty($jc_no)){
-			$where1['JobCards.jc2 LIKE']='%'.$jc_no.'%';
+			$where1['JobCards.jc2']=$jc_no;
 		}
 		if(!empty($customers)){
 			$where1['Customers.id LIKE']=$customers;
 		}
 		if(!empty($so_no)){
-			$where1['SalesOrders.so2 LIKE']='%'.$so_no.'%';
+			$where1['SalesOrders.so2']=$so_no;
 		}
 		
 		if(!empty($jc_file_no)){
