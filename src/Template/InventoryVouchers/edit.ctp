@@ -91,13 +91,19 @@
 				    <div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">transaction Date</label>
-								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>date("d-m-Y",strtotime($InventoryVoucher_detail[0]->transaction_date))]) ?>								
+							<?php
+							   if(!empty(@$InventoryVoucher_detail[0]->transaction_date))
+							   {
+								$t_date = date("d-m-Y",strtotime(@$InventoryVoucher_detail[0]->transaction_date));
+							   }
+							?>
+								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>@$t_date]) ?>								
 						</div>
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Narration </label>
-								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2','value' => $InventoryVoucher_detail[0]->narration]); ?>							
+								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2','value' => @$InventoryVoucher_detail[0]->narration]); ?>							
 						</div>
 					</div>
 					<div class="col-md-6" style="margin-top: 24px;">
