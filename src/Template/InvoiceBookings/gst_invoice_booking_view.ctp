@@ -13,10 +13,12 @@ margin-bottom: 0;
 .table_rows th{
 		border: 1px solid  #000;
 		font-size:'. h($invoice->pdf_font_size).' !important;
+		margin:5%;
 	}
 	.table_rows td{
 		border: 1px solid  #000;
 		font-size:'. h($invoice->pdf_font_size).' !important;
+		margin:5%;
 	}
 </style>
 <style type="text/css" media="print">
@@ -114,7 +116,7 @@ margin-bottom: 0;
 	<thead>
 			<tr>
 				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
-				<th style="text-align: center;" rowspan="2" width="100%">Items</th>
+				<th style="text-align: center;" rowspan="2">Items</th>
 				<th style="text-align: center;" rowspan="2"  >Quantity</th>
 				<th style="text-align: center;" rowspan="2" >Rate</th>
 				<th style="text-align: center;" rowspan="2" > Amount</th>
@@ -139,25 +141,25 @@ margin-bottom: 0;
 			</tr>
 		</thead>
 	<tbody>
-	<?php $total_sale_tax=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
+	<?php $Total=0; $total_sale_tax=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 		<tr>
 			<td><?= h(++$page_no) ?></td>
-			<td><?= $invoice_booking_row->item->name; ?></td>
+			<td ><?= $invoice_booking_row->item->name; ?></td>
 			<td align="center"><?= $invoice_booking_row->quantity; ?></td>
 			<td align="right"><?=  number_format($invoice_booking_row->rate, 2, '.', '');?></td>
 			<td align="right"><?= number_format($invoice_booking_row->quantity*$invoice_booking_row->rate, 2, '.', '');?></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
-			<td align="right"></td>
+			<td align="right"><?= $invoice_booking_row->gst_discount_per."%"; ?></td>
+			<td align="right"><?= $invoice_booking_row->discount; ?></td>
+			<td align="right"><?= $invoice_booking_row->gst_pnf_per.'%'; ?></td>
+			<td align="right"><?= $invoice_booking_row->pnf; ?></td>
+			<td align="right"><?= $invoice_booking_row->taxable_value; ?></td>
+			<td align="right"><?= $invoice_booking_row->cgst_per.'%'; ?></td>
+			<td align="right"><?= $invoice_booking_row->cgst; ?></td>
+			<td align="right"><?= $invoice_booking_row->sgst_per.'%'; ?></td>
+			<td align="right"><?= $invoice_booking_row->sgst; ?></td>
+			<td align="right"><?= $invoice_booking_row->igst_per.'%'; ?></td>
+			<td align="right"><?= $invoice_booking_row->igst; ?></td>
+			<td align="right"><?= $invoice_booking_row->total; ?></td>
 		</tr>
 		<?php 
 		$amount_after_misc=($invoice_booking_row->quantity*$invoice_booking_row->unit_rate_from_po)+$invoice_booking_row->misc;
@@ -181,7 +183,7 @@ margin-bottom: 0;
 		}
 		
 		$total_sale_tax=$total_sale_tax+@$vat; 
-		
+		$Total= $Total+$invoice_booking_row->total;
 		endforeach; ?>
 	</tbody>
 	<tfoot>
@@ -196,7 +198,7 @@ margin-bottom: 0;
 						: <?php echo $LedgerAccount->name; ?> (<?php echo $LedgerAccount->alias; ?>)
 					<?php } ?>
 			</td>
-			<td style="font-size:14px;"  align="right"><?= h($this->Number->format($total_sale_tax,[ 'places' => 2])) ?></td>
+			<td style="font-size:14px;"  align="right"><?= h($this->Number->format($Total,[ 'places' => 2])) ?></td>
 		</tr>
 		<?php } ?>
 		<tr>

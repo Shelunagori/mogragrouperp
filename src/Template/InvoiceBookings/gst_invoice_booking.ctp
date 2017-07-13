@@ -226,7 +226,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf_amount',['label' => false,'class' => 'form-control input-sm required row_textbox','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'readonly']); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'readonly']); ?>
 							</td>
 							
 							<td align="center">
