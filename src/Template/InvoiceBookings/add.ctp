@@ -109,7 +109,16 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Purchase Account <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('purchase_ledger_account', ['options' => $ledger_account_details,'label' => false,'class' => 'form-control input-sm']); ?>
+							<?php
+								$option =[];
+							foreach($ledger_account_details as $key => $ledger_account_detail)
+							{ 
+								if($key!= '799' && $key!= '797')
+								{
+									$option[$key] = $ledger_account_detail;
+								}
+							}
+							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'class' => 'form-control input-sm']); ?>
 							<?php echo $this->Form->input('cst_vat', ['label' => false,'type' => 'hidden']); ?>
 							<br/>
 							<? ?>

@@ -109,7 +109,15 @@
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Purchase Account <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('purchase_ledger_account', ['options' => $ledger_account_details,'label' => false,'class' => 'form-control input-sm']); ?>
+							<?php $option =[];
+							foreach($ledger_account_details as $key => $ledger_account_detail)
+							{ 
+								if($key!= '35' && $key!= '538')
+								{
+									$option[$key] = $ledger_account_detail;
+								}
+							}
+							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'class' => 'form-control input-sm']); ?>
 							<?php echo $this->Form->input('cst_vat', ['label' => false,'type' => 'hidden']); ?>
 							<br/>
 							<? ?>
@@ -117,8 +125,8 @@
 					</div>
 					<div class="col-md-3">
 						<div class="form-group" id="ledger_account_for_vat">
-							<label class="control-label">Ledger Account for VAT<span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('ledger_account_for_vat', ['options' => $ledger_account_vat,'label' => false,'class' => 'form-control input-sm']); ?>
+							<!--<label class="control-label">Ledger Account for VAT<span class="required" aria-required="true">*</span></label>-->
+							<?php //echo $this->Form->input('ledger_account_for_vat', ['options' => $ledger_account_vat,'label' => false,'class' => 'form-control input-sm']); ?>
 							<br/>
 							<? ?>
 						</div>
