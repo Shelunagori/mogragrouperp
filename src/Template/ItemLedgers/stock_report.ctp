@@ -64,9 +64,18 @@
 					<tbody>
 						<?php $total_inv=0; $page_no=0; foreach ($item_stocks as $key=> $item_stock):
 						if($item_stock!=0){
-							$per_unit=@$item_rate[$key]/$item_stock;
-						}else{
-							$per_unit=0;
+							if(@$in_qty[$key]==0){ 
+								$per_unit=@$item_rate[$key];
+							}else{
+							$per_unit=@$item_rate[$key]/@$in_qty[$key];
+							}
+						}else{ 
+							if(@$in_qty[$key]==0){ 
+								$per_unit=@$item_rate[$key];
+							}else{
+							$per_unit=@$item_rate[$key]/@$in_qty[$key];
+							}
+							
 						}
 						
 						$amount=abs(@$item_stock)*$per_unit;

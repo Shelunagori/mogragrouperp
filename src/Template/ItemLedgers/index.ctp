@@ -25,7 +25,7 @@
 
 						<?php
 
-
+//pr($itemLedgers); exit;
 						 foreach ($itemLedgers as $itemLedger): 
 						$rate = $itemLedger->rate;
 						$in_out_type=$itemLedger->in_out;

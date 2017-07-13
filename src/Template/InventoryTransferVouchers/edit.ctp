@@ -144,7 +144,7 @@
 								</td>
 								
 								<td width="20%">
-									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'style'=>'width: 79px;','value'=>$inventory_transfer_voucher_row->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
+									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'style'=>'width: 79px;','value'=>$inventory_transfer_voucher_row_in->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
 								</td>
 								<td><a class="btn btn-xs btn-default addrow_1" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow_1" href="#" role='button'><i class="fa fa-times"></i></a></td>
 							</tr>

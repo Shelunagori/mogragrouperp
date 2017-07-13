@@ -295,12 +295,13 @@ class ItemLedgersController extends AppController
 		foreach($ItemLedgers as $ItemLedger){
 				if($ItemLedger->in_out == 'In'){
 					@$item_rate[$ItemLedger->item_id] += ($ItemLedger->quantity*$ItemLedger->rate);
-					//@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
+					@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
 					
 				}
 		}
-		//pr($item_rate); exit;
-		//$ItemLedgers =$this->ItemLedgers->Items->find()->contain(['ItemCategories'])->where(['Items.item_category_id'=>$item_category]);
+		//pr($in_qty[768]); 
+//pr($item_rate[768]);exit;
+	//$ItemLedgers =$this->ItemLedgers->Items->find()->contain(['ItemCategories'])->where(['Items.item_category_id'=>$item_category]);
 				;
 			//	pr($ItemLedgers->toArray());exit;
 		//$itemLedgers = $this->paginate($query);
@@ -310,7 +311,7 @@ class ItemLedgersController extends AppController
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
 		//pr($Items->toArray()); exit;
         $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date'));
-		$this->set('_serialize', ['itemLedgers']);
+		$this->set('_serialize', ['itemLedgers']); 
     }
 	
 	 public function materialindentreport(){
