@@ -324,11 +324,10 @@ select
 					<ul class="sub-menu">
 						<?php if(in_array(3,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create', '/Sales-Orders/add' ).'</li>';
-						} ?>
-						<?php if(in_array(151,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create Gst Sales Order', '/Sales-Orders/gstSalesOrderAdd' ).'</li>';
 						} ?>
 						<?php if(in_array(22,$allowed_pages) || in_array(4,$allowed_pages)){
+						
 						echo '<li>'.$this->Html->link( 'View', '/Sales-Orders' ).'</li>';
 						} ?>
 					</ul>
@@ -678,6 +677,7 @@ select
 						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report',array('escape'=>false)); ?></li>	
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(37,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Balance Sheet','/ledger-Accounts/Balance-Sheet',array('escape'=>false)); ?></li>
@@ -692,9 +692,7 @@ select
 						<?php if(in_array(39,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Material Indent Report','/Item-Ledgers/material-indent-report',array('escape'=>false)); ?></li>
 						<?php } ?>
-						<?php if(in_array(150,$allowed_pages)){?>
-						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
-						<?php } ?>
+						
 						<?php if(in_array(40,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Account Statement','/Ledgers/Account-Statement',array('escape'=>false)); ?></li>	
 						<?php } ?>

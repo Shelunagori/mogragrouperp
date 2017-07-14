@@ -309,6 +309,7 @@ class CustomersController extends AppController
 						->execute();
 			}else if($ReferenceDetail->invoice_id !=0){ 
 				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
+				pr($Receipt); exit;
 				$query = $this->Customers->ReferenceDetails->query();
 				$query->update()
 						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->date_created)))])
@@ -421,10 +422,11 @@ class CustomersController extends AppController
 				//date('Y-m-d', strtotime($Date. ' + 1 days'));
 					
 			} 
+		}
         $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue'));
         $this->set('_serialize', ['customers']);
-    }
-	
+   
+	}
 	public function CreditLimit($customer_id = null)
     {
 		$this->viewBuilder()->layout('');
@@ -433,7 +435,7 @@ class CustomersController extends AppController
 		echo $Customer->credit_limit;
     }
 	
-	function AgstRefForPayment($customer_id=null){
+	public function AgstRefForPayment($customer_id=null){
 		$this->viewBuilder()->layout('');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');

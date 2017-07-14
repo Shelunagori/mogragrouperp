@@ -420,7 +420,9 @@ class ItemLedgersController extends AppController
 	
 	public function stockLedger(){
 		$this->viewBuilder()->layout('index_layout');
-        $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+        $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
 		$this->set(compact('stockLedgers'));
 		$this->set('_serialize', ['itemLedgers']);
     }
