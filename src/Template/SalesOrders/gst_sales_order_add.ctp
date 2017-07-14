@@ -355,7 +355,7 @@ if(!empty($copy))
 			<table class="table tableitm" id="tbl2">
 				<tr>
 					<td align="right"><b>Total Discount</b></td>
-					<td width="20%"><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','value' => 0,'step'=>0.01,'readonly']); ?></td>
+					<td width="20%"><?php echo $this->Form->input('total_discount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total Discount','value' => 0,'step'=>0.01,'readonly']); ?></td>
 				</tr>
 				<tr>
 					<td  align="right"><b>Total after P&F </b></td>
@@ -376,6 +376,10 @@ if(!empty($copy))
 				<tr>
 					<td  align="right"><b>Total Igst Amt </b></td>
 					<td><?php echo $this->Form->input('total_igst_value', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total Igst Amt','readonly','step'=>0.01]); ?></td>
+				</tr>
+				<tr>
+					<td  align="right"><b>Total Amount </b></td>
+					<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total Igst Amt','readonly','step'=>0.01]); ?></td>
 				</tr>
 			</table>
 
@@ -932,7 +936,7 @@ $(document).ready(function() {
 			var Rate=$(this).find("td:nth-child(4) input").val();
 			var Amount=qty*Rate;
 			$(this).find("td:nth-child(5) input").val(Amount.toFixed(2));
-			total=total+Amount;
+			//total=total+Amount;
 			row_total =row_total+Amount;
 			var discount=$(this).find("td:nth-child(6) input").val();
 			if(!discount){ discount=0; $(this).find("td:nth-child(7) input").val('');}
@@ -996,12 +1000,13 @@ $(document).ready(function() {
 			total = total+parseFloat(row_total);
 		});
 		
-		$('input[name="total"]').val(total_discount_amt.toFixed(2));
+		$('input[name="total_discount"]').val(total_discount_amt.toFixed(2));
 		$('input[name="total_after_pnf"]').val(total_pnf_amt.toFixed(2));
-		$('input[name="total_taxable_value"]').val(total_taxable_amt.toFixed(2));
+		$('input[name="total_taxable_value"]').val(tatal_taxable_amt.toFixed(2));
 		$('input[name="total_cgst_value"]').val(total_cgst.toFixed(2));
 		$('input[name="total_sgst_value"]').val(total_sgst.toFixed(2));
 		$('input[name="total_igst_value"]').val(total_igst.toFixed(2));
+		$('input[name="total"]').val(total.toFixed(2));
 		
 		
 		/*if($("#discount_per").is(':checked')){
