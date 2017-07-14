@@ -656,4 +656,217 @@ class SalesOrdersController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+	
+	public function gstSalesOrderAdd($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+		
+		$s_employee_id=$this->viewVars['s_employee_id'];
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$Company = $this->SalesOrders->Companies->get($st_company_id);
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->SalesOrders->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		
+		
+			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
+			   $fromdate1 = DATE("Y-m-d",strtotime($SessionCheckDate->date_from));   
+			   $todate1 = DATE("Y-m-d",strtotime($SessionCheckDate->date_to)); 
+			   $tody1 = DATE("Y-m-d");
+
+			   $fromdate = strtotime($fromdate1);
+			   $todate = strtotime($todate1); 
+			   $tody = strtotime($tody1);
+
+			  if($fromdate < $tody || $todate > $tody)
+			   {
+				 if($SessionCheckDate['status'] == 'Open')
+				 { $chkdate = 'Found'; }
+				 else
+				 { $chkdate = 'Not Found'; }
+
+			   }
+			   else
+				{
+					$chkdate = 'Not Found';	
+				}
+
+			
+				
+
+		$quotation_id=@(int)$this->request->query('quotation');
+		$quotation=array(); 
+		$process_status='New';
+		if(!empty($quotation_id)){
+			$quotation = $this->SalesOrders->Quotations->get($quotation_id, [
+				'contain' => ['QuotationRows.Items' => function ($q) use($st_company_id) {
+						   return $q
+								->where(['QuotationRows.quantity > QuotationRows.proceed_qty']);
+								
+						}
+					],'Customers'=>['CustomerAddress' => function($q){
+					return $q->where(['default_address'=>1]);
+				}]
+			]);
+			$process_status='Pulled From Quotation';
+		}
+		
+		$this->set(compact('quotation','process_status'));
+		
+		$sales_id=$this->request->query('copy');
+		$job_id=$this->request->query('job');
+		//pr($process_status); exit;
+		
+		if(!empty($sales_id)){ 
+			
+			$salesOrder_data = $this->SalesOrders->newEntity();
+			
+			$salesOrder = $this->SalesOrders->get($sales_id, [
+				'contain' => ['Customers'=>['CustomerContacts'=>function($q){
+				return $q
+			->where(['CustomerContacts.default_contact'=>1]);
+			}],'Employees','SalesOrderRows'=>['Items']]
+			]);
+			$process_status='Copy';
+			
+		}
+		elseif(!empty($job_id)){
+			$salesOrder = $this->SalesOrders->get($job_id, [
+				'contain' => ['SalesOrderRows']
+			]);
+		}
+		else{
+			  $salesOrder_data = $this->SalesOrders->newEntity();
+			}
+		
+      
+        if ($this->request->is(['patch', 'post', 'put'])) {
+			
+			//$salesOrder = $this->SalesOrders->newEntity();
+			
+            $salesOrder = $this->SalesOrders->patchEntity($salesOrder_data, $this->request->data);
+			$last_so_no=$this->SalesOrders->find()->select(['so2'])->where(['company_id' => $st_company_id])->order(['so2' => 'DESC'])->first();
+			$salesOrder->expected_delivery_date=date("Y-m-d",strtotime($salesOrder->expected_delivery_date)); 
+			$salesOrder->po_date=date("Y-m-d",strtotime($salesOrder->po_date)); 
+			$salesOrder->created_by=$s_employee_id; 
+			if($last_so_no){
+				$salesOrder->so2=$last_so_no->so2+1;
+			}else{
+				$salesOrder->so2=1;
+			}
+			
+			
+			$salesOrder->created_on=date("Y-m-d",strtotime($salesOrder->created_on));
+			$salesOrder->edited_on=date("Y-m-d",strtotime($salesOrder->edited_on));
+			$salesOrder->quotation_id=$quotation_id;
+			$salesOrder->created_on_time= date("Y-m-d h:i:sA");
+			$salesOrder->company_id=$st_company_id;
+			
+			
+			
+			
+			if ($this->SalesOrders->save($salesOrder)) {
+				$status_close=$this->request->query('status');
+				
+			foreach($salesOrder->sales_order_rows as $sales_order_row){
+				
+					$quotation_rows = $this->SalesOrders->Quotations->QuotationRows->find()->where(['QuotationRows.item_id'=>$sales_order_row->item_id,'quotation_id'=>$salesOrder->quotation_id])->first();
+					
+						if($quotation_rows){
+							//pr($quotation_rows); exit;
+							$query1 = $this->SalesOrders->Quotations->QuotationRows->query();
+							$query1->update()
+							->set(['proceed_qty' =>$quotation_rows->proceed_qty+$sales_order_row->quantity])
+							->where(['id' => $quotation_rows->id])
+							->execute();
+						}
+						
+				}  	
+				
+			
+				if(!empty($status_close)){
+				$query = $this->SalesOrders->Quotations->query();
+					$query->update()
+						->set(['status' => 'Closed'])
+						->where(['id' => $quotation_id])
+						->execute();
+				} else{
+						$falg=0;
+					if($salesOrder->quotation_id > 0){ 
+					$quotation_rows_datas = $this->SalesOrders->Quotations->QuotationRows->find()->where(['quotation_id'=>$salesOrder->quotation_id])->toArray();
+						foreach($quotation_rows_datas as $quotation_rows_data){
+							if($quotation_rows_data->quantity != $quotation_rows_data->proceed_qty){ 
+							$falg=1;	
+							}
+						} 
+					} 
+					if($falg==1){
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Pending'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
+				}
+				
+				$this->Flash->success(__('The sales order has been saved.'));
+				return $this->redirect(['action' => 'confirm/'.$salesOrder->id]);
+
+            } else {
+                $this->Flash->error(__('The sales order could not be saved. Please, try again.'));
+            }
+        }
+        $customers = $this->SalesOrders->Customers->find('all')->order(['Customers.customer_name' => 'ASC'])->contain(['CustomerAddress'=>function($q){
+			return $q
+			->where(['CustomerAddress.default_address'=>1]);
+		}])->matching(
+					'CustomerCompanies', function ($q) use($st_company_id) {
+						return $q->where(['CustomerCompanies.company_id' => $st_company_id]);
+					}
+				);
+		$copy=$this->request->query('copy');
+		//pr ($copy); exit;
+		if(!empty($copy)){
+			$process_status='Copy';
+		}
+		//pr ($process_status); exit;
+		if($quotation_id){
+			$Filenames = $this->SalesOrders->Filenames->find()->where(['customer_id' => $quotation->customer_id]);
+		}elseif($id){
+			$Filenames = $this->SalesOrders->Filenames->find()->where(['customer_id' => $salesOrder->customer_id]);
+		}else{
+			$Filenames = $this->SalesOrders->Filenames->find();
+		}
+		
+        $companies = $this->SalesOrders->Companies->find('all');
+		$quotationlists = $this->SalesOrders->Quotations->find()->where(['status'=>'Pending'])->order(['Quotations.id' => 'DESC']);
+		$items = $this->SalesOrders->Items->find('list')->matching(
+					'ItemCompanies', function ($q) use($st_company_id) {
+						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+					} 
+				)->order(['Items.name' => 'ASC']);
+		$transporters = $this->SalesOrders->Carrier->find('list')->order(['Carrier.transporter_name' => 'ASC']);
+		//$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']);
+		$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
+					'EmployeeCompanies', function ($q) use($st_company_id) {
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+					}
+				);
+		$termsConditions = $this->SalesOrders->TermsConditions->find('all');
+		$SaleTaxes = $this->SalesOrders->SaleTaxes->find('all')->where(['SaleTaxes.freeze'=>0])->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				);
+		$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				);
+		//pr($salesOrder); exit; 
+        $this->set(compact('salesOrder', 'customers', 'companies','quotationlists','items','transporters','Filenames','termsConditions','serviceTaxs','exciseDuty','employees','SaleTaxes','copy','process_status','Company','chkdate','financial_year','sales_id','salesOrder_copy','job_id','salesOrder_data','GstTaxes'));
+        $this->set('_serialize', ['salesOrder']);
+    }
 }

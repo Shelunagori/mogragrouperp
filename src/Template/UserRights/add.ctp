@@ -81,6 +81,11 @@ fieldset legend {
 							if(in_array(22,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
 							echo $this->Form->input('user_rights.22.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>22,$checked_status]); ?>
 						</label>
+						<label class="checkbox-inline">
+							<?php 
+							if(in_array(151,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.151.page_id', ['label' => 'Gst Sales Order Add','class' => '','type'=>'checkbox','value'=>151,$checked_status]); ?>
+						</label>
 					</div>
 					</fieldset>
 				</div>
