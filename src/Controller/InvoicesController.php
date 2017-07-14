@@ -1436,6 +1436,7 @@ class InvoicesController extends AppController
 			}else{
 				$invoice->in2=1;
 			}
+			
 			$invoice->in3=$sales_order->so3;
 			$invoice->created_by=$s_employee_id;
 			$invoice->company_id=$sales_order->company_id;
@@ -1657,6 +1658,7 @@ class InvoicesController extends AppController
 			
 						foreach($ref_rows as $ref_row){  	
 							$ref_row=(object)$ref_row; 
+							$ref_row->ref_no=$invoice->in2;
 							if($ref_row->ref_type=='New Reference' or $ref_row->ref_type=='Advance Reference'){
 								$query = $this->Invoices->ReferenceBalances->query();
 								
