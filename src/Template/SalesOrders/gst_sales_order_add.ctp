@@ -993,10 +993,18 @@ $(document).ready(function() {
 			}
 			total_igst=total_igst+igst_amount;
 			$(this).find("td:nth-child(17) input").val(row_total.toFixed(2));
+			total = total+parseFloat(row_total);
 		});
 		
+		$('input[name="total"]').val(total_discount_amt.toFixed(2));
+		$('input[name="total_after_pnf"]').val(total_pnf_amt.toFixed(2));
+		$('input[name="total_taxable_value"]').val(total_taxable_amt.toFixed(2));
+		$('input[name="total_cgst_value"]').val(total_cgst.toFixed(2));
+		$('input[name="total_sgst_value"]').val(total_sgst.toFixed(2));
+		$('input[name="total_igst_value"]').val(total_igst.toFixed(2));
 		
-		if($("#discount_per").is(':checked')){
+		
+		/*if($("#discount_per").is(':checked')){
 			var discount_per=parseFloat($('input[name="discount_per"]').val());
 			var discount_amount=(total*discount_per)/100;
 			if(isNaN(discount_amount)) { var discount_amount = 0; }
@@ -1005,11 +1013,11 @@ $(document).ready(function() {
 			var discount_amount=parseFloat($('input[name="discount"]').val());
 			if(isNaN(discount_amount)) { var discount_amount = 0; }
 		}
-		total=total-discount_amount
+		total=total-discount_amount*/
 		
-		$('input[name="total"]').val(total.toFixed(2));
+		//$('input[name="total"]').val(total.toFixed(2));
 		
-		if($("#pnfper").is(':checked')){
+		/*if($("#pnfper").is(':checked')){
 			var pnf_per=parseFloat($('input[name="pnf_per"]').val());
 			var pnf_amount=(total*pnf_per)/100;
 			if(isNaN(pnf_amount)) { var pnf_amount = 0; }
@@ -1017,15 +1025,15 @@ $(document).ready(function() {
 		}else{
 			var pnf_amount=parseFloat($('input[name="pnf"]').val());
 			if(isNaN(pnf_amount)) { var pnf_amount = 0; }
-		}
-		var total_after_pnf=total+pnf_amount;
-		if(isNaN(total_after_pnf)) { var total_after_pnf = 0; }
-		$('input[name="total_after_pnf"]').val(total_after_pnf.toFixed(2));
+		}*/
+		//var total_after_pnf=total+pnf_amount;
+		//if(isNaN(total_after_pnf)) { var total_after_pnf = 0; }
+		//$('input[name="total_after_pnf"]').val(total_after_pnf.toFixed(2));
 		
-		var sale_tax_per=parseFloat($('input[name="sale_tax_per"]').val());
-		var sale_tax=(total_after_pnf*sale_tax_per)/100;
+		//var sale_tax_per=parseFloat($('input[name="sale_tax_per"]').val());
+		/*var sale_tax=(total_after_pnf*sale_tax_per)/100;
 		if(isNaN(sale_tax)) { var sale_tax = 0; }
-		$('input[name="sale_tax_amount"]').val(sale_tax.toFixed(2));
+		$('input[name="sale_tax_amount"]').val(sale_tax.toFixed(2));*/
 		
 
 		
