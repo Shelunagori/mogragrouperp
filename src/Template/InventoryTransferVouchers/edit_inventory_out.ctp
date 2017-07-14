@@ -12,7 +12,7 @@
 	<div class="portlet-title">
 		<div class="caption" >
 			<i class="icon-globe font-blue-steel"></i>
-				<span class="caption-subject font-blue-steel uppercase">Inventory Transfer Voucher In</span>
+				<span class="caption-subject font-blue-steel uppercase">Inventory Transfer Voucher Out</span>
 		</div>
 		
 		

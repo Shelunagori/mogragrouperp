@@ -489,17 +489,11 @@ $(document).ready(function() {
 			customer_tin: {
 				  required: true,
 			},
-			checked_row_length: {
-				required: true,
-				max : 1,
-			},
+			
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
-			checked_row_length: {
-				required : "Please select atleast one row.",
-				max: "You can not select multiple rows of different sale tax rate."
-			},
+			
 			customer_tin: {
 				required: "Can't generate Invoice,Customer has not TIN"
 			},
@@ -698,7 +692,7 @@ $(document).ready(function() {
 			
 				
 					//alert(p);
-				$("#checked_row_length").val(p.length);
+				
 		}
 		
 	function put_code_description(){ 
@@ -885,17 +879,16 @@ $(document).ready(function() {
 	function rename_ref_rows(){
 		var i=0;
 		$("table.main_ref_table tbody tr").each(function(){
-			$(this).find("td:nth-child(1) select").attr({name:"ref_rows["+i+"][ref_type]", id:"ref_rows-"+i+"-ref_type"}).rules("add", "required");
+			$(this).find("td:nth-child(1) select").attr({name:"ref_rows["+i+"][ref_type]", id:"ref_rows-"+i+"-ref_type"});
 			var is_select=$(this).find("td:nth-child(2) select").length;
 			var is_input=$(this).find("td:nth-child(2) input").length;
 			
 			if(is_select){
-				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
+				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"});
 			}else if(is_input){
 				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/<?php echo $c_LedgerAccount->id; ?>/'+i;
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
-							required: true,
 							noSpace: true,
 							notEqualToGroup: ['.ref_number'],
 							remote: {
@@ -907,7 +900,7 @@ $(document).ready(function() {
 						});
 			}
 			
-			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"});
 			i++;
 		});
 		

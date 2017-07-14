@@ -135,7 +135,7 @@ $html.='
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">'. h(date("d-m-Y",strtotime($purchaseOrder->date_created))) .'</td>
 						</tr>
 						<tr>
-							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top" style="vertical-align: top;">TIN</td>
+							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top" style="vertical-align: top;">GST NO</td>
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">:</td>
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">'. h($purchaseOrder->company->tin_no) .'</td>
 						</tr>
@@ -241,7 +241,7 @@ $html .= '	<table width="100%" class="table_rows table3">
 				'. h($purchaseOrder->customer->customer_name) .'<br/>
 				'. h($purchaseOrder->customer->customer_address[0]->address) .'<br/>
 				ECC : '. h($purchaseOrder->customer->ecc_no) .'<br/>
-				TIN : '. h($purchaseOrder->customer->tin_no) .'<br/>
+				GST NO : '. h($purchaseOrder->customer->tin_no) .'<br/>
 		</td>';
 }else{ $html.='<td valign="top" style="font-size:13px;" >
 		

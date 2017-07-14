@@ -1,10 +1,33 @@
+
+<style>
+@media print{
+	.maindiv{
+		width:100% !important;
+	}	
+	.hidden-print{
+		display:none;
+	}
+}
+p{
+margin-bottom: 0;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px !important;
+}
+</style>
+<style type="text/css" media="print">
+@page {
+    size: auto;   /* auto is the initial value */
+    margin: 0 5px 0 20px;  /* this affects the margin in the printer settings */
+}
+</style>
 <?php //pr($inventoryVoucher->inventory_voucher_rows); exit;?>
 <a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
 <div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 70%;font-size: 12px;" class="maindiv">
 <table width="100%" class="divHeader" border="0">
 <tr>
     <td><?php echo $this->Html->image('/logos/'.$inventoryVoucher->company->logo, ['width' => '48%']); ?></td>
-    <td valign="bottom" width="35%" align="center" style="font-size:23px;font-weight: bold;color: #0685a8;">INVENTORY VOUCHER</td>
+    <td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY VOUCHER</div></td>
 	<td align="right" style="font-size: 14px;" width="36%"> 
  
 	<span style="font-size: 20px;"><?= h($inventoryVoucher->company->name) ?></span><br/>
@@ -50,10 +73,20 @@
 	<thead> 
 		<th width="30%"></th>
 		<th>
+		<?php $status=0;
+					foreach($inventoryVoucher->inventory_voucher_rows as $inventory_voucher_row ){
+						if( $inventory_voucher_row->item->item_companies[0]->serial_number_enable == 1) {
+						$status=1;
+						}
+					}
+					?>
 			<table width="97%" align="center">
 				<tr>
-					<td>Item</td>
-					<td width="5%">Quantity</td>
+					<td width="10%">Item</td>
+					<?php if($status==1) { ?>
+					<th width="10%">Item Serial No</th>
+					<?php } ?>
+					<td width="1%">Quantity</td>
 				</tr>
 			</table>
 		</th>
@@ -71,7 +104,29 @@
 					<?php if($inventory_voucher_row->left_item_id == $invoice_row->item->id){ ?>
 					<tr>
 						<td><?= $inventory_voucher_row->item->name?></td>
-						<td width="5%"><?= $inventory_voucher_row->quantity?></td>
+						<?php if($status==1) {  if(!empty($inventory_voucher_row->item->item_companies[0]->serial_number_enable)){
+							if($inventory_voucher_row->item->item_companies[0]->serial_number_enable == 1) { ?>
+							<td width="50%"><table>
+							<?php foreach ($inventory_voucher_row->item->item_serial_numbers as  $item_serial_number){ 
+							if($item_serial_number->iv_invoice_id == $inventory_voucher_row->invoice_id){ ?>
+							<tr>
+								<td ><?php echo $item_serial_number->serial_no ?></td>
+							</tr>
+							<?php }} ?>
+							</table>
+							</td>
+							<?php }}else{  ?>
+							<td><table>
+							<?php foreach ($inventory_voucher_row->item->item_serial_numbers as  $item_serial_number){ 
+							if($item_serial_number->in_inventory_voucher_id == $inventory_voucher_row->inventory_voucher_id){ ?>
+							<tr>
+								<td>-</td>
+							</tr>
+							<?php }} ?>
+							</table>
+							</td>
+							<?php }} ?>
+						<td width="8%" style="text-align: justify;"><?= $inventory_voucher_row->quantity?></td>
 					</tr>
 					<?php } endforeach; ?>
 				</table>

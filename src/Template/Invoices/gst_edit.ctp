@@ -480,7 +480,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			   <?php if($chkdate == 'Not Found'){  ?>
 					<label class="btn btn-danger"> You are not in Current Financial Year </label>
 				<?php } else { ?>
-					<?= $this->Form->button(__('ADD INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+					<?= $this->Form->button(__('EDIT INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
 				<?php } ?>	
 
 				</div>

@@ -116,7 +116,7 @@
 															<?php 
 									//pr($inventory_transfer_voucher_row_in); exit;
 									$i=1; foreach($inventory_transfer_voucher_row_in->item->item_serial_numbers as $item_serial_number){
-										if($item_serial_number->item_id == $inventory_transfer_voucher_row_in->item_id && $item_serial_number->inventory_transfer_voucher_id == $inventoryTransferVouchersins->id && $item_serial_number->status=='In' ){ ?>
+										if($item_serial_number->item_id == $inventory_transfer_voucher_row_in->item_id && $item_serial_number->inventory_transfer_voucher_id == $inventoryTransferVouchersins->id ){ ?>
 											<?php if($item_serial_number->status=='Out'){  ?>
 											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 65px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
 											

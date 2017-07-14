@@ -57,17 +57,51 @@ margin-bottom: 0;
 </br>
 <?php if(!empty($inventoryTransferVoucher)){ ?>
 <div class="portlet-body form">
+<?php $status=0;
+		foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row ){
+		if($inventory_transfer_voucher_row->status == 'in' &&$inventory_transfer_voucher_row->item->item_companies[0]->serial_number_enable == 1) {
+		$status=1;
+		}
+	}?>
 <table class="table table-bordered table-condensed">
 	<thead> 
 		<th width="10%">Sr.No.</th>
 		<th width="60%">Item</th>
+		<?php if($status==1) { ?>
+		<th>Item Serial No</th>
+		<?php } ?>
 		<th>Quantity</th>
 	</thead>
+	
 	<tbody>
 		<?php  $i=1; foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $out_item){ ?>
 			<tr>
 				<td valign="top"><?php echo $i; ?></td>
 				<td valign="top"><?php echo $out_item->item->name ?></td>
+				<?php 
+				if($status==1) {  
+				if(!empty($out_item->item->item_companies[0]->serial_number_enable)){
+				if($out_item->item->item_companies[0]->serial_number_enable == 1) { ?>
+				<td><table>
+				<?php foreach ($out_item->item->item_serial_numbers as  $item_serial_number){ 
+				if($item_serial_number->inventory_transfer_voucher_id == $out_item->inventory_transfer_voucher_id){ ?>
+				<tr>
+						<td><?php echo $item_serial_number->serial_no ?></td>
+				</tr>
+				<?php }} ?>
+			</table>
+		</td>
+				<?php }}else{  ?>
+							<td><table>
+							<?php foreach ($out_item->item->item_serial_numbers as  $item_serial_number){ 
+							if($item_serial_number->inventory_transfer_voucher_id == $out_item->inventory_transfer_voucher_id){ ?>
+							<tr>
+								<td><?php echo "-"; ?></td>
+							</tr>
+							<?php }} ?>
+							</table>
+							</td>
+							<?php }} ?> 
 				<td valign="top"><?php echo $out_item->quantity ?></td>
 			</tr>
 		<?php $i++; } ?>
