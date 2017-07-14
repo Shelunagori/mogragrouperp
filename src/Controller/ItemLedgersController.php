@@ -443,8 +443,7 @@ class ItemLedgersController extends AppController
 		$where['ItemLedgers.company_id']=$st_company_id;
         $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
 		
-		
 		$this->set(compact('stockLedgers'));
-		$this->set('_serialize', ['itemLedgers']);
+		$this->set('_serialize', ['stockLedgers']);
     }
 }

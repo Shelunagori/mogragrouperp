@@ -880,13 +880,14 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(7) input").attr({name:"sales_order_rows["+i+"][discount]", id:"sales_order_rows-"+i+"-discount"}).rules("required");
 			$(this).find("td:nth-child(8) input").attr({name:"sales_order_rows["+i+"][pnf_per]", id:"sales_order_rows-"+i+"-pnf_per"}).rules("required");
 			$(this).find("td:nth-child(9) input").attr({name:"sales_order_rows["+i+"][pnf]", id:"sales_order_rows-"+i+"-pnf"}).rules("required");
-			$(this).find("td:nth-child(10) select").attr("name","sales_order_rows["+i+"][cgst_per]");
-			$(this).find("td:nth-child(11) input").attr("name","sales_order_rows["+i+"][cgst_amount]");
-			$(this).find("td:nth-child(12) select").attr("name","sales_order_rows["+i+"][sgst_amount]");
-			$(this).find("td:nth-child(13) input").attr("name","sales_order_rows["+i+"][sgst_amount]");
-			$(this).find("td:nth-child(14) select").attr("name","sales_order_rows["+i+"][igst_amount]");
-			$(this).find("td:nth-child(15) input").attr("name","sales_order_rows["+i+"][igst_amount]");
-			$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][total]");
+			$(this).find("td:nth-child(10) input").attr("name","sales_order_rows["+i+"][taxable_value]");
+			$(this).find("td:nth-child(11) select").attr("name","sales_order_rows["+i+"][cgst_per]");
+			$(this).find("td:nth-child(12) input").attr("name","sales_order_rows["+i+"][cgst_amount]");
+			$(this).find("td:nth-child(13) select").attr("name","sales_order_rows["+i+"][sgst_per]");
+			$(this).find("td:nth-child(14) input").attr("name","sales_order_rows["+i+"][sgst_amount]");
+			$(this).find("td:nth-child(15) select").attr("name","sales_order_rows["+i+"][igst_per]");
+			$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][igst_amount]");
+			$(this).find("td:nth-child(17) input").attr("name","sales_order_rows["+i+"][total]");
 			
 		i++; });
 		
