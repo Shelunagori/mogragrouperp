@@ -41,9 +41,10 @@
 					<thead>
 						<tr>
 							<th>Sr. No.</th>
-							<th>processed_on</th>
+							<th>Processed On</th>
+							<th>Item</th>
 							<th>Voucher Source</th>
-							<!--<th>Voucher No.</th>-->
+							<th>Voucher No.</th>
 							<th>In</th>
 							<th>Out</th>
 							<th style="text-align:right;">Rate</th>
@@ -54,7 +55,17 @@
 						<tr>
 							<td><?= h(++$page_no) ?></td>
 							<td width="10%"><?= h(date("d-m-Y",strtotime($stockLedger->processed_on))) ?></td>
+							<td width="20%"><?= h($stockLedger->item->name) ?></td>
 							<td><?= h($stockLedger->source_model) ?></td>
+							<td>
+							<?php 
+							if(!empty($url_path)){
+								echo $this->Html->link($voucher_no ,$url_path,['target' => '_blank']); 
+							}else{
+								echo $voucher_no;
+							}
+							?>
+							</td>
 							<td><?php if($stockLedger->in_out=='In'){ echo $stockLedger->quantity; } else { echo '-'; } ?></td>
 							<td><?php if($stockLedger->in_out=='Out'){ echo $stockLedger->quantity; } else { echo '-'; } ?></td>
 							<td style="text-align:right;"><?= h($stockLedger->rate) ?></td>

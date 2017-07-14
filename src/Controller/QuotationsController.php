@@ -29,6 +29,7 @@ class QuotationsController extends AppController
 		$To=$this->request->query('To');
 		$q_dateFrom=$this->request->query('q_dateFrom');
 		$q_dateTo=$this->request->query('q_dateTo');
+		$copy_request=$this->request->query('copy-request');
 		$pull_request=$this->request->query('pull-request');
 		$gst_pull_request=$this->request->query('gst-pull-request');
 		$close_status=$this->request->query('status');
