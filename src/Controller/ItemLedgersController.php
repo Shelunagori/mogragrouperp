@@ -49,8 +49,8 @@ class ItemLedgersController extends AppController
 		//return $source_model.$source_id;
 		if($source_model=="Grns"){
 			$Grn=$this->ItemLedgers->InvoiceBookings->find()->where(['grn_id'=>$source_id])->first();
+			//pr($Grn); 
 			$Vendor=$this->ItemLedgers->Vendors->get($Grn->vendor_id);
-			
 			return ['voucher_info'=>$Grn,'party_type'=>'-','party_info'=>$Vendor];
 		}
 		
@@ -64,7 +64,7 @@ class ItemLedgersController extends AppController
 			$Customer=$this->ItemLedgers->Customers->get($Invoice->customer_id);
 			return ['voucher_info'=>$Invoice,'party_type'=>'Customer','party_info'=>$Customer];
 		}
-		if($source_model=="Challan"){
+		if($source_model=="Challan"){ 
 			$Challan=$this->ItemLedgers->Challans->get($source_id);
 			
 			if($Challan->challan_for=='Customer'){
@@ -422,7 +422,28 @@ class ItemLedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-        $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
+       
+		
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$this->set(compact('ledger','From','To'));
+		$where=[];
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['processed_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['processed_on <=']=$To;
+		}
+		$where['ItemLedgers.company_id']=$st_company_id;
+        $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
+		
+		
 		$this->set(compact('stockLedgers'));
 		$this->set('_serialize', ['itemLedgers']);
     }
