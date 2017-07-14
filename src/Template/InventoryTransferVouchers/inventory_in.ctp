@@ -45,7 +45,7 @@
 							<th >Quantity</th>
 							<th >Serial Number</th>
 							<th >Rate</th>
-							<th></th>
+							<th>Narration</th>
 							<th></th>
 						</tr>
 					</thead>

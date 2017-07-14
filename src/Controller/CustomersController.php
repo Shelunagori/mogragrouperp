@@ -290,6 +290,95 @@ class CustomersController extends AppController
 		$to_range_datas =json_decode($to_send);
 		$LedgerAccounts =$this->Customers->LedgerAccounts->find()
 			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Customers']);
+		
+		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
+		foreach($ReferenceDetails as $ReferenceDetail){
+			if($ReferenceDetail->receipt_id !=0){ 
+				$Receipt =$this->Customers->Receipts->get($ReferenceDetail->receipt_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->payment_id !=0){ 
+				$Receipt =$this->Customers->Payments->get($ReferenceDetail->payment_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->invoice_id !=0){ 
+				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->date_created)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->journal_voucher_id !=0){ 
+				$Receipt =$this->Customers->JournalVouchers->get($ReferenceDetail->journal_voucher_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->sale_return_id !=0){ 
+				$Receipt =$this->Customers->SaleReturns->get($ReferenceDetail->sale_return_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->date_created)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->purchase_return_id !=0){ 
+				$Receipt =$this->Customers->PurchaseReturns->get($ReferenceDetail->purchase_return_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->petty_cash_voucher_id !=0){ 
+				$Receipt =$this->Customers->PettyCashVouchers->get($ReferenceDetail->petty_cash_voucher_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->nppayment_id !=0){ 
+				$Receipt =$this->Customers->Nppayments->get($ReferenceDetail->nppayment_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->contra_voucher_id !=0){ 
+				$Receipt =$this->Customers->ContraVouchers->get($ReferenceDetail->contra_voucher_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->debit_note_id !=0){ 
+				$Receipt =$this->Customers->ContraVouchers->get($ReferenceDetail->debit_note_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else if($ReferenceDetail->invoice_booking_id !=0){ 
+				$Receipt =$this->Customers->InvoiceBookings->get($ReferenceDetail->invoice_booking_id);
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => (date('Y-m-d',strtotime($Receipt->created_on)))])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}else{ 
+				$query = $this->Customers->ReferenceDetails->query();
+				$query->update()
+						->set(['transaction_date' => '2017-04-01'])
+						->where(['id' => $ReferenceDetail->id])
+						->execute();
+			}
+			
+		} 
 	
 		$custmer_payment = [];
 		
@@ -313,6 +402,7 @@ class CustomersController extends AppController
 		$total_debit_3=0;$total_credit_3=0;$due_3=0;
 		$total_debit_4=0;$total_credit_4=0;$due_4=0;
 			$now=Date::now();
+			//$date = strtotime(date("Y-m-d", strtotime($date)) . " +".$custmer_payment_ctp[$key]."days");
 			$over_date=$now->subDays($custmer_payment->range1);//pr($over_date);exit;
 			$now=Date::now();
 			$over_date_1=$now->subDays($custmer_payment->range3);
@@ -324,70 +414,12 @@ class CustomersController extends AppController
 			//$now=Date::now();
 			//$over_date_1=$now->subDays($custmer_payment->range3);
 			
-			$custmer_ledgers =$this->Customers->Ledgers->find()->where(['ledger_account_id'=>$key])->toArray();
+			$custmer_ledgers =$this->Customers->ReferenceDetails->find()->where(['ledger_account_id'=>$key])->toArray();
 			//pr($custmer_ledgers);exit;
 			foreach($custmer_ledgers as $custmer_ledger){
-				$now=Date::now();
+				$now=date("Y-m-d", strtotime($custmer_ledger->transaction_date)) . " +".$custmer_payment_ctp[$custmer_ledger->ledger_account_id];
+				//date('Y-m-d', strtotime($Date. ' + 1 days'));
 					
-					if($custmer_ledger->transaction_date >= $over_date && $custmer_ledger->transaction_date <= $now){
-						if($custmer_ledger->debit==0){
-							$total_credit=$total_credit+$custmer_ledger->credit;
-						}else{
-							$total_debit=$total_debit+$custmer_ledger->debit;
-						}
-					}
-					elseif($custmer_ledger->transaction_date >= $over_date_1 && $custmer_ledger->transaction_date <= $now){
-						if($custmer_ledger->debit==0){
-							$total_credit_1=$total_credit_1+$custmer_ledger->credit;
-						}else{
-							$total_debit_1=$total_debit_1+$custmer_ledger->debit;
-						}
-					}
-					elseif($custmer_ledger->transaction_date >= $over_date_2 && $custmer_ledger->transaction_date <= $now){
-						if($custmer_ledger->debit==0){
-							$total_credit_2=$total_credit_2+$custmer_ledger->credit;
-						}else{
-							$total_debit_2=$total_debit_2+$custmer_ledger->debit;
-						}
-					}
-					elseif($custmer_ledger->transaction_date >= $over_date_3 && $custmer_ledger->transaction_date <= $now){
-						if($custmer_ledger->debit==0){
-							$total_credit_3=$total_credit_3+$custmer_ledger->credit;
-						}else{
-							$total_debit_3=$total_debit_3+$custmer_ledger->debit;
-						}
-					}
-					else{
-						if($custmer_ledger->debit==0){
-							$total_credit_4=$total_credit_4+$custmer_ledger->credit;
-						}else{
-							$total_debit_4=$total_debit_4+$custmer_ledger->debit;
-						}
-					}
-					
-				
-				}
-				$due=$total_debit-$total_credit; 
-				$due_1=$total_debit_1-$total_credit_1; 
-				$due_2=$total_debit_2-$total_credit_2; 
-				$due_3=$total_debit_3-$total_credit_3; 
-				$due_4=$total_debit_4-$total_credit_4; 
-				
-				
-				$Customers_name =$custmer_name[$key];
-				
-				$total_overdue[$key] = $due + $due_1 +$due_2 +$due_3 + $due_4;
-				
-				$over_due_report[$key]=$due;	
-				$over_due_report1[$key][1]=$due;	
-				$over_due_report[$key]=$due_1;
-				$over_due_report1[$key][2]=$due_1;
-				$over_due_report[$key]=$due_2;	
-				$over_due_report1[$key][3]=$due_2;	
-				$over_due_report[$key]=$due_3;	
-				$over_due_report1[$key][4]=$due_3;
-				$over_due_report[$key]=$due_4;	
-				$over_due_report1[$key][5]=$due_4;	
 			} 
         $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue'));
         $this->set('_serialize', ['customers']);

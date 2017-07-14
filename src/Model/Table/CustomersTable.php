@@ -116,14 +116,6 @@ class CustomersTable extends Table
             'foreignKey' => 'account_second_subgroup_id',
             'joinType' => 'INNER'
         ]);
-		
-		
-		$this->belongsTo('ReceiptVouchers');
-		$this->belongsTo('ReferenceDetails');
-		$this->belongsTo('Ledgers');
-		$this->belongsTo('VoucherLedgerAccounts');
-		$this->belongsTo('VouchersReferences');
-		
 		$this->belongsToMany('Companies', [
             'foreignKey' => 'customer_id',
             'targetForeignKey' => 'company_id',
@@ -133,6 +125,26 @@ class CustomersTable extends Table
 		$this->hasMany('CustomerCompanies', [
             'foreignKey' => 'customer_id'
         ]);
+		
+		$this->belongsTo('ReceiptVouchers');
+		$this->belongsTo('ReferenceDetails');
+		$this->belongsTo('Ledgers');
+		$this->belongsTo('VoucherLedgerAccounts');
+		$this->belongsTo('VouchersReferences');
+		
+		$this->belongsTo('Receipts');
+		$this->belongsTo('Payments'); 
+		$this->belongsTo('Invoices'); 
+		$this->belongsTo('JournalVouchers'); 
+		$this->belongsTo('SaleReturns'); 
+		$this->belongsTo('PurchaseReturns'); 
+		$this->belongsTo('PettyCashVouchers'); 
+		$this->belongsTo('Nppayments'); 
+		$this->belongsTo('ContraVouchers'); 
+		$this->belongsTo('CreditNotes'); 
+		$this->belongsTo('InvoiceBookings'); 
+		
+		
     }
 
     /**

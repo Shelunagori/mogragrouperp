@@ -38,7 +38,7 @@
 							<th >Quantity</th>
 							<th >Serial Number</th>
 							<th >Rate</th>
-							<th></th>
+							<th>Narration</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -65,15 +65,15 @@
 															<?php 
 									//pr($inventory_transfer_voucher_row_in); exit;
 									$i=1; foreach($inventory_transfer_voucher_row_in->item->item_serial_numbers as $item_serial_number){
-										if($item_serial_number->item_id == $inventory_transfer_voucher_row_in->item_id && $item_serial_number->inventory_transfer_voucher_id == $inventoryTransferVouchers->id && $item_serial_number->status=='In' ){ ?>
-											<?php if($item_serial_number->status=='Out'){  ?>
-											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 65px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
+										if($item_serial_number->item_id == $inventory_transfer_voucher_row_in->item_id && $item_serial_number->inventory_transfer_voucher_id == $inventoryTransferVouchers->id ){ ?>
+											<?php  if($item_serial_number->status=='Out'){   ?>
+											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 100px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
 											
 											<?php  } else {?>
-											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 65px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
+											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 100px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
 											
 											
-												<?= $this->Html->link('<i class="fa fa-trash"></i> ',
+												<?=  $this->Html->link('<i class="fa fa-trash"></i> ',
 														['action' => 'DeleteSerialNumberIn', $item_serial_number->id, $inventory_transfer_voucher_row_in->id,$inventory_transfer_voucher_row_in->inventory_transfer_voucher_id,$inventory_transfer_voucher_row_in->item_id], 
 														[
 															'escape' => false,

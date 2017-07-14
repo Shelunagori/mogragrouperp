@@ -61,14 +61,16 @@ margin-bottom: 0;
 	<thead> 
 		<th width="10%">Sr.No.</th>
 		<th width="60%">Item</th>
-		<th>Quantity</th>
+		<th style="text-align:center">Quantity</th>
+		<th style="text-align:center">Rate</th>
 	</thead>
 	<tbody>
 		<?php  $i=1; foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $out_item){ ?>
 			<tr>
 				<td valign="top"><?php echo $i; ?></td>
 				<td valign="top"><?php echo $out_item->item->name ?></td>
-				<td valign="top"><?php echo $out_item->quantity ?></td>
+				<td align="center" valign="top"><?php echo $out_item->quantity ?></td>
+				<td align="right"><?= h($this->Number->format($out_item->amount,['places'=>2])) ?></td>
 			</tr>
 		<?php $i++; } ?>
 		

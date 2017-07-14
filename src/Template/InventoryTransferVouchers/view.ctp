@@ -78,6 +78,7 @@ margin-bottom: 0;
 						<th width="20%">Sr. No.</th>
 						<th>Item</th>
 						<th>Quantity</th>
+						<th>Rate</th>
 					</thead>
 					<tbody>
 						<?php $i=1; foreach($out_item as $out_item){ ?>
@@ -85,6 +86,7 @@ margin-bottom: 0;
 							<td valign="top"><?php echo $i; ?></td>
 							<td valign="top"><?php echo $out_item->item->name ?></td>
 							<td valign="top"><?php echo $out_item->quantity ?></td>
+							<td><?= h($this->Number->format($out_item->amount,['places'=>2])) ?></td>
 						</tr>
 						<?php $i++; } ?>
 					</tbody>
@@ -97,6 +99,7 @@ margin-bottom: 0;
 						<th width="20%">Sr. No.</th>
 						<th>Item</th>
 						<th>Quantity</th>
+						<th>rate</th>
 					</thead>
 					<tbody>
 						<?php $j=1; foreach($in_item as $in_item){ ?>
@@ -104,6 +107,7 @@ margin-bottom: 0;
 							<td valign="top"><?php echo $j; ?></td>
 							<td valign="top"><?php echo $in_item->item->name ?></td>
 							<td valign="top"><?php echo $in_item->quantity ?></td>
+							<td><?= h($this->Number->format($in_item->amount,['places'=>2])) ?></td>
 
 						</tr>
 						<?php $j++; } ?>

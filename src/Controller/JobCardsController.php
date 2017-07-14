@@ -85,7 +85,7 @@ class JobCardsController extends AppController
 			$jobCards = $this->paginate($this->JobCards->find()->contain(['SalesOrders','JobCardRows'=>['Items']])->where($where1)->where(['status' => 'Pending','JobCards.company_id'=>$st_company_id]));
 		}else if(!empty($customer_id)){
 			$jobCards = $this->paginate($this->JobCards->find()->contain(['SalesOrders'=>['Customers'],'JobCardRows'=>['Items']])
-			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.id' => 'DESC'])
+			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC'])
 			->matching(
 					'SalesOrders.Customers', function ($q) use($customer_id) {
 						return $q->where(['Customers.id' =>$customer_id]);
@@ -94,7 +94,7 @@ class JobCardsController extends AppController
 			);
 		}else{
 			$jobCards = $this->paginate($this->JobCards->find()->contain(['SalesOrders'=>['Customers'],'JobCardRows'=>['Items']])
-			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.id' => 'DESC']));
+			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC']));
 		}
 		
 		$Customers = $this->JobCards->Customers->find('list')->order(['Customers.customer_name' => 'ASC']);
