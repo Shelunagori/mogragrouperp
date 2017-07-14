@@ -128,6 +128,7 @@ class CustomersTable extends Table
 		
 		$this->belongsTo('ReceiptVouchers');
 		$this->belongsTo('ReferenceDetails');
+		$this->belongsTo('ReferenceBalances');
 		$this->belongsTo('Ledgers');
 		$this->belongsTo('VoucherLedgerAccounts');
 		$this->belongsTo('VouchersReferences');
