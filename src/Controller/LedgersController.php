@@ -680,8 +680,6 @@ class LedgersController extends AppController
 		
 		}
 	
-	
-	
 	public function AccountStatement (){
 		$this->viewBuilder()->layout('index_layout');
 		$url=$this->request->here();
