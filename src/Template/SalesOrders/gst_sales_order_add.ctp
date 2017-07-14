@@ -34,10 +34,10 @@ if(!empty($copy))
 				</button>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop5">
 					<li>
-					   <?php echo $this->Html->link(' Keep Open Quotation','/Quotations/index?pull-request=true',array('escape'=>false)); ?>
+					   <?php echo $this->Html->link(' Keep Open Quotation','/Quotations/index?gst-pull-request=true',array('escape'=>false)); ?>
 					</li>
 					<li>
-					   <?php echo $this->Html->link('Close Quotation','/Quotations/index?pull-request=true&&status=close',array('escape'=>false)); ?>
+					   <?php echo $this->Html->link('Close Quotation','/Quotations/index?gst-pull-request=true&&status=close',array('escape'=>false)); ?>
 					</li>
 				</ul>
 			</div>
@@ -252,7 +252,7 @@ if(!empty($copy))
 					?>
 						<tr class="tr1 <?php echo $disable_class; ?> maintr" row_no='<?php echo @$quotation_rows->id; ?>'>
 							<td rowspan="2"><?php echo ++$q; --$q; ?></td>
-							<td>
+							<td width="280Px">
 
 								<div class="row">
 									<div class="col-md-10 padding-right-decrease">
@@ -276,20 +276,27 @@ if(!empty($copy))
 								</div>
 							</td>
 							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','max'=>@$quotation_rows->quantity-$quotation_rows->proceed_qty,'placeholder'=>'Quantity','value' => @$quotation_rows->quantity-$quotation_rows->proceed_qty]); ?></td>
-							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q]); ?></td>
-							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$quotation_rows->amount]); ?></td>
-							<td><?php 
-							$options=['Yes'=>'Yes','No'=>'No'];
-							echo $this->Form->input('sales_order_rows.'.$q.'.excise_duty', ['options'=>$options,'label' => false,'class' => 'form-control input-sm']); ?></td>
-							<td>
-							<?php $options=[];
-							foreach($SaleTaxes as $SaleTaxe){ 
-								$options[]=['text' => (string) $SaleTaxe->tax_figure, 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
-							} 
-							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
-							//echo $this->Form->input('sales_order_rows.'.$q.'.
-							//', ['type'=>'text','label' => false]); ?>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q]); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$quotation_rows->amount]); ?></td>
+							<td width="110px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount Per','value' => '']); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount','value' => '']); ?></td>
+							<td width="110px;><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf Per','value' => '']); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf','value' => '']); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.taxable_value', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Taxable Value','value' => '']); ?></td>
+							<td width="150px;"><?php 
+							echo $this->Form->input('sales_order_rows.'.$q.'.cgst_per', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm','empty'=>'Select',]); ?></td>
+							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'cgst Amount']); ?></td>
+							<td width="150px;">
+							<?php  echo $this->Form->input('sales_order_rows.'.$q.'.sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des','empty'=>'Select',]);
+							?>
 							</td>
+							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Sgst Amount']); ?></td>
+							<td width="200px;">
+							<?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des','empty'=>'Select',]);
+							?>
+							</td>
+							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Igst Amount']); ?></td>
+							<td width="200px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.total', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 							<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 						</tr>
 						<tr class="tr2 <?php echo $disable_class; ?> maintr" row_no='<?php echo @$quotation_rows->id; ?>'>
@@ -448,6 +455,7 @@ if(!empty($copy))
 					<div class="form-group">
 						<label class="control-label">Mobile <span class="required" aria-required="true">*</span></label>
 						<?php 
+						echo $this->Form->input('gst', ['type' => 'hidden','value'=>'yes']);
 						if($sales_id){
 							echo $this->Form->input('dispatch_mobile', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Mobile','value'=>$salesOrder->dispatch_mobile]); 
 							

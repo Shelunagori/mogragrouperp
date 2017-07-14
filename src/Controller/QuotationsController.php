@@ -30,9 +30,10 @@ class QuotationsController extends AppController
 		$q_dateFrom=$this->request->query('q_dateFrom');
 		$q_dateTo=$this->request->query('q_dateTo');
 		$pull_request=$this->request->query('pull-request');
+		$gst_pull_request=$this->request->query('gst-pull-request');
 		$close_status=$this->request->query('status');
 		$items=$this->request->query('items');
-		$this->set(compact('qt2','customer','salesman','product','From','To','q_dateFrom','q_dateTo','company_id','file','pull_request','close_status','items')); 
+		$this->set(compact('qt2','customer','salesman','product','From','To','q_dateFrom','q_dateTo','company_id','file','pull_request','gst_pull_request','close_status','items')); 
 		if(!empty($company_id)){
 			$where['company_id']=$company_id;
 		}

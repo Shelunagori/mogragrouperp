@@ -49,6 +49,7 @@ if(!empty($status)){
 			<div class="col-md-12">
 				<form method="GET" >
 				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
+				<input type="hidden" name="copy-request" value="copy-request=copy">
 				<table class="table table-condensed">
 					<tbody>
 						<tr>
@@ -148,7 +149,7 @@ if(!empty($status)){
 										</ul>
 								</div>
 							</td>
-							<?php if($pull_request=="true"){ ?>
+							<?php if($pull_request=="true" ){ ?>
 							<td><?php echo date("d-m-Y",strtotime($quotation->created_on)); ?></td>
 							<?php }else{ ?>
 							<td><?php echo date("d-m-Y",strtotime($quotation->finalisation_date)); ?></td>
@@ -163,7 +164,7 @@ if(!empty($status)){
 							<?php if(in_array(21,$allowed_pages)){ ?>
 								<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'confirm', $quotation->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
 							<?php } ?>	 
-								<?php if($quotation->status=='Pending' and in_array(2,$allowed_pages) and $pull_request!="true" && $copy_request!="copy"){ ?>
+								<?php if($quotation->status=='Pending' and $gst_pull_request!="true" and in_array(2,$allowed_pages) and $pull_request!="true" && $copy_request!="copy"){ ?>
 								<?php
 								 if(!in_array(date("m-Y",strtotime($quotation->created_on)),$closed_month))
 								 { ?>
@@ -185,6 +186,9 @@ if(!empty($status)){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								}elseif($close_status == "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+									
+								}elseif($gst_pull_request == "true"){
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								} ?>
 								
