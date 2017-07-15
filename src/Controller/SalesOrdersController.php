@@ -825,7 +825,7 @@ class SalesOrdersController extends AppController
 				}
 				
 				$this->Flash->success(__('The sales order has been saved.'));
-				return $this->redirect(['action' => 'confirm/'.$salesOrder->id]);
+				return $this->redirect(['action' => 'gstConfirm/'.$salesOrder->id]);
 
             } else {
                 $this->Flash->error(__('The sales order could not be saved. Please, try again.'));
@@ -1007,7 +1007,7 @@ class SalesOrdersController extends AppController
 						->execute();
 					
 					$this->Flash->success(__('The sales order has been saved.'));
-					return $this->redirect(['action' => 'confirm/'.$salesOrder->id]);
+					return $this->redirect(['action' => 'gstConfirm/'.$salesOrder->id]);
 				} else { 
 					$this->Flash->error(__('The sales order could not be saved. Please, try again.'));
 				}
