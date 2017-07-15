@@ -297,7 +297,7 @@ class CustomersController extends AppController
 			$custmer_payment_terms[$LedgerAccount->id]=$Customer->payment_terms;
 		}
 		
-		/* 
+		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 		foreach($ReferenceDetails as $ReferenceDetail){
 			 if($ReferenceDetail->invoice_id !=0){ 
@@ -338,7 +338,7 @@ class CustomersController extends AppController
 						->execute();
 				}
 			}
-		}  */
+		}  
 	
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
