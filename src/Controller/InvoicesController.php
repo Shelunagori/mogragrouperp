@@ -357,7 +357,7 @@ class InvoicesController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		
-		$sales_order_id=@(int)$this->request->query('sales-order');
+		$sales_order_id=@(int)$this->request->query('sales-order'); 
 		$sales_order=array(); $process_status='New';
 		if(!empty($sales_order_id)){
 			$sales_order = $this->Invoices->SalesOrders->get($sales_order_id, [
