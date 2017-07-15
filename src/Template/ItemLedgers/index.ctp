@@ -109,7 +109,7 @@
 						else if($source_model=='Grns')
 						{ 
 							$party_name = $itemLedger->party_info->company_name;
-							$voucher_no=$itemLedger->voucher_info->ib1.'/IB-'.str_pad($itemLedger->voucher_info->ib2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->ib3.'/'.$itemLedger->voucher_info->ib4;
+							$voucher_no=$itemLedger->voucher_info->in1.'/IN-'.str_pad($itemLedger->voucher_info->in2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->in3.'/'.$itemLedger->voucher_info->in4;
 							$url_path="/InvoiceBookings/view/".$itemLedger->voucher_info->id;
 						}
 						else{

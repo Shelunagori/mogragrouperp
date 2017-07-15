@@ -97,7 +97,90 @@ class ItemLedgersController extends AppController
 		} 
        return $source_model.$source_id;
     }
+	
+	public function stockLedger(){
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+       
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		$this->set(compact('From','To'));
+		$where=[];
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['processed_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['processed_on <=']=$To;
+		}
 
+        $itemLedgers2 = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc']);
+		
+		//pr($itemLedgers2->toArray());exit;
+				
+		
+		 
+		
+		$itemLedgersdata=[];
+		foreach($itemLedgers2 as $itemLedger){
+			if($itemLedger->source_model =='Items'){
+				$itemLedger->voucher_info='-';
+			}else{
+				$result=$this->GetItemVouchers($itemLedger->source_model,$itemLedger->source_id); 
+				$itemLedger->voucher_info=$result['voucher_info'];
+				
+			}
+			$itemLedgersdata[]=$itemLedger;
+		}
+		$this->set(compact('itemLedgersdata'));
+		$this->set('_serialize', ['itemLedgersdata']);
+    }
+	
+	public function GetItemVouchers($source_model_id=null,$source_id1=null)
+    {
+		if($source_model_id=="Invoices"){
+			$Invoice=$this->ItemLedgers->Invoices->get($source_id1);
+			return ['voucher_info'=>$Invoice];
+		}
+		
+		if($source_model_id=="Grns"){ 
+			$Grns=$this->ItemLedgers->Grns->get($source_id1);
+			return ['voucher_info'=>$Grns];
+		}
+		
+		if($source_model_id=="Inventory Vouchers"){ 
+			$InventoryVoucher=$this->ItemLedgers->InventoryVouchers->get($source_id1);
+			return ['voucher_info'=>$InventoryVoucher];
+		}
+		
+		if($source_model_id=="Challan"){ 
+			$Challan=$this->ItemLedgers->Challans->get($source_id1);
+			
+			return ['voucher_info'=>$Challan];
+		}
+		if($source_model_id=="Purchase Return"){
+			$PurchaseReturn=$this->ItemLedgers->PurchaseReturns->get($source_id1);
+			
+			return ['voucher_info'=>$PurchaseReturn];
+		}
+		if($source_model_id=="Sale Return"){
+			$SaleReturn=$this->ItemLedgers->SaleReturns->get($source_id1);
+			return ['voucher_info'=>$SaleReturn];
+		}
+		 if($source_model_id=="Inventory Transfer Voucher"){ 
+			$InventoryTransferVouchers=$this->ItemLedgers->InventoryTransferVouchers->get($source_id1);
+			
+			return ['voucher_info'=>$InventoryTransferVouchers];
+		} 
+		if($source_model_id=="Inventory Return"){ 
+			$Inventoryreturn=$this->ItemLedgers->Rivs->get($source_id1);
+			return ['voucher_info'=>$Inventoryreturn];
+		} 
+		return $source_model_id.$source_id1;
+    }
     /**
      * View method
      *
@@ -410,46 +493,5 @@ class ItemLedgersController extends AppController
 			
 	 }
 	
-	public function stockLedger(){
-		$this->viewBuilder()->layout('index_layout');
-		$session = $this->request->session();
-        $st_company_id = $session->read('st_company_id');
-       
-		
-		$From=$this->request->query('From');
-		$To=$this->request->query('To');
-		
-		$session = $this->request->session();
-		$st_company_id = $session->read('st_company_id');
-		
-		$this->set(compact('ledger','From','To'));
-		$where=[];
-		if(!empty($From)){
-			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['processed_on >=']=$From;
-		}
-		if(!empty($To)){
-			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['processed_on <=']=$To;
-		}
-		$where['ItemLedgers.company_id']=$st_company_id;
-        $stockLedgers2 = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc']);
-		$stockLedgers=[];
-		foreach($stockLedgers2 as $itemLedger){
-			if($itemLedger->source_model =='Items'){
-				$itemLedger->voucher_info='-';
-				$itemLedger->party_type='Item';
-				$itemLedger->party_info='-'; 
-			}else{
-				$result=$this->GetVoucherParty($itemLedger->source_model,$itemLedger->source_id); 
-				$itemLedger->voucher_info=$result['voucher_info'];
-				$itemLedger->party_type=$result['party_type'];
-				$itemLedger->party_info=$result['party_info'];	
-			}
-			$stockLedgers[]=$itemLedger;
-		}
-		//pr($stockLedgers);exit;
-		$this->set(compact('stockLedgers'));
-		$this->set('_serialize', ['stockLedgers']);
-    }
+	
 }

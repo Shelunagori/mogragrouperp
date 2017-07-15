@@ -677,7 +677,7 @@ select
 						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report',array('escape'=>false)); ?></li>	
-						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Item Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(37,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Balance Sheet','/ledger-Accounts/Balance-Sheet',array('escape'=>false)); ?></li>
