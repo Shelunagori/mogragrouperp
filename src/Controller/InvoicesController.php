@@ -1383,7 +1383,7 @@ class InvoicesController extends AppController
 			]);
 			
 			$c_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$sales_order->customer->id])->first();
-			//pr($sales_order); exit;
+			
 			
 			$process_status='Pulled From Sales-Order';
 			
@@ -1423,7 +1423,6 @@ class InvoicesController extends AppController
 		$invoice = $this->Invoices->newEntity();
         if ($this->request->is('post')) {
 			$invoice = $this->Invoices->patchEntity($invoice, $this->request->data);
-			//pr($invoice);exit;
 			foreach($invoice->invoice_rows as $invoice_row){
 				if($invoice_row->item_serial_numbers){
 					$item_serial_no=implode(",",$invoice_row->item_serial_numbers );
@@ -1722,7 +1721,7 @@ class InvoicesController extends AppController
                 $this->Flash->success(__('The invoice has been saved.'));
 
                 return $this->redirect(['action' => 'GstConfirm/'.$invoice->id]);
-            } else { pr($invoice); exit;
+            } else { 
                 $this->Flash->error(__('The invoice could not be saved. Please, try again.'));
             }
         }

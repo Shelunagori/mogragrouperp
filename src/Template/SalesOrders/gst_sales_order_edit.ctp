@@ -177,8 +177,11 @@
 							$item_ar[$invoice_row->item_id]=$invoice_row->quantity;
 						}
 					}
+					
 					$q=0; foreach ($salesOrder->sales_order_rows as $sales_order_rows): 
 					if(@$item_ar[$sales_order_rows->item_id]==$sales_order_rows->quantity){
+						
+						
 						$disable_class="disabledbutton";
 					}else{ $disable_class=""; } 
 					
@@ -271,7 +274,7 @@
 						<td></td>
 					</tr>
 
-					<?php $q++; endforeach; ?>
+					<?php  $q++; endforeach; ?>
 				</tbody>
 			</table>
 			</div>
