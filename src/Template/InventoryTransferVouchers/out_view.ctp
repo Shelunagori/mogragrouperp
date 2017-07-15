@@ -39,7 +39,7 @@ margin-bottom: 0;
 		</tr>
 	</table>
 </br>
-<table width="100%">
+<table width="100%" style="margin-top: -17px;">
 	<tr>
 		<td  valign="top" align="left">
 			<table border="0">
@@ -110,6 +110,7 @@ margin-bottom: 0;
 	</tbody>
 </table>
 </br>
+<div style="border:solid 1px ;margin-top: -24px;"></div>
 <table width="96%">
 	<tr>
 		<td align="right">
@@ -131,7 +132,6 @@ margin-bottom: 0;
 </table>
 </div>
 <?php } ?>
-	
 <table width="100%" class="divFooter">
 	<tr>
 		<td align="right">

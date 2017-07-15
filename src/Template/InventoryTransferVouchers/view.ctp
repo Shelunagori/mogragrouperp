@@ -206,7 +206,7 @@ margin-bottom: 0;
 </table>
 </div>
 <?php } ?>
-	
+	<div style="border:solid 1px ;"></div>
 <table width="100%" class="divFooter">
 	<tr>
 		<td align="right">

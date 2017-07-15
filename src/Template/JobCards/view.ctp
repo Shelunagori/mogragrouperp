@@ -10,6 +10,9 @@
 p{
 margin-bottom: 0;
 }
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px !important;
+}
 .intrnl_tbl tr td, .intrnl_tbl tr th{
 	border:solid; white !important;
         border-width:0 0 0 0 !important;
@@ -28,10 +31,10 @@ margin-bottom: 0;
 <div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 80%;font-size:12px;" class="maindiv">
 <table width="100%">
 	<tr>
-		<td width="40%"><?php echo $this->Html->image('/logos/'.$jobCard->company->logo, ['width' => '35%']); ?></td>
-		<td valign="middle" width="20%" align="center" style="font-size:22px;font-weight: bold;color: #0685a8;">JOB CARD</td>
-		<td align="right" width="50%" style="font-size: 14px;">
-		<span style="font-size: 16px;"><?= h($jobCard->company->name) ?></span><br/>
+		<td width="30%"><?php echo $this->Html->image('/logos/'.$jobCard->company->logo, ['width' => '40%']); ?></td>
+		<td align="center" width="40%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">JOB CARD</div></td>
+		<td align="right" width="50%" style="font-size: 12px;">
+		<span style="font-size: 14px;"><?= h($jobCard->company->name) ?></span><br/>
 		<span style="font-size: 13px;"><?= $this->Text->autoParagraph(h($jobCard->company->address)) ?></span>
 		<span style="font-size: 13px;"> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($jobCard->company->landline_no) ?></span> |
 		<span style="font-size: 13px;"><?= h($jobCard->company->mobile_no) ?></span>
@@ -41,7 +44,7 @@ margin-bottom: 0;
 <div style="border:solid 3px #0685a8;margin-bottom:5px;margin-top: 5px;"></div>
 <div class="portlet-body form">
 	<div class="form-body">
-		 <table border="0" align="center" width="100%">
+		 <table border="0" align="center" width="100%" style="    margin-top: -9px;">
 		        <tr>
 					<td  width="20%"><label><b>Job Card No</b></label></td>
 					<td  width="5%">:</td>
@@ -84,7 +87,7 @@ margin-bottom: 0;
 <table class="table table-bordered table-condensed">
 	<thead> 
 		<th width="30%">Production</th>
-		<th>Consumption</th>
+		<th width="30%">Consumption</th>
 	</thead>
 	<tbody>
 		<?php foreach ($jobCard->sales_order->sales_order_rows as $sales_order_row): ?>
@@ -97,7 +100,7 @@ margin-bottom: 0;
 					<?php foreach($sales_order_row->job_card_rows as $job_card_row): ?> 
 					<tr>
 						<td><?= $job_card_row->item->name?></td>
-						<td width="5%" align="right"><?= $job_card_row->quantity?></td>
+						<td width="10%" align="right">Qty- <?= $job_card_row->quantity?></td>
 					</tr>
 					<?php endforeach; ?>
 				</table>
@@ -106,7 +109,7 @@ margin-bottom: 0;
 		<?php endforeach; ?>
 	</tbody>
 </table>
-
+<div style="border:solid 1px ;"></div>
 <table width="96%">
 	<tr>
 		<td align="right">

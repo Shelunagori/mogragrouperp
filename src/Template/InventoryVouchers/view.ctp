@@ -28,18 +28,17 @@ margin-bottom: 0;
 <tr>
     <td><?php echo $this->Html->image('/logos/'.$inventoryVoucher->company->logo, ['width' => '48%']); ?></td>
     <td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY VOUCHER</div></td>
-	<td align="right" style="font-size: 14px;" width="36%"> 
- 
-	<span style="font-size: 20px;"><?= h($inventoryVoucher->company->name) ?></span><br/>
-	<span style="font-size: 15px;"><?= $this->Text->autoParagraph(h($inventoryVoucher->company->address)) ?></span>
-	<span><?= h($inventoryVoucher->company->landline_no) ?></span><br/>
-	<span><?= h($inventoryVoucher->company->mobile_no) ?></span>
-	</td>
+	<td align="right" width="40%" style="font-size: 12px;">
+			<span style="font-size: 14px;"><?= h($inventoryVoucher->company->name) ?></span>
+			<span><?= $this->Text->autoParagraph(h($inventoryVoucher->company->address)) ?>
+			<?= h($inventoryVoucher->company->mobile_no) ?></span>
+			</td>
+	
 </tr>
 </table>
 <div style="border:solid 3px #0685a8;margin-bottom:5px;margin-top: 5px;"></div>
 </br>
-<table width="100%">
+<table width="100%" style="margin-top: -17px;">
 	<tr>
 		<td  valign="top" align="left">
 			<table border="0" width='100%'>
@@ -82,7 +81,7 @@ margin-bottom: 0;
 					?>
 			<table width="97%" align="center">
 				<tr>
-					<td width="10%">Item</td>
+					<td width="7%">Item</td>
 					<?php if($status==1) { ?>
 					<th width="10%">Item Serial No</th>
 					<?php } ?>
@@ -103,7 +102,7 @@ margin-bottom: 0;
 					<?php foreach($inventoryVoucher->inventory_voucher_rows as $inventory_voucher_row): ?> 
 					<?php if($inventory_voucher_row->left_item_id == $invoice_row->item->id){ ?>
 					<tr>
-						<td><?= $inventory_voucher_row->item->name?></td>
+						<td width="30%"><?= $inventory_voucher_row->item->name?></td>
 						<?php if($status==1) {  if(!empty($inventory_voucher_row->item->item_companies[0]->serial_number_enable)){
 							if($inventory_voucher_row->item->item_companies[0]->serial_number_enable == 1) { ?>
 							<td width="50%"><table>
@@ -126,7 +125,8 @@ margin-bottom: 0;
 							</table>
 							</td>
 							<?php }} ?>
-						<td width="8%" style="text-align: justify;"><?= $inventory_voucher_row->quantity?></td>
+
+						<td width="8%" ><?= $inventory_voucher_row->quantity?></td>
 					</tr>
 					<?php } endforeach; ?>
 				</table>
@@ -140,8 +140,8 @@ margin-bottom: 0;
 
 </div>
 <?php } ?>
-	
-<table width="100%" class="divFooter">
+	<div style="border:solid 1px ;"></div>
+<table width="100%" class="divFooter" style="margin-top: -26px;">
 	<tr>
 		<td align="left" width="10%"><label style="font-size: 14px;font-weight: bold;">Narration</label></td>
 		<td  width="2%">:</td>

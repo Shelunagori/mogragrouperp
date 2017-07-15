@@ -179,7 +179,7 @@ margin-bottom: 0;
 		</tr>
 	</tfoot>
 </table>
-<div style="border:solid 1px ;"></div>
+<div style="border:solid 1px ;margin-top: 12px;"></div>
 <table width="100%" class="divFooter">
 	<tr>
 		<td style="vertical-align: top !important;">

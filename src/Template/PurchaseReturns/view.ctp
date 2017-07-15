@@ -29,7 +29,9 @@ margin-bottom: 0;
 			<td align="right" width="30%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($purchaseReturn->company->name) ?></span>
 			<span><?= $this->Text->autoParagraph(h($purchaseReturn->company->address)) ?>
-			<?= h($purchaseReturn->company->mobile_no) ?></span>
+			<span style="font-size: 13px;"> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($purchaseReturn->company->landline_no) ?></span> |
+		<span style="font-size: 13px;"><?= h($purchaseReturn->company->mobile_no) ?></span>
+			
 			</td>
 		</tr>
 		<tr>
