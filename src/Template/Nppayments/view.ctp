@@ -26,8 +26,9 @@ margin-bottom: 0;
             <td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">NON PRINT PAYMENT VOUCHER</div></td>
             <td align="right" width="40%" style="font-size: 12px;">
             <span style="font-size: 14px;"><?= h($nppayment->company->name) ?></span>
-            <span><?= $this->Text->autoParagraph(h($nppayment->company->address)) ?>
-            <?= h($nppayment->company->mobile_no) ?></span>
+            <span><?= $this->Text->autoParagraph(h($nppayment->company->address)) ?></span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($nppayment->company->landline_no) ?></span> |
+            <?= h($nppayment->company->mobile_no) ?>
             </td>
         </tr>
         <tr>

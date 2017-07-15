@@ -36,8 +36,8 @@ margin-bottom: 0;
 		<td align="right" width="50%" style="font-size: 12px;">
 		<span style="font-size: 14px;"><?= h($jobCard->company->name) ?></span><br/>
 		<span style="font-size: 13px;"><?= $this->Text->autoParagraph(h($jobCard->company->address)) ?></span>
-		<span style="font-size: 13px;"> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($jobCard->company->landline_no) ?></span> |
-		<span style="font-size: 13px;"><?= h($jobCard->company->mobile_no) ?></span>
+		<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($jobCard->company->landline_no) ?></span> |
+		<span ><?= h($jobCard->company->mobile_no) ?></span>
 		</td>
 	</tr>
 </table>

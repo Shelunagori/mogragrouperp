@@ -31,8 +31,9 @@ margin-bottom: 0;
 			<td align="center" width="40%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">CREDIT NOTE</div></td>
 			<td align="right" width="40%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($creditNotes->company->name) ?></span>
-			<span><?= $this->Text->autoParagraph(h($creditNotes->company->address)) ?>
-			<?= h($creditNotes->company->mobile_no) ?></span>
+			<span><?= $this->Text->autoParagraph(h($creditNotes->company->address)) ?></span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($creditNotes->company->landline_no) ?></span> |
+			<?= h($creditNotes->company->mobile_no) ?>
 			</td>
 		</tr>
 		<tr>

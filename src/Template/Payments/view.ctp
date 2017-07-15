@@ -29,8 +29,9 @@ margin-bottom: 0;
 			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">PAYMENT VOUCHER</div></td>
 			<td align="right" width="40%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($payment->company->name) ?></span>
-			<span><?= $this->Text->autoParagraph(h($payment->company->address)) ?>
-			<?= h($payment->company->mobile_no) ?></span>
+			<span><?= $this->Text->autoParagraph(h($payment->company->address)) ?></span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($payment->company->landline_no) ?></span> |
+			<?= h($payment->company->mobile_no) ?>
 			</td>
 		</tr>
 		<tr>

@@ -26,8 +26,9 @@ margin-bottom: 0;
             <td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">COUNTRA VOUCHER</div></td>
             <td align="right" width="40%" style="font-size: 12px;">
             <span style="font-size: 14px;"><?= h($contravoucher->company->name) ?></span>
-            <span><?= $this->Text->autoParagraph(h($contravoucher->company->address)) ?>
-            <?= h($contravoucher->company->mobile_no) ?></span>
+            <span><?= $this->Text->autoParagraph(h($contravoucher->company->address)) ?></span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($contravoucher->company->landline_no) ?></span> |
+            <?= h($contravoucher->company->mobile_no) ?>
             </td>
         </tr>
         <tr>

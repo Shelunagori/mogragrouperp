@@ -32,7 +32,8 @@ margin-bottom: 0;
 			<td align="right" width="40%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($debitNote->company->name) ?></span>
 			<span><?= $this->Text->autoParagraph(h($debitNote->company->address)) ?>
-			<?= h($debitNote->company->mobile_no) ?></span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($debitNote->company->landline_no) ?></span> |
+			<?= h($debitNote->company->mobile_no) ?>
 			</td>
 		</tr>
 		<tr>
