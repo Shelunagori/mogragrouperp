@@ -137,7 +137,7 @@ $html.='
 						<tr>
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top" style="vertical-align: top;">GST NO</td>
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">:</td>
-							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">'. h($purchaseOrder->company->tin_no) .'</td>
+							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top">'. h($purchaseOrder->company->gst_no) .'</td>
 						</tr>
 						<tr>
 							<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" valign="top" style="vertical-align: top;">PAN</td>

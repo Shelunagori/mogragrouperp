@@ -80,6 +80,25 @@ class VendorsTable extends Table
         ]);
 		$this->belongsTo('VoucherLedgerAccounts');
 		$this->belongsTo('VouchersReferences');
+		
+		$this->belongsTo('ReceiptVouchers');
+		$this->belongsTo('ReferenceDetails');
+		$this->belongsTo('ReferenceBalances');
+		$this->belongsTo('Ledgers');
+		$this->belongsTo('VoucherLedgerAccounts');
+		$this->belongsTo('VouchersReferences');
+		
+		$this->belongsTo('Receipts');
+		$this->belongsTo('Payments'); 
+		$this->belongsTo('Invoices'); 
+		$this->belongsTo('JournalVouchers'); 
+		$this->belongsTo('SaleReturns'); 
+		$this->belongsTo('PurchaseReturns'); 
+		$this->belongsTo('PettyCashVouchers'); 
+		$this->belongsTo('Nppayments'); 
+		$this->belongsTo('ContraVouchers'); 
+		$this->belongsTo('CreditNotes'); 
+		$this->belongsTo('InvoiceBookings'); 
     }
 
     /**
