@@ -234,19 +234,19 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td>
 								<?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Rate','value' => @$sales_order_rows->rate,'readonly','step'=>0.01]); ?>
 							</td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm  row_textbox discount_percentage','placeholder'=>'%']); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox pnf_percentage','placeholder'=>'%','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Taxable Value','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->amount]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm  row_textbox discount_percentage','placeholder'=>'%','value' => @$sales_order_rows->discount_per]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->discount]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox pnf_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->pnf_per]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->pnf]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Taxable Value','readonly','step'=>0.01,'value' => @$sales_order_rows->taxable_value]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->cgst_per]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->cgst_amount]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->sgst_per]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->sgst_amount]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->igst_per]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->igst_amount]); ?></td>
+							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$sales_order_rows->total]); ?></td>
 							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$sales_order_rows->id]); ?></label>
 							</td>
 						</tr>

@@ -751,12 +751,12 @@ class InvoicesController extends AppController
 			}
 		}
 		
-		$sale_tax_ledger_accounts=[];
+		/* $sale_tax_ledger_accounts=[];
 			foreach($invoice->sales_order->sales_order_rows as $sales_order_row){
 				$st_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['source_id'=>$sales_order_row->sale_tax->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id])->first();
 				
 				$sale_tax_ledger_accounts[$sales_order_row->sale_tax->id]=$st_LedgerAccount->id;
-			}	
+			}	 */
 		
 		foreach($invoice->invoice_rows as $invoice_row){
 			if($invoice_row->item_serial_number){
@@ -1378,7 +1378,7 @@ class InvoicesController extends AppController
 								'ItemCompanies'=>function($q) use($st_company_id){
 									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
 								}]);
-						},'SalesOrderRows.SaleTaxes','Companies','Customers','Employees'
+						},'Companies','Customers','Employees'
 					]
 			]);
 			
@@ -1387,11 +1387,11 @@ class InvoicesController extends AppController
 			
 			$process_status='Pulled From Sales-Order';
 			
-			$sale_tax_ledger_accounts=[];
+			/* $sale_tax_ledger_accounts=[];
 			foreach($sales_order->sales_order_rows as $sales_order_row){
 				$st_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['source_id'=>$sales_order_row->sale_tax->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id])->first();
 				$sale_tax_ledger_accounts[$sales_order_row->sale_tax->id]=$st_LedgerAccount->id;
-			}
+			} */
 		}
 
 		$session = $this->request->session();
