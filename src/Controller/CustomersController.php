@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\I18n\Time;
 use Cake\I18n\Date;
 
+
 /**
  * Customers Controller
  *
@@ -345,34 +346,42 @@ class CustomersController extends AppController
 		$total_debit_2=[];$total_credit_2=[];$due_2=[];
 		$total_debit_3=[];$total_credit_3=[];$due_3=[];
 		$total_debit_4=[];$total_credit_4=[];$due_4=[];	
-		
+		$total_debit_5=[];$total_credit_5=[];$due_5=[];	
+		$a=0;
 			foreach($ReferenceBalances as $ReferenceBalance){
-				$over_date1=date("Y-m-d",strtotime($ReferenceBalance->due_date));
+				$now=Date::now();
+				$now=date("Y-m-d",strtotime($now));
 				
+				//pr($now); exit;
+				$over_date1=date("Y-m-d",strtotime($now));
+				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
+				//pr($over_date2); exit;
 				
-				$over_date2=date("Y-m-d",strtotime("+".$to_range_datas->range1."  day", strtotime($over_date1)));
+				$over_date3=date("Y-m-d",strtotime("-".$to_range_datas->range2."  day", strtotime($over_date1)));
+				$over_date4=date("Y-m-d",strtotime("-".$to_range_datas->range3."  day", strtotime($over_date1)));
 				
-				$over_date3=date("Y-m-d",strtotime("+".$to_range_datas->range2."  day", strtotime($over_date1)));
-				$over_date4=date("Y-m-d",strtotime("+".$to_range_datas->range3."  day", strtotime($over_date1)));
+				$over_date5=date("Y-m-d",strtotime("-".$to_range_datas->range4."  day", strtotime($over_date1)));
+				$over_date6=date("Y-m-d",strtotime("-".$to_range_datas->range5."  day", strtotime($over_date1)));
 				
-				$over_date5=date("Y-m-d",strtotime("+".$to_range_datas->range4."  day", strtotime($over_date1)));
-				$over_date6=date("Y-m-d",strtotime("+".$to_range_datas->range5."  day", strtotime($over_date1)));
-				
-				$over_date7=date("Y-m-d",strtotime("+".$to_range_datas->range6."  day", strtotime($over_date1)));
-				$over_date8=date("Y-m-d",strtotime("+".$to_range_datas->range7."  day", strtotime($over_date1)));
+				$over_date7=date("Y-m-d",strtotime("-".$to_range_datas->range6."  day", strtotime($over_date1)));
+				$over_date8=date("Y-m-d",strtotime("-".$to_range_datas->range7."  day", strtotime($over_date1)));
+				//pr($over_date8); exit;
 				
 				$ReferenceBalance->due_date=date("Y-m-d",strtotime($ReferenceBalance->due_date));
 			
-				if($ReferenceBalance->due_date >= $over_date1 && $ReferenceBalance->due_date <=  $over_date2){
-					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+				if($ReferenceBalance->due_date <= $over_date1 && $ReferenceBalance->due_date >=  $over_date2){
+					
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){
+				
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
-								@$total_debit_1[$ReferenceBalance->ledger_account_id]=@$total_debit_1[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+								@$total_debit_1[$ReferenceBalance->ledger_account_id]+=@$ReferenceBalance->debit-@$ReferenceBalance->credit;
+							
 							}else{
 								$total_credit_1[$ReferenceBalance->ledger_account_id]=@$total_credit_1[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
 							}
 					} 
 				}
-				else if($ReferenceBalance->due_date >= $over_date3 && $ReferenceBalance->due_date <=  $over_date4){
+				else if($ReferenceBalance->due_date >= $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_2[$ReferenceBalance->ledger_account_id]=@$total_debit_2[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -382,7 +391,7 @@ class CustomersController extends AppController
 						}
 						
 				}	
-				else if($ReferenceBalance->due_date >= $over_date5 && $ReferenceBalance->due_date <=  $over_date6){
+				else if($ReferenceBalance->due_date <= $over_date5 && $ReferenceBalance->due_date >=  $over_date6){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_3[$ReferenceBalance->ledger_account_id]=@$total_debit_3[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -392,7 +401,7 @@ class CustomersController extends AppController
 						}
 						
 				}
-				else if($ReferenceBalance->due_date >= $over_date7 && $ReferenceBalance->due_date <=  $over_date8){ 
+				else if($ReferenceBalance->due_date <= $over_date7 && $ReferenceBalance->due_date >=  $over_date8){ 
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_4[$ReferenceBalance->ledger_account_id]=@$total_debit_4[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -401,14 +410,21 @@ class CustomersController extends AppController
 							}
 						}
 						
+				}else{
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_5[$ReferenceBalance->ledger_account_id]=@$total_credit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
 				}
 			
 					
 			}
-pr($total_debit_1); 
- exit;
 
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','custmer_payment_terms'));
+
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms'));
         $this->set('_serialize', ['customers']);
    
 	}

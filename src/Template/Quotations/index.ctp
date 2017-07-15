@@ -49,7 +49,7 @@ if(!empty($status)){
 			<div class="col-md-12">
 				<form method="GET" >
 				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
-				<input type="hidden" name="copy-request" value="copy-request=copy">
+				<input type="hidden" name="copy-request" value="<?php echo @$copy_request;?>">
 				<table class="table table-condensed">
 					<tbody>
 						<tr>

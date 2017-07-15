@@ -48,7 +48,7 @@ class ItemLedgersController extends AppController
 		
 		//return $source_model.$source_id;
 		if($source_model=="Grns"){
-			$Grn=$this->ItemLedgers->InvoiceBookings->find()->where(['grn_id'=>$source_id])->first();
+			$Grn=$this->ItemLedgers->Grns->get($source_id);
 			//pr($Grn); 
 			$Vendor=$this->ItemLedgers->Vendors->get($Grn->vendor_id);
 			return ['voucher_info'=>$Grn,'party_type'=>'-','party_info'=>$Vendor];
@@ -441,8 +441,22 @@ class ItemLedgersController extends AppController
 			$where['processed_on <=']=$To;
 		}
 		$where['ItemLedgers.company_id']=$st_company_id;
-        $stockLedgers = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc'])->toArray();
-		
+        $stockLedgers2 = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc']);
+		$stockLedgers=[];
+		foreach($stockLedgers2 as $itemLedger){
+			if($itemLedger->source_model =='Items'){
+				$itemLedger->voucher_info='-';
+				$itemLedger->party_type='Item';
+				$itemLedger->party_info='-'; 
+			}else{
+				$result=$this->GetVoucherParty($itemLedger->source_model,$itemLedger->source_id); 
+				$itemLedger->voucher_info=$result['voucher_info'];
+				$itemLedger->party_type=$result['party_type'];
+				$itemLedger->party_info=$result['party_info'];	
+			}
+			$stockLedgers[]=$itemLedger;
+		}
+		//pr($stockLedgers);exit;
 		$this->set(compact('stockLedgers'));
 		$this->set('_serialize', ['stockLedgers']);
     }

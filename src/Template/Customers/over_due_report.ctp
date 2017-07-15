@@ -34,16 +34,48 @@
 						<td><?php echo $custmer_payment_terms[$LedgerAccount->id];?></td>
 						<?php if((!empty($total_debit_1)) || (!empty($total_credit_1))){
 									$total1=@$total_debit_1[ $LedgerAccount->id] - @$total_credit_1[ $LedgerAccount->id];
-									echo  @$total_debit_1[ $LedgerAccount->id];
-									echo  @$total_credit_1[ $LedgerAccount->id]; exit;
+									
 									
 									if(@$total_debit_1[ $LedgerAccount->id] > @$total_credit_1[ $LedgerAccount->id]){ ?>
 									<td align="right"><?php echo $this->Number->format($total1,['places'=>2]); ?></td>
 						<?php } else { ?>
 									<td align="right"><?php echo $this->Number->format($total1,['places'=>2]); ?></td>
-						<?php } } else { ?> 
-									<td align="right"><?php echo  "-"; ?></td>
-						<?php } ?>
+						<?php } }  ?>
+						
+						<?php if((!empty($total_debit_2)) || (!empty($total_credit_2))){
+									$total2=@$total_debit_2[ $LedgerAccount->id] - @$total_credit_2[ $LedgerAccount->id];
+									if(@$total_debit_2[ $LedgerAccount->id] > @$total_credit_2[ $LedgerAccount->id]){ ?>
+									<td align="right"><?php echo $this->Number->format($total2,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total2,['places'=>2]); ?></td>
+						<?php } } ?>
+						
+						<?php if((!empty($total_debit_3)) || (!empty($total_credit_3))){
+									$total3=@$total_debit_3[ $LedgerAccount->id] - @$total_credit_3[ $LedgerAccount->id];
+									if(@$total_debit_3[ $LedgerAccount->id] > @$total_credit_3[ $LedgerAccount->id]){ ?>
+									<td align="right"><?php echo $this->Number->format($total3,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total3,['places'=>2]); ?></td>
+						<?php } } ?>
+						
+						<?php if((!empty($total_debit_4)) || (!empty($total_credit_4))){
+									$total4=@$total_debit_4[ $LedgerAccount->id] - @$total_credit_4[ $LedgerAccount->id];
+									if(@$total_debit_4[ $LedgerAccount->id] > @$total_credit_4[ $LedgerAccount->id]){ ?>
+									<td align="right"><?php echo $this->Number->format($total4,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total4,['places'=>2]); ?></td>
+						<?php } } ?>
+						
+						<?php if((!empty($total_debit_5)) || (!empty($total_credit_5))){
+									$total5=@$total_debit_5[ $LedgerAccount->id] - @$total_credit_5[ $LedgerAccount->id];
+									if(@$total_debit_5[ $LedgerAccount->id] > @$total_credit_5[ $LedgerAccount->id]){ ?>
+									<td align="right"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
+						<?php } } 
+						$grand_total=$total1+$total2+$total3+$total4+$total5;
+						?>
+						<td align="right"><?php echo $this->Number->format($grand_total,['places'=>2]); ?></td>
 					</tr>
 					<?php } ?>	
 				

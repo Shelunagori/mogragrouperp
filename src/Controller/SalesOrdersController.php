@@ -26,6 +26,7 @@ class SalesOrdersController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		
 		$copy_request=$this->request->query('copy-request');
+		$gst_copy_request=$this->request->query('gst-copy-request');
 		$job_card=$this->request->query('job-card');
 		
 		
@@ -118,7 +119,7 @@ class SalesOrdersController extends AppController
 		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
 
 		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find()->toArray();
-        $this->set(compact('salesOrders','status','copy_request','job_card','SalesOrderRows','Items','gst'));
+        $this->set(compact('salesOrders','status','copy_request','gst_copy_request','job_card','SalesOrderRows','Items','gst'));
         $this->set('_serialize', ['salesOrders']);
 		$this->set(compact('url'));
     }
@@ -868,5 +869,178 @@ class SalesOrdersController extends AppController
 		//pr($salesOrder); exit; 
         $this->set(compact('salesOrder', 'customers', 'companies','quotationlists','items','transporters','Filenames','termsConditions','serviceTaxs','exciseDuty','employees','SaleTaxes','copy','process_status','Company','chkdate','financial_year','sales_id','salesOrder_copy','job_id','salesOrder_data','GstTaxes'));
         $this->set('_serialize', ['salesOrder']);
+    }
+	
+	public function gstSalesOrderEdit($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+        $salesOrder = $this->SalesOrders->get($id, [
+            'contain' => ['Quotations'=>['QuotationRows'],'SalesOrderRows' => ['Items','JobCardRows'],'Invoices' => ['InvoiceRows']]
+        ]);
+		//pr($salesOrder->quotation->quotation_rows);
+		$qt_data=[];
+		$qt_data1=[];
+		
+		if($salesOrder->quotation_id>0){
+		$session = $this->request->session();
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->SalesOrders->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+			foreach($salesOrder->quotation->quotation_rows as $quotation_row){
+				$qt_data[$quotation_row->item_id]=$quotation_row->quantity;
+				$qt_data1[$quotation_row->item_id]=$quotation_row->proceed_qty;
+			}
+		}
+//pr($qt_data1); exit;
+		$closed_month=$this->viewVars['closed_month'];
+		
+		if(!in_array(date("m-Y",strtotime($salesOrder->created_on)),$closed_month))
+		{
+
+			$Em = new FinancialYearsController;
+			$financial_year_data = $Em->checkFinancialYear($salesOrder->created_on);
+			
+
+			$s_employee_id=$this->viewVars['s_employee_id'];
+			
+			$session = $this->request->session();
+			$st_company_id = $session->read('st_company_id');
+			$st_year_id = $session->read('st_year_id');
+			
+			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
+			   $fromdate1 = DATE("Y-m-d",strtotime($SessionCheckDate->date_from));   
+			   $todate1 = DATE("Y-m-d",strtotime($SessionCheckDate->date_to)); 
+			   $tody1 = DATE("Y-m-d");
+
+			   $fromdate = strtotime($fromdate1);
+			   $todate = strtotime($todate1); 
+			   $tody = strtotime($tody1);
+
+			  if($fromdate < $tody || $todate > $tody)
+			   {
+				 if($SessionCheckDate['status'] == 'Open')
+				 { $chkdate = 'Found'; }
+				 else
+				 { $chkdate = 'Not Found'; }
+
+			   }
+			   else
+				{
+					$chkdate = 'Not Found';	
+				}
+
+
+			
+			if ($this->request->is(['patch', 'post', 'put'])) {
+				$salesOrder = $this->SalesOrders->patchEntity($salesOrder, $this->request->data);
+				
+				$salesOrder->expected_delivery_date=date("Y-m-d",strtotime($salesOrder->expected_delivery_date));
+				$salesOrder->po_date=date("Y-m-d",strtotime($salesOrder->po_date)); 
+				$salesOrder->date=date("Y-m-d",strtotime($salesOrder->date));
+				$salesOrder->edited_by=$s_employee_id;
+				$salesOrder->edited_on=date("Y-m-d");
+				$salesOrder->edited_on_time= date("Y-m-d h:i:sA");
+				
+				//pr($salesOrder); exit;
+
+
+				if ($this->SalesOrders->save($salesOrder)) {
+					
+					foreach($salesOrder->sales_order_rows as $sales_order_row){
+						$job_card_row_ids=explode(',',$sales_order_row->job_card_row_ids);
+						foreach($job_card_row_ids as $job_card_row_id){
+							//pr($job_card_row_id); exit;
+							$query = $this->SalesOrders->SalesOrderRows->JobCardRows->query();
+							$query->update()
+							->set(['sales_order_row_id' => $sales_order_row->id])
+							->where(['id' => $job_card_row_id])
+							->execute();
+						}
+					}
+					foreach($salesOrder->sales_order_rows as $sales_order_row){
+					$quotation_rows = $this->SalesOrders->Quotations->QuotationRows->find()->where(['QuotationRows.item_id'=>$sales_order_row->item_id,'quotation_id'=>$salesOrder->quotation_id])->first();
+				
+						if($quotation_rows){ 
+							$query1 = $this->SalesOrders->Quotations->QuotationRows->query();
+							$query1->update()
+							->set(['proceed_qty' =>$quotation_rows->proceed_qty-$sales_order_row->old_quantity+$sales_order_row->quantity])
+							->where(['id' => $quotation_rows->id])
+							->execute();
+						}
+					}
+						
+					$falg=0;
+					if($salesOrder->quotation_id > 0){
+					$quotation_rows_datas = $this->SalesOrders->Quotations->QuotationRows->find()->where(['quotation_id'=>$salesOrder->quotation_id])->toArray();
+						foreach($quotation_rows_datas as $quotation_rows_data){
+							if($quotation_rows_data->quantity != $quotation_rows_data->proceed_qty){ 
+							$falg=1;	
+							}
+						} 
+					} 
+					
+					
+					if($falg==1){
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Pending'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
+					
+					$salesOrder->job_card_status='Pending';
+					$query2 = $this->SalesOrders->query();
+					$query2->update()
+						->set(['job_card_status' => 'Pending'])
+						->where(['id' => $id])
+						->execute();
+					
+					$this->Flash->success(__('The sales order has been saved.'));
+					return $this->redirect(['action' => 'confirm/'.$salesOrder->id]);
+				} else { 
+					$this->Flash->error(__('The sales order could not be saved. Please, try again.'));
+				}
+			}
+			$customers = $this->SalesOrders->Customers->find('all')->order(['Customers.customer_name' => 'ASC'])->contain(['CustomerAddress'=>function($q){
+				return $q
+				->where(['CustomerAddress.default_address'=>1]);
+			}])->matching(
+						'CustomerCompanies', function ($q) use($st_company_id) {
+							return $q->where(['CustomerCompanies.company_id' => $st_company_id]);
+						}
+					);
+			$companies = $this->SalesOrders->Companies->find('all', ['limit' => 200]);
+			$quotationlists = $this->SalesOrders->Quotations->find()->where(['status'=>'Pending'])->order(['Quotations.id' => 'DESC']);
+			$items = $this->SalesOrders->Items->find('list')->matching(
+						'ItemCompanies', function ($q) use($st_company_id) {
+							return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+						}
+					)->order(['Items.name' => 'ASC']);
+			$transporters = $this->SalesOrders->Carrier->find('list', ['limit' => 200])->order(['Carrier.transporter_name' => 'ASC']);
+			$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
+						'EmployeeCompanies', function ($q) use($st_company_id) {
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+						}
+					);
+			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);
+			//$SaleTaxes = $this->SalesOrders->SaleTaxes->find('all')->where(['SaleTaxes.freeze'=>0]);
+			$Filenames = $this->SalesOrders->Filenames->find()->where(['customer_id' => $salesOrder->customer_id]);
+			$SaleTaxes = $this->SalesOrders->SaleTaxes->find('all')->where(['SaleTaxes.freeze'=>0])->matching(
+						'SaleTaxCompanies', function ($q) use($st_company_id) {
+							return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+						} 
+					);
+			$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				);
+			$this->set(compact('salesOrder', 'customers', 'companies','quotationlists','items','transporters','termsConditions','serviceTaxs','exciseDuty','employees','SaleTaxes','Filenames','financial_year_data','chkdate','qt_data','qt_data1','financial_year','GstTaxes'));
+			$this->set('_serialize', ['salesOrder']);
+		}
+		else
+		{
+			$this->Flash->error(__('This month is locked.'));
+			return $this->redirect(['action' => 'index']);
+		}
     }
 }

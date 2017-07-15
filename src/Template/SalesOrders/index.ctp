@@ -15,6 +15,8 @@
 			: Select a Sales-Order to convert into Invoice
 		
 			<?php }  elseif($copy_request=="copy"){?>
+			: Select a Sales-Order to Copy <?php }
+			  elseif($gst_copy_request=="copy"){ ?>
 			: Select a Sales-Order to Copy
 			<?php }  elseif($job_card=="true"){?>
 			: Select a Sales-Order to Create Job Card
@@ -131,7 +133,9 @@
 								<?php if($copy_request=="copy"){
 									echo $this->Html->link('<i class="fa fa-repeat "></i>  Copy','/SalesOrders/Add?copy='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
-								
+								<?php if($gst_copy_request=="copy"){
+									echo $this->Html->link('<i class="fa fa-repeat "></i>  Copy','/SalesOrders/gstSalesOrderAdd?copy='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+								} ?>
 								<?php if($job_card=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat "></i>  Create Job Card','/JobCards/Add?Sales-Order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
@@ -140,7 +144,14 @@
 								 if(!in_array(date("m-Y",strtotime($salesOrder->created_on)),$closed_month))
 								 { 
 								?> 
-									<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $salesOrder->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
+									<?php 
+									if($salesOrder->gst=="no")
+									{
+									echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $salesOrder->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
+									}
+									else{
+										echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'gstSalesOrderEdit', $salesOrder->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
+									}?>
 								<?php } } ?>
 								
 								<?php if($pull_request=="true"){
