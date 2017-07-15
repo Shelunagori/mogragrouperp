@@ -16,36 +16,37 @@
 						<th>Sr. No.</th>
 						<th>Customer Name</th>
 						<th style="text-align:center">Payment Terms</th>
-						<th style="text-align:center"><?php echo $custmer_payment_range_ctp->range0.'-'.$custmer_payment_range_ctp->range1?></th>
-						<th style="text-align:center"><?php echo $custmer_payment_range_ctp->range2.'-'.$custmer_payment_range_ctp->range3?></th>
-						<th style="text-align:center"><?php echo $custmer_payment_range_ctp->range4.'-'.$custmer_payment_range_ctp->range5?></th>
-						<th style="text-align:center"><?php echo $custmer_payment_range_ctp->range6.'-'.$custmer_payment_range_ctp->range7?></th>
-						<th style="text-align:center"><?php echo $custmer_payment_range_ctp->range7?> ></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range2.'-'.$to_range_datas->range3?></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range7?> ></th>
 						<th style="text-align: right;">Total Over-Due</th>
 					</tr>
 				</thead>
 				<tbody>
-					<?php  $page_no=0; //pr($over_due_report); exit;
-					if($over_due_report>=0){ 
-					foreach ($over_due_report as $key=>$over_due_reports){ 
-					if($over_due_reports > 0 || $over_due_reports < 0 ){
+					<?php  $page_no=0;					
+					foreach ($LedgerAccounts as $LedgerAccount){ 
 					?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>
-						<td><?php echo $custmer_name[$key]."(". $custmer_alise[$key].")"?></td>
-						<td style="text-align:center"><?php echo $custmer_payment_ctp[$key] ?></td>
-						<td align="right"><?= h(number_format($over_due_report1[$key][1],2,',',''))?></td>
-						<td align="right"><?= h(number_format($over_due_report1[$key][2],2,'.',',')) ?></td>
-						<td align="right"><?= h(number_format($over_due_report1[$key][3],2,'.',',')) ?></td>
-						<td align="right"><?= h(number_format($over_due_report1[$key][4],2,'.',',')) ?></td>
-						<td align="right"><?= h(number_format($over_due_report1[$key][5],2,'.',',')) ?></td>
-						<td align="right"><?= h(number_format($total_overdue[$key],2,'.',','))  ?></td>
-						
+						<td><?php echo $LedgerAccount->name."(". $LedgerAccount->alias.")"?></td>
+						<td><?php echo $custmer_payment_terms[$LedgerAccount->id];?></td>
+						<?php if((!empty($total_debit_1)) || (!empty($total_credit_1))){
+									$total1=@$total_debit_1[ $LedgerAccount->id] - @$total_credit_1[ $LedgerAccount->id];
+									echo  @$total_debit_1[ $LedgerAccount->id];
+									echo  @$total_credit_1[ $LedgerAccount->id]; exit;
+									
+									if(@$total_debit_1[ $LedgerAccount->id] > @$total_credit_1[ $LedgerAccount->id]){ ?>
+									<td align="right"><?php echo $this->Number->format($total1,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total1,['places'=>2]); ?></td>
+						<?php } } else { ?> 
+									<td align="right"><?php echo  "-"; ?></td>
+						<?php } ?>
 					</tr>
-					<?php }}
-					}else{
-						echo "NO DATA FOUND";
-					}?>
+					<?php } ?>	
+				
 				</tbody>
 			</table>
 		</div>

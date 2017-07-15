@@ -42,6 +42,7 @@
 						<tr>
 							<th>Sr. No.</th>
 							<th>processed_on</th>
+							<th>Item</th>
 							<th>Voucher Source</th>
 							<!--<th>Voucher No.</th>-->
 							<th>In</th>
@@ -54,6 +55,7 @@
 						<tr>
 							<td><?= h(++$page_no) ?></td>
 							<td width="10%"><?= h(date("d-m-Y",strtotime($stockLedger->processed_on))) ?></td>
+							<td><?= h($stockLedger->item->name) ?></td>
 							<td><?= h($stockLedger->source_model) ?></td>
 							<td><?php if($stockLedger->in_out=='In'){ echo $stockLedger->quantity; } else { echo '-'; } ?></td>
 							<td><?php if($stockLedger->in_out=='Out'){ echo $stockLedger->quantity; } else { echo '-'; } ?></td>
