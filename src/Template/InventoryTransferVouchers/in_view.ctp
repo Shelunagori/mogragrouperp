@@ -25,7 +25,7 @@ margin-bottom: 0;
 <table width="100%" class="divHeader">
 		<tr>
 			<td width="30%"><?php echo $this->Html->image('/logos/'.$inventoryTransferVoucher->company->logo, ['width' => '40%']); ?></td>
-			<td align="center" width="40%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER IN</div></td>
+			<td align="center" width="30%" style="font-size: 12px;"><div align="center" style="font-size: 16px;font-weight: bold;color: #0685a8;">INVENTORY TRANSFER VOUCHER IN</div></td>
 			<td align="right" width="30%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($inventoryTransferVoucher->company->name) ?></span>
 			<span><?= $this->Text->autoParagraph(h($inventoryTransferVoucher->company->address)) ?></span>

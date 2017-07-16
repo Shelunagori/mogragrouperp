@@ -47,7 +47,11 @@
 							$url_path="";
 							$in_out_type=$itemLedger->in_out;
 							$source_model=$itemLedger->source_model;
-							 if($source_model=='Invoices')
+							 if($source_model=='Items')
+								{
+									$voucher_no='-';
+								}
+							 else if($source_model=='Invoices')
 								{
 									$voucher_no=$itemLedger->voucher_info->in1.'/IN-'.str_pad($itemLedger->voucher_info->in2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->in3.'/'.$itemLedger->voucher_info->in4;
 									if($itemLedger->voucher_info->invoice_type=='GST'){ 
@@ -69,8 +73,7 @@
 										$url_path="/inventory-transfer-vouchers/inView/".$itemLedger->voucher_info->id;
 									}else{
 										$url_path="/inventory-transfer-vouchers/outView/".$itemLedger->voucher_info->id;
-							}
-
+							        }
 								}
 								else if($source_model=='Inventory Return')
 								{
@@ -84,7 +87,7 @@
 								}
 								else if($source_model=="Purchase Return"){
 									$voucher_no='#'.str_pad($itemLedger->voucher_info->voucher_no, 4, '0', STR_PAD_LEFT);
-									$url_path="";
+									$url_path="/purchaseReturns/View/".$itemLedger->voucher_info->id;
 								}
 								else if($source_model=="Inventory Vouchers"){
 									$voucher_no='#'.str_pad($itemLedger->voucher_info->iv_number, 4, '0', STR_PAD_LEFT);
@@ -93,6 +96,7 @@
 								else if($source_model=="Challan"){
 									$voucher_no=$itemLedger->voucher_info->ch1.'/CH-'.str_pad($itemLedger->voucher_info->ch2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->ch3.'/'.$itemLedger->voucher_info->ch4;
 								}
+								
 								$status= '-';
 								if($in_out_type=='Out'){
 							if($itemLedger->voucher_info->challan_type=='Returnable'){
@@ -107,9 +111,17 @@
 								<td width="10%"><?= h(date("d-m-Y",strtotime($itemLedger->processed_on))) ?></td>
 								<td width="20%"><?= h($itemLedger->item->name) ?></td>
 								<td><?= h($itemLedger->source_model) ?></td>
-								<td><?php if($in_out_type=='In'){ echo $itemLedger->quantity; } else { echo '-'; } ?></td>
-							<td><?php echo $status; ?></td>
-							<td align="right"><?php echo $this->Number->format($itemLedger->rate,['places'=>2]); ?></td>
+								<td><?php 
+									if(!empty($url_path)){
+										echo $this->Html->link(@$voucher_no ,@$url_path,['target' => '_blank']); 
+									}else{
+										echo @$voucher_no;
+									}
+								?>
+								</td>
+									<td><?php if($in_out_type=='In'){ echo $itemLedger->quantity; } else { echo '-'; } ?></td>
+								<td><?php echo $status; ?></td>
+								<td align="right"><?php echo $this->Number->format($itemLedger->rate,['places'=>2]); ?></td>
 							</tr>	
 							<?php } ?>
 						</tbody>
