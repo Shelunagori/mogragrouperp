@@ -300,7 +300,7 @@ class CustomersController extends AppController
 		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 
-		foreach($ReferenceDetails as $ReferenceDetail){
+		/* foreach($ReferenceDetails as $ReferenceDetail){
 			 if($ReferenceDetail->invoice_id !=0){ 
 				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
 				$Customer =$this->Customers->get($Receipt->customer_id);
@@ -449,7 +449,7 @@ class CustomersController extends AppController
 				}
 			}
 		}   
-	
+	 */
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
 		$total_debit_1=[];$total_credit_1=[];$due_1=[];
@@ -458,21 +458,17 @@ class CustomersController extends AppController
 		$total_debit_4=[];$total_credit_4=[];$due_4=[];	
 		$total_debit_5=[];$total_credit_5=[];$due_5=[];	
 		$a=0;
-			foreach($ReferenceBalances as $ReferenceBalance){
+		$on_account_dr=[];
+		$on_account_cr=[];
+		foreach($ReferenceBalances as $ReferenceBalance){
 				$now=Date::now();
 				$now=date("Y-m-d",strtotime($now));
-				
-				//pr($now); exit;
 				$over_date1=date("Y-m-d",strtotime($now));
 				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
-				//pr($over_date2); exit;
-				
 				$over_date3=date("Y-m-d",strtotime("-".$to_range_datas->range2."  day", strtotime($over_date1)));
 				$over_date4=date("Y-m-d",strtotime("-".$to_range_datas->range3."  day", strtotime($over_date1)));
-				
 				$over_date5=date("Y-m-d",strtotime("-".$to_range_datas->range4."  day", strtotime($over_date1)));
 				$over_date6=date("Y-m-d",strtotime("-".$to_range_datas->range5."  day", strtotime($over_date1)));
-				
 				$over_date7=date("Y-m-d",strtotime("-".$to_range_datas->range6."  day", strtotime($over_date1)));
 				$over_date8=date("Y-m-d",strtotime("-".$to_range_datas->range7."  day", strtotime($over_date1)));
 				//pr($over_date8); exit;
@@ -529,10 +525,11 @@ class CustomersController extends AppController
 							}
 						}
 				}
-			
-					
+				/* $ledger=$this->Customers->Ledgers->find()->where(['ledger_account_id'=>$ReferenceBalance->ledger_account_id,'ref_no'=>$ReferenceBalance->reference_no])->first();
+				pr(@$ledger->debit);
+				pr(@$ledger->ledger_account_id); */
+				
 			}
-
 
         $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms'));
         $this->set('_serialize', ['customers']);

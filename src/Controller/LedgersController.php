@@ -678,7 +678,7 @@ class LedgersController extends AppController
 			
 			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data','ref_amt','ledger_amt'));
 		
-		}
+	}
 	
 	public function AccountStatement (){
 		$this->viewBuilder()->layout('index_layout');
