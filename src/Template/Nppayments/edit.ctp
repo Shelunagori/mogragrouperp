@@ -258,8 +258,8 @@ $(document).ready(function() {
         },
 
         submitHandler: function (form) {
-			$('#submitbtn').prop('disabled', true);
-			$('#submitbtn').text('Submitting.....');
+			//$('#submitbtn').prop('disabled', true);
+			//$('#submitbtn').text('Submitting.....');
 			success3.show();
             error3.hide();
             form[0].submit(); // submit the form
@@ -356,7 +356,7 @@ $(document).ready(function() {
                 var url='<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'checkRefNumberUniqueEdit']); ?>';
                 var is_old=$(this).find("td:nth-child(2) input").attr('is_old');
                 url=url+'/'+received_from_id+'/'+i+'/'+is_old;
-                $(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
+				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
                                                         required: true,
                                                         noSpace: true,
                                                         notEqualToGroup: ['.ref_number-'+received_from_id],
@@ -441,7 +441,7 @@ $(document).ready(function() {
                 current_obj.closest('tr').find('td:eq(1)').html(response);
                 rename_ref_rows(sel3,received_from_id);
             });
-        }else if(ref_type=="New Reference" || ref_type=="Advance Reference"){
+        }else if(ref_type=="New Reference" || ref_type=="Advance Reference"){ 
             current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
             rename_ref_rows(sel3,received_from_id);
         }else{
@@ -471,6 +471,7 @@ $(document).ready(function() {
     function do_ref_total(){
         $("#main_table tbody#main_tbody tr.main_tr").each(function(){
             var main_amount=$(this).find('td:nth-child(2) input').val();
+			
             var total_ref=0;
             $(this).find("table.ref_table tbody tr").each(function(){
             
@@ -479,7 +480,7 @@ $(document).ready(function() {
                 total_ref=total_ref+am;
             });
             var on_acc=main_amount-total_ref;
-            if(on_acc>=0){
+            if(on_acc>=0){ 
                 $(this).find("table.ref_table tfoot tr:nth-child(1) td:nth-child(3) input").val(on_acc.toFixed(2));
                 total_ref=total_ref+on_acc;
             }else{
@@ -544,7 +545,7 @@ $(document).ready(function() {
         var old_received_from_id=sel.closest('tr.main_tr').attr('old_received_from_id');
         var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');
         var old_ref_type=sel.closest('tr').find('a.deleterefrow').attr('old_ref_type');
-        var url="<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'deleteOneRefNumbers']); ?>";
+        var url="<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'deleteOneRefNo']); ?>";
 		url=url+'?old_received_from_id='+old_received_from_id+'&nppayment_id=<?php echo $nppayment->id; ?>&old_ref='+old_ref+'&old_ref_type='+old_ref_type,
         $.ajax({
             url: url,
@@ -616,7 +617,7 @@ $(document).ready(function() {
         <tbody>
             <tr>
                 <td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
-                <td class="ref_no"></td>
+                <td class="ref_no" ></td>
                 <td>
                 <?php echo $this->Form->input('old_amount', ['label' => false,'class' => '','type'=>'hidden']); ?>
                 <?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount']); ?>

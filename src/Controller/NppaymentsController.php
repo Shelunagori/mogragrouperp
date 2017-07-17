@@ -418,7 +418,7 @@ class NppaymentsController extends AppController
                         
                         foreach($nppayment->ref_rows[$nppayment_row->received_from_id] as $ref_row){
                             $ref_row=(object)$ref_row;
-                            $ReferenceDetail=$this->Nppayments->ReferenceDetails->find()->where(['ledger_account_id'=>$nppayment_row->received_from_id,'reference_no'=>$ref_row->ref_no,'payment_id'=>$nppayment->id])->first();
+                            $ReferenceDetail=$this->Nppayments->ReferenceDetails->find()->where(['ledger_account_id'=>$nppayment_row->received_from_id,'reference_no'=>$ref_row->ref_no,'nppayment_id'=>$nppayment->id])->first();
                             
                             if($ReferenceDetail){
                                 $ReferenceBalance=$this->Nppayments->ReferenceBalances->find()->where(['ledger_account_id'=>$nppayment_row->received_from_id,'reference_no'=>$ref_row->ref_no])->first();
@@ -634,6 +634,7 @@ class NppaymentsController extends AppController
     function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
         $reference_no=$this->request->query['ref_rows'][$received_from_id][$i]['ref_no'];
         $ReferenceBalances=$this->Nppayments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id,'reference_no'=>$reference_no]);
+		//pr($ReferenceBalances);
         if($ReferenceBalances->count()==1 && $is_old=="yes"){
             echo 'true';
         }elseif($ReferenceBalances->count()==0){
@@ -669,7 +670,7 @@ class NppaymentsController extends AppController
         }      
     }
     
-    function deleteOneRefNumbers($nppayment_id=null,$old_received_from_id=null,$old_ref=null,$old_ref_type=null){
+    function deleteOneRefNo($nppayment_id=null,$old_received_from_id=null,$old_ref=null,$old_ref_type=null){
         $old_received_from_id=$this->request->query['old_received_from_id'];
         $nppayment_id=$this->request->query['nppayment_id'];
         $old_ref=$this->request->query['old_ref'];
