@@ -268,9 +268,7 @@ $(document).ready(function() {
     });
     //--     END OF VALIDATION
     
-    
-        
-    $('input[name="payment_mode"]').die().live("click",function() {
+   $('input[name="payment_mode"]').die().live("click",function() {
         var payment_mode=$(this).val();
         if(payment_mode=="Cheque"){
             $("#chq_no").show();
@@ -278,30 +276,30 @@ $(document).ready(function() {
             $("#chq_no").hide();
         }
     });
-    
+   
     var payment_mode=$('input[name="payment_mode"]:checked').val();
     if(payment_mode=="Cheque"){
         $("#chq_no").show();
     }else{
         $("#chq_no").hide();
     }
-    //rename_rows();
-    
-    function function2(){
+	
+	function function2(){
         $("#main_table tbody#main_tbody tr.main_tr").each(function(){
             var sel=$(this);
             var received_from_id=$(this).find('td:nth-child(1) select').val();
             rename_ref_rows(sel,received_from_id);
         });
     }
+  
     $.when(rename_rows()).then(function2());
     function add_row(){
         var tr=$("#sample_table tbody tr").clone();
         $("#main_table tbody#main_tbody").append(tr);
         rename_rows();
     }
-    
-    function rename_rows(){ 
+	
+	 function rename_rows(){ 
         var i=0;
         $("#main_table tbody#main_tbody tr.main_tr").each(function(){
             $(this).find("td:eq(0) select.received_from").select2().attr({name:"nppayment_rows["+i+"][received_from_id]", id:"quotation_rows-"+i+"-received_from_id"}).rules('add', {
@@ -320,29 +318,30 @@ $(document).ready(function() {
             i++;
         });
     }
-    
-    $('.addrow').live("click",function() {
+	
+	 $('.addrow').live("click",function() {
         add_row();
     });
-    $('.deleterow').live("click",function() {
+	
+	$('.deleterow').live("click",function() {
         var sel=$(this);
         delete_all_ref_no(sel);
         $(this).closest("tr").remove();
         do_mian_amount_total();
     });
-    
-    $('.addrefrow').live("click",function() {
+	
+	 $('.addrefrow').live("click",function() {
         var sel=$(this).closest('tr.main_tr');
         var received_from_id=$(this).closest('tr.main_tr').find('td:nth-child(1) select').val();
         add_ref_row(sel,received_from_id);
     });
-    
-    function add_ref_row(sel,received_from_id){
+	
+	function add_ref_row(sel,received_from_id){
         var tr=$("#sample_ref table.ref_table tbody tr").clone();
         sel.find("table.ref_table tbody").append(tr);
         rename_ref_rows(sel,received_from_id);
     }
-    
+   
     function rename_ref_rows(sel,received_from_id){
         var i=0;
         $(sel).find("table.ref_table tbody tr").each(function(){
@@ -354,9 +353,10 @@ $(document).ready(function() {
                 $(this).find("td:nth-child(2) select").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no"}).rules("add", "required");
             }else if(is_input){
                 var url='<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'checkRefNumberUniqueEdit']); ?>';
-                var is_old=$(this).find("td:nth-child(2) input").attr('is_old');
-                url=url+'/'+received_from_id+'/'+i+'/'+is_old;
-				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
+				var is_old=$(this).find("td:nth-child(2) input").attr('is_old');
+				url=url+'/'+received_from_id+'/'+i+'/'+is_old;
+				
+               $(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
                                                         required: true,
                                                         noSpace: true,
                                                         notEqualToGroup: ['.ref_number-'+received_from_id],
@@ -386,7 +386,7 @@ $(document).ready(function() {
         
     }
     
-    $('.deleterefrow').live("click",function() {
+	 $('.deleterefrow').live("click",function() {
         var sel=$(this);
         delete_one_ref_no(sel);
         $(this).closest("tr").remove();
@@ -404,7 +404,7 @@ $(document).ready(function() {
         do_mian_amount_total();
     });
     
-    function load_ref_section(sel){
+	function load_ref_section(sel){
         $(sel).closest("tr.main_tr").find("td:nth-child(3)").html("Loading...");
         var sel2=$(sel).closest('tr.main_tr');
         var received_from_id=$(sel).closest("tr.main_tr").find("td:nth-child(1) select").find('option:selected').val();
@@ -424,8 +424,8 @@ $(document).ready(function() {
             rename_ref_rows(sel2,received_from_id);
         });
     }
-    
-    $('.ref_type').live("change",function() {
+	
+	 $('.ref_type').live("change",function() {
         var current_obj=$(this);
         var sel3=$(this).closest('tr.main_tr');
         var cr_dr=$(this).closest('tr.main_tr').find('td:nth-child(2) select').val();
@@ -442,7 +442,7 @@ $(document).ready(function() {
                 rename_ref_rows(sel3,received_from_id);
             });
         }else if(ref_type=="New Reference" || ref_type=="Advance Reference"){ 
-            current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
+            current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." is_old="No">');
             rename_ref_rows(sel3,received_from_id);
         }else{
             current_obj.closest('tr').find('td:eq(1)').html('');
@@ -573,6 +573,10 @@ $(document).ready(function() {
             rename_ref_rows(sel2,received_from_id);
         });
     });
+    
+    
+    
+    
     
 });
 </script>

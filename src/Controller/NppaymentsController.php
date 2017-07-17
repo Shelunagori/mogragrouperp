@@ -634,7 +634,6 @@ class NppaymentsController extends AppController
     function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
         $reference_no=$this->request->query['ref_rows'][$received_from_id][$i]['ref_no'];
         $ReferenceBalances=$this->Nppayments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id,'reference_no'=>$reference_no]);
-		//pr($ReferenceBalances);
         if($ReferenceBalances->count()==1 && $is_old=="yes"){
             echo 'true';
         }elseif($ReferenceBalances->count()==0){
