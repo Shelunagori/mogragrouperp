@@ -70,11 +70,11 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
         <div style="overflow: auto;">
         <table width="100%" id="main_table">
             <thead>
-                <th width="25%"><label class="control-label">Paid To</label></th>
-                <th width="15%"><label class="control-label">Amount</label></th>
+                <th><label class="control-label">Paid To</label></th>
+                <th ><label class="control-label">Amount</label></th>
                 <th></th>
-                <th width="15%"><label class="control-label">Narration</label></th>
-                <th width="3%"></th>
+                <th><label class="control-label">Narration</label></th>
+                <th></th>
             </thead>
             <tbody id="main_tbody">
             <?php
@@ -82,8 +82,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			//pr($nppayment->nppayment_rows);exit;
 			foreach($nppayment->nppayment_rows as $nppayment_row){ ?> 
                 <tr class="main_tr" old_received_from_id="<?php echo $nppayment_row->received_from_id; ?>">
-                    <td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','value'=>$nppayment_row->received_from_id]); ?></td>
-                    <td>
+                    <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm input-xsmall received_from','value'=>$nppayment_row->received_from_id,'style'=>'width: 100%; display: block;']); ?></td>
+                    <td width="20%">
                     <div class="row">
                         <div class="col-md-7" style="padding-right: 0;">
                             <?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm mian_amount','placeholder'=>'Amount','value'=>$nppayment_row->amount]); ?>
@@ -93,7 +93,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                         </div>
                     </div>
                     </td>
-                    <td>
+                    <td width="70%">
                     
                         <div class="ref" style="padding:4px;">
                         <table width="100%" class="ref_table">
@@ -111,7 +111,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                                     <td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
                                     <td class="ref_no">
                                     <?php if($old_ref_row->reference_type=="Against Reference"){
-                                        echo $this->requestAction('Payments/fetchRefNumbersEdit/'.$nppayment_row->received_from_id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$nppayment_row->cr_dr);
+                                       echo $this->requestAction('/Nppayments/fetchRefNumbersEdit?received_from_id='.$nppayment_row->received_from_id.'&cr_dr='.$nppayment_row->cr_dr.'&reference_no='.$old_ref_row->reference_no.'&debit='.$old_ref_row->debit.'&credit='.$old_ref_row->credit); 
                                     }else{
                                         echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
                                     }?>
@@ -149,7 +149,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                         </div>
                         
                     </td>
-                    <td><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','value'=>$nppayment_row->narration]); ?></td>
+                    <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','value'=>$nppayment_row->narration]); ?></td>
                     <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
                 </tr>
             <?php } ?>
@@ -353,7 +353,7 @@ $(document).ready(function() {
             if(is_select){
                 $(this).find("td:nth-child(2) select").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no"}).rules("add", "required");
             }else if(is_input){
-                var url='<?php echo $this->Url->build(['controller'=>'Payments','action'=>'checkRefNumberUniqueEdit']); ?>';
+                var url='<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'checkRefNumberUniqueEdit']); ?>';
                 var is_old=$(this).find("td:nth-child(2) input").attr('is_old');
                 url=url+'/'+received_from_id+'/'+i+'/'+is_old;
                 $(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
@@ -432,7 +432,7 @@ $(document).ready(function() {
         var ref_type=$(this).find('option:selected').val();
         var received_from_id=$(this).closest('tr.main_tr').find('td select:eq(0)').val();
         if(ref_type=="Against Reference"){
-            var url="<?php echo $this->Url->build(['controller'=>'Payments','action'=>'fetchRefNumbers']); ?>";
+            var url="<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'fetchRefNumbers']); ?>";
             url=url+'/'+received_from_id+'/'+cr_dr,
             $.ajax({
                 url: url,
@@ -530,7 +530,7 @@ $(document).ready(function() {
     
     function delete_all_ref_no(sel){
         var old_received_from_id=sel.closest('tr').attr('old_received_from_id');
-        var url="<?php echo $this->Url->build(['controller'=>'Payments','action'=>'deleteAllRefNumbers']); ?>";
+        var url="<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'deleteAllRefNumbers']); ?>";
         url=url+'/'+old_received_from_id+'/'+<?php echo $nppayment->id; ?>,
         $.ajax({
             url: url,
@@ -540,17 +540,17 @@ $(document).ready(function() {
         });
     }
     
-    function delete_one_ref_no(sel){
+    function delete_one_ref_no(sel){ 
         var old_received_from_id=sel.closest('tr.main_tr').attr('old_received_from_id');
         var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');
         var old_ref_type=sel.closest('tr').find('a.deleterefrow').attr('old_ref_type');
-        var url="<?php echo $this->Url->build(['controller'=>'Payments','action'=>'deleteOneRefNumbers']); ?>";
-        url=url+'?old_received_from_id='+old_received_from_id+'&payment_id=<?php echo $nppayment->id; ?>&old_ref='+old_ref+'&old_ref_type='+old_ref_type,
+        var url="<?php echo $this->Url->build(['controller'=>'Nppayments','action'=>'deleteOneRefNumbers']); ?>";
+		url=url+'?old_received_from_id='+old_received_from_id+'&nppayment_id=<?php echo $nppayment->id; ?>&old_ref='+old_ref+'&old_ref_type='+old_ref_type,
         $.ajax({
             url: url,
             type: 'GET',
         }).done(function(response) {
-            //alert(response);
+            
         });
     }
     
@@ -580,8 +580,8 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?></td>
-            <td>
+            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm input-xsmall received_from']); ?></td>
+            <td width="20%">
             <div class="row">
                 <div class="col-md-7" style="padding-right: 0;">
                     <?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm mian_amount','placeholder'=>'Amount']); ?>
@@ -594,8 +594,8 @@ $(document).ready(function() {
                 </div>
             </div>
             </td>
-            <td></td>
-            <td><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
+            <td width="70%"></td>
+            <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
             <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
         </tr>
     </tbody>

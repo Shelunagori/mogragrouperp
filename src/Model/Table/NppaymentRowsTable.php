@@ -47,10 +47,7 @@ class NppaymentRowsTable extends Table
             'propertyName' => 'ReceivedFrom',
         ]);
 
-        $this->belongsTo('Nppayments', [
-            'foreignKey' => 'nppayment_id',
-            'joinType' => 'INNER'
-        ]);
+       
 
     }
 
@@ -91,7 +88,7 @@ class NppaymentRowsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['nppayment_id'], 'Nppayments'));
+        //$rules->add($rules->existsIn(['nppayment_id'], 'Nppayments'));
         $rules->add($rules->existsIn(['received_from_id'], 'ReceivedFroms'));
 
         return $rules;

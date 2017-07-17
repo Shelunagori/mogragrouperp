@@ -386,12 +386,13 @@ class NppaymentsController extends AppController
             $nppayment->transaction_date=date("Y-m-d",strtotime($nppayment->transaction_date));
                 
             //Save receipt
-            //pr($payment); exit;
+			
             if ($this->Nppayments->save($nppayment)) {
                 $this->Nppayments->Ledgers->deleteAll(['voucher_id' => $nppayment->id, 'voucher_source' => 'Non Print Payment Voucher']);
                 $total_cr=0; $total_dr=0;
+				
                 foreach($nppayment->nppayment_rows as $nppayment_row){
-                    
+                   
                     //Ledger posting for Received From Entity
                     $ledger = $this->Nppayments->Ledgers->newEntity();
                     $ledger->company_id=$st_company_id;
@@ -431,13 +432,14 @@ class NppaymentsController extends AppController
                                 $this->Nppayments->ReferenceBalances->save($ReferenceBalance);
                                 
                                 $ReferenceDetail=$this->Nppayments->ReferenceDetails->find()->where(['ledger_account_id'=>$nppayment_row->received_from_id,'reference_no'=>$ref_row->ref_no,'nppayment_id'=>$nppayment->id])->first();
+								
                                 $ReferenceDetail=$this->Nppayments->ReferenceDetails->get($ReferenceDetail->id);
                                 if($nppayment_row->cr_dr=="Dr"){
                                     $ReferenceDetail->debit=$ReferenceDetail->debit-$ref_row->ref_old_amount+$ref_row->ref_amount;
                                 }else{
                                     $ReferenceDetail->credit=$ReferenceDetail->credit-$ref_row->ref_old_amount+$ref_row->ref_amount;
                                 }
-                                
+								
                                 $this->Nppayments->ReferenceDetails->save($ReferenceDetail);
                             }else{
                                 if($ref_row->ref_type=='New Reference' or $ref_row->ref_type=='Advance Reference'){
@@ -502,7 +504,7 @@ class NppaymentsController extends AppController
                             }
                         }
                     }
-                }
+                } 
                 //Ledger posting for bankcash
                 $ledger = $this->Nppayments->Ledgers->newEntity();
                 $ledger->company_id=$st_company_id;
@@ -609,6 +611,12 @@ class NppaymentsController extends AppController
     
     public function fetchRefNumbersEdit($received_from_id=null,$reference_no=null,$debit=null,$credit=null,$cr_dr=null){
         $this->viewBuilder()->layout('');
+		 $received_from_id = $this->request->query['received_from_id'];
+		 $reference_no = $this->request->query['reference_no'];
+		 $debit = $this->request->query['debit'];
+		 $credit = $this->request->query['credit'];
+		 $cr_dr = $this->request->query['cr_dr'];
+
         $ReferenceBalances=$this->Nppayments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
         $this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr'));
     }
@@ -621,7 +629,6 @@ class NppaymentsController extends AppController
         }else{
             echo 'false';
         }
-        exit;
     }
     
     function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
@@ -634,7 +641,6 @@ class NppaymentsController extends AppController
         }else{
             echo 'false';
         }
-        exit;
     }
     
     function deleteAllRefNumbers($old_received_from_id,$receipt_id){
@@ -660,15 +666,14 @@ class NppaymentsController extends AppController
                 $RDetail=$this->Nppayments->ReferenceDetails->get($ReferenceDetail->id);
                 $this->Nppayments->ReferenceDetails->delete($RDetail);
             }
-        }       exit;
+        }      
     }
     
-    function deleteOneRefNumbers(){
+    function deleteOneRefNumbers($nppayment_id=null,$old_received_from_id=null,$old_ref=null,$old_ref_type=null){
         $old_received_from_id=$this->request->query['old_received_from_id'];
         $nppayment_id=$this->request->query['nppayment_id'];
         $old_ref=$this->request->query['old_ref'];
         $old_ref_type=$this->request->query['old_ref_type'];
-        
         if($old_ref_type=="New Reference" || $old_ref_type=="Advance Reference"){
             $this->Nppayments->ReferenceBalances->deleteAll(['ledger_account_id'=>$old_received_from_id,'reference_no'=>$old_ref]);
             $this->Nppayments->ReferenceDetails->deleteAll(['ledger_account_id'=>$old_received_from_id,'reference_no'=>$old_ref]);
@@ -689,7 +694,5 @@ class NppaymentsController extends AppController
             $RDetail=$this->Nppayments->ReferenceDetails->get($ReferenceDetail->id);
             $this->Nppayments->ReferenceDetails->delete($RDetail);
         }
-        
-        exit;
     }
 }

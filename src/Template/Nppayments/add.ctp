@@ -426,7 +426,7 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','style'=>'width: 100%; display: block;']); ?>
+            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm input-xsmall received_from','style'=>'width: 100%; display: block;']); ?>
 			</td>
             <td width="20%">
 			<div class="row">

@@ -619,6 +619,7 @@ class PaymentsController extends AppController
 	
 	public function fetchRefNumbersEdit($received_from_id=null,$cr_dr=null,$reference_no=null,$debit=null,$credit=null){
 		$this->viewBuilder()->layout('');
+		
 		$received_from_id=$this->request->query['received_from_id'];
 		$cr_dr=$this->request->query['cr_dr'];
 		$reference_no=$this->request->query['reference_no'];

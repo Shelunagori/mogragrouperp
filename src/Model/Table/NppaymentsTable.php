@@ -50,13 +50,13 @@ class NppaymentsTable extends Table
             'foreignKey' => 'company_id',
             'joinType' => 'INNER'
         ]);
+		
         $this->hasMany('NppaymentRows', [
             'foreignKey' => 'nppayment_id',
 			'saveStrategy' => 'replace'
         ]);
-        $this->hasMany('ReferenceDetails', [
-            'foreignKey' => 'nppayment_id'
-        ]);
+		
+       
 
         $this->belongsTo('BankCashes', [
             'className' => 'LedgerAccounts',
