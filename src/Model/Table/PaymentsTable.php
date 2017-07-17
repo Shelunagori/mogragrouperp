@@ -69,6 +69,10 @@ class PaymentsTable extends Table
             'foreignKey' => 'payment_id',
 			'saveStrategy' => 'replace'
         ]);
+		$this->hasMany('Grns', [
+            'foreignKey' => 'payment_id',
+            'joinType' => 'INNER'
+		 ]);
     }
 
     /**

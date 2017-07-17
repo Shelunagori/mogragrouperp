@@ -58,6 +58,7 @@ class LedgerAccountsTable extends Table
         ]);
 		
 		$this->belongsTo('AccountCategories');
+		$this->belongsTo('Grns');
 		$this->belongsTo('Companies');
 		$this->belongsTo('AccountGroups');
     }

@@ -507,6 +507,15 @@ public function firstSubGroupsPnl($group_id,$from_date,$to_date)
 		echo $Ledger->bill_to_bill_account;
 		exit;
 	}
+	
+	function loadGrns($received_from_id){
+	    $session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$grn=$this->LedgerAccounts->Grns->find()->where(['company_id' => $st_company_id,'purchase_thela_bhada_status'=>'no']);
+		$this->set(compact('grn'));
+	   
+    }
+	
 	public function EditCompany($ledgerAccount_id=null)
     {
 		$this->viewBuilder()->layout('index_layout');	

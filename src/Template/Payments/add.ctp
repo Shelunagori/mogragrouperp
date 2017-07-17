@@ -225,12 +225,20 @@ $(document).ready(function() {
 		var i=0;
 		$("#main_table tbody#main_tbody tr.main_tr").each(function(){
 			$(this).find("td:eq(0) select.received_from").select2().attr({name:"payment_rows["+i+"][received_from_id]", id:"quotation_rows-"+i+"-received_from_id"}).rules('add', {
+						required: true
+					});
+			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
+			if(serial_l > 1)
+			{
+				$(this).find("td:eq(0) select.grns").select2().attr({name:"payment_rows["+i+"][grn_ids][]", id:"quotation_rows-"+i+"-grn_ids"}).rules('add', {
 						required: true,
-						notEqualToGroup: ['.received_from'],
+						notEqualToGroup: ['.grns'],
 						messages: {
-							notEqualToGroup: "Do not select same party again."
+							notEqualToGroup: "Do not select same grn again."
 						}
 					});
+			}
+			
 			$(this).find("td:eq(1) input").attr({name:"payment_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"}).rules('add', {
 						required: true,
 						min: 0.01,
@@ -313,7 +321,7 @@ $(document).ready(function() {
 		do_mian_amount_total();
 	});
 	
-	function load_ref_section(sel){
+	function load_ref_section(sel){ 
 		$(sel).closest("tr.main_tr").find("td:nth-child(3)").html("Loading...");
 		var sel2=$(sel).closest('tr.main_tr');
 		var received_from_id=$(sel).closest("tr.main_tr").find("td:nth-child(1) select").find('option:selected').val();
@@ -332,6 +340,27 @@ $(document).ready(function() {
 			}
 			rename_ref_rows(sel2,received_from_id);
 		});
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadGrns']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='101' || received_from_id=='165' || received_from_id=='313')
+		{ 
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {
+				//$(this).closest("tr").remove();
+				//$(".show_grns").html(response);
+		    	
+				$(sel).closest('tr.main_tr').find('.show_grns').html(response);
+				rename_rows();
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_grns').html('');
+		}
 	}
 	
 	
@@ -429,7 +458,9 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
 	<tbody>
 		<tr class="main_tr">
-			<td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?></td>
+			<td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?>
+			<div class="show_grns"></div>
+			</td>
 			<td>
 			<div class="row">
 				<div class="col-md-7" style="padding-right: 0;">
@@ -447,6 +478,7 @@ $(document).ready(function() {
 			<td><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
 			<td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
 		</tr>
+		
 	</tbody>
 </table>
 
