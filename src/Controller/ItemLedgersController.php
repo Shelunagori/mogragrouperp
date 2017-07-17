@@ -119,10 +119,6 @@ class ItemLedgersController extends AppController
 
         $itemLedgers2 = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc']);
 		
-		//pr($itemLedgers2->toArray());exit;
-				
-		
-		 
 		
 		$itemLedgersdata=[];
 		foreach($itemLedgers2 as $itemLedger){

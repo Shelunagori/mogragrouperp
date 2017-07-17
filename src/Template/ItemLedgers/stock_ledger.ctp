@@ -9,7 +9,7 @@
 			<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3" style="width: 200px;">
 		</div>
 		<form method="GET" >
-			<table class="table table-condensed">
+			<table class="table table-condensed" >
 				<tbody>
 					<tr>
 						<td width="20%">
@@ -29,7 +29,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					
-					<table class="table table-bordered table-striped table-hover">
+					<table class="table table-bordered table-striped table-hover" id='main_tble'>
 						<thead>
 							<tr>
 								<th>Sr. No.</th>
@@ -62,7 +62,7 @@
 								}else if($source_model=='Grns')
 								{
 									$voucher_no=$itemLedger->voucher_info->grn1.'/GRN-'.str_pad($itemLedger->voucher_info->grn2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->grn3.'/'.$itemLedger->voucher_info->grn4;
-									$url_path="/InvoiceBookings/view/".$itemLedger->voucher_info->id;
+									$url_path="/grns/view/".$itemLedger->voucher_info->id;
 							}
 								else if($source_model=='Inventory Transfer Voucher')
 								{
