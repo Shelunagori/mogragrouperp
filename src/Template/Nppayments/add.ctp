@@ -76,11 +76,11 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
         <div style="overflow: auto;">
         <table width="100%" id="main_table">
             <thead>
-                <th width="25%"><label class="control-label">Paid TO</label></th>
-                <th width="15%"><label class="control-label">Amount</label></th>
+                <th><label class="control-label">Paid TO</label></th>
+                <th><label class="control-label">Amount</label></th>
                 <th></th>
-                <th width="15%"><label class="control-label">Narration</label></th>
-                <th width="3%"></th>
+                <th><label class="control-label">Narration</label></th>
+                <th></th>
             </thead>
             <tbody id="main_tbody">
             
@@ -426,13 +426,14 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?></td>
-            <td>
-            <div class="row">
-                <div class="col-md-7" style="padding-right: 0;">
+            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','style'=>'width: 100%; display: block;']); ?>
+			</td>
+            <td width="20%">
+			<div class="row">
+                <div class="col-md-6" style="padding-right: 0;">
                     <?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm mian_amount','placeholder'=>'Amount']); ?>
                 </div>
-                <div class="col-md-5"style="padding-left: 0;">
+                <div class="col-md-6"style="padding-left: 0;">
                     <select name="cr_dr" class="form-control input-sm cr_dr" >
                         <option value="Dr">Dr</option>
                         <option value="Cr">Cr</option>
@@ -440,8 +441,8 @@ $(document).ready(function() {
                 </div>
             </div>
             </td>
-            <td></td>
-            <td><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
+            <td width="70%"></td>
+            <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
             <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
         </tr>
     </tbody>
@@ -453,7 +454,7 @@ $(document).ready(function() {
     <table width="100%" class="ref_table">
         <thead>
             <tr>
-                <th width="25%">Ref Type</th>
+                <th width="40%">Ref Type</th>
                 <th width="40%">Ref No.</th>
                 <th width="30%">Amount</th>
                 <th width="5%"></th>
