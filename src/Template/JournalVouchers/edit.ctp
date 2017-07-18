@@ -516,7 +516,6 @@ $(document).ready(function() {
 		var old_received_from_id=sel.closest('tr').attr('old_received_from_id');
 		var auto_inc=$(sel).closest('tr.main_tr').find('td:nth-child(1) select').attr('auto_inc');
 		var url="<?php echo $this->Url->build(['controller'=>'JournalVouchers','action'=>'deleteAllRefNumbers']); ?>";
-		alert(auto_inc);
 		url=url+'/'+old_received_from_id+'/'+<?php echo $journalVoucher->id; ?>+'/'+auto_inc,
 		$.ajax({
 			url: url,
