@@ -71,30 +71,19 @@
 					<td  align="right">On Account</td>	
 					<?php 
 						$on_acc=0;
-						$on_dr=@$ledger_amt['Debit']-@$ref_amt['Debit'];
-						$on_cr=@$ledger_amt['Credit']-@$ref_amt['Credit'];
+						$on_dr=@$ledger_amt['Debit']-@$ref_amt['debit'];
+						$on_cr=@$ledger_amt['Credit']-@$ref_amt['credit'];
+						
 						$on_acc=$on_dr-$on_cr;
 						
-						/* if($total_debit > $total_credit){
-							if($on_acc >=0){
-								$on_acc_dr=$total_debit+$on_acc;
-							}else{
-								$on_acc_dr=$total_debit-abs($on_acc);
-							}
-						}else{
-							if($on_acc >=0){
-								$on_acc_cr=$total_credit+$on_acc;
-							}else{
-								$on_acc_cr=$total_credit-abs($on_acc);
-							}
-						} */
+						
 						?>
 					<?php if($on_acc >= 0){ ?>
-								<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?>Dr.</td>	
+								<td align="right"><?php echo $this->Number->format(abs($on_acc),['places'=>2]); ?>Dr.</td>	
 								<td align="right">0 Cr.</td>
 							<?php } else{ ?>
 								<td align="right">0 Dr.</td>
-								<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?>Cr.</td>
+								<td align="right"><?php echo $this->Number->format(abs($on_acc),['places'=>2]); ?>Cr.</td>
 					
 					<?php } ?>
 				</tr>

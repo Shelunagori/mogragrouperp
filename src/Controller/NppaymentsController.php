@@ -640,7 +640,7 @@ class NppaymentsController extends AppController
             echo 'true';
         }else{
             echo 'false';
-        }
+        }exit;
     }
     
     function deleteAllRefNumbers($old_received_from_id,$receipt_id){

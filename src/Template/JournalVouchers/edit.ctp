@@ -22,7 +22,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	<div class="portlet-title">
 		<div class="caption" >
 			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Edit Payment</span>
+			<span class="caption-subject font-blue-steel uppercase">EDIT JOURNAL VOUCHER</span>
 		</div>
 	</div>
 	<div class="portlet-body form">
