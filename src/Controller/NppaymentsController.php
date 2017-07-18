@@ -633,7 +633,6 @@ class NppaymentsController extends AppController
     
     function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
         $reference_no=$this->request->query['ref_rows'][$received_from_id][$i]['ref_no'];
-		pr($reference_no);exit;
         $ReferenceBalances=$this->Nppayments->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id,'reference_no'=>$reference_no]);
         if($ReferenceBalances->count()==1 && $is_old=="yes"){
             echo 'true';
@@ -667,7 +666,7 @@ class NppaymentsController extends AppController
                 $RDetail=$this->Nppayments->ReferenceDetails->get($ReferenceDetail->id);
                 $this->Nppayments->ReferenceDetails->delete($RDetail);
             }
-        }      
+        }      exit;
     }
     
     function deleteOneRefNo($nppayment_id=null,$old_received_from_id=null,$old_ref=null,$old_ref_type=null){
@@ -695,5 +694,6 @@ class NppaymentsController extends AppController
             $RDetail=$this->Nppayments->ReferenceDetails->get($ReferenceDetail->id);
             $this->Nppayments->ReferenceDetails->delete($RDetail);
         }
+		exit;
     }
 }

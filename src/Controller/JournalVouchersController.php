@@ -537,7 +537,7 @@ class JournalVouchersController extends AppController
 									}else{
 										$ReferenceBalance->credit=$ReferenceBalance->credit+$ref_row->ref_amount;
 									}
-									
+									$ReferenceBalance->auto_inc=$i;
 									$this->JournalVouchers->ReferenceBalances->save($ReferenceBalance);
 								}
 								
