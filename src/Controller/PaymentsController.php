@@ -147,13 +147,28 @@ class PaymentsController extends AppController
         $payment = $this->Payments->newEntity();
 		
         if ($this->request->is('post')) {  
-		$grnIds=[];
-		$grnstring="";
-		foreach( $this->request->data['payment_rows'] as $key =>  $pr){
-		foreach( $pr['grn_ids'] as  $dr){
-				$grnstring .=$dr.',';
-		}
-		 $grnIds[$key] =trim($grnstring,',');
+		$grnIds=[];$invoiceIds=[];
+		
+		
+		foreach( $this->request->data['payment_rows'] as $key =>  $pr)
+		{
+			$grnstring="";$invoiceString="";
+			if(!empty($pr['grn_ids']))
+			{
+				foreach( $pr['grn_ids'] as  $dr)
+				{
+						$grnstring .=$dr.',';
+				}
+				$grnIds[$key] =$grnstring;
+			}
+			if(!empty($pr['invoice_ids']))
+			{
+				foreach( $pr['invoice_ids'] as  $dr)
+				{
+						$invoiceString .=$dr.',';
+				}
+				$invoiceIds[$key] =$invoiceString;
+			}
 		}
             $payment = $this->Payments->patchEntity($payment, $this->request->data);
 			$payment->company_id=$st_company_id;
@@ -170,23 +185,40 @@ class PaymentsController extends AppController
 			$payment->transaction_date=date("Y-m-d",strtotime($payment->transaction_date));
 			foreach($payment->payment_rows as $key => $payment_row)
 			{
-				$payment_row->grn_ids =$grnIds[$key];
+				$payment_row->grn_ids = @$grnIds[$key];
+				$payment_row->invoice_ids =@$invoiceIds[$key];
 			}
             if ($this->Payments->save($payment)) {
 				
 				$total_cr=0; $total_dr=0;
 				foreach($payment->payment_rows as $key => $payment_row)
 				{
-					$grnArrays = explode(',',$grnIds[$key]);
-					foreach($grnArrays as $grnArray)
-				    { //echo $grnArray.',';
-						$grn = $this->Payments->Grns->query();
-						$grn->update()
-						->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
-						->where(['id' => $grnArray])
-						->execute();
-				   }
+					if(count($grnIds)>0)
+					{
+						$grnArrays = explode(',',$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->Payments->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $grnArray])
+							->execute();
+						}
+					}
+					if(count($invoiceIds)>0)
+					{
+						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$grn = $this->Payments->Invoices->query();
+							$grn->update()
+							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+						}
+					}
 				}
+				
 				foreach($payment->payment_rows as $payment_row){ 
 					
 					//Ledger posting for Received From Entity
@@ -411,14 +443,28 @@ class PaymentsController extends AppController
 		}
 		//pr($old_ref_rows); exit;
         if ($this->request->is(['patch', 'post', 'put'])) {
-			$grnIds=[];
-			foreach( $this->request->data['payment_rows'] as $key =>  $pr){
-			$grnstring="";	
-			foreach( $pr['grn_ids'] as  $dr){
-				$grnstring .=$dr.',';
-			}
-				$grnIds[$key] =$grnstring;
-				$payment_row->grn_ids =$grnIds[$key];
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['payment_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";	
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+						$grnstring .=$dr.',';
+					}
+						$grnIds[$key] =$grnstring;
+						$payment_row->grn_ids =$grnIds[$key];
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+						$invoiceString .=$dr.',';
+					}
+						$invoiceIds[$key] =$invoiceString;
+						$payment_row->invoice_ids =$invoiceIds[$key];
+				}
 			}
             $payment = $this->Payments->patchEntity($payment, $this->request->data);
 			$payment->company_id=$st_company_id;
@@ -431,21 +477,43 @@ class PaymentsController extends AppController
 			//Save receipt
 			foreach($payment->payment_rows as $key => $payment_row)
 			{
-				$payment_row->grn_ids =$grnIds[$key];
+				if(count($grnIds)>0)
+				{
+					$payment_row->grn_ids =$grnIds[$key];
+				}
+				if(count($invoiceIds)>0)
+				{
+					$payment_row->invoice_ids =$invoiceIds[$key];
+				}
 				
 			}
 			if ($this->Payments->save($payment)) {
 				foreach($payment->payment_rows as $key => $payment_row)
 				{
-					$grnArrays = explode(',',$grnIds[$key]);
-					foreach($grnArrays as $grnArray)
-				    { //echo $grnArray.',';
-						$grn = $this->Payments->Grns->query();
-						$grn->update()
-						->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
-						->where(['id' => $grnArray])
-						->execute();
-				   }
+					if(count($grnIds)>0)
+					{          
+						$grnArrays = explode(',',$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->Payments->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $grnArray])
+							->execute();
+					   }
+					}
+					if(count($invoiceIds)>0)
+					{          
+						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$invoice = $this->Payments->Invoices->query();
+							$invoice->update()
+							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+					   }
+					}
 				}
 				$this->Payments->Ledgers->deleteAll(['voucher_id' => $payment->id, 'voucher_source' => 'Payment Voucher']);
 				$total_cr=0; $total_dr=0;
@@ -637,8 +705,9 @@ class PaymentsController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$grn=$this->Payments->Grns->find()->where(['company_id' => $st_company_id]);
+		$invoice=$this->Payments->Invoices->find()->where(['company_id' => $st_company_id]);
 		
-		$this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn'));
+		$this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
         $this->set('_serialize', ['payment']);
     }
 

@@ -230,13 +230,27 @@ $(document).ready(function() {
 			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
 			if(serial_l > 1)
 			{
-				$(this).find("td:eq(0) select.grns").select2().attr({name:"payment_rows["+i+"][grn_ids][]", id:"quotation_rows-"+i+"-grn_ids"}).rules('add', {
+				var thela_type = $(this).find("td:eq(0) select.received_from").val();
+                if(thela_type=='101' || thela_type=='165' || thela_type=='313')
+		        {				
+					$(this).find("td:eq(0) select.grns").select2().attr({name:"payment_rows["+i+"][grn_ids][]", id:"quotation_rows-"+i+"-grn_ids"}).rules('add', {
 						required: true,
 						notEqualToGroup: ['.grns'],
 						messages: {
 							notEqualToGroup: "Do not select same grn again."
 						}
 					});
+				}
+				if(thela_type=='105' || thela_type=='168' || thela_type=='316')
+		        {				
+					$(this).find("td:eq(0) select.invoices").select2().attr({name:"payment_rows["+i+"][invoice_ids][]", id:"quotation_rows-"+i+"-invoice_ids"}).rules('add', {
+						required: true,
+						notEqualToGroup: ['.invoices'],
+						messages: {
+							notEqualToGroup: "Do not select same invoice again."
+						}
+					});
+				}
 			}
 			
 			$(this).find("td:eq(1) input").attr({name:"payment_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"}).rules('add', {
@@ -353,6 +367,24 @@ $(document).ready(function() {
 				//$(this).closest("tr").remove();
 				//$(".show_grns").html(response);
 		    	
+				$(sel).closest('tr.main_tr').find('.show_grns').html(response);
+				rename_rows();
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_grns').html('');
+		}
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadInvoices']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='105' || received_from_id=='168' || received_from_id=='316')
+		{
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
 				$(sel).closest('tr.main_tr').find('.show_grns').html(response);
 				rename_rows();
 			});

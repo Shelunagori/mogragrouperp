@@ -118,6 +118,27 @@ class JournalVouchersController extends AppController
 			}
 		
 		if ($this->request->is('post')) {
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['journal_voucher_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
 			$last_ref_no=$this->JournalVouchers->find()->select(['voucher_no'])->where(['company_id' => $st_company_id])->order(['voucher_no' => 'DESC'])->first();
 			if($last_ref_no){
 				$journalVoucher->voucher_no=$last_ref_no->voucher_no+1;
@@ -131,8 +152,40 @@ class JournalVouchersController extends AppController
 			$journalVoucher->created_on=date("Y-m-d");
 			$journalVoucher->company_id=$st_company_id;
 			//pr($journalVoucher);  exit;
+			foreach($journalVoucher->journal_voucher_rows as $key => $journal_voucher_row)
+			{
+				$journal_voucher_row->grn_ids = @$grnIds[$key];
+				$journal_voucher_row->invoice_ids =@$invoiceIds[$key];
+			}
 			if ($this->JournalVouchers->save($journalVoucher)) {
 				$i=0;
+				foreach($journalVoucher->journal_voucher_rows as $key => $payment_row)
+				{
+					if(count($grnIds)>0)
+					{
+						$grnArrays = explode(',',$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->JournalVouchers->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $grnArray])
+							->execute();
+						}
+					}
+					if(count($invoiceIds)>0)
+					{
+						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$grn = $this->JournalVouchers->Invoices->query();
+							$grn->update()
+							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+						}
+					}
+				}
 				foreach($journalVoucher->journal_voucher_rows as $journal_voucher_row){
 					
 					$ledger = $this->JournalVouchers->Ledgers->newEntity();
