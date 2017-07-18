@@ -1,4 +1,3 @@
-
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -8,24 +7,19 @@
 		
 <div class="portlet-body form">
 	<form method="GET" >
-				<table class="table table-condensed" >
-				<tbody>
-					<tr>
-					<td>
-						<div class="row">
-							<div class="col-md-6">
-									<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm select2me','required','value'=>@$ledger_account_id]); ?>
-							</div>
-							<div class="col-md-6">
-									<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-							</div>
-							
-						</div>
+		<table class="table table-condensed" >
+			<tbody>
+				<tr>
+					<td width="15%">
+						<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm input-medium  select2me','required','value'=>@$ledger_account_id]); ?>
+					</td>
+					<td width="75%">
+						<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 					</td>
 					
-					</tr>
-				</tbody>
-			</table>
+				</tr>
+			</tbody>
+		</table>
 	</form>
 		<!-- BEGIN FORM-->
 <?php if(!empty($Ledger_Account_data)){  ?>
@@ -75,42 +69,34 @@
 				</tr>
 				<tr>
 					<td  align="right">On Account</td>	
-					<?php if(($ledger_amt['Debit']==$ref_amt['Debit']) && ($ledger_amt['Credit']==$ref_amt['Credit'])){ 
-						$total_dr=$ledger_amt['Debit']+$ref_amt['Debit'];
-						$total_cr=$ledger_amt['Credit']+$ref_amt['Credit']; ?>
-						<td align="right">0</td>	
-						<td align="right">0</td>	
-					<?php } else if(($ledger_amt['Debit']!=$ref_amt['Debit']) && ($ledger_amt['Credit']!=$ref_amt['Credit'])){ 
-						//pr($ref_amt['Debit']);
-						$total_dr=abs($ledger_amt['Debit']-$ref_amt['Debit']);
-						$total_cr=abs($ledger_amt['Credit']-$ref_amt['Credit']);
-						//pr($total_cr);
-						//pr($ledger_amt['Debit']);
-							if($total_dr > $total_cr){ ?>
-								<td align="right"><?php echo $total_dr - $total_cr ?>Dr.</td>	
+					<?php 
+						$on_acc=0;
+						$on_dr=@$ledger_amt['Debit']-@$ref_amt['Debit'];
+						$on_cr=@$ledger_amt['Credit']-@$ref_amt['Credit'];
+						$on_acc=$on_dr-$on_cr;
+						
+						/* if($total_debit > $total_credit){
+							if($on_acc >=0){
+								$on_acc_dr=$total_debit+$on_acc;
+							}else{
+								$on_acc_dr=$total_debit-abs($on_acc);
+							}
+						}else{
+							if($on_acc >=0){
+								$on_acc_cr=$total_credit+$on_acc;
+							}else{
+								$on_acc_cr=$total_credit-abs($on_acc);
+							}
+						} */
+						?>
+					<?php if($on_acc >= 0){ ?>
+								<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?>Dr.</td>	
 								<td align="right">0 Cr.</td>
 							<?php } else{ ?>
 								<td align="right">0 Dr.</td>
-								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
-					<?php } } else if(($ledger_amt['Debit']!=$ref_amt['Debit']) && ($ledger_amt['Credit']==$ref_amt['Credit'])){  
-					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
-					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
-						if($total_dr > $total_cr){  ?>
-							<td align="right"><?php echo $total_dr- $total_cr ?>Dr.</td>	
-							<td align="right">0 Cr.</td>
-						<?php } else{ ?>
-								<td align="right">0 Dr.</td>
-								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
-					<?php } }  else if(($ledger_amt['Debit']==$ref_amt['Debit']) && ($ledger_amt['Credit']!=$ref_amt['Credit'])){
-					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
-					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
-						if($total_dr > $total_cr){  ?>
-							<td align="right"><?php echo $total_dr- $total_cr ?>Dr.</td>	
-							<td align="right">0 Cr.</td>
-						<?php } else{ ?>
-								<td align="right">0 Dr.</td>
-								<td align="right"><?php echo $total_cr- $total_dr ?>Cr.</td>	
-					<?php } }  ?>
+								<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?>Cr.</td>
+					
+					<?php } ?>
 				</tr>
 				</tbody>
 			</table>

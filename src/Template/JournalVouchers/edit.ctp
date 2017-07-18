@@ -87,7 +87,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									<td class="ref_no">
 									<?php
 									if($old_ref_row->reference_type=="Against Reference"){
-										echo $this->requestAction('JournalVouchers/fetchRefNumbersEdit/'.$journal_voucher_rows->auto_inc.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$journal_voucher_rows->cr_dr.'/'.$journal_voucher_rows->received_from_id);
+										echo $this->requestAction('/JournalVouchers/fetchRefNumbersEdit?received_from_id='.$journal_voucher_rows->received_from_id.'&cr_dr='.$journal_voucher_rows->cr_dr.'&reference_no='.$old_ref_row->reference_no.'&debit='.$old_ref_row->debit.'&credit='.$old_ref_row->credit.'&auto_inc='.$journal_voucher_rows->auto_inc); 
+										
+										
 									}else{
 										echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
 									}?>

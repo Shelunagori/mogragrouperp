@@ -670,6 +670,12 @@ class JournalVouchersController extends AppController
 	
 	public function fetchRefNumbersEdit($auto_inc=null,$reference_no=null,$debit=null,$credit=null,$cr_dr=null,$received_from_id=null){
 		$this->viewBuilder()->layout('');// pr($reference_no);
+		$received_from_id=$this->request->query['received_from_id'];
+		$cr_dr=$this->request->query['cr_dr'];
+		$reference_no=$this->request->query['reference_no'];
+		$debit=$this->request->query['debit'];
+		$credit=$this->request->query['credit'];
+		$auto_inc=$this->request->query['auto_inc'];
 		$ReferenceBalances=$this->JournalVouchers->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id,'auto_inc'=>$auto_inc,'reference_no'=>$reference_no]);
 		$this->set(compact('ReferenceBalances', 'reference_no', 'debit','credit','cr_dr','received_from_id'));
 	}

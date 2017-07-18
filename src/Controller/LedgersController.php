@@ -647,7 +647,8 @@ class LedgersController extends AppController
 			'Credit' => $ledger_amt->func()->sum('Credit')
 		]);
 		
-		
+		//$ledger_amt=@$ledger_amt->first();
+		//pr($ledger_amt->toArray());
 		$ReferenceBalances = $this->Ledgers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ledger_account_id]);
 		
 		$ref_amt = $this->Ledgers->ReferenceDetails->find()->where(['ReferenceDetails.ledger_account_id'=>$ledger_account_id]);
@@ -658,8 +659,8 @@ class LedgersController extends AppController
 		
 		$ref_amt=$ref_amt->first(); 
 		$ledger_amt=$ledger_amt->first();
-		/* pr($ref_amt);
-		pr($ledger_amt); */
+		//pr($ref_amt->toArray());exit;
+		//pr($ledger_amt); 
 		
 		}
 		

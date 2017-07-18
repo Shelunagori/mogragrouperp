@@ -430,7 +430,7 @@ $(document).ready(function() {
 				var url='<?php echo $this->Url->build(['controller'=>'Payments','action'=>'checkRefNumberUniqueEdit']); ?>';
 				var is_old=$(this).find("td:nth-child(2) input").attr('is_old');
 				url=url+'/'+received_from_id+'/'+i+'/'+is_old;
-				alert(url);
+				
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no", class:"form-control input-sm ref_number-"+received_from_id}).rules('add', {
 														required: true,
 														noSpace: true,
