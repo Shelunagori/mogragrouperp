@@ -71,6 +71,14 @@ class JournalVouchersTable extends Table
             'foreignKey' => 'received_from_id',
             'propertyName' => 'ReceivedFrom',
         ]);
+		$this->hasMany('Grns', [
+            'foreignKey' => 'payment_id',
+            'joinType' => 'INNER'
+		 ]);
+		 $this->hasMany('Invoices', [
+            'foreignKey' => 'payment_id',
+            'joinType' => 'INNER'
+		 ]);
 		
     }
 

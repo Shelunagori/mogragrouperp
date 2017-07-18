@@ -207,7 +207,7 @@ class PaymentsController extends AppController
 					}
 					if(count($invoiceIds)>0)
 					{
-						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$grn = $this->Payments->Invoices->query();
@@ -492,7 +492,7 @@ class PaymentsController extends AppController
 				{
 					if(count($grnIds)>0)
 					{          
-						$grnArrays = explode(',',$grnIds[$key]);
+						$grnArrays = explode(',',@$grnIds[$key]);
 						foreach($grnArrays as $grnArray)
 						{ 
 							$grn = $this->Payments->Grns->query();
@@ -504,7 +504,7 @@ class PaymentsController extends AppController
 					}
 					if(count($invoiceIds)>0)
 					{          
-						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$invoice = $this->Payments->Invoices->query();

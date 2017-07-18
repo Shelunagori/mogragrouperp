@@ -159,28 +159,28 @@ class JournalVouchersController extends AppController
 			}
 			if ($this->JournalVouchers->save($journalVoucher)) {
 				$i=0;
-				foreach($journalVoucher->journal_voucher_rows as $key => $payment_row)
+				foreach($journalVoucher->journal_voucher_rows as $key => $journal_voucher_row)
 				{
 					if(count($grnIds)>0)
 					{
-						$grnArrays = explode(',',$grnIds[$key]);
+						$grnArrays = explode(',',@$grnIds[$key]);
 						foreach($grnArrays as $grnArray)
 						{ 
 							$grn = $this->JournalVouchers->Grns->query();
 							$grn->update()
-							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->set(['purchase_thela_bhada_status' => 'yes','journal_voucher_id' => $journalVoucher->id])
 							->where(['id' => $grnArray])
 							->execute();
 						}
 					}
 					if(count($invoiceIds)>0)
 					{
-						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$grn = $this->JournalVouchers->Invoices->query();
 							$grn->update()
-							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $payment->id])
+							->set(['sales_thela_bhada_status' => 'yes','journal_voucher_id' => $journalVoucher->id])
 							->where(['id' => $invoiceArray])
 							->execute();
 						}
@@ -390,6 +390,27 @@ class JournalVouchersController extends AppController
 
 
         if ($this->request->is(['patch', 'post', 'put'])) {
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['journal_voucher_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
             $journalVoucher = $this->JournalVouchers->patchEntity($journalVoucher, $this->request->data);
 			$journalVoucher->edited_by=$s_employee_id;
 			$journalVoucher->transaction_date=date("Y-m-d",strtotime($journalVoucher->transaction_date));
@@ -397,8 +418,39 @@ class JournalVouchersController extends AppController
 			$journalVoucher->company_id=$st_company_id;
 			$journalVoucher->created_by = $journalVoucher -> created_by;
 			$journalVoucher->created_on = $journalVoucher -> created_on;
+		    foreach($journalVoucher->journal_voucher_rows as $key => $journal_voucher_row)
+			{
+				$journal_voucher_row->grn_ids = @$grnIds[$key];
+				$journal_voucher_row->invoice_ids =@$invoiceIds[$key];
+			}
 			if ($this->JournalVouchers->save($journalVoucher)) {
-				
+				foreach($journalVoucher->journal_voucher_rows as $key => $journal_voucher_rows)
+				{
+					if(count($grnIds)>0)
+					{          
+						$grnArrays = explode(',',@$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->JournalVouchers->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $journal_voucher_rows->id])
+							->where(['id' => $grnArray])
+							->execute();
+					   }
+					}
+					if(count($invoiceIds)>0)
+					{          
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$invoice = $this->JournalVouchers->Invoices->query();
+							$invoice->update()
+							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $journal_voucher_rows->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+					   }
+					}
+				}
 				$this->JournalVouchers->Ledgers->deleteAll(['voucher_id' => $journalVoucher->id, 'voucher_source' => 'Journal Voucher']);
 				$total_cr=0; $total_dr=0;
 				$i=0;
@@ -555,9 +607,13 @@ class JournalVouchersController extends AppController
 			$ReceivedFroms_selected='no';
 		}
 				
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$grn=$this->JournalVouchers->Grns->find()->where(['company_id' => $st_company_id]);
+		$invoice=$this->JournalVouchers->Invoices->find()->where(['company_id' => $st_company_id]);
 		
         $companies = $this->JournalVouchers->Companies->find('all');
-        $this->set(compact('journalVoucher','receivedFroms','ReceivedFroms_selected', 'companies','ledgers','financial_year','financial_year_data','old_ref_rows','chkdate'));
+        $this->set(compact('journalVoucher','receivedFroms','ReceivedFroms_selected', 'companies','ledgers','financial_year','financial_year_data','old_ref_rows','chkdate','grn','invoice'));
         $this->set('_serialize', ['journalVoucher']);
     }
 
