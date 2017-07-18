@@ -689,7 +689,6 @@ class PaymentsController extends AppController
 		}else{
 			echo 'false';
 		}
-		exit;
 	}
 	
 	function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
@@ -702,7 +701,6 @@ class PaymentsController extends AppController
 		}else{
 			echo 'false';
 		}
-		exit;
 	}
 	
 	function deleteAllRefNumbers($old_received_from_id,$receipt_id){
