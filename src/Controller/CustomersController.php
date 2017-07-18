@@ -285,7 +285,7 @@ class CustomersController extends AppController
 	
 	public function OverDueReport($to_send = null)
     {
-		$this->viewBuilder()->layout('index_layout');
+		$this->viewBuilder()->layout('report_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$to_range_datas =json_decode($to_send);
@@ -296,7 +296,7 @@ class CustomersController extends AppController
 			$Customer =$this->Customers->get($LedgerAccount->source_id);
 			$custmer_payment_terms[$LedgerAccount->id]=$Customer->payment_terms;
 		}
-		
+		 
 		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 
@@ -449,7 +449,7 @@ class CustomersController extends AppController
 				}
 			}
 		}
-  
+   
 	 
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
@@ -549,9 +549,10 @@ class CustomersController extends AppController
 				pr(@$ledger->ledger_account_id); */
 				
 			}
- 
+			
         $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit'));
         $this->set('_serialize', ['customers']);
+
    
 	}
 	public function CreditLimit($customer_id = null)

@@ -277,7 +277,7 @@ class VendorsController extends AppController
 	public function OverDueReport($to_send=null)
     {
 		
-		$this->viewBuilder()->layout('index_layout');
+		$this->viewBuilder()->layout('report_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$to_range_datas =json_decode($to_send);
@@ -302,7 +302,7 @@ class VendorsController extends AppController
 		}
 		pr($data); exit; */
 		
-		/* foreach($ReferenceDetails as $ReferenceDetail){
+		foreach($ReferenceDetails as $ReferenceDetail){
 			if($ReferenceDetail->receipt_id !=0){ 
 				$Receipt =$this->Vendors->Receipts->get($ReferenceDetail->receipt_id);
 				
@@ -453,7 +453,7 @@ class VendorsController extends AppController
 				}
 			}
 		}   
-		 */
+		
 		$ReferenceBalances =$this->Vendors->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
 		$total_debit_1=[];$total_credit_1=[];$due_1=[];

@@ -1,4 +1,4 @@
-<?php //pr($customers); exit;?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -76,6 +76,7 @@
 						<?php } } 
 						$grand_total=$total1+$total2+$total3+$total4+$total5;
 						?>
+
 						<?php 
 						$on_acc=0;
 						$on_dr=@$ledger_debit[ $LedgerAccount->id]-@$ref_bal_debit[ $LedgerAccount->id];
