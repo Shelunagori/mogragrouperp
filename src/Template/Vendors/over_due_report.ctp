@@ -21,6 +21,7 @@
 						<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?></th>
 						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?></th>
 						<th style="text-align:center"><?php echo $to_range_datas->range7?> ></th>
+						<th style="text-align: right;">On Account</th>
 						<th style="text-align: right;">Total Over-Due</th>
 					</tr>
 				</thead>
@@ -75,7 +76,28 @@
 						<?php } } 
 						$grand_total=$total1+$total2+$total3+$total4+$total5;
 						?>
-						<td align="right"><?php echo $this->Number->format($grand_total,['places'=>2]); ?></td>
+						<?php 
+						$on_acc=0;
+						$on_dr=@$ledger_debit[ $LedgerAccount->id]-@$ref_bal_debit[ $LedgerAccount->id];
+						$on_cr=@$ledger_credit[ $LedgerAccount->id]-@$ref_bal_credit[ $LedgerAccount->id];
+						$on_acc=$on_cr-$on_dr;
+						if($grand_total >= 0){
+							if($on_acc >=0){
+								$total_data=$grand_total+$on_acc;
+							}else{
+								$total_data=$grand_total-abs($on_acc);
+							}
+						}else{
+							if($on_acc >=0){
+								$total_data=$grand_total+$on_acc;
+							}else{
+								$total_data=$grand_total-abs($on_acc);
+							}
+						}
+						
+						?>
+						<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
+						<td align="right"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
 					</tr>
 					<?php } ?>	
 				

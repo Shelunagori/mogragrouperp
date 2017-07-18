@@ -461,6 +461,7 @@ class VendorsController extends AppController
 		$total_debit_3=[];$total_credit_3=[];$due_3=[];
 		$total_debit_4=[];$total_credit_4=[];$due_4=[];	
 		$total_debit_5=[];$total_credit_5=[];$due_5=[];	
+
 		$a=0;
 			foreach($ReferenceBalances as $ReferenceBalance){
 				$now=Date::now();
@@ -534,12 +535,30 @@ class VendorsController extends AppController
 							}
 						}
 				}
+
+				$ref_amt = $this->Vendors->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ReferenceBalance->ledger_account_id]);
+				$ref_amt->select([
+					'Debit' => $ref_amt->func()->sum('Debit'),
+					'Credit' => $ref_amt->func()->sum('Credit')
+				]);
+				$ref_amt=@$ref_amt->first(); 
+				$ledger_debit[$ReferenceBalance->ledger_account_id]=$ref_amt['Debit'];
+				$ledger_credit[$ReferenceBalance->ledger_account_id]=$ref_amt['Credit'];
+				
+				$ref_amt1 = $this->Vendors->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ReferenceBalance->ledger_account_id]);
+				$ref_amt1->select([
+					'debit' => $ref_amt1->func()->sum('debit'),
+					'credit' => $ref_amt1->func()->sum('credit')
+				]);
+				$ref_amt1=@$ref_amt1->first(); 
+				$ref_bal_debit[$ReferenceBalance->ledger_account_id]=$ref_amt1['debit'];
+				$ref_bal_credit[$ReferenceBalance->ledger_account_id]=$ref_amt1['credit'];
 			
 					
 			} 
 			
 		
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit'));
         $this->set('_serialize', ['Vendors']);
     }
 }

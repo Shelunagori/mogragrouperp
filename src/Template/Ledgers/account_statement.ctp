@@ -226,7 +226,7 @@ $url_excel="/?".$url;
 			
 			<div class="col-md-12">
 				<div class="col-md-8"></div>	
-				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:- </b>
+				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:  </b>
 				<?php $closing_balance=@$close_dr-@$close_cr;
 					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
