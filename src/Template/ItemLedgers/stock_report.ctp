@@ -40,7 +40,12 @@
 									<td width="15%">
 										<label class="control-label">Date</label>
 										<div id="item_sub_group_div">
-										<?php echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>date("d-m-Y",strtotime($search_date))]); ?></div>
+										<?php 
+										if(!empty($search_date))
+										{
+											$date=date("d-m-Y",strtotime($search_date));
+										}
+										echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>@$date]); ?></div>
 									</td>
 									<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 									</td>

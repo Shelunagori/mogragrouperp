@@ -18,15 +18,22 @@
 	<div class="portlet-body form">
 	<?= $this->Form->create($inventoryTransferVoucher,['id'=>'form_sample_3']) ?>
 	<div class="row">
-		<div class="col-md-4"></div>
 		<div class="col-md-3">
-			<input type="text" name="transaction_date" class="form-control input-sm date-picker" value="<?php echo date('d-m-Y',strtotime($inventoryTransferVouchersout->transaction_date)); ?>" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" >
+		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y',strtotime($inventoryTransferVouchersout->transaction_date)); ?>">
+		</div>
+		<div class="col-md-6">
+			<label>Narration</label>
+			<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
 		</div>
 	</div>
 		<div class="row">
-			<div class="col-md-6">
-			<h5>For Out</h5>
-					<table id="main_table" width="50%"  class="table table-condensed">
+			<div style="width: 100%;overflow: auto;">
+		<table>
+		  <tr>
+			<td valign="top">
+			<h5>For Out -</h5>
+				
+					<table id="main_table" style="width: 1000px;"  class="table table-condensed">
 									<thead>
 										<tr>
 											<th>Item</th>
@@ -79,10 +86,12 @@
 							<?php } ?>
 						</tbody>
 				</table>
-			</div>
-			<div class="col-md-6">
-			<h5>For In</h5>
-				<table id="main_table_1" width="50%"  class="table table-condensed">
+			</td>
+			
+			<td valign="top">
+			<h5>For In -</h5>
+
+				<table id="main_table_1" style="width: 1000px;"  class="table table-condensed">
 					<thead>
 						<tr>
 							<th>Item</th>
@@ -151,12 +160,13 @@
 						<?php }?>
 						</tbody>
 					</table>
-				
+			</td>
+		  </tr>
+		</table>
 			</div>
-		
-		
-	</div>
-	<button type="submit" class="btn btn-primary">Submit</button>	
+		</div>
+	    </div>
+		<button type="submit" class="btn btn-primary">Submit</button>
 	<?= $this->Form->end(); ?>
 </div>
 </div>
