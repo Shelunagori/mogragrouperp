@@ -352,11 +352,7 @@ $(document).ready(function() {
         var i=0;
         $("#main_table tbody#main_tbody tr.main_tr").each(function(){
             $(this).find("td:eq(0) select.received_from").select2().attr({name:"nppayment_rows["+i+"][received_from_id]", id:"quotation_rows-"+i+"-received_from_id"}).rules('add', {
-                        required: true,
-                        notEqualToGroup: ['.received_from'],
-                        messages: {
-                            notEqualToGroup: "Do not select same party again."
-                        }
+                        required: true
                     });
 			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
 			if(serial_l > 1)
