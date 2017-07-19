@@ -2,7 +2,7 @@
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Account Statement</span>
+			<span class="caption-subject font-blue-steel uppercase">Account Statement For Reference Balance</span>
 		</div>
 		
 <div class="portlet-body form">
