@@ -457,12 +457,12 @@ class PettyCashVouchersController extends AppController
 			$grn    = $this->PettyCashVouchers->Grns->query();
 				    $grn->update()
 				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
-				    ->where(['payment_id' => $payment->id])
+				    ->where(['payment_id' => $pettycashvoucher->id])
 				    ->execute();
 		   $invoice = $this->PettyCashVouchers->Invoices->query();
 					  $invoice->update()
 					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
-					  ->where(['payment_id' => $payment->id])
+					  ->where(['payment_id' => $pettycashvoucher->id])
 					  ->execute();
 			foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
 			{
