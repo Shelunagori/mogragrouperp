@@ -236,7 +236,31 @@ $(document).ready(function() {
 		var i=0;
 		$("#main_table tbody#main_tbody tr.main_tr").each(function(){
 			$(this).find("td:eq(0) select.received_from").select2().attr({name:"petty_cash_voucher_rows["+i+"][received_from_id]", id:"petty_cash_voucher_rows-"+i+"-received_from_id"}).rules("add", "required");
-						
+			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
+			if(serial_l > 1)
+			{
+				var thela_type = $(this).find("td:eq(0) select.received_from").val();
+                if(thela_type=='101' || thela_type=='165' || thela_type=='313')
+		        {				
+					$(this).find("td:eq(0) select.grns").select2().attr({name:"petty_cash_voucher_rows["+i+"][grn_ids][]", id:"petty_cash_voucher_rows-"+i+"-grn_ids"}).rules('add', {
+						required: true,
+						notEqualToGroup: ['.grns'],
+						messages: {
+							notEqualToGroup: "Do not select same grn again."
+						}
+					});
+				}
+				if(thela_type=='105' || thela_type=='168' || thela_type=='316')
+		        {				
+					$(this).find("td:eq(0) select.invoices").select2().attr({name:"petty_cash_voucher_rows["+i+"][invoice_ids][]", id:"petty_cash_voucher_rows-"+i+"-invoice_ids"}).rules('add', {
+						required: true,
+						notEqualToGroup: ['.invoices'],
+						messages: {
+							notEqualToGroup: "Do not select same invoice again."
+						}
+					});
+				}
+			}			
 			$(this).find("td:eq(1) input").attr({name:"petty_cash_voucher_rows["+i+"][amount]", id:"petty_cash_voucher_rows-"+i+"-amount"}).rules('add', {
 						required: true,
 						min: 0.01,
@@ -347,6 +371,42 @@ $(document).ready(function() {
 			}
 			rename_ref_rows(sel2,received_from_id);
 		});
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadGrns']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='101' || received_from_id=='165' || received_from_id=='313')
+		{ 
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {
+				$(sel).closest('tr.main_tr').find('.show_result').html(response);
+				rename_rows();
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_result').html('');
+		}
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadInvoices']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='105' || received_from_id=='168' || received_from_id=='316')
+		{
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
+				$(sel).closest('tr.main_tr').find('.show_result').html(response);
+				rename_rows(); 
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_result').html('');
+		}
 	}
 	
 	
@@ -448,7 +508,7 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
 	<tbody>
 		<tr class="main_tr">
-			<td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','auto_inc'=>0]); ?></td>
+			<td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','auto_inc'=>0]); ?><div class="show_result"></div></td>
 			<td>
 			<div class="row">
 				<div class="col-md-6" style="padding-right: 0;">

@@ -70,6 +70,14 @@ class PettyCashVouchersTable extends Table
             'foreignKey' => 'petty_cash_voucher_id',
 			'saveStrategy' => 'replace'
         ]);
+		$this->hasMany('Grns', [
+            'foreignKey' => 'payment_id',
+            'joinType' => 'INNER'
+		 ]);
+		 $this->hasMany('Invoices', [
+            'foreignKey' => 'payment_id',
+            'joinType' => 'INNER'
+		 ]);
     }
 
     /**

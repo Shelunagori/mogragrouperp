@@ -97,6 +97,27 @@ class PettyCashVouchersController extends AppController
 
         
         if ($this->request->is('post')) {
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['petty_cash_voucher_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
             $pettycashvoucher = $this->PettyCashVouchers->patchEntity($pettycashvoucher, $this->request->data);
             $pettycashvoucher->company_id=$st_company_id;
             //Voucher Number Increment
@@ -111,7 +132,39 @@ class PettyCashVouchersController extends AppController
             $pettycashvoucher->created_by=$s_employee_id;
             $pettycashvoucher->transaction_date=date("Y-m-d",strtotime($pettycashvoucher->transaction_date));
             //pr($pettycashvoucher); exit;
+			foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
+			{
+				$petty_cash_voucher_row->grn_ids = @$grnIds[$key];
+				$petty_cash_voucher_row->invoice_ids =@$invoiceIds[$key];
+			}
             if ($this->PettyCashVouchers->save($pettycashvoucher)) {
+				foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
+				{
+					if(count($grnIds)>0)
+					{
+						$grnArrays = explode(',',@$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->PettyCashVouchers->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','pettycashvoucher_id' => $pettycashvoucher->id])
+							->where(['id' => $grnArray])
+							->execute();
+						}
+					}
+					if(count($invoiceIds)>0)
+					{
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$grn = $this->PettyCashVouchers->Invoices->query();
+							$grn->update()
+							->set(['sales_thela_bhada_status' => 'yes','pettycashvoucher_id' => $pettycashvoucher->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+						}
+					}
+				}
                $total_cr=0; $total_dr=0; $total_dr=0; $i=0;
                 foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row){
 
@@ -370,6 +423,27 @@ class PettyCashVouchersController extends AppController
 		//pr( $old_ref_rows); exit;
         
         if ($this->request->is(['patch', 'post', 'put'])) {
+			foreach( $this->request->data['petty_cash_voucher_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
+			
             $pettycashvoucher = $this->PettyCashVouchers->patchEntity($pettycashvoucher, $this->request->data);
             $pettycashvoucher->company_id=$st_company_id;
             
@@ -380,6 +454,11 @@ class PettyCashVouchersController extends AppController
                 
             //Save receipt
             //pr($payment); exit;
+			foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
+			{
+				$petty_cash_voucher_row->grn_ids = @$grnIds[$key];
+				$petty_cash_voucher_row->invoice_ids =@$invoiceIds[$key];
+			}
             if ($this->PettyCashVouchers->save($pettycashvoucher)) {
                 $this->PettyCashVouchers->Ledgers->deleteAll(['voucher_id' => $pettycashvoucher->id, 'voucher_source' => 'Petty Cash Payment Voucher']);
                 $total_cr=0; $total_dr=0; $i=0;
@@ -401,7 +480,33 @@ class PettyCashVouchersController extends AppController
                     $ledger->voucher_source = 'Petty Cash Payment Voucher';
                     $ledger->transaction_date = $pettycashvoucher->transaction_date;
                     $this->PettyCashVouchers->Ledgers->save($ledger);
-                    
+                    foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
+				    {
+					if(count($grnIds)>0)
+					{
+						$grnArrays = explode(',',@$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->PettyCashVouchers->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','pettycashvoucher_id' => $pettycashvoucher->id])
+							->where(['id' => $grnArray])
+							->execute();
+						}
+					}
+					if(count($invoiceIds)>0)
+					{
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$grn = $this->PettyCashVouchers->Invoices->query();
+							$grn->update()
+							->set(['sales_thela_bhada_status' => 'yes','pettycashvoucher_id' => $pettycashvoucher->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+						}
+					}
+				}
 					$query = $this->PettyCashVouchers->PettyCashVoucherRows->query();
 						$query->update()
 							->set(['auto_inc' => $i])
@@ -593,7 +698,11 @@ class PettyCashVouchersController extends AppController
             $ReceivedFroms_selected='no';
         }
          //pr($pettycashvoucher); exit;
-        $this->set(compact('pettycashvoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate'));
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$grn=$this->PettyCashVouchers->Grns->find()->where(['company_id' => $st_company_id]);
+		$invoice=$this->PettyCashVouchers->Invoices->find()->where(['company_id' => $st_company_id]);
+        $this->set(compact('pettycashvoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
         $this->set('_serialize', ['pettycashvoucher']);
     }
 
