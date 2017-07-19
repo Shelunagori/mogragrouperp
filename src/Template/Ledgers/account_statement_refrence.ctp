@@ -71,6 +71,7 @@
 					<td  align="right">On Account</td>	
 					<?php 
 						$on_acc=0;
+						$closing_balance=0;
 						$on_dr=@$ledger_amt['Debit']-@$ref_amt['debit'];
 						$on_cr=@$ledger_amt['Credit']-@$ref_amt['credit'];
 						
@@ -78,10 +79,16 @@
 						
 						
 						?>
-					<?php if($on_acc >= 0){ ?>
+					<?php if($on_acc >= 0){ 
+					$closing_balance=($on_acc+$total_debit)-$total_credit;
+					
+					
+					?>
 								<td align="right"><?php echo $this->Number->format(abs($on_acc),['places'=>2]); ?>Dr.</td>	
 								<td align="right">0 Cr.</td>
-							<?php } else{ ?>
+							<?php } else{ 
+							$closing_balance=(abs($on_acc)+$total_credit)-abs($total_debit);
+							?>
 								<td align="right">0 Dr.</td>
 								<td align="right"><?php echo $this->Number->format(abs($on_acc),['places'=>2]); ?>Cr.</td>
 					
@@ -90,23 +97,15 @@
 				</tbody>
 			</table>
 			</div>
-			<?php
 			
-					$total_dr=$ledger_amt['Debit']-$ref_amt['Debit'];
-					$total_cr=$ledger_amt['Credit']-$ref_amt['Credit'];
-					$closing_balance_dr=$total_debit+$total_dr;
-					$closing_balance_cr=$total_credit+$total_cr;
-				
-			?>
 			<div class="col-md-12">
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:- </b>
-				<?php if($closing_balance_dr > $closing_balance_cr ){
-						echo $this->Number->format(abs($closing_balance_dr -$closing_balance_cr),['places'=>2]); echo 'Dr.';
+				<?php if(($on_acc+$total_debit)>$total_credit){
+					echo $this->Number->format(abs($closing_balance),['places'=>2]).'Dr.'; 
 				}else{
-					echo $this->Number->format(abs($closing_balance_cr -$closing_balance_dr),['places'=>2]); echo 'Cr.';
-				}
-						
+					echo $this->Number->format(abs($closing_balance),['places'=>2]).'Cr.'; 
+				}	
 				?>
 				</div>
 			</div>
