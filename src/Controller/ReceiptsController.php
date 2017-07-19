@@ -661,7 +661,7 @@ class ReceiptsController extends AppController
 		$this->set(compact('ReferenceBalances','cr_dr'));
 	}
 	
-	public function ($received_frfetchRefNumbersEditom_id=null,$reference_no=null,$credit=null,$debit=null,$cr_dr=null){
+	public function fetchRefNumbersEdit($received_frfetchRefNumbersEditom_id=null,$reference_no=null,$credit=null,$debit=null,$cr_dr=null){
 		$this->viewBuilder()->layout('');
 		$received_from_id=$this->request->query['received_from_id'];
 		$cr_dr=$this->request->query['cr_dr'];

@@ -67,23 +67,25 @@
 				$url_path="";
 				if($ledger->voucher_source=="Journal Voucher"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/JournalVouchers/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Payment Voucher"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/Payments/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Petty Cash Payment Voucher"){
+					
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
-					$url_path="/petty-cash-vouchers/view/".$ledger->voucher_id;
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$url_path="/PettyCashVouchers/view/".$ledger->voucher_id;
+					
 				}else if($ledger->voucher_source=="Contra Voucher"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/contra-vouchers/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Receipt Voucher"){ 
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/receipts/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Invoice"){ 
 					$invoice=$url_link[$ledger->id];
@@ -100,15 +102,15 @@
 					$url_path="/invoice-bookings/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Non Print Payment Voucher"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/nppayments/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Debit Note"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/debit-notes/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Credit Note"){
 					$Receipt=$url_link[$ledger->id];
-					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/credit-notes/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Purchase Return"){
 					$url_path="/purchase-returns/view/".$ledger->voucher_id;
@@ -130,7 +132,7 @@
 						<?php if($url_path=='Sale Return'){
 								echo $voucher_no;
 							}else if(!empty($url_path)){
-								echo $this->Html->link($voucher_no ,$url_path,['target' => '_blank']);
+								echo $this->Html->link(@$voucher_no ,$url_path,['target' => '_blank']);
 							}else{
 								echo str_pad($ledger->voucher_id,4,'0',STR_PAD_LEFT);
 							}
