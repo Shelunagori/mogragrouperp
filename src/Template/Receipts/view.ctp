@@ -44,7 +44,7 @@ margin-bottom: 0;
 	</table>
 	<table width="100%">
 		<tr>
-			<td width="50%" valign="top" align="left">
+			<td width="60%" valign="top" align="left">
 				<table>
 					 <tr>
                         <td>Bank/Cash Account</td>
@@ -58,7 +58,7 @@ margin-bottom: 0;
 					</tr>
 				</table>
 			</td>
-			<td width="50%" valign="top" align="right">
+			<td width="40%" valign="top" align="right">
 				<table>
 					<tr>
 						<td>Transaction Date</td>

@@ -41,26 +41,46 @@ margin-bottom: 0;
 </br>
 <table width="100%" style="margin-top: -17px;">
 	<tr>
-		<td  valign="top" align="left">
-			<table border="0" width='100%'>
+		<td width="50%" valign="top" align="left">
+			<table>
 				<tr>
-					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Inventory Voucher No</label></td>
-					<td>:</td>
-					<td align="center">
+					<td><b>Inventory Voucher No</b></td>
+					<td width="20" align="center">:</td>
+					<td>
 					<?= h('IV/'.str_pad($inventoryVoucher->iv_number, 4, '0', STR_PAD_LEFT)) ?>
 					</td>
-					<td align="left"></td>
-					<td width="10%"></td>
-					
-					<td align="center" width=" "<label style="font-size: 14px;font-weight: bold;">Invoice No</label></td>
-					<td>:</td>
-					<td align="center">
-					<?= h($inventoryVoucher->invoice->in1.'/IN'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4) ?>
+				</tr>
+				<tr>
+					<td><b>Invoice No</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h($inventoryVoucher->invoice->in1.'/IN'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4) ?>
 					</td>
-					<td align="center"></td>
-					<td width="10%"></td>
-					<td align="left"></td>
-					<td></td>
+				</tr>
+			</table>
+	   </td>
+	   
+	   <td width="50%" valign="top" align="right">
+				<table>
+					<tr>
+						<td><b>Transaction Date</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h(date("d-m-Y",strtotime($inventoryVoucher->transaction_date))) ?></td>
+					</tr>
+					<tr>
+						<td><b>Created On</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h(date("d-m-Y",strtotime($inventoryVoucher->created_on))) ?></td>
+					</tr>
+				</table>
+			</td>
+	</tr>
+	<tr>
+		<td align="left" >
+			<table>
+				<tr>
+					<td width="32%"><b>Customer Name</b></td>
+					<td  width="20" align="center">:</td>
+					<td ><?php echo $inventoryVoucher->invoice->customer->customer_name ."(". $inventoryVoucher->invoice->customer->alias.")"; ?></td>
 				</tr>
 			</table>
 	   </td>
