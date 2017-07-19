@@ -280,6 +280,7 @@ class ItemLedgersController extends AppController
 		$stock=$this->request->query('stock');
 		$item_sub_group=$this->request->query('item_sub_group');
 		
+		
 		$where=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
 		if(!empty($item_name)){ 
@@ -287,19 +288,19 @@ class ItemLedgersController extends AppController
 			
 		}
 		if(!empty($item_category)){
-			$where['item_category_id LIKE']=$item_category;
+			$where['Items.item_category_id']=$item_category;
 		}
 		if(!empty($item_group)){
-			$where['item_group_id LIKE']=$item_group;
+			$where['Items.item_group_id ']=$item_group;
 		}
 		if(!empty($item_sub_group)){
-			$where['item_sub_group_id LIKE']=$item_sub_group;
+			$where['Items.item_sub_group_id ']=$item_sub_group;
 		}
 		if(!empty($search_date)){
 			$search_date=date("Y-m-d",strtotime($search_date));
             $where['processed_on <=']=$search_date;
 		}
-				
+			
 		$item_stocks =[];$items_names =[];
 		$query = $this->ItemLedgers->find();
 		$totalInCase = $query->newExpr()
@@ -320,15 +321,17 @@ class ItemLedgersController extends AppController
 			'total_in' => $query->func()->sum($totalInCase),
 			'total_out' => $query->func()->sum($totalOutCase),'id','item_id'
 		])
+		->contain(['Items'=> function ($q) use($where) { 
+				return $q->where($where);
+				}])
 		->where(['company_id'=>$st_company_id])
 		->group('item_id')
 		->autoFields(true)
 		->order(['Items.name'=>'ASC'])
-		->contain(['Items'=> function ($q)use($where) { 
-				return $q->where($where);
-				}]);
+		;
 		$results =$query->toArray();
-		//pr($results);exit;
+		//pr($results); exit;
+		
 		if($stock == "Negative"){
 			foreach($results as $result){
 				if($result->total_in - $result->total_out < 0){
@@ -365,7 +368,9 @@ class ItemLedgersController extends AppController
 				
 		}
 		}
-		$ItemLedgers = $this->ItemLedgers->find()->where($where);
+		$ItemLedgers = $this->ItemLedgers->find()->contain(['Items'=>function ($q) use($where){
+			return $q->where($where);
+		}])->where($where);
 		//pr($ItemLedgers->toArray()); exit;
 		$item_rate=[];
 		$in_qty=[];

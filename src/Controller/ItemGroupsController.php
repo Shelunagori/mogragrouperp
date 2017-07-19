@@ -158,5 +158,6 @@ class ItemGroupsController extends AppController
         $this->viewBuilder()->layout('');
 		$itemGroups = $this->ItemGroups->find('list')->where(['item_category_id'=>$itemCategoryId])->order(['ItemGroups.name' => 'ASC']);
 		$this->set(compact('itemGroups'));
+		 $this->set('_serialize', ['itemGroups']);
     }
 }

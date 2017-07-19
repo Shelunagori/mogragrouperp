@@ -41,26 +41,36 @@ margin-bottom: 0;
 	</table>
 
 </br>
-<table width="100%">
+<table width="100%" style="margin-top: -18px;">
 	<tr>
 		<td  valign="top" align="left">
 			<table border="0">
 				<tr>
-					<td align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Inventory Transfer Voucher No</label></td>
-					<td>:</td>
+					<td align="left"><b>Inventory Transfer Voucher No</b></td>
+					<td width="20" align="center">:</td>
 					<td><?= h('#'.str_pad($inventoryTransferVoucher->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
-					<td align="left"></td>
-					<td></td>
 				</tr>
 				<tr>
-					<td valign="top" align="left" width=" "<label style="font-size: 14px;font-weight: bold;">Narration</label></td>
-					<td valign="top">:</td>
+					<td valign="top" align="left"><b>Narration</b></td>
+					<td width="20" align="center">:</td>
 					<td valign="top"><?= h($inventoryTransferVoucher->narration) ?></td>
-					<td align="left"></td>
-					<td></td>
 				</tr>
 			</table>
 	   </td>
+	    <td width="50%" valign="top" align="right">
+				<table>
+					<tr>
+						<td><b>Transaction Date</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->transaction_date))) ?></td>
+					</tr>
+					<!-- <tr>
+						<td><b>Created On</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->created_on))) ?></td>
+					</tr> -->
+				</table>
+			</td>
 	</tr>
 </table>	
 </br>

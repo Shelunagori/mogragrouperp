@@ -22,12 +22,12 @@
 									<td width="15%">
 										<label class="control-label">Group</label>
 										<div id="item_group_div">
-										<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' => $ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+										<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' => [],'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
 									</td>
 									<td width="15%">
 										<label class="control-label">Sub-Group</label>
 										<div id="item_sub_group_div">
-										<?php echo $this->Form->input('item_sub_group', ['empty'=>'--Select--','options' => $ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+										<?php echo $this->Form->input('item_sub_group', ['empty'=>'--Select--','options' => [],'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
 									</td>
 									<td width="15%">
 										<label class="control-label">Stock</label>
@@ -45,7 +45,7 @@
 										{
 											$date=date("d-m-Y",strtotime($search_date));
 										}
-										echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>@$date]); ?></div>
+										echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>date('d-m-Y')]); ?></div>
 									</td>
 									<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 									</td>
@@ -131,17 +131,19 @@ var $rows = $('#main_tble tbody tr');
 		var itemCategoryId=$('select[name="item_category"] option:selected').val();
 		var url="<?php echo $this->Url->build(['controller'=>'ItemGroups','action'=>'ItemGroupDropdown']); ?>";
 		url=url+'/'+itemCategoryId,
+		alert(url);
 		$.ajax({
 			url: url,
 			type: 'GET',
 		}).done(function(response) {
 			$('#item_group_div').html(response);
+			$('select[name="item_group_id"]').select2();
 		});
 	});	
 	//////
-	$('select[name="item_group"]').die().live("change",function() {
+	$('select[name="item_group_id"]').die().live("change",function() {
 		$('#item_sub_group_div').html('Loading...');
-		var itemGroupId=$('select[name="item_group"] option:selected').val();
+		var itemGroupId=$('select[name="item_group_id"] option:selected').val();
 		var url="<?php echo $this->Url->build(['controller'=>'ItemSubGroups','action'=>'ItemSubGroupDropdown']); ?>";
 		url=url+'/'+itemGroupId,
 		$.ajax({
@@ -149,6 +151,7 @@ var $rows = $('#main_tble tbody tr');
 			type: 'GET',
 		}).done(function(response) {
 			$('#item_sub_group_div').html(response);
+			$('select[name="item_sub_group_id"]').select2();
 		});
 	});
 	
