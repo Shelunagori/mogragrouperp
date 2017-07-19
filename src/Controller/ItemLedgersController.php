@@ -99,7 +99,7 @@ class ItemLedgersController extends AppController
     }
 	
 	public function stockLedger(){
-		$this->viewBuilder()->layout('index_layout');
+		/*$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
        
@@ -132,7 +132,33 @@ class ItemLedgersController extends AppController
 			$itemLedgersdata[]=$itemLedger;
 		}
 		$this->set(compact('itemLedgersdata'));
-		$this->set('_serialize', ['itemLedgersdata']);
+		$this->set('_serialize', ['itemLedgersdata']);*/
+		
+      $this->viewBuilder()->layout('index_layout');
+        $session = $this->request->session();
+        $item_name=$this->request->query('item_name');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		$this->set(compact('From','To'));
+		$where=[];
+		if(!empty($item_name)){ 
+			$where['Item_id']=$item_name;
+			
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['processed_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['processed_on <=']=$To;
+		}
+				
+		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
+		//pr($Items->toArray()); exit;
+        $this->set(compact('Items', 'item_name','From','To'));
+		$this->set('_serialize', ['itemLedgers']); 
     }
 	
 	public function GetItemVouchers($source_model_id=null,$source_id1=null)
