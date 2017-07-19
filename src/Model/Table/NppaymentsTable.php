@@ -76,11 +76,11 @@ class NppaymentsTable extends Table
             'propertyName' => 'creator',
         ]);
 		$this->hasMany('Grns', [
-            'foreignKey' => 'payment_id',
+            'foreignKey' => 'nppayment_id',
             'joinType' => 'INNER'
 		 ]);
 		 $this->hasMany('Invoices', [
-            'foreignKey' => 'payment_id',
+            'foreignKey' => 'nppayment_id',
             'joinType' => 'INNER'
 		 ]);
    

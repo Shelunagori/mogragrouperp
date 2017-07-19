@@ -473,7 +473,7 @@ class NppaymentsController extends AppController
 						$grnArrays = explode(',',@$grnIds[$key]);
 						foreach($grnArrays as $grnArray)
 						{ 
-							$grn = $this->JournalVouchers->Grns->query();
+							$grn = $this->Nppayments->Grns->query();
 							$grn->update()
 							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $nppayment->id])
 							->where(['id' => $grnArray])
@@ -485,7 +485,7 @@ class NppaymentsController extends AppController
 						$invoiceArrays = explode(',',@$invoiceIds[$key]);
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
-							$invoice = $this->JournalVouchers->Invoices->query();
+							$invoice = $this->Nppayments->Invoices->query();
 							$invoice->update()
 							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $nppayment->id])
 							->where(['id' => $invoiceArray])
@@ -684,8 +684,8 @@ class NppaymentsController extends AppController
         }
         $session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
-		$grn=$this->JournalVouchers->Grns->find()->where(['company_id' => $st_company_id]);
-		$invoice=$this->JournalVouchers->Invoices->find()->where(['company_id' => $st_company_id]);
+		$grn=$this->Nppayments->Grns->find()->where(['company_id' => $st_company_id]);
+		$invoice=$this->Nppayments->Invoices->find()->where(['company_id' => $st_company_id]);
         $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
         $this->set('_serialize', ['nppayment']);
     }
