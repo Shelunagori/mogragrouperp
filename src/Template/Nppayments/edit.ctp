@@ -104,7 +104,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									} 
 
 								}
-					echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control select2me grns','style'=>'width:100%']);
+					echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control grns','style'=>'width:100%']);
 					}
 					elseif($nppayment_row->received_from_id=='105' || $nppayment_row->received_from_id=="168" || $nppayment_row->received_from_id=='316'){
 							 $option=[];
@@ -126,7 +126,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									} 
 
 								}
-					echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control select2me invoices','style'=>'width:100%']);
+					echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control invoices','style'=>'width:100%']);
 					}
 					
 					?>
