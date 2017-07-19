@@ -463,12 +463,12 @@ class NppaymentsController extends AppController
 			$grn    = $this->Nppayments->Grns->query();
 				    $grn->update()
 				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
-				    ->where(['payment_id' => $payment->id])
+				    ->where(['payment_id' => $nppayment->id])
 				    ->execute();
 		   $invoice = $this->Nppayments->Invoices->query();
 					  $invoice->update()
 					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
-					  ->where(['payment_id' => $payment->id])
+					  ->where(['payment_id' => $nppayment->id])
 					  ->execute();
 			foreach($nppayment->nppayment_rows as $key => $nppayment_row)
 			{
