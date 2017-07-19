@@ -431,6 +431,27 @@ class NppaymentsController extends AppController
         }
         
         if ($this->request->is(['patch', 'post', 'put'])) {
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['nppayment_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
             $nppayment = $this->Nppayments->patchEntity($nppayment, $this->request->data);
             $nppayment->company_id=$st_company_id;
             
@@ -439,8 +460,39 @@ class NppaymentsController extends AppController
             $nppayment->transaction_date=date("Y-m-d",strtotime($nppayment->transaction_date));
                 
             //Save receipt
-			
+			foreach($nppayment->nppayment_rows as $key => $nppayment_row)
+			{
+				$nppayment_row->grn_ids = @$grnIds[$key];
+				$nppayment_row->invoice_ids =@$invoiceIds[$key];
+			}
             if ($this->Nppayments->save($nppayment)) {
+				foreach($nppayment->nppayment_rows as $key => $nppayment_row)
+				{
+					if(count($grnIds)>0)
+					{          
+						$grnArrays = explode(',',@$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->JournalVouchers->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','payment_id' => $nppayment->id])
+							->where(['id' => $grnArray])
+							->execute();
+					   }
+					}
+					if(count($invoiceIds)>0)
+					{          
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$invoice = $this->JournalVouchers->Invoices->query();
+							$invoice->update()
+							->set(['sales_thela_bhada_status' => 'yes','payment_id' => $nppayment->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+					   }
+					}
+				}
                 $this->Nppayments->Ledgers->deleteAll(['voucher_id' => $nppayment->id, 'voucher_source' => 'Non Print Payment Voucher']);
                 $total_cr=0; $total_dr=0;
 				
@@ -630,8 +682,11 @@ class NppaymentsController extends AppController
         }else{
             $ReceivedFroms_selected='no';
         }
-        
-        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate'));
+        $session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$grn=$this->JournalVouchers->Grns->find()->where(['company_id' => $st_company_id]);
+		$invoice=$this->JournalVouchers->Invoices->find()->where(['company_id' => $st_company_id]);
+        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
         $this->set('_serialize', ['nppayment']);
     }
 
