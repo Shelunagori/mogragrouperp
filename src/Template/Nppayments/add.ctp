@@ -228,6 +228,31 @@ $(document).ready(function() {
                             notEqualToGroup: "Do not select same party again."
                         }
                     });
+			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
+			if(serial_l > 1)
+			{
+				var thela_type = $(this).find("td:eq(0) select.received_from").val();
+                if(thela_type=='101' || thela_type=='165' || thela_type=='313')
+		        {				
+					$(this).find("td:eq(0) select.grns").select2().attr({name:"nppayment_rows["+i+"][grn_ids][]", id:"nppayment_rows-"+i+"-grn_ids"}).rules('add', {
+						required: true,
+						notEqualToGroup: ['.grns'],
+						messages: {
+							notEqualToGroup: "Do not select same grn again."
+						}
+					});
+				}
+				if(thela_type=='105' || thela_type=='168' || thela_type=='316')
+		        {				
+					$(this).find("td:eq(0) select.invoices").select2().attr({name:"nppayment_rows["+i+"][invoice_ids][]", id:"nppayment_rows-"+i+"-invoice_ids"}).rules('add', {
+						required: true,
+						notEqualToGroup: ['.invoices'],
+						messages: {
+							notEqualToGroup: "Do not select same invoice again."
+						}
+					});
+				}
+			}
             $(this).find("td:eq(1) input").attr({name:"nppayment_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"}).rules('add', {
                         required: true,
                         min: 0.01,
@@ -329,6 +354,42 @@ $(document).ready(function() {
             }
             rename_ref_rows(sel2,received_from_id);
         });
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadGrns']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='101' || received_from_id=='165' || received_from_id=='313')
+		{ 
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {
+				$(sel).closest('tr.main_tr').find('.show_result').html(response);
+				rename_rows();
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_result').html('');
+		}
+		
+		var url="<?php echo $this->Url->build(['controller'=>'LedgerAccounts','action'=>'loadInvoices']); ?>";
+		url=url+'/'+received_from_id;
+		if(received_from_id=='105' || received_from_id=='168' || received_from_id=='316')
+		{
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
+				$(sel).closest('tr.main_tr').find('.show_result').html(response);
+				rename_rows(); 
+			});
+		}
+		else
+		{
+			$(sel).closest('tr.main_tr').find('.show_result').html('');
+		}
     }
     
     
@@ -426,7 +487,8 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm input-xsmall received_from','style'=>'width: 100%; display: block;']); ?>
+            <td width="14%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm  received_from','style'=>'width:100%;']); ?>
+			<div class="show_result"></div>
 			</td>
             <td width="20%">
 			<div class="row">
@@ -441,7 +503,7 @@ $(document).ready(function() {
                 </div>
             </div>
             </td>
-            <td width="70%"></td>
+            <td width="58%"></td>
             <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
             <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
         </tr>

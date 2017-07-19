@@ -137,6 +137,27 @@ class NppaymentsController extends AppController
 
 		
         if ($this->request->is('post')) {
+			$grnIds=[];$invoiceIds=[];
+			foreach( $this->request->data['nppayment_rows'] as $key =>  $pr)
+			{
+				$grnstring="";$invoiceString="";
+				if(!empty($pr['grn_ids']))
+				{
+					foreach( $pr['grn_ids'] as  $dr)
+					{
+							$grnstring .=$dr.',';
+					}
+					$grnIds[$key] =$grnstring;
+				}
+				if(!empty($pr['invoice_ids']))
+				{
+					foreach( $pr['invoice_ids'] as  $dr)
+					{
+							$invoiceString .=$dr.',';
+					}
+					$invoiceIds[$key] =$invoiceString;
+				}
+			}
             $nppayment = $this->Nppayments->patchEntity($nppayment, $this->request->data);
             $nppayment->company_id=$st_company_id;
             //Voucher Number Increment
@@ -151,7 +172,39 @@ class NppaymentsController extends AppController
             $nppayment->created_by=$s_employee_id;
             $nppayment->transaction_date=date("Y-m-d",strtotime($nppayment->transaction_date));
             //pr($nppayment); exit;
+			foreach($nppayment->nppayment_rows as $key => $nppayment_row)
+			{
+				$nppayment_row->grn_ids = @$grnIds[$key];
+				$nppayment_row->invoice_ids =@$invoiceIds[$key];
+			}
             if ($this->Nppayments->save($nppayment)) {
+				foreach($nppayment->nppayment_rows as $key => $nppayment_row)
+				{
+					if(count($grnIds)>0)
+					{
+						$grnArrays = explode(',',@$grnIds[$key]);
+						foreach($grnArrays as $grnArray)
+						{ 
+							$grn = $this->Nppayments->Grns->query();
+							$grn->update()
+							->set(['purchase_thela_bhada_status' => 'yes','nppayment_id' => $nppayment->id])
+							->where(['id' => $grnArray])
+							->execute();
+						}
+					}
+					if(count($invoiceIds)>0)
+					{
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						foreach($invoiceArrays as $invoiceArray)
+						{ 
+							$grn = $this->Nppayments->Invoices->query();
+							$grn->update()
+							->set(['sales_thela_bhada_status' => 'yes','nppayment_id' => $nppayment->id])
+							->where(['id' => $invoiceArray])
+							->execute();
+						}
+					}
+				}
                 $total_cr=0; $total_dr=0;
                 foreach($nppayment->nppayment_rows as $nppayment_row){
                     
