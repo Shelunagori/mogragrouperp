@@ -27,7 +27,7 @@
 		</div>
 	</div>
 		<div class="row">
-		<div style="width: 100%;overflow: auto;">
+			<div style="width: 100%;overflow: auto;">
 		<table>
 		  <tr>
 			<td valign="top">
@@ -44,7 +44,7 @@
 										</tr>
 									</thead>
 							<tbody id="maintbody">
-						     <?php $options1= [];	foreach($inventoryTransferVouchersout->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){ 
+						<?php $options1= [];	foreach($inventoryTransferVouchersout->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){ 
 										?>
 								<tr class="main">
 									<td width="30%">
@@ -84,7 +84,7 @@
 									<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 							</tr>
 							<?php } ?>
-						    </tbody>
+						</tbody>
 				</table>
 			</td>
 			
@@ -103,16 +103,70 @@
 						</tr>
 					</thead>
 					<tbody id="maintbody_1">
-						
-						
-				    </tbody>
-			   </table>
+						<?php $options1= [];	foreach($inventoryTransferVouchersins->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row_in){ 
+									?>
+							<tr class="main">
+								<td  width="25%">
+									<?php echo $inventory_transfer_voucher_row_in->item->name;
+									echo $this->Form->input('q', ['type'=>'hidden','readonly','value'=>$inventory_transfer_voucher_row_in->item->id,'label' => false,'item_sr'=>$inventory_transfer_voucher_row_in->item->item_companies[0]->serial_number_enable,'class' => 'form-control input-sm  ']); ?>
+								</td>
+								<td  width="15%"> 
+									<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'value'=>$inventory_transfer_voucher_row_in->quantity,'class' => 'form-control input-sm qty_bx_in','placeholder' => 'Quantity','old_qty'=>$inventory_transfer_voucher_row_in->quantity]); ?>
+								</td>
+								
+								<td width="30%">
+									<div class="row">
+										<div class="col-md-6 offset sr_container"></div>
+										<div class="col-md-6">
+											<table width="20%">
+												<tbody>
+													<tr>
+														<td>
+															<?php 
+									//pr($inventory_transfer_voucher_row_in); exit;
+									$i=1; foreach($inventory_transfer_voucher_row_in->item->item_serial_numbers as $item_serial_number){
+										if($item_serial_number->item_id == $inventory_transfer_voucher_row_in->item_id && $item_serial_number->inventory_transfer_voucher_id == $inventoryTransferVouchersins->id ){ ?>
+											<?php if($item_serial_number->status=='Out'){  ?>
+											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 65px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
+											
+											<?php  } else {?>
+											<?php echo $this->Form->input('q', ['label' => false,'type'=>'text','style'=>'width: 65px;','value' => $item_serial_number->serial_no,'disabled'=>true]); ?>
+											
+											
+												<?= $this->Html->link('<i class="fa fa-trash"></i> ',
+														['action' => 'DeleteSerialNumbers', $item_serial_number->id, $inventory_transfer_voucher_row_in->id,$inventory_transfer_voucher_row_in->inventory_transfer_voucher_id,$inventory_transfer_voucher_row_in->item_id], 
+														[
+															'escape' => false,
+															'class' => 'btn btn-xs red',
+															'confirm' => __('Are you sure, you want to delete {0}?', $item_serial_number->id)
+														]
+													) ?>
+												
+										<?php  $i++; } }  }?>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									
+								</td>
+								
+								<td width="20%">
+									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'style'=>'width: 79px;','value'=>$inventory_transfer_voucher_row_in->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
+								</td>
+								<td><a class="btn btn-xs btn-default addrow_1" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow_1" href="#" role='button'><i class="fa fa-times"></i></a></td>
+							</tr>
+						<?php }?>
+						</tbody>
+					</table>
 			</td>
 		  </tr>
 		</table>
-	</div>
+			</div>
+		</div>
 	    </div>
-	<button type="submit" class="btn btn-primary">Submit</button>	
+		<button type="submit" class="btn btn-primary">Submit</button>
 	<?= $this->Form->end(); ?>
 </div>
 </div>
