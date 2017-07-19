@@ -446,6 +446,7 @@ class PaymentsController extends AppController
 			$grnIds=[];$invoiceIds=[];
 			foreach( $this->request->data['payment_rows'] as $key =>  $pr)
 			{
+				
 				$grnstring="";$invoiceString="";	
 				if(!empty($pr['grn_ids']))
 				{
@@ -475,24 +476,34 @@ class PaymentsController extends AppController
 			$payment->transaction_date=date("Y-m-d",strtotime($payment->transaction_date));
 				
 			//Save receipt
+			$grn    = $this->Payments->Grns->query();
+				    $grn->update()
+				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
+				    ->where(['payment_id' => $payment->id])
+				    ->execute();
+		   $invoice = $this->Payments->Invoices->query();
+					  $invoice->update()
+					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
+					  ->where(['payment_id' => $payment->id])
+					  ->execute();
 			foreach($payment->payment_rows as $key => $payment_row)
 			{
 				if(count($grnIds)>0)
 				{
-					$payment_row->grn_ids =$grnIds[$key];
+					$payment_row->grn_ids =@$grnIds[$key];
 				}
 				if(count($invoiceIds)>0)
 				{
-					$payment_row->invoice_ids =$invoiceIds[$key];
+					$payment_row->invoice_ids =@$invoiceIds[$key];
 				}
-				
+
 			}
 			if ($this->Payments->save($payment)) {
 				foreach($payment->payment_rows as $key => $payment_row)
 				{
 					if(count($grnIds)>0)
 					{          
-						$grnArrays = explode(',',$grnIds[$key]);
+						$grnArrays = explode(',',@$grnIds[$key]);
 						foreach($grnArrays as $grnArray)
 						{ 
 							$grn = $this->Payments->Grns->query();
@@ -504,7 +515,7 @@ class PaymentsController extends AppController
 					}
 					if(count($invoiceIds)>0)
 					{          
-						$invoiceArrays = explode(',',$invoiceIds[$key]);
+						$invoiceArrays = explode(',',@$invoiceIds[$key]);
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$invoice = $this->Payments->Invoices->query();

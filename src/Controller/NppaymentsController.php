@@ -460,6 +460,16 @@ class NppaymentsController extends AppController
             $nppayment->transaction_date=date("Y-m-d",strtotime($nppayment->transaction_date));
                 
             //Save receipt
+			$grn    = $this->Nppayments->Grns->query();
+				    $grn->update()
+				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
+				    ->where(['payment_id' => $payment->id])
+				    ->execute();
+		   $invoice = $this->Nppayments->Invoices->query();
+					  $invoice->update()
+					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
+					  ->where(['payment_id' => $payment->id])
+					  ->execute();
 			foreach($nppayment->nppayment_rows as $key => $nppayment_row)
 			{
 				$nppayment_row->grn_ids = @$grnIds[$key];

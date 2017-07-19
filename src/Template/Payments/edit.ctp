@@ -365,7 +365,7 @@ $(document).ready(function() {
 			{
 				var thela_type = $(this).find("td:eq(0) select.received_from").val();
                 if(thela_type=='101' || thela_type=='165' || thela_type=='313')
-		        {		alert('man');		
+		        {				
 					$(this).find("td:eq(0) select.grns").select2().attr({name:"payment_rows["+i+"][grn_ids][]", id:"quotation_rows-"+i+"-grn_ids"}).rules('add', {
 						required: true,
 						notEqualToGroup: ['.grns'],

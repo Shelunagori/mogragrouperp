@@ -423,6 +423,16 @@ class JournalVouchersController extends AppController
 				$journal_voucher_row->grn_ids = @$grnIds[$key];
 				$journal_voucher_row->invoice_ids =@$invoiceIds[$key];
 			}
+			$grn    = $this->JournalVouchers->Grns->query();
+				    $grn->update()
+				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
+				    ->where(['payment_id' => $payment->id])
+				    ->execute();
+		   $invoice = $this->JournalVouchers->Invoices->query();
+					  $invoice->update()
+					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
+					  ->where(['payment_id' => $payment->id])
+					  ->execute();
 			if ($this->JournalVouchers->save($journalVoucher)) {
 				foreach($journalVoucher->journal_voucher_rows as $key => $journal_voucher_rows)
 				{
