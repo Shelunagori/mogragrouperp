@@ -29,7 +29,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					
-					<table class="table table-bordered table-striped table-hover" id='main_tble'>
+					<table class="table table-bordered table-striped table-hover" id="main_table">
 						<thead>
 							<tr>
 								<th>Sr. No.</th>
@@ -42,12 +42,15 @@
 								<th style="text-align:right;">Rate</th>-->
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="main_tbody">
 							<?php  $page_no=0; foreach ($Items as $key =>  $Item){ ?>
-							<tr>
-								<td><?= h(++$page_no) ?></td>
+							<tr class="main_tr">
+								<td ><?= h(++$page_no) ?></td>
 								<!--<td width="10%"><?php //h(date("d-m-Y",strtotime($itemLedger->processed_on))) ?></td>-->
-								<td width="90%"><?= $this->Html->link($Item, ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?>
+								<td width="90%" >
+								<button type="button"  class="btn btn-xs tooltips revision_hide show_data" id="<?= h($key) ?>" value="" style="margin-left:5px;margin-bottom:2px;"><i class="fa fa-plus-circle"></i></button>
+								<button type="button" class="btn btn-xs tooltips revision_show" style="margin-left:5px;margin-bottom:2px; display:none;"><i class="fa fa-minus-circle"></i></button>
+								&nbsp;&nbsp;<?= h($Item) ?><div class="show_ledger"></div>
 								</td>
 								<!--<td><?php //h($itemLedger->source_model) ?></td>
 								<td><?php 
@@ -73,7 +76,7 @@
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>
 $(document).ready(function() {
-var $rows = $('#main_tble tbody tr');
+var $rows = $('#main_table tbody tr');
 	$('#search3').on('keyup',function() {
 	
 			var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
@@ -89,7 +92,34 @@ var $rows = $('#main_tble tbody tr');
     		}
     	});
 	
+	$('.show_data').live("click",function() {
+		var sel=$(this); 
+		var item_id=$(this).attr("id");
+		show_ledger_data(sel,item_id);
+	});
+	 function show_ledger_data(sel,item_id)
+	 {
+		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
+		url=url+'/'+item_id;
 		
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
+			    $(sel).closest('tr.main_tr').find('.revision_show').show();
+				$(sel).closest('tr.main_tr').find('.revision_hide').hide();
+				$(sel).closest('tr.main_tr').find('.show_ledger').html(response);
+				
+			});
+		 
+	 }
+	 $('.revision_show').live("click",function() { 
+		var sel=$(this);
+		$(sel).closest('tr.main_tr').find('.revision_show').hide();
+		$(sel).closest('tr.main_tr').find('.revision_hide').show();
+		$(sel).closest('tr.main_tr').find('.show_ledger').html('');
+	 });
 });
 		
 </script>
