@@ -1,8 +1,7 @@
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
-			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel ">Item Ledger</span>
+			
 		</div>
 		<div class="portlet-body">
 			<div class="row">
