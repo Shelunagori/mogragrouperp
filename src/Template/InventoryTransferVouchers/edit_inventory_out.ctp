@@ -78,7 +78,7 @@
 										
 									</td>
 									<td width="25%">
-										<?php echo $this->Form->input('q', ['type' => 'textarea','label' => false,'value'=>$inventory_transfer_voucher_row->narration,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity']); ?>
+										<?php echo $this->Form->input('q', ['type' => 'textarea','label' => false,'value'=>$inventory_transfer_voucher_row->narration,'class' => 'form-control input-sm qty_bx','placeholder' => 'Narration']); ?>
 									</td>
 									<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 							</tr>
