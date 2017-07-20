@@ -30,7 +30,7 @@ insert new field in invoice_bookings => narration(text)
 <!---Manoj---19/07/2017----->
 insert new field in grns => purchase_thela_bhada_status(varchar(10),Default(no)),payment_id int(10),journal_voucher_id   int(10),pettycashvoucher_id int(10)
 
-insert new field in grns => sales_thela_bhada_status(varchar(10),Default(no)),payment_id int(10),journal_voucher_id   int(10),pettycashvoucher_id int(10)
+insert new field in invoice => sales_thela_bhada_status(varchar(10),Default(no)),payment_id int(10),journal_voucher_id   int(10),pettycashvoucher_id int(10)
 
 insert new field in petty_cash_voucher_rows => grn_ids(varchar(200)),invoice_ids(varchar(200))
 

@@ -487,6 +487,11 @@ rename_ref_rows();
 	});
 
 	$('.ref_list').live("change",function() {
+		var sel=$(this);
+		delete_one_ref_no(sel);
+	});
+
+	$('.ref_list').live("change",function() {
 		var current_obj=$(this);
 		var due_amount=$(this).find('option:selected').attr('due_amount');
 		$(this).closest('tr').find('td:eq(2) input').val(due_amount);
@@ -519,7 +524,7 @@ rename_ref_rows();
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));
 	}
 	
-	function delete_one_ref_no(sel){
+	function delete_one_ref_no(sel){ alert();
 		var old_received_from_id='<?php echo $v_LedgerAccount->id; ?>';
 		
 		var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');
