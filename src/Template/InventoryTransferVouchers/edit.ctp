@@ -39,7 +39,7 @@
 											<th>Item</th>
 											<th >Qty</th>
 											<th >Serial Number</th>
-											<th></th>
+											<th>Narration</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -81,6 +81,9 @@
 									 ?>
 										
 									</td>
+									<td width="20%">
+								<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control','placeholder' => 'Narration','style' => 'width:100%;','value'=>$inventory_transfer_voucher_row->narration]); ?>
+								</td>
 									<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 							</tr>
 							<?php } ?>
@@ -151,7 +154,6 @@
 									</div>
 									
 								</td>
-								
 								<td width="20%">
 									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'style'=>'width: 79px;','value'=>$inventory_transfer_voucher_row_in->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
 								</td>
@@ -406,6 +408,7 @@ $(document).ready(function() {
 			if($(this).find('td:nth-child(3) select').length>0){
 				$(this).find('td:nth-child(3) select').select2().attr({name:"inventory_transfer_voucher_rows[out]["+i+"][serial_number_data][]", id:"inventory_transfer_voucher_rows-"+i+"-serial_number_data"}).rules("add", "required");
 			}
+			$(this).find('td:nth-child(4) input').attr({name:"inventory_transfer_voucher_rows[out]["+i+"][narration]", id:"inventory_transfer_voucher_rows-"+i+"-narration"}).rules("add", "required");
 			i++; 
 		});
 	}
@@ -451,6 +454,9 @@ $(document).ready(function() {
 				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm qty_bx','placeholder' => 'Quantity']); ?>
 			</td>
 			<td></td>
+			<td style="width: 300px;">
+				<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control','placeholder' => 'Narration','style' => 'width:100%;']); ?>
+			</td>
 			<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
 	</tbody>
