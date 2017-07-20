@@ -133,24 +133,24 @@
 					</div>					
 				</div>
 				<div style="overflow: auto;">
-				<table class="table tableitm" id="main_tb">
+				<table class="table tableitm" id="main_tb" border="1" >
 				<thead>
 					<tr>
-						<th width="50" rowspan="2">Sr.No. </th>
-						<th style="white-space: nowrap;" rowspan="2">Items</th>
-						<th width="100" rowspan="2">Unit Rate From PO</th>
-						<th width="100" rowspan="2">Quantity</th>
-						<th width="100" rowspan="2">Misc</th>
-						<th width="100" rowspan="2">Amount</th>
-						<th width="100" colspan="2" align="center">Discount</th>
-						<th width="100" colspan="2" align="center">P & F</th>
-						<th width="100" rowspan="2">Taxable Value </th>
-						<th width="100" colspan="2" align="center">CGST</th>
-						<th width="100" colspan="2" align="center">SGST</th>
-						<th width="100" colspan="2" align="center">IGST</th>
-						<th width="100" rowspan="2">Others</th>
-						<th width="100" rowspan="2">Total</th>
-						<th width="100" rowspan="2">rate to be posted</th>
+						<th width="50" rowspan="2"><b>Sr.No. </b></th>
+						<th style="white-space: nowrap;" rowspan="2"><b>Items</b></th>
+						<th width="100" rowspan="2"><b>Unit Rate From PO</b></th>
+						<th width="100" rowspan="2"><b>Quantity</b></th>
+						<th width="100" rowspan="2"><b>Misc</b></th>
+						<th width="100" rowspan="2"><b>Amount</b></th>
+						<th width="100" colspan="2"><div align="center"><b>Discount</b></div></th>
+						<th width="100" colspan="2" align="center"><div align="center"><b>P & F</b></div></th>
+						<th width="100" rowspan="2"><b>Taxable Value </b></th>
+						<th width="100" colspan="2" align="center"><div align="center"><b>CGST</b></div></th>
+						<th width="100" colspan="2" align="center"><div align="center"><b>SGST</b></div></th>
+						<th width="100" colspan="2" align="center"><div align="center"><b>IGST</b></div></th>
+						<th width="100" rowspan="2"><b>Others</b></th>
+						<th width="100" rowspan="2"><b>Total</b></th>
+						<th width="100" rowspan="2"><b>rate to be posted</b></th>
 					</tr>
 					<tr>
 						<th align="right">%</th>
@@ -362,8 +362,8 @@
 
 <style>
 .table thead tr th {
-    color: #FFF;
-	background-color: gray;
+    color: black;
+	background-color: #97b8ef;
 }
 </style>
 <?php echo $this->Html->css('/drag_drop/jquery-ui.css'); ?>
