@@ -304,7 +304,7 @@ class ItemLedgersController extends AppController
 		$item_group=$this->request->query('item_group_id');
 		$search_date=$this->request->query('search_date');
 		$stock=$this->request->query('stock');
-		$item_sub_group=$this->request->query('item_sub_group');
+		$item_sub_group=$this->request->query('item_sub_group_id');
 		
 		
 		$where=[];
@@ -353,8 +353,7 @@ class ItemLedgersController extends AppController
 		->where(['company_id'=>$st_company_id])
 		->group('item_id')
 		->autoFields(true)
-		->order(['Items.name'=>'ASC'])
-		;
+		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
 		//pr($results); exit;
 		
@@ -397,22 +396,34 @@ class ItemLedgersController extends AppController
 		$ItemLedgers = $this->ItemLedgers->find()->contain(['Items'=>function ($q) use($where){
 			return $q->where($where);
 		}])->where($where);
-		//pr($ItemLedgers->toArray()); exit;
+		//pr(sizeof($item_stocks)); exit;
 		$item_rate=[];
 		$in_qty=[];
 		foreach($ItemLedgers as $ItemLedger){
+			
 				if($ItemLedger->in_out == 'In'){
 					@$item_rate[$ItemLedger->item_id] += ($ItemLedger->quantity*$ItemLedger->rate);
 					@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
 					
 				}
+				
 		}
 		
+		$Items =$this->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id){
+						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+		}]);
+		$ItemDatas=[];
+		foreach($Items as $Item){
+			$ItemLedgersexists = $this->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
+			if(empty($ItemLedgersexists)){
+				$ItemDatas[$Item->id]=$Item->name;
+			}
+		}
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date','ItemDatas'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
 	

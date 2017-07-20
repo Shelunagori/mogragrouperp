@@ -22,12 +22,12 @@
 									<td width="15%">
 										<label class="control-label">Group</label>
 										<div id="item_group_div">
-										<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' => [],'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+										<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
 									</td>
 									<td width="15%">
 										<label class="control-label">Sub-Group</label>
 										<div id="item_sub_group_div">
-										<?php echo $this->Form->input('item_sub_group', ['empty'=>'--Select--','options' => [],'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+										<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'--Select--','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
 									</td>
 									<td width="15%">
 										<label class="control-label">Stock</label>
@@ -96,6 +96,16 @@
 						</tr>
 						
 						<?php endforeach; ?>
+						<?php $page_no1=$page_no; foreach($ItemDatas as $key=>$ItemData){ ?>
+						
+						<tr>
+							<td><?= h(++$page_no1) ?></td>
+							<td><?= $this->Html->link(@$ItemData, ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?></td>
+							<td><?= h(0) ?></td>
+							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
+							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
+						</tr>
+						<?php }?>
 						<tr>
 							<td colspan="4" align="right">Total</td>
 							<td align="right"><?= h($this->Number->format($total_inv,['places'=>2])) ?></td>
