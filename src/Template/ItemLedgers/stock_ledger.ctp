@@ -28,6 +28,19 @@
 				</tbody>
 			</table>
 		</form>
+		<div class="radio-list" >
+			<div class="radio-inline" style="margin-left:0px;">
+			<?php echo $this->Form->radio(
+				'bill_to_bill_account',
+				[
+					['value' => 'Expand', 'text' => 'Expand','class'=>'items_show'],
+					['value' => 'Collapse', 'text' => 'Collapse','class'=>'items_hide']
+					
+				]
+			); ?>
+			</div>
+		</div>
+		
 		<div class="portlet-body">
 			<div class="row">
 				<div class="col-md-12">
@@ -47,10 +60,10 @@
 						</thead>
 						<tbody id="main_tbody">
 							<?php  $page_no=0; foreach ($Items as $key =>  $Item){ ?>
-							<tr class="main_tr">
+							<tr class="main_tr" id="<?= h($key) ?>">
 								<td ><?= h(++$page_no) ?></td>
 								<!--<td width="10%"><?php //h(date("d-m-Y",strtotime($itemLedger->processed_on))) ?></td>-->
-								<td width="90%" >
+								<td width="90%" id="<?= h($key) ?>" class="loop_class">
 								<button type="button"  class="btn btn-xs tooltips revision_hide show_data" id="<?= h($key) ?>" value="" style="margin-left:5px;margin-bottom:2px;"><i class="fa fa-plus-circle"></i></button>
 								<button type="button" class="btn btn-xs tooltips revision_show" style="margin-left:5px;margin-bottom:2px; display:none;"><i class="fa fa-minus-circle"></i></button>
 								&nbsp;&nbsp;<?= h($Item) ?><div class="show_ledger"></div>
@@ -126,6 +139,39 @@ var $rows = $('#main_table tbody tr');
 		$(sel).closest('tr.main_tr').find('.revision_hide').show();
 		$(sel).closest('tr.main_tr').find('.show_ledger').html('');
 	 });
+	 
+	 $('.items_show').live("click",function() {
+		$("#main_table tbody#main_tbody tr.main_tr").each(function(){
+			var sel=$(this).closest('tr.main_tr');
+			var item_id=$(this).attr("id"); 
+		     var from_date = $("#from_date").val();
+		var to_date = $("#to_date").val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
+		url=url+'/'+item_id+'/'+from_date+'/'+to_date;
+		
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
+			    $(sel).find('.revision_show').show();
+				$(sel).find('.revision_hide').hide();
+				$(sel).find('.show_ledger').html(response);
+				
+			});
+		
+		});
+	}); 
+	
+	$('.items_hide').live("click",function() {
+		$("#main_table tbody#main_tbody tr.main_tr").each(function(){
+			    var sel=$(this).closest('tr.main_tr');
+			    $(sel).find('.revision_show').hide();
+				$(sel).find('.revision_hide').show();
+				$(sel).find('.show_ledger').html('');
+			});
+			
+		});
 });
 		
 </script>
