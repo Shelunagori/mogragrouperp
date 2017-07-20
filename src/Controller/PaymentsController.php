@@ -120,8 +120,7 @@ class PaymentsController extends AppController
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
 
-
-		   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		 $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 		   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
 		   $tody1 = date("Y-m-d");
