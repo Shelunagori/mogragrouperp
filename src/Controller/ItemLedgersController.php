@@ -99,65 +99,23 @@ class ItemLedgersController extends AppController
     }
 	
 	public function stockLedger(){
-		/*$this->viewBuilder()->layout('index_layout');
-		$session = $this->request->session();
-        $st_company_id = $session->read('st_company_id');
-       
-		$From=$this->request->query('From');
-		$To=$this->request->query('To');
 		
-		$this->set(compact('From','To'));
-		$where=[];
-		if(!empty($From)){
-			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['processed_on >=']=$From;
-		}
-		if(!empty($To)){
-			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['processed_on <=']=$To;
-		}
-
-        $itemLedgers2 = $this->ItemLedgers->find()->contain(['Items','Companies'])->where(['company_id'=>$st_company_id])->where($where)->order(['ItemLedgers.processed_on' => 'asc']);
-		
-		
-		$itemLedgersdata=[];
-		foreach($itemLedgers2 as $itemLedger){
-			if($itemLedger->source_model =='Items'){
-				$itemLedger->voucher_info='-';
-			}else{
-				$result=$this->GetItemVouchers($itemLedger->source_model,$itemLedger->source_id); 
-				$itemLedger->voucher_info=$result['voucher_info'];
-				
-			}
-			$itemLedgersdata[]=$itemLedger;
-		}
-		$this->set(compact('itemLedgersdata'));
-		$this->set('_serialize', ['itemLedgersdata']);*/
-		
-      $this->viewBuilder()->layout('index_layout');
+	$this->viewBuilder()->layout('index_layout');
         $session = $this->request->session();
-        $item_name=$this->request->query('item_name');
+        $items=$this->request->query('items');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		
 		$this->set(compact('From','To'));
 		$where=[];
-		if(!empty($item_name)){ 
-			$where['Item_id']=$item_name;
+		if(!empty($items)){  
+			$where['id']=$items;
 			
 		}
-		if(!empty($From)){
-			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['processed_on >=']=$From;
-		}
-		if(!empty($To)){
-			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['processed_on <=']=$To;
-		}
 				
-		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
-		//pr($Items->toArray()); exit;
-        $this->set(compact('Items', 'item_name','From','To'));
+		$Items = $this->ItemLedgers->Items->find('list')->where($where)->order(['Items.name' => 'ASC']);
+		$Items_list = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
+		$this->set(compact('Items', 'items','From','To','Items_list'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
 	
@@ -520,7 +478,7 @@ class ItemLedgersController extends AppController
 			
 	 }
 	
-	public function fetchLedger($item_id=null)
+	public function fetchLedger($item_id=null,$from_date=null,$to_date=null)
     {
 		//$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
@@ -528,7 +486,18 @@ class ItemLedgersController extends AppController
         $this->paginate = [
             'contain' => ['Items']
         ];
-        $itemLedgers2 = $this->paginate($this->ItemLedgers->find()->where(['ItemLedgers.item_id'=>$item_id,'ItemLedgers.company_id'=>$st_company_id])->order(['processed_on'=>'DESC']));
+		$where =[];
+		$where['item_id']=$item_id;
+		$where['company_id']=$st_company_id;
+		if(!empty($from_date)){
+			$From=date("Y-m-d",strtotime($from_date));
+			$where['processed_on >=']=$From;
+		}
+		if(!empty($to_date)){
+			$To=date("Y-m-d",strtotime($to_date));
+			$where['processed_on <=']=$To;
+		}
+        $itemLedgers2 = $this->paginate($this->ItemLedgers->find()->where($where)->order(['processed_on'=>'DESC']));
 		$itemLedgers=[];
 		foreach($itemLedgers2 as $itemLedger){
 			if($itemLedger->source_model =='Items'){

@@ -12,11 +12,14 @@
 			<table class="table table-condensed" >
 				<tbody>
 					<tr>
-						<td width="20%">
-							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
+					    <td width="20%">
+					    <?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items_list,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 						</td>
 						<td width="20%">
-									<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
+							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" id="from_date" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
+						</td>
+						<td width="20%">
+									<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" id="to_date" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
@@ -99,8 +102,11 @@ var $rows = $('#main_table tbody tr');
 	});
 	 function show_ledger_data(sel,item_id)
 	 {
+		var from_date = $("#from_date").val();
+		var to_date = $("#to_date").val();
+		//alert(from_date+'-'+to_date);
 		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
-		url=url+'/'+item_id;
+		url=url+'/'+item_id+'/'+from_date+'/'+to_date;
 		
 	       $.ajax({
 				url: url,
