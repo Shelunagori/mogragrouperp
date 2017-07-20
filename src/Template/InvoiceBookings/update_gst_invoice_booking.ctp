@@ -616,7 +616,7 @@ $(document).ready(function() {
 				 var igst_amount = 0; 
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 			}else{ 
-				var taxable_value=parseFloat($(this).find("td:nth-child(10) input").val());
+				var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
 				var igst_amount = (taxable_value*igst_percentage)/100;
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 				row_total=row_total+((taxable_value*igst_percentage)/100);
