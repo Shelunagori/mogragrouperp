@@ -1,8 +1,7 @@
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
-			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel ">Item Ledger for "<?php foreach ($itemLedgers as $itemLedger){ echo $itemLedger->item->name; break; } ?>"</span>
+			
 		</div>
 		<div class="portlet-body">
 			<div class="row">
@@ -156,14 +155,7 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<div class="paginator">
-					<ul class="pagination">
-						<?= $this->Paginator->prev('< ' . __('previous')) ?>
-						<?= $this->Paginator->numbers() ?>
-						<?= $this->Paginator->next(__('next') . ' >') ?>
-					</ul>
-					<p><?= $this->Paginator->counter() ?></p>
-				</div>
+				
 				</div>
 			</div>
 		</div>
