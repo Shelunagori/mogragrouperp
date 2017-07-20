@@ -110,7 +110,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Purchase Account <span class="required" aria-required="true">*</span></label>
-							<?php 
+							<?php  //pr($ledger_account_details->toArray()); 
 							$option =[];
 							foreach($ledger_account_details as $key => $ledger_account_detail)
 							{ 
@@ -599,8 +599,8 @@ $(document).ready(function() {
 				 var igst_amount = 0; 
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 			}else{ 
-				var taxable_value=parseFloat($(this).find("td:nth-child(10) input").val());
-				var igst_amount = (taxable_value*igst_percentage)/100;
+				var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+				var igst_amount = (taxable_value*igst_percentage)/100; 
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 				row_total=row_total+((taxable_value*igst_percentage)/100);
 			}
