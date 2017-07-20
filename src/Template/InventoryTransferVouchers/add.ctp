@@ -30,7 +30,7 @@
 	<?= $this->Form->create($inventoryTransferVoucher,['id'=>'form_sample_3']) ?>
 	<div class="row">
 		<div class="col-md-3">
-		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" >
+		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" value="<?php echo  date('d-m-Y')?>">
 		</div>
 		<div class="col-md-6">
 			<label>Narration</label>

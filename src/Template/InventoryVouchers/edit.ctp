@@ -97,7 +97,7 @@
 								$t_date = date("d-m-Y",strtotime(@$InventoryVoucher_detail[0]->transaction_date));
 							   }
 							?>
-								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>@$t_date]) ?>								
+								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>@$t_date,'required']) ?>								
 						</div>
 					</div>
 					<div class="col-md-3">

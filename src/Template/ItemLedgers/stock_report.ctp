@@ -131,7 +131,6 @@ var $rows = $('#main_tble tbody tr');
 		var itemCategoryId=$('select[name="item_category"] option:selected').val();
 		var url="<?php echo $this->Url->build(['controller'=>'ItemGroups','action'=>'ItemGroupDropdown']); ?>";
 		url=url+'/'+itemCategoryId,
-		alert(url);
 		$.ajax({
 			url: url,
 			type: 'GET',

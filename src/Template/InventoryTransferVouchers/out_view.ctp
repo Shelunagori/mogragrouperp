@@ -60,11 +60,11 @@ margin-bottom: 0;
 						<td width="20" align="center">:</td>
 						<td><?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->transaction_date))) ?></td>
 					</tr>
-					<!-- <tr>
+					 <tr>
 						<td><b>Created On</b></td>
 						<td width="20" align="center">:</td>
 						<td><?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->created_on))) ?></td>
-					</tr> -->
+					</tr> 
 				</table>
 			</td>
 	</tr>
