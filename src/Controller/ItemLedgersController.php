@@ -520,5 +520,29 @@ class ItemLedgersController extends AppController
 			
 	 }
 	
-	
+	public function fetchLedger($item_id=null)
+    {
+		//$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+        $this->paginate = [
+            'contain' => ['Items']
+        ];
+        $itemLedgers2 = $this->paginate($this->ItemLedgers->find()->where(['ItemLedgers.item_id'=>$item_id,'ItemLedgers.company_id'=>$st_company_id])->order(['processed_on'=>'DESC']));
+		$itemLedgers=[];
+		foreach($itemLedgers2 as $itemLedger){
+			if($itemLedger->source_model =='Items'){
+				$itemLedger->voucher_info='-';
+				$itemLedger->party_type='Item';
+				$itemLedger->party_info='-'; 
+			}else{
+				$result=$this->GetVoucherParty($itemLedger->source_model,$itemLedger->source_id); 
+				$itemLedger->voucher_info=$result['voucher_info'];
+				$itemLedger->party_type=$result['party_type'];
+				$itemLedger->party_info=$result['party_info']; 	
+			}
+			$itemLedgers[]=$itemLedger;
+		}
+		$this->set(compact('itemLedgers'));
+	}
 }

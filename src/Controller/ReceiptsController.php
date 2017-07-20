@@ -188,6 +188,10 @@ class ReceiptsController extends AppController
 				}
 		
         $receipt = $this->Receipts->newEntity();
+
+		
+
+
         if ($this->request->is('post')) {
 			
             $receipt = $this->Receipts->patchEntity($receipt, $this->request->data);
