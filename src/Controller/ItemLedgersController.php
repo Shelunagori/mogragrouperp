@@ -256,7 +256,6 @@ class ItemLedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-		//$item_name=$this->request->query('item_name');
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
@@ -284,7 +283,7 @@ class ItemLedgersController extends AppController
 			$search_date=date("Y-m-d",strtotime($search_date));
             $where['processed_on <=']=$search_date;
 		}
-			
+			//pr($where);exit;
 		$item_stocks =[];$items_names =[];
 		$query = $this->ItemLedgers->find();
 		$totalInCase = $query->newExpr()
@@ -311,6 +310,7 @@ class ItemLedgersController extends AppController
 		->where(['company_id'=>$st_company_id])
 		->group('item_id')
 		->autoFields(true)
+		->where($where)
 		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
 		//pr($results); exit;
@@ -370,13 +370,13 @@ class ItemLedgersController extends AppController
 		$Items =$this->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id){
 						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 		}]);
-		$ItemDatas=[];
+		 $ItemDatas=[];
 		foreach($Items as $Item){
 			$ItemLedgersexists = $this->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
 			if(empty($ItemLedgersexists)){
 				$ItemDatas[$Item->id]=$Item->name;
 			}
-		}
+		} 
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
