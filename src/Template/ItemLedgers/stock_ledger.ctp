@@ -28,7 +28,7 @@
 				</tbody>
 			</table>
 		</form>
-		<div class="radio-list" >
+		<!--<div class="radio-list" >
 			<div class="radio-inline" style="margin-left:0px;">
 			<?php echo $this->Form->radio(
 				'bill_to_bill_account',
@@ -39,7 +39,7 @@
 				]
 			); ?>
 			</div>
-		</div>
+		</div>-->
 		
 		<div class="portlet-body">
 			<div class="row">
