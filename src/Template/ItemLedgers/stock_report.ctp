@@ -109,7 +109,7 @@
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 						</tr>
-						<?php }?>
+						<?php } ?>
 						<tr>
 							<td colspan="4" align="right">Total</td>
 							<td align="right"><?= h($this->Number->format($total_inv,['places'=>2])) ?></td>

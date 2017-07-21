@@ -265,6 +265,7 @@ class ItemLedgersController extends AppController
 		
 		
 		$where=[];
+		$where1=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
 		if(!empty($item_name)){ 
 			$where['Item_id']=$item_name;
@@ -281,7 +282,7 @@ class ItemLedgersController extends AppController
 		}
 		if(!empty($search_date)){
 			$search_date=date("Y-m-d",strtotime($search_date));
-            $where['processed_on <=']=$search_date;
+            $where1['processed_on <=']=$search_date;
 		}
 			//pr($where);exit;
 		$item_stocks =[];$items_names =[];
@@ -311,9 +312,10 @@ class ItemLedgersController extends AppController
 		->group('item_id')
 		->autoFields(true)
 		->where($where)
+		->where($where1)
 		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
-		//pr($results); exit;
+		
 		
 		if($stock == "Negative"){
 			foreach($results as $result){
@@ -349,34 +351,52 @@ class ItemLedgersController extends AppController
 					$items_names[$result->item_id] = $result->item->name;
 					//pr($item_stocks);
 				
-		}
-		}
+				}
+			}
 		$ItemLedgers = $this->ItemLedgers->find()->contain(['Items'=>function ($q) use($where){
 			return $q->where($where);
-		}])->where($where);
+		}]);
 		//pr(sizeof($item_stocks)); exit;
 		$item_rate=[];
 		$in_qty=[];
 		foreach($ItemLedgers as $ItemLedger){
-			
 				if($ItemLedger->in_out == 'In'){
 					@$item_rate[$ItemLedger->item_id] += ($ItemLedger->quantity*$ItemLedger->rate);
 					@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
-					
 				}
-				
 		}
 		
+		$where=[];
+		if(!empty($item_name)){ 
+			$where['Items.id']=$item_name;
+			
+		}
+		if(!empty($item_category)){
+			$where['Items.item_category_id']=$item_category;
+		}
+		if(!empty($item_group)){
+			$where['Items.item_group_id ']=$item_group;
+		}
+		if(!empty($item_sub_group)){
+			$where['Items.item_sub_group_id ']=$item_sub_group;
+		}
+		if(!empty($search_date)){
+			$search_date=date("Y-m-d",strtotime($search_date));
+            $where1['processed_on <=']=$search_date;
+		}
+		 $ItemDatas=[];
+		if(!$stock){
 		$Items =$this->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id){
 						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
-		}]);
-		 $ItemDatas=[];
+		}])->where($where);
+		
 		foreach($Items as $Item){
 			$ItemLedgersexists = $this->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
 			if(empty($ItemLedgersexists)){
 				$ItemDatas[$Item->id]=$Item->name;
 			}
-		} 
+		}
+	}		
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
