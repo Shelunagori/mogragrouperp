@@ -50,11 +50,7 @@ margin-bottom: 0;
 					<td width="20" align="center">:</td>
 					<td><?= h('#'.str_pad($inventoryTransferVoucher->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
 				</tr>
-				<tr>
-					<td valign="top" align="left"><b>Narration</b></td>
-					<td width="20" align="center">:</td>
-					<td valign="top"><?= h($inventoryTransferVoucher->narration) ?></td>
-				</tr>
+				
 			</table>
 	   </td>
 	    <td width="50%" valign="top" align="right">
@@ -198,6 +194,15 @@ margin-bottom: 0;
 </br>
 <table width="96%">
 	<tr>
+	    <td align="left" valign="top">
+		   <table >
+			     <tr>
+					<td valign="top" align="left"><b>Narration</b></td>
+					<td width="20" align="center">:</td>
+					<td valign="top"><?= h($inventoryTransferVoucher->narration) ?></td>
+				</tr>
+			</table >
+		</td>
 		<td align="right">
 		<table >
 			<tr>

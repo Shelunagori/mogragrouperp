@@ -160,19 +160,22 @@ margin-bottom: 0;
 
 </div>
 <?php } ?>
-	<div style="border:solid 1px ;"></div>
-<table width="100%" class="divFooter" style="margin-top: -26px;">
-	<tr>
-		<td align="left" width="10%"><label style="font-size: 14px;font-weight: bold;">Narration</label></td>
-		<td  width="2%">:</td>
-		<td>
-		<?= h($inventoryVoucher->narration) ?>
-		</td>
-	</tr>
-</table>	
+<div style="border:solid 1px ;"></div>
+	
 
 <table width="96%">
 	<tr>
+	    <td align="left">
+			<table width="100%" class="divFooter" style="margin-top: -26px;">
+				<tr>
+					<td align="left" width="10%"><label style="font-size: 14px;font-weight: bold;">Narration</label></td>
+					<td  width="2%">:</td>
+					<td>
+					<?= h($inventoryVoucher->narration) ?>
+					</td>
+				</tr>
+			</table></br></br></br>
+		</td>
 		<td align="right">
 		<table >
 			<tr>

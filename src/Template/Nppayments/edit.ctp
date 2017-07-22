@@ -82,7 +82,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			//pr($nppayment->nppayment_rows);exit;
 			foreach($nppayment->nppayment_rows as $nppayment_row){ ?> 
                 <tr class="main_tr" old_received_from_id="<?php echo $nppayment_row->received_from_id; ?>">
-                    <td width="15%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm  received_from','value'=>$nppayment_row->received_from_id,'style'=>'width: 100%; display: block;']); ?>
+                    <td width="25%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm  received_from','value'=>$nppayment_row->received_from_id,'style'=>'width: 100%; display: block;']); ?>
 					<div class="show_result">
 					<?php if($nppayment_row->received_from_id=='101' || $nppayment_row->received_from_id=="165" || $nppayment_row->received_from_id=='313'){
 							 $option=[];
@@ -690,7 +690,7 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td width="5%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?>
+            <td width="25%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from']); ?>
 			<div class="show_result"></div>
 			</td>
             <td width="20%">
@@ -706,7 +706,7 @@ $(document).ready(function() {
                 </div>
             </div>
             </td>
-            <td width="70%"></td>
+            <td width="57%"></td>
             <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
             <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
         </tr>

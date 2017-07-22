@@ -483,7 +483,7 @@ $(document).ready(function() {
 <table id="sample_table" style="display:none;">
     <tbody>
         <tr class="main_tr">
-            <td width="14%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm  received_from','style'=>'width:100%;']); ?>
+            <td width="25%"><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm  received_from','style'=>'width:100%;']); ?>
 			<div class="show_result"></div>
 			</td>
             <td width="20%">
@@ -499,7 +499,7 @@ $(document).ready(function() {
                 </div>
             </div>
             </td>
-            <td width="58%"></td>
+            <td width="47%"></td>
             <td width="5%"><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration']); ?></td>
             <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
         </tr>
