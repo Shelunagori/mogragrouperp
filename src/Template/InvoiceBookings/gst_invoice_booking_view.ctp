@@ -107,7 +107,17 @@ margin-bottom: 0;
 			</td>
 			
 		</tr>
-		
+		<tr>
+			<td width="50%" valign="top" align="left">
+				<table>
+					<tr>
+						<td><b>PO No</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h($invoiceBooking->grn->purchase_order->po1.'/PO-'.str_pad($invoiceBooking->grn->purchase_order->po2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->grn->purchase_order->po3.'/'.$invoiceBooking->grn->purchase_order->po4) ?></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	</table>
 	
 </br>
@@ -128,7 +138,8 @@ margin-bottom: 0;
 				<th style="text-align: center;" colspan="2" >IGST</th>
 				<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
-			<tr> <th style="text-align: center;" > %</th>
+			<tr> 
+			<th style="text-align: center;" > %</th>
 				<th style="text-align: center;">Amt</th>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>

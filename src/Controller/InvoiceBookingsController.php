@@ -1375,8 +1375,9 @@ class InvoiceBookingsController extends AppController
 		
 		$this->viewBuilder()->layout('index_layout');
         $invoiceBooking = $this->InvoiceBookings->get($id, [
-            'contain' => ['InvoiceBookingRows'=>['Items'],'Vendors','Creator','Companies']
+            'contain' => ['InvoiceBookingRows'=>['Items'],'Vendors','Creator','Companies','Grns'=>['PurchaseOrders']]
         ]);
+		//pr($invoiceBooking);exit;
 		$cgst_per=[];
 		$sgst_per=[];
 		$igst_per=[];
