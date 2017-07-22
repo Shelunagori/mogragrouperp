@@ -63,12 +63,12 @@ margin-bottom: 0;
 					<tr>
 						<td><b>Transaction Date</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h(date("d-m-Y",strtotime($inventoryVoucher->transaction_date))) ?></td>
+						<td><?php  if(!empty($inventoryVoucher->transaction_date)){ echo date("d-m-Y",strtotime($inventoryVoucher->transaction_date));}else{echo '-';} ?></td>
 					</tr>
 					<tr>
 						<td><b>Created On</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h(date("d-m-Y",strtotime($inventoryVoucher->created_on))) ?></td>
+						<td><?php  if(!empty($inventoryVoucher->created_on)){ echo date("d-m-Y",strtotime($inventoryVoucher->created_on));}else{echo '-';} ?></td>
 					</tr>
 				</table>
 			</td>

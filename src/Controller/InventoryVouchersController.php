@@ -371,7 +371,12 @@ class InventoryVouchersController extends AppController
 			
 			 $q_serial_no=@$this->request->data['serial_numbers'];
 			 $narration=@$this->request->data['narration'];
-             $transaction_date=date("Y-m-d",strtotime(@$this->request->data['transaction_date']));			 
+			 $transaction_date=@$this->request->data['transaction_date'];
+			 if(!empty($transaction_date))
+			 {
+				 $transaction_date = date("Y-m-d",strtotime($transaction_date));
+			 }
+             			 
 			
 			$InventoryVoucher=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id]);
 			if($InventoryVoucher->count()==0){ 
