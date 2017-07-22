@@ -26,7 +26,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php  $page_no=0;					
+					<?php  $page_no=0; $total_over_due_amount=0;					
 					foreach ($LedgerAccounts as $LedgerAccount){ 
 					?>
 					<tr>
@@ -100,9 +100,15 @@
 						<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
 						<td align="right"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
 					</tr>
-					<?php } ?>	
+					<?php $total_over_due_amount = $total_over_due_amount+$total_data;} ?>	
 				
 				</tbody>
+				<tfoot>
+				<tr>
+					<td colspan="9" align="right">Total : </td>
+					<td><?php echo @$total_over_due_amount;?></td>
+				</tr>
+				</tfoot>
 			</table>
 		</div>
 		
