@@ -153,11 +153,11 @@ margin-bottom: 0;
 			<td align="right"><?= $invoice_booking_row->gst_pnf_per.'%'; ?></td>
 			<td align="right"><?= $invoice_booking_row->pnf; ?></td>
 			<td align="right"><?= $invoice_booking_row->taxable_value; ?></td>
-			<td align="right"><?= $invoice_booking_row->cgst_per.'%'; ?></td>
+			<td align="right"><?php if(!empty($cgst_per[$invoice_booking_row->id]['tax_figure'])){echo $cgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
 			<td align="right"><?= $invoice_booking_row->cgst; ?></td>
-			<td align="right"><?= $invoice_booking_row->sgst_per.'%'; ?></td>
+			<td align="right"><?php if(!empty($sgst_per[$invoice_booking_row->id]['tax_figure'])){ echo $sgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
 			<td align="right"><?= $invoice_booking_row->sgst; ?></td>
-			<td align="right"><?= $invoice_booking_row->igst_per.'%'; ?></td>
+			<td align="right"><?php if(!empty($igst_per[$invoice_booking_row->id]['tax_figure'])){ echo $igst_per[$invoice_booking_row->id]['tax_figure'].'%'; } ?></td>
 			<td align="right"><?= $invoice_booking_row->igst; ?></td>
 			<td align="right"><?= $invoice_booking_row->total; ?></td>
 		</tr>

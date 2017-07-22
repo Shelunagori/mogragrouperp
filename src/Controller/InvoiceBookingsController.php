@@ -1377,6 +1377,21 @@ class InvoiceBookingsController extends AppController
         $invoiceBooking = $this->InvoiceBookings->get($id, [
             'contain' => ['InvoiceBookingRows'=>['Items'],'Vendors','Creator','Companies']
         ]);
+		$cgst_per=[];
+		$sgst_per=[];
+		$igst_per=[];
+		foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row){
+			if($invoice_booking_row->cgst_per > 0){
+				$cgst_per[$invoice_booking_row->id]=$this->InvoiceBookings->SaleTaxes->get(@$invoice_booking_row->cgst_per);
+			}
+			if($invoice_booking_row->sgst_per > 0){
+				$sgst_per[$invoice_booking_row->id]=$this->InvoiceBookings->SaleTaxes->get(@$invoice_booking_row->sgst_per);
+			}
+			if($invoice_booking_row->igst_per > 0){
+				$igst_per[$invoice_booking_row->id]=$this->InvoiceBookings->SaleTaxes->get(@$invoice_booking_row->igst_per);
+			}
+		}
+		
 		if($invoiceBooking->ledger_account_for_vat > 0){
 			$LedgerAccount=$this->InvoiceBookings->LedgerAccounts->get($invoiceBooking->ledger_account_for_vat);
 		}
@@ -1409,7 +1424,7 @@ class InvoiceBookingsController extends AppController
 		
 		
         $this->set('invoiceBooking', $invoiceBooking);
-		$this->set(compact('LedgerAccount', 'ReferenceDetails','purchase_acc'));
+		$this->set(compact('LedgerAccount', 'ReferenceDetails','purchase_acc','cgst_per','sgst_per','igst_per'));
         $this->set('_serialize', ['invoiceBooking']);
     }
 }
