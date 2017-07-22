@@ -106,7 +106,7 @@
 				<tfoot>
 				<tr>
 					<td colspan="9" align="right">Total : </td>
-					<td><?php echo @$total_over_due_amount;?></td>
+					<td align="right"><?php echo @$total_over_due_amount;?></td>
 				</tr>
 				</tfoot>
 			</table>
