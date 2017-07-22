@@ -113,7 +113,11 @@
 							$option =[];
 							foreach($ledger_account_details as $key => $ledger_account_detail)
 							{ 
-								if($key!= '799' && $key!= '797')
+								if($key!= '799' && $key!= '797' && $st_company_id==25)
+								{
+									$option[$key] = $ledger_account_detail;
+								}
+								elseif($key!= '800' && $key!= '798' && $st_company_id==27)
 								{
 									$option[$key] = $ledger_account_detail;
 								}

@@ -115,7 +115,7 @@ margin-bottom: 0;
 <table width="100%" class="table_rows"  border="0">	
 	<thead>
 			<tr>
-				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
+				<th rowspan="2" style="text-align: bottom; margin-left:2px;"> &nbsp;Sr.No. </th>
 				<th style="text-align: center;" rowspan="2">Items</th>
 				<th style="text-align: center;" rowspan="2"  >Quantity</th>
 				<th style="text-align: center;" rowspan="2" >Rate</th>
@@ -143,9 +143,9 @@ margin-bottom: 0;
 	<tbody>
 	<?php $Total=0; $total_sale_tax=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 		<tr>
-			<td><?= h(++$page_no) ?></td>
+			<td>&nbsp;<?= h(++$page_no) ?></td>
 			<td ><?= $invoice_booking_row->item->name; ?></td>
-			<td align="center"><?= $invoice_booking_row->quantity; ?></td>
+			<td align="center" width="6%"><?= $invoice_booking_row->quantity; ?></td>
 			<td align="right"><?=  number_format($invoice_booking_row->rate, 2, '.', '');?></td>
 			<td align="right"><?= number_format($invoice_booking_row->quantity*$invoice_booking_row->rate, 2, '.', '');?></td>
 			<td align="right"><?= $invoice_booking_row->gst_discount_per."%"; ?></td>
@@ -202,8 +202,8 @@ margin-bottom: 0;
 		</tr>
 		<?php } ?>
 		<tr>
-			<td colspan="15"><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
-			<td style="font-size:14px; font-weight:bold;"  align="right"> Total</td>
+			
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="16"> Total</td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');
 			 ?></td>
@@ -215,8 +215,11 @@ margin-bottom: 0;
 	<tr>
 		<td style="vertical-align: top !important;">
 			<table>
+			    <tr>
+					<td ><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
+				</tr>
 				<tr>
-					<td colspan="2"><b>Reference Number:</b></td>
+				    <td colspan="2"><b>Reference Number:</b></td>
 				</tr>
 				<?php foreach($ReferenceDetails as $ReferenceDetail){ ?>
 				<tr>

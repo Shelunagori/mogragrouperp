@@ -66,6 +66,7 @@
 							<th>Sr. No.</th>
 							<th>Item</th>
 							<th>Current Stock</th>
+							<th>Unit</th>
 							<th style="text-align:right;">Unit Rate</th>
 							<th style="text-align:right;">Amount</th>
 						</tr>
@@ -95,6 +96,7 @@
 							<td><?= h(++$page_no) ?></td>
 							<td><?= $this->Html->link($items_names[$key], ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?></td>
 							<td><?= h($item_stock) ?></td>
+							<td><?= h($items_unit_names[$key]) ?></td>
 							<td align="right"><?= h($this->Number->format(@$per_unit,['places'=>2])) ?></td>
 							<td align="right"><?= h($this->Number->format($amount,['places'=>2])) ?></td>
 						</tr>

@@ -32,7 +32,6 @@
 			<div class="form-body">
 			
 				<div class="row">
-					
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">GRN No.</label>
@@ -112,10 +111,19 @@
 							<?php $option =[];
 							foreach($ledger_account_details as $key => $ledger_account_detail)
 							{ 
-								if($key!= '35' && $key!= '538' || $key!= '161' && $key!= '160' || $key!= '309' && $key!= '308')
+								if(($key!= 35 && $key!= 538 && $st_company_id==25))
 								{
 									$option[$key] = $ledger_account_detail;
 								}
+								elseif(($key!= 161 && $key!= 160 && $st_company_id==26))
+								{
+									$option[$key] = $ledger_account_detail;
+								}
+								elseif(($key!= 309 && $key!= 308 && $st_company_id==27))
+								{
+									$option[$key] = $ledger_account_detail;
+								}
+								
 							}
 							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'class' => 'form-control input-sm']); ?>
 							<?php echo $this->Form->input('cst_vat', ['label' => false,'type' => 'hidden']); ?>
