@@ -228,9 +228,10 @@ margin-bottom: 0;
 			<table>
 			    <tr>
 					<td ><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
+					<td></td>
 				</tr>
 				<tr>
-				    <td colspan="2"><b>Reference Number:</b></td>
+				    <td><b>Reference Number:</b></td>
 				</tr>
 				<?php foreach($ReferenceDetails as $ReferenceDetail){ ?>
 				<tr>
