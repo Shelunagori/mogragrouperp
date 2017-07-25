@@ -132,7 +132,8 @@ $html = '
 								<div style="height:5px;"></div>
 								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
 								<span>GST  : '. h($invoice->customer->gst_no) .'</span>
-								<span>PAN : '. h($invoice->customer->pan_no) .'</span>
+								<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
+								<span>PAN : '. h($invoice->po_number) .'</span>
 							</td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
@@ -443,7 +444,7 @@ $html.='
 </body>
 </html>';
 
-//echo $html; exit; 
+echo $html; exit; 
 
 $name='Invoice-'.h(($invoice->in1.'_IN'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'_'.$invoice->in3.'_'.$invoice->in4));
 $dompdf->loadHtml($html);

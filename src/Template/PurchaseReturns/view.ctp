@@ -45,9 +45,9 @@ margin-bottom: 0;
 			<td width="50%" valign="top" align="left">
 				<table>
 					<tr>
-						<td><b>Invoice Booking No</b></td>
+						<td  width="66%"><b>Voucher No</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h($purchaseReturn->invoice_booking->ib1.'/IB-'.str_pad($purchaseReturn->invoice_booking->ib2, 3, '0', STR_PAD_LEFT).'/'.$purchaseReturn->invoice_booking->ib3.'/'.$purchaseReturn->invoice_booking->ib4) ?></td>
+						<td><?= h('#'.str_pad($purchaseReturn->voucher_no, 4, '0', STR_PAD_LEFT)) ?></td>
 					</tr>
 				</table>
 			</td>
@@ -65,11 +65,12 @@ margin-bottom: 0;
 			<td width="50%" valign="top" align="left">
 				<table>
 					<tr>
-						<td><b>Supplier Invoice No</b></td>
+						<td><b>Invoice Booking No</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h($purchaseReturn->invoice_booking->invoice_no) ?></td>
+						<td><?= h($purchaseReturn->invoice_booking->ib1.'/IB-'.str_pad($purchaseReturn->invoice_booking->ib2, 3, '0', STR_PAD_LEFT).'/'.$purchaseReturn->invoice_booking->ib3.'/'.$purchaseReturn->invoice_booking->ib4) ?></td>
 					</tr>
 				</table>
+				
 			</td>
 			<td width="50%" valign="top" align="right">
 				<table>
@@ -80,6 +81,18 @@ margin-bottom: 0;
 					</tr>
 				</table>
 			</td>
+		</tr>
+		<tr>
+			<td width="50%" valign="top" align="left">
+				<table>
+					<tr>
+						<td><b>Supplier Invoice No</b></td>
+						<td width="20" align="center">:</td>
+						<td><?= h($purchaseReturn->invoice_booking->invoice_no) ?></td>
+					</tr>
+				</table>
+			</td>
+			
 		</tr>
 	</table>
 	

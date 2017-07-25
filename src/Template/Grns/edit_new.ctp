@@ -86,20 +86,32 @@
 					<tbody>
 					
 						<?php  
-							
+							$existing_rows=[];
+							$current_rows=[];
+							$current_row_items=[];
 							foreach($grn->purchase_order->grns as $data){
 								foreach($data->grn_rows as $data2){
-									//pr(@$data2->quantity);
 									$processed_items[$data2->item_id]=@$processed_items[$data2->item_id]+$data2->quantity;
 								}
 							}
+							
+							foreach($grn->grn_rows as $current_invoice_row){
+								@$processed_items[$current_invoice_row->item_id]=$processed_items[$current_invoice_row->item_id]-$current_invoice_row->quantity;
+								$current_rows[]=$current_invoice_row->item_id;
+								$current_row_items[$current_invoice_row->item_id]=$current_invoice_row->quantity;
+								$descriptions[$current_invoice_row->item_id]=$current_invoice_row->description;
+								
+							} 
+							
 							foreach($grn->purchase_order->purchase_order_rows as $data3){
-								//pr($data3->quantity);
 								$total_items[$data3->item_id]=@$total_items[$data3->item_id]+$data3->quantity;
 								//pr($total_items[$data3->item_id]);
 							}
 							
-							$q=0; foreach ($grn->grn_rows as $grn_rows): ?>
+							
+							
+							
+							$q=0; foreach ($grn->purchase_order->purchase_order_rows as $grn_rows): ?>
 							<?php 
 							$min_val=0;
 							$min_val1=0;
@@ -122,10 +134,21 @@
 								</td>
 								<td>
 								
-								<?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quan quantity','placeholder'=>'Quantity','value' => @$grn_rows->quantity-$grn_rows->processed_quantity,'min'=>$min_val,'max'=>$total_items[$grn_rows->item_id]-$processed_items[$grn_rows->item_id]+$grn_rows->quantity]); ?>
+								<?php  
+								echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm quan quantity','placeholder' => 'Quantity','value' => @$current_row_items[$grn_rows->item_id],'min'=>$min_val1,'max'=>$grn_rows->quantity-@$existing_rows[$grn_rows->item_id]]); 
+								?>
+								
+								
 								</td>
 								<td>
-									<label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$grn_rows->id,'checked'=>"checked",'old_qty'=>$grn_rows->quantity]); ?></label>
+									<label><?php 
+									if(in_array($grn_rows->item_id,$current_rows)){
+									$check='checked';
+										}else{
+											$check='';
+										}
+									
+									echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','old_qty'=>@$current_row_items[$grn_rows->item_id],'value' => @$grn_rows->id,$check]); ?></label>
 								</td>
 								
 							</tr>
@@ -297,17 +320,16 @@ $(document).ready(function() {
 			var qty=parseInt($(this).find('td:nth-child(3) input[type="text"]').val());
 			var min=$(this).find('td:nth-child(3) input[type="text"]').attr('min');
 			var old_qty=parseInt($(this).find('td:nth-child(4) input[type="checkbox"]:checked').attr('old_qty'));
-		
+			if(isNaN(old_qty)) { var old_qty = 0; }
 			var item_id=$(this).find('td:nth-child(2) input[type="hidden"]:nth-child(1)').val();
 			var l=$('.tr2[row_no="'+row_no+'"]').find('input').length;
 			
 				if(val && serial_number_enable=='1'){
-					
-					for(i=0; i <= old_qty; i++){
+					for(i=0; i <= old_qty; i++){ 
 					$('.tr2[row_no="'+row_no+'"]').find('td div.td_append'+i+row_no+'').remove();
 					}
 					
-					for(i=0; i < (qty-old_qty); i++){
+					for(i=0; i < (qty-old_qty); i++){ 
 						
 						$('.tr2[row_no="'+row_no+'"]').find('td.td_append').append('<div style="margin-bottom:6px;" class="td_append'+i+row_no+'"><input type="text" class="sr_no" name="serial_numbers['+item_id+'][new_'+i+']" ids="sr_no['+i+']" id="sr_no'+l+row_no+'"/></div>');
 						

@@ -104,10 +104,7 @@ $html = '
 			</tr>
 		</table>
   </div>
-  <div id="footer">
-    <p class="page">Page : </p>
-  </div>
-
+  
   <div id="content"> ';
   
 $html.='

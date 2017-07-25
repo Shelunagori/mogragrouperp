@@ -188,6 +188,8 @@ $url_excel="/?".$url;
 					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/credit-notes/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Purchase Return"){
+					$Receipt=$url_link[$ledger->id];
+					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/purchase-returns/view/".$ledger->voucher_id;
 				}
 				

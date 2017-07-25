@@ -50,8 +50,10 @@ if(!empty($status)){
 				<form method="GET" >
 				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
 				<input type="hidden" name="copy-request" value="<?php echo @$copy_request;?>">
+				<input type="hidden" name="status" value="<?php echo @$status;?>">
+				<input type="hidden" name="gst-pull-request" value="<?php echo @$gst_pull_request;?>">
 				<table class="table table-condensed">
-					<tbody>
+					<tbody> 
 						<tr>
 							<td width="14%">
 								<div class="input-group" style="" id="pnf_text">
@@ -182,12 +184,15 @@ if(!empty($status)){
 								</div>
 								 <?php } } ?>
 								
-								<?php if($pull_request=="true" && $close_status != "close"){
+								<?php if($status == "close" && $pull_request=="true" && $close_status != "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								}elseif($close_status == "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								}elseif($gst_pull_request == "true"){
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+									
+								}elseif($pull_request == "true"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								} ?>
