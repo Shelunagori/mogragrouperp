@@ -193,11 +193,10 @@ class SaleTaxesController extends AppController
 		$Company_array1=[];
 		$Company_array2=[];
 		foreach($Companies as $Company){
-			$Company_exist= $this->SaleTaxes->SaleTaxCompanies->exists(['sale_tax_id' => $saletax_id,'company_id'=>$Company->id]);
+			$Company_exist= $this->SaleTaxes->SaleTaxCompanies->exists(['sale_tax_id' => $saletax_id,'company_id'=>$Company->id]); 
 
 			if($Company_exist){
 				$saletax_data= $this->SaleTaxes->SaleTaxCompanies->find()->where(['sale_tax_id' => $saletax_id,'company_id'=>$Company->id])->first();
-//pr($saletax_data);
 				$Company_array[$Company->id]='Yes';
 				$Company_array1[$Company->id]=$Company->name;
 				$Company_array2[$Company->id]=$saletax_data->freeze;

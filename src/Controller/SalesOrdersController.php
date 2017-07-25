@@ -453,7 +453,7 @@ class SalesOrdersController extends AppController
 		//$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']);
 		$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 					'EmployeeCompanies', function ($q) use($st_company_id) {
-						return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 					}
 				);
 		$termsConditions = $this->SalesOrders->TermsConditions->find('all');
@@ -629,7 +629,7 @@ class SalesOrdersController extends AppController
 			$transporters = $this->SalesOrders->Carrier->find('list', ['limit' => 200])->order(['Carrier.transporter_name' => 'ASC']);
 			$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 						'EmployeeCompanies', function ($q) use($st_company_id) {
-							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 						}
 					);
 			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);
@@ -864,7 +864,7 @@ class SalesOrdersController extends AppController
 		//$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']);
 		$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 					'EmployeeCompanies', function ($q) use($st_company_id) {
-						return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 					}
 				);
 		$termsConditions = $this->SalesOrders->TermsConditions->find('all');
@@ -1030,7 +1030,7 @@ class SalesOrdersController extends AppController
 			$transporters = $this->SalesOrders->Carrier->find('list', ['limit' => 200])->order(['Carrier.transporter_name' => 'ASC']);
 			$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 						'EmployeeCompanies', function ($q) use($st_company_id) {
-							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 						}
 					);
 			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);

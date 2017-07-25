@@ -409,7 +409,7 @@ class QuotationsController extends AppController
 		
 		$employees = $this->Quotations->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 					'EmployeeCompanies', function ($q) use($st_company_id) {
-						return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 					}
 				);
 		
@@ -504,7 +504,7 @@ class QuotationsController extends AppController
 					);
 			$employees = $this->Quotations->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 						'EmployeeCompanies', function ($q) use($st_company_id) {
-							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
 						}
 					);
 			$ItemGroups = $this->Quotations->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);

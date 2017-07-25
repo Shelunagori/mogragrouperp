@@ -238,20 +238,24 @@ class EmployeesController extends AppController
         //pr($Companies->toArray()); exit;
         $Company_array = [];
         $Company_array1 = [];
+		$Company_array2=[];
         foreach ($Companies as $Company) {
             $employee_Company_exist = $this->Employees->EmployeeCompanies->exists(['employee_id' => $employee_id, 'company_id' => $Company->id]);
 
             if ($employee_Company_exist) {
+				$employee_data= $this->Employees->EmployeeCompanies->find()->where(['employee_id' => $employee_id,'company_id'=>$Company->id])->first();
                 $Company_array[$Company->id] = 'Yes';
                 $Company_array1[$Company->id] = $Company->name;
+				$Company_array2[$Company->id]=$employee_data->freeze;
             } else {
                 $Company_array[$Company->id] = 'No';
                 $Company_array1[$Company->id] = $Company->name;
+				$Company_array2[$Company->id]='1';
 
             }
         }
         $employe_data = $this->Employees->get($employee_id);
-        $this->set(compact('employe_data', 'Companies', 'customer_Company', 'Company_array', 'employee_id', 'Company_array1'));
+        $this->set(compact('employe_data', 'Companies', 'customer_Company', 'Company_array', 'employee_id', 'Company_array1','Company_array2'));
 
     }
 
@@ -330,6 +334,17 @@ class EmployeesController extends AppController
 
         return $this->redirect(['action' => 'EditCompany/' . $employee_id]);
     }
+	
+	public function EmployeeFreeze($company_id=null,$employee_id=null,$freeze=null)
+	{
+		$query2 = $this->Employees->EmployeeCompanies->query();
+		$query2->update()
+			->set(['freeze' => $freeze])
+			->where(['employee_id' => $employee_id,'company_id'=>$company_id])
+			->execute();
+
+		return $this->redirect(['action' => 'EditCompany/'.$employee_id]);
+	}
 	 
 	 
 	 

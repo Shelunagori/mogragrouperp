@@ -14,12 +14,14 @@
 						<th width="20%">Sr. No.</th>
 						<th>Company Name</th>
 						<th width="10%">Action</th>
+						<th width="10%">Freeze</th>
 						
 					</tr>
 				</thead>
 				<tbody>
 				<?php $i=0; foreach ($Company_array as $key=>$Company_array){ $i++;
 				$c_namrr=$Company_array1[$key];
+				$bill_to_bill=@$Company_array2[$key];
 				?>
 					<tr>
 						<td><?= h($i) ?></td>
@@ -40,6 +42,27 @@
 								[
 									'escape' => false,
 									'class'=>' red tooltips','data-original-title'=>'Click To Add'
+									
+								]
+							) ?>
+							<?php }  ?>
+						</td>
+						<td class="actions">
+						 	<?php if($bill_to_bill =='No' && $Company_array=='Yes') { ?>
+							 <?= $this->Form->postLink('Unfreezed ',
+								['action' => 'EmployeeFreeze', $key,$employee_id,$bill_to_bill="1"],
+								[
+									'escape' => false,
+									'class'=>' blue tooltips','data-original-title'=>'Click To Freeze'
+									
+								]
+							) ?>
+							<?php  } else if($Company_array=='Yes')  { ?>
+							<?= $this->Form->postLink(' Freezed ',
+								['action' => 'EmployeeFreeze', $key,$employee_id,$bill_to_bill="0"],
+								[
+									'escape' => false,
+									'class'=>' blue tooltips','data-original-title'=>'Click To Unfreeze'
 									
 								]
 							) ?>
