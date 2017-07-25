@@ -27,7 +27,7 @@
 					 <tbody>
 					 <tr>
 						<td>
-							<?php echo $this->Form->input('range_0', ['label' => false,'class' => 'form-control input-sm ','value'=>'0','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_0', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','value'=>'0','readonly'=>'readonly']); ?>
 						</td>
 						<td>
 							<?php echo $this->Form->input('range_1', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
@@ -35,7 +35,7 @@
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_2', ['label' => false,'class' => 'form-control input-sm ','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_2', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
 						</td>
 						<td>
 							<?php echo $this->Form->input('range_3', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
@@ -43,7 +43,7 @@
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_4', ['label' => false,'class' => 'form-control input-sm ','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_4', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
 						</td>
 						<td>
 							<?php echo $this->Form->input('range_5', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
@@ -51,7 +51,7 @@
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_6', ['label' => false,'class' => 'form-control input-sm ','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_6', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
 						</td>
 						<td>
 							<?php echo $this->Form->input('range_7', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>

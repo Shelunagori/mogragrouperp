@@ -28,7 +28,10 @@ class LoginsController extends AppController
 				 $employee_id=$row["employee_id"]; 
 			}
 			
-			if($number==1 && !empty($login_id)){ 
+				$Employee=$this->Logins->Employees->EmployeeCompanies->find()->where(['EmployeeCompanies.freeze'=>'0','EmployeeCompanies.employee_id'=>$employee_id]);
+				$emp_avl=$Employee->count();
+			
+			if($number==1 && !empty($login_id) && $emp_avl > 0){ 
 			
 				$this->request->session()->write('st_login_id',$login_id);
 				
@@ -72,7 +75,8 @@ class LoginsController extends AppController
     {
 		$this->viewBuilder()->layout('index_layout');
 		$login = $this->Logins->newEntity();
-		//pr ($login->employee_id); exit;
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		
 		
         if ($this->request->is('post')) {
@@ -93,10 +97,17 @@ class LoginsController extends AppController
 				}
         }
 		$employees = $this->Logins->Employees->find('list');
-		$this->paginate = [
-            'contain' => ['Employees']
-        ];
-		$Logins = $this->paginate($this->Logins);
+		
+		//exit;
+		/* $Logins = $this->paginate($this->Logins->Employees->find()->contain(['Employees'=>['EmployeeCompanies'=> function ($q) use ($st_company_id) {
+				return $q->where(['EmployeeCompanies.freeze'=>0,'EmployeeCompanies.company_id'=>$st_company_id]);
+				}]])); */
+		$Logins = $this->paginate($this->Logins->find()->contain(['Employees'])->matching(
+					'Employees.EmployeeCompanies', function ($q) use($st_company_id) {
+						return $q->where(['EmployeeCompanies.freeze'=>0,'EmployeeCompanies.company_id'=>$st_company_id]);
+					} 
+				));
+//pr($Logins->toArray()); exit;
         $this->set(compact('login','employees','Logins'));
         $this->set('_serialize', ['login']);
     }
@@ -116,9 +127,11 @@ class LoginsController extends AppController
 			return $this->redirect(['controller'=>'FinancialYears','action' => 'selectCompanyYear']);
 			
 		}
-		$Employee=$this->Logins->Employees->get($login->employee_id, [
+		/*$Employee=$this->Logins->Employees->get($login->employee_id, [
 						'contain' => ['Companies']
-		]);
+		]); */
+		$Employee=$this->Logins->Employees->EmployeeCompanies->find()->where(['EmployeeCompanies.freeze'=>'0','EmployeeCompanies.employee_id'=>$login->employee_id])->contain(['Companies']);
+		//pr($Employee->toArray()); exit;
 		$this->set(compact('st_login_id','Employee'));
 	}
 	

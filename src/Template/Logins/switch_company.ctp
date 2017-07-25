@@ -17,12 +17,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					 <?php $i=0; foreach ($Employee->companies as $company):  $i++; ?>
+					 <?php $i=0; foreach ($Employee as $Employee):  $i++; ?>
 					<tr>
 						<td><?= h($i) ?></td>
-						<td><?= h($company->name) ?></td>
+						<td><?= h($Employee->company->name) ?></td>
 						<td class="actions">
-							<?= $this->Form->postLink(__('Select'),'/Logins/SwitchCompany/'.$company->id) ?>
+							<?= $this->Form->postLink(__('Select'),'/Logins/SwitchCompany/'.$Employee->company->id) ?>
 						</td>
 					</tr>
 					<?php endforeach; ?>

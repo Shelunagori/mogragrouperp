@@ -92,7 +92,7 @@ $html = '
 			</tr>
 			<tr>
 				<td width="30%" valign="bottom">
-				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">INVOICE</div>
+				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px; padding-top:-7px;">
 				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
@@ -133,7 +133,7 @@ $html = '
 								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
 								<span>GST  : '. h($invoice->customer->gst_no) .'</span>
 								<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
-								<span>PAN : '. h($invoice->po_number) .'</span>
+								
 							</td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
@@ -165,7 +165,13 @@ $html = '
 								</table>
 							</td>
 						</tr>
+						
 				</table>
+			</td>
+		</tr>
+		<tr>
+			<td style="font-size:'. h(($invoice->pdf_font_size)) .'; border-top:1px solid #000;" >
+			Your Purchase Order No.'. h($invoice->customer_po_no) .' dated '. h(date("d-m-Y",strtotime($invoice->po_date))) .'
 			</td>
 		</tr>
 	</thead>
@@ -207,7 +213,7 @@ $sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invo
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px; " valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
+		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';
@@ -404,7 +410,7 @@ $html.='
 							<td  >
 								<table>
 									<tr>
-										<td >Interest @15% per annum shall be charged if not paid  with in agreed terms. <br/> Invoice is Subject to Udaipur jurisdiction</td>
+										<td style="line-height:20px" >Interest @15% per annum shall be charged if not paid  with in agreed terms. <br/> Invoice is Subject to Udaipur jurisdiction</td>
 									</tr>
 								</table>
 								<table>
@@ -444,7 +450,7 @@ $html.='
 </body>
 </html>';
 
-echo $html; exit; 
+//echo $html; exit; 
 
 $name='Invoice-'.h(($invoice->in1.'_IN'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'_'.$invoice->in3.'_'.$invoice->in4));
 $dompdf->loadHtml($html);
