@@ -225,18 +225,21 @@ margin-bottom: 0;
 <table width="100%" class="divFooter">
 	<tr>
 		<td style="vertical-align: top !important;">
-			<table>
+			<table width="100%">
 			    <tr>
-					<td ><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
-					<td></td>
+					<td><b>Narration :</b>&nbsp;&nbsp;<?php echo $invoiceBooking->narration;?></td>
 				</tr>
-				<tr>
-				    <td><b>Reference Number:</b></td>
+			</table>
+			<table width="100%">
+			    <tr>
+					<td colspan="2"><b>Reference Number:</b></td>
 				</tr>
 				<?php foreach($ReferenceDetails as $ReferenceDetail){ ?>
 				<tr>
-					<td><?php echo $ReferenceDetail->reference_no; ?></td>
-					<td>:<?php echo $ReferenceDetail->credit; ?></td>
+				    <td width="22%"></td>
+				    <td width="18%"><?php echo $ReferenceDetail->reference_no; ?></td>
+				    <td width="5%"align="left">:</td>
+					<td align="left" style="padding-left:10px;"><?php echo $ReferenceDetail->credit; ?></td>
 				</tr>
 				<?php } ?>
 			</table>
