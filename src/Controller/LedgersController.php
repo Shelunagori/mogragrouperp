@@ -634,11 +634,14 @@ class LedgersController extends AppController
 		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 		$To = date("Y-m-d"); 
 		$this->set(compact('ledger_account_id'));
+		$payment_terms=0;
 		
 		if($ledger_account_id)
 		{
 		$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [
         'contain' => ['AccountSecondSubgroups'=>['AccountFirstSubgroups'=>['AccountGroups'=>['AccountCategories']]]] ]);
+		
+		
 		$Ledgers = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
 		
 		$ledger_amt = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
@@ -649,7 +652,7 @@ class LedgersController extends AppController
 		
 		$ledger_amt=@$ledger_amt->first();
 		//$ledger_amt=@$ledger_amt->first();
-	
+		
 		
 		$ReferenceBalances = $this->Ledgers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ledger_account_id]);
 		
@@ -660,12 +663,7 @@ class LedgersController extends AppController
 		]);
 		
 		$ref_amt=$ref_amt->first(); 
-		//$ledger_amt=$ledger_amt->first();
-		//pr($ref_amt->toArray());exit;
-		/* pr($ref_amt['credit']);
-		pr($ref_amt['debit']);
-			pr($ledger_amt['Credit']); 
-			pr($ledger_amt['Debit']); exit; */
+		
 		}
 		
 		$ledger=$this->Ledgers->LedgerAccounts->find('list',

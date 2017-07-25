@@ -68,7 +68,7 @@
 						<?php if((!empty($total_debit_5)) || (!empty($total_credit_5))){
 									$total5=@$total_debit_5[ $LedgerAccount->id] - @$total_credit_5[ $LedgerAccount->id];
 									if(@$total_debit_5[ $LedgerAccount->id] > @$total_credit_5[ $LedgerAccount->id]){ ?>
-									<td align="right"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
+									<td align="right" style="color: red;"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
 						<?php } else { ?>
 									<td align="right"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
 						<?php } } 
@@ -93,10 +93,10 @@
 								$total_data=$grand_total-abs($on_acc);
 							}
 						}
-						
-						?>
-						<td align="right"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
+						?><?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
+						<td align="right" style="color:<?php echo $acc_color; ?>"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
+						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
+						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
 					</tr>
 					<?php $total_over_due_amount = $total_over_due_amount+$total_data;} ?>	
 				
