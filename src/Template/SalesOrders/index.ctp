@@ -54,21 +54,24 @@
 				<table class="table table-condensed">
 					<tbody>
 						<tr>
-							<td width="20%">
+							<td width="17%">
 								<div class="input-group" id="pnf_text">
 									<span class="input-group-addon">SO-</span><input type="text" name="sales_order_no" class="form-control input-sm" placeholder="Sales Order No" value="<?php echo @$sales_order_no; ?>">
 								</div>
 							</td>
-							<td width="20%">
+							<td width="12%">
 								<input type="text" name="file" class="form-control input-sm" placeholder="File" value="<?php echo @$file; ?>">
 							</td>
-							<td width="17%">
+							<td width="13%">
 								<input type="text" name="customer" class="form-control input-sm" placeholder="Customer" value="<?php echo @$customer; ?>">
 							</td>
-							<td width="16%">
+							<td width="15%">
 								<input type="text" name="po_no" class="form-control input-sm" placeholder="PO No." value="<?php echo @$po_no; ?>">
 							</td>
-							<td width="12%">
+							<td width="11%">
+								<?php echo $this->Form->input('salesman_name', ['empty'=>'--SalesMans--','options' => $SalesMans,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'SalesMan Name','value'=> h(@$salesman_name) ]); ?>
+							</td>
+							<td width="11%">
 								<?php echo $this->Form->input('items', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$items) ]); ?>
 							</td>
 							<td width="9%">

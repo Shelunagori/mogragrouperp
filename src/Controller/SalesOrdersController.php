@@ -40,11 +40,15 @@ class SalesOrdersController extends AppController
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		$items=$this->request->query('items');
+		$salesman_name=$this->request->query('salesman_name');
 		$pull_request=$this->request->query('pull-request');
 		$this->set(compact('sales_order_no','customer','po_no','product','From','To','file','pull_request','items','gst'));
 		/* if(!empty($company_alise)){
 			$where['SalesOrders.so1 LIKE']='%'.$company_alise.'%';
 		} */
+		if(!empty($salesman_name)){
+			$where['SalesOrders.employee_id']=$salesman_name;
+		}
 		if(!empty($sales_order_no)){
 			$where['SalesOrders.so2 LIKE']=$sales_order_no;
 		}
@@ -94,7 +98,7 @@ class SalesOrdersController extends AppController
 					}
 				)
 				);
-		}else{
+		}else{ //exit;
 		$salesOrders=$this->paginate(
 			$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
 				$this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
@@ -117,10 +121,10 @@ class SalesOrdersController extends AppController
 			);
 		}
 		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
-
+        $SalesMans = $this->SalesOrders->Employees->find('list')->toArray();
 		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find()->toArray();
-        $this->set(compact('salesOrders','status','copy_request','gst_copy_request','job_card','SalesOrderRows','Items','gst'));
-        $this->set('_serialize', ['salesOrders']);
+        $this->set(compact('salesOrders','status','copy_request','gst_copy_request','job_card','SalesOrderRows','Items','gst','SalesMans','salesman_name'));
+		 $this->set('_serialize', ['salesOrders']);
 		$this->set(compact('url'));
     }
 	
