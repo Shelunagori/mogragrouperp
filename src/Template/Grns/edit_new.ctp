@@ -141,7 +141,7 @@
 								
 								</td>
 								<td>
-									<label><?php 
+									<label class="hide_lebel"><?php 
 									if(in_array($grn_rows->item_id,$current_rows)){
 									$check='checked';
 										}else{
@@ -317,7 +317,7 @@ $(document).ready(function() {
 			var old_qty=parseInt($(this).closest('tr').find('td:nth-child(4) input[type="checkbox"]:checked').attr('old_qty'));
 			if(serial_number_enable && old_qty)
 			{ 
-				$(this).find('td:nth-child(4) input[type="checkbox"].rename_check').hide();
+				$(this).find('.hide_lebel').hide();
 			}
 			
 				
