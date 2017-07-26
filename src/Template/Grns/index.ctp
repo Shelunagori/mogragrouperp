@@ -50,6 +50,7 @@
 							</td>
 							<td width="19%">
 								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Date To" value="<?php echo @$To; ?>" data-date-format="dd-mm-yyyy" >
+								<input type="hidden" name="grn-pull-request" value="true">
 							</td>
 							<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
 						</tr>
