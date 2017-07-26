@@ -241,7 +241,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'readonly']); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox dis_per','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0]); ?>
 							</td>
 							
 							<td align="center">
@@ -526,10 +526,37 @@ $(document).ready(function() {
 			$(this).closest('td').find('span.add_check_text').text('To be add');
 		}
 		calculate_total();
-    });
+    }); 
 	
-	
-	
+	$('.dis_per').die().live("keyup",function() {
+		calculate_pnf_discount();
+	});
+	function calculate_pnf_discount()
+	{
+		
+		$("#main_tb tbody tr.tr1").each(function()
+		{
+			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
+			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
+			var amount=urate*qty;
+			
+			
+			var misc=parseFloat($(this).find("td:nth-child(5) input").val());
+			if(!misc){ misc=0; $(this).find("td:nth-child(6) input").val('');}
+			var amount_after_misc=amount+misc;
+			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
+			
+			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val()); 
+			var discount_per=100*(discount_amt)/amount_after_misc;
+			if(!discount_per){discount_per=0;}
+			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(2));
+			var amount_after_discount = amount_after_misc-discount_amt;
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val());
+			var pnf_per=100*(pnf_amt)/amount_after_discount;
+			if(!pnf_per){pnf_per=0;}
+			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(2));
+		});
+	}
 	
 	
    calculate_total();
@@ -565,7 +592,8 @@ $(document).ready(function() {
 			    var amount_after_discount=amount_after_misc*(discount)/100;
 				total_discount=total_discount+(amount_after_misc*discount/100);
 				row_total=row_total-(amount_after_misc*discount/100);
-				if(discount){
+				
+				if(discount){ 
 			    $(this).find("td:nth-child(8) input").val(amount_after_discount);}
 			
 			var pnf=parseFloat($(this).find("td:nth-child(9) input").val()); 
