@@ -197,21 +197,21 @@
 							<td rowspan="2"><?php echo ++$q; --$q; ?></td>
 							
 							<td style="white-space: nowrap;"><?php echo @$invoice_booking_row->item->name; ?>
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value' => @$invoice_booking_row->item->id,'popup_id'=>$q]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm cal','type'=>'hidden','value' => @$invoice_booking_row->item->id,'popup_id'=>$q]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.unit_rate_from_po',['value'=>$invoice_booking_row->unit_rate_from_po,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly']); ?></td>
+							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.unit_rate_from_po',['value'=>$invoice_booking_row->unit_rate_from_po,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.quantity',['label' => false,'class' => 'form-control input-sm ', 'value'=>@$invoice_booking_row->quantity,'readonly','type'=>'text','style'=>'width:50px;']); ?></td>
+							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.quantity',['label' => false,'class' => 'form-control input-sm cal', 'value'=>@$invoice_booking_row->quantity,'readonly','type'=>'text','style'=>'width:50px;']); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.misc',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','value'=>0,'value'=>$invoice_booking_row->misc]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.misc',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=>0,'value'=>$invoice_booking_row->misc]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.amount',['label' => false,'class' => 'form-control input-sm row_textbox','value'=>$invoice_booking_row->amount,'type'=>'text','readonly']); ?></td>
+							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.amount',['label' => false,'class' => 'form-control input-sm row_textbox cal','value'=>$invoice_booking_row->amount,'type'=>'text','readonly']); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','value'=>$invoice_booking_row->gst_discount_per]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=>$invoice_booking_row->gst_discount_per]); ?>
 							</td>
 							
 							<td align="center">
@@ -219,7 +219,7 @@
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_pnf_per',['label' => false,'class' => 'form-control input-sm required row_textbox','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=> $invoice_booking_row->gst_pnf_per]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_pnf_per',['label' => false,'class' => 'form-control input-sm required row_textbox cal','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=> $invoice_booking_row->gst_pnf_per]); ?>
 							</td>
 							
 							<td align="center">
@@ -227,7 +227,7 @@
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.taxable_value',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','value'=> $invoice_booking_row->taxable_value]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.taxable_value',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=> $invoice_booking_row->taxable_value]); ?>
 							</td>
 							
 							<td align="center">
@@ -235,26 +235,26 @@
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox ','readonly','value' => $invoice_booking_row->cgst]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->cgst]); ?>
 							</td>
 							
 							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->sgst_per]); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox ','readonly','value' => $invoice_booking_row->sgst]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->sgst]); ?>
 							</td>
 							
 							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->igst_per]); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox ','readonly','value' => $invoice_booking_row->igst_per]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->igst_per]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.other_charges',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','value' => $invoice_booking_row->other_charges]); ?>
+							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.other_charges',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value' => $invoice_booking_row->other_charges]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.total',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly']); ?></td>
+							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.total',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
 							
 							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.rate',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly','value'=>$this->Number->format($invoice_booking_row->rate)]); ?>
 							
@@ -382,213 +382,17 @@
 <script>
 $(document).ready(function() {
 	//--------- FORM VALIDATION
-	$('input[name="total_pnf"]').die().live("keyup",function() {
-		totalpnf=parseFloat($(this).val());
-		var total=0;
-		$("#main_tb tbody tr.tr1").each(function(){
-			var amout=parseFloat($(this).find("td:nth-child(6) input").val());
-			
-			var discount=parseFloat($(this).find("td:nth-child(7) input").val());
-			if(!discount){ discount=0; }
-			if($(this).find('td:nth-child(7) input[type="checkbox"]').is(':checked')==true){
-				var amount_after_discount=amout*(100-discount)/100;
-			}else{
-				var amount_after_discount=amout-discount;
-			}
-			total=total+amount_after_discount;
-		});
-		
-		$("#main_tb tbody tr.tr1").each(function(){
-			var amout=parseFloat($(this).find("td:nth-child(6) input").val());
-			
-			var discount=parseFloat($(this).find("td:nth-child(7) input").val());
-			if(!discount){ discount=0; }
-			if($(this).find('td:nth-child(7) input[type="checkbox"]').is(':checked')==true){
-				var amount_after_discount=amout*(100-discount)/100;
-			}else{
-				var amount_after_discount=amout-discount;
-			}
-			var pnf=(amount_after_discount/total)*totalpnf;
-			$(this).find("td:nth-child(8) input").val(pnf.toFixed(5))
-		});
-	});
 	
-	
-	var purchase_ledger_account=$('select[name="purchase_ledger_account"]').val();
-	if(purchase_ledger_account=="35"){
-		$('#main_tb thead th:eq(9)').text('CST');
-		$('input[name="cst_vat"]').val('CST');
-		$('#ledger_account_for_vat').hide();
-		$(".rmvcls").removeClass("vattext");
-	}else if(purchase_ledger_account=="538"){
-		$('#main_tb thead th:eq(9)').text('VAT');
-		$('input[name="cst_vat"]').val('VAT');
-		$(".rmvcls").addClass("vattext");
-			//$('.vattext').val(0);
-		$('#ledger_account_for_vat').show();
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val();
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-	});
-	
-	}else if(purchase_ledger_account=="161"){
-		$('#main_tb thead th:eq(9)').text('CST');
-		$('input[name="cst_vat"]').val('CST');
-		$('#ledger_account_for_vat').hide();
-		$(".rmvcls").removeClass("vattext");
-	}else if(purchase_ledger_account=="160"){
-		$('#main_tb thead th:eq(9)').text('VAT');
-		$('input[name="cst_vat"]').val('VAT');
-		$('#ledger_account_for_vat').show();
-		$(".rmvcls").addClass("vattext");
-			//$('.vattext').val(0);
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val();
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-	});
-	}else if(purchase_ledger_account=="309"){ 
-		$('#main_tb thead th:eq(9)').text('CST');
-		$('input[name="cst_vat"]').val('CST');
-		$('#ledger_account_for_vat').hide();
-		$(".rmvcls").removeClass("vattext");
-	}else if(purchase_ledger_account=="308"){
-		$('#main_tb thead th:eq(9)').text('VAT');
-		$('input[name="cst_vat"]').val('VAT');
-		$('#ledger_account_for_vat').show();
-		$(".rmvcls").addClass("vattext");
-		//$('.vattext').val(0);
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val();
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-	});
-	}
-	
-	
-	$('select[name="purchase_ledger_account"]').die().live("change",function() {
-		var purchase_ledger_account=$(this).val();
-		if(purchase_ledger_account=="35"){ 
-			$('#main_tb thead th:eq(9)').text('CST');
-			$('input[name="cst_vat"]').val('CST');
-			$('#ledger_account_for_vat').hide();
-			$(".rmvcls").removeClass("vattext");
-		}else if(purchase_ledger_account=="538"){ 
-			
-			$('#main_tb thead th:eq(9)').text('VAT');
-			$('input[name="cst_vat"]').val('VAT');
-			$('#ledger_account_for_vat').show(); 
-			$(".rmvcls").addClass("vattext");
-			$('.vattext').val(0);
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val(); 
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-			});
-		}else if(purchase_ledger_account=="161"){
-			$('#main_tb thead th:eq(9)').text('CST');
-			$('input[name="cst_vat"]').val('CST');
-			$('#ledger_account_for_vat').hide();
-			$(".rmvcls").removeClass("vattext");
-		}else if(purchase_ledger_account=="160"){
-			$('#main_tb thead th:eq(9)').text('VAT');
-			$('input[name="cst_vat"]').val('VAT');
-			$('#ledger_account_for_vat').show();
-			$(".rmvcls").addClass("vattext");
-			$('.vattext').val(0);
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val();
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-			});
-		}else if(purchase_ledger_account=="309"){
-			$('#main_tb thead th:eq(9)').text('CST');
-			$('input[name="cst_vat"]').val('CST');
-			$('#ledger_account_for_vat').hide();
-			$(".vattext").removeClass("vattext");
-		}else if(purchase_ledger_account=="308"){
-			$('#main_tb thead th:eq(9)').text('VAT');
-			$('input[name="cst_vat"]').val('VAT');
-			$('#ledger_account_for_vat').show();
-			$(".rmvcls").addClass("vattext");
-			$('.vattext').val(0);
-			$('.vattext').die().live("blur",function() {
-			var text = $(this).val();
-				if(text!="5" && text!="14.50" && text!="14.5" && text!="5.50" && text!="5.5"){
-					$(this).val(0);
-				}
-			});
-		}
-		calculate_total();
-    });
-   
-   $('.dis_per').die().live("keyup",function() {
-		calculate_pnf_discount();
+	$('.dis_per').die().live("blur",function() {
+		calculate_pnf_discount(); 
 	});
 	function calculate_pnf_discount()
-	{
-		
-		$("#main_tb tbody tr.tr1").each(function()
-		{
-			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
-			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
-			var amount=urate*qty;
-			
-			
-			var misc=parseFloat($(this).find("td:nth-child(5) input").val());
-			if(!misc){ misc=0; $(this).find("td:nth-child(6) input").val('');}
-			var amount_after_misc=amount+misc;
-			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
-			
-			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val()); 
-			var discount_per=100*(discount_amt)/amount_after_misc;
-			if(!discount_per){discount_per=0;}
-			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(2));
-			var amount_after_discount = amount_after_misc-discount_amt;
-			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val());
-			var pnf_per=100*(pnf_amt)/amount_after_discount;
-			if(!pnf_per){pnf_per=0;}
-			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(2));
-		});
-	}
-	
-	$('.per_check').die().live("click",function() {
-		if($(this).is(':checked')==true){
-			$(this).closest('td').find('span.check_text').text('In percentages');
-		}else{
-			$(this).closest('td').find('span.check_text').text('In amount');
-		}
-		calculate_total();
-    });
-	
-	$('.add_check').die().live("click",function() {
-		if($(this).is(':checked')==true){
-			$(this).closest('td').find('span.add_check_text').text('To be subtract');
-		}else{
-			$(this).closest('td').find('span.add_check_text').text('To be add');
-		}
-		calculate_total();
-    });
-	
-   calculate_total();
-	$('#main_tb input:not(input[name="total_pnf"])').die().live("keyup",function() { 
-		calculate_total();
-    });
-	$('.fright_igst_percent').die().live("change",function() 
-	{
-		calculate_total();
-	});
-	function calculate_total(){
+	{ 
 		var total_amount=0; var total_misc=0; var total_discount=0; 
 		var total_pnf=0; var total_ex=0; var total_rate_to_post=0; var total_other=0; var total_row_amount=0; 
 		var total_cgst=0;var total_sgst=0;var total_igst=0; var total_taxable_value=0;
-		$("#main_tb tbody tr.tr1").each(function(){ var row_total=0;
+		$("#main_tb tbody tr.tr1").each(function()
+		{   var row_total=0;
 			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
 			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
 			var amount=urate*qty;
@@ -597,33 +401,25 @@ $(document).ready(function() {
 			var misc=parseFloat($(this).find("td:nth-child(5) input").val());
 			if(!misc){ misc=0; $(this).find("td:nth-child(6) input").val('');}
 			var amount_after_misc=amount+misc;
+			total_amount = total_amount+amount_after_misc;
 			row_total=row_total+misc;
-			total_amount=total_amount+amount_after_misc;
 			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
-		
-			var discount=parseFloat($(this).find("td:nth-child(7) input").val()); 
-			if(!discount && !discount_amt){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
-			    var amount_after_discount=amount_after_misc*(discount)/100;
-				total_discount=total_discount+(amount_after_misc*discount/100);
-				row_total=row_total-(amount_after_misc*discount/100);
-				if(discount){
-			    $(this).find("td:nth-child(8) input").val(amount_after_discount);}
 			
-			var pnf=parseFloat($(this).find("td:nth-child(9) input").val()); 
-			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val()); 
-			if(!pnf && !pnf_amt){ pnf=0; 
-					$(this).find("td:nth-child(10) input").val(pnf);
-			}
-			    
-				var amount_after_pnf=row_total*(pnf)/100;
-				total_pnf =total_pnf+(row_total*(pnf)/100);
-				row_total=row_total+(row_total*(pnf)/100);
-				total_taxable_value = total_taxable_value+parseFloat(row_total.toFixed(2));
-				if(pnf)
-				{ 
-					$(this).find("td:nth-child(10) input").val(amount_after_pnf.toFixed(2));
-				}
-				$(this).find("td:nth-child(11) input").val(row_total.toFixed(2));
+			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val());
+            total_discount = total_discount+discount_amt;			
+			var discount_per=100*(discount_amt)/amount_after_misc;
+			if(!discount_per){discount_per=0;}
+			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(2));
+			row_total=row_total-discount_amt;
+			var amount_after_discount = amount_after_misc-discount_amt;
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val());
+			total_pnf = total_pnf+pnf_amt;
+			var pnf_per=100*(pnf_amt)/amount_after_discount;
+			if(!pnf_per){pnf_per=0;}
+			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(2));
+			row_total = row_total+pnf_amt;
+			total_taxable_value = total_taxable_value+parseFloat(row_total.toFixed(2));
+			$(this).find("td:nth-child(11) input").val(row_total.toFixed(2));
 			
 			var cgst_percentage=parseFloat($(this).find("td:nth-child(12) option:selected").attr("percentage"));
 			if(isNaN(cgst_percentage))
@@ -656,7 +452,117 @@ $(document).ready(function() {
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 			}else{ 
 				var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
-				var igst_amount = (taxable_value*igst_percentage)/100;
+				var igst_amount = (taxable_value*igst_percentage)/100; 
+				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
+				row_total=row_total+((taxable_value*igst_percentage)/100);
+			}
+			total_igst=total_igst+igst_amount;
+		    var other=parseFloat($(this).find("td:nth-child(18) input").val());
+			if(!other){ other=0; }
+			row_total=row_total+other;
+			total_other=total_other+other;
+			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
+			var taxable_amount=parseFloat($(this).find("td:nth-child(11) input").val());
+			$(this).find("td:nth-child(20) input").val((taxable_amount/qty).toFixed(5));
+			total_rate_to_post = total_rate_to_post+parseFloat(((taxable_amount/qty).toFixed(5)));
+			$(this).find("td:nth-child(19) input").val(row_total.toFixed(2));
+			total_row_amount = total_row_amount+row_total;
+		});
+		$('input[name="total_amount"]').val(total_amount.toFixed(2));
+		$('input[name="total_discount"]').val(total_discount.toFixed(2));
+		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
+		$('input[name="taxable_value"]').val(total_taxable_value.toFixed(2));
+		$('input[name="total_cgst"]').val(total_cgst.toFixed(2));
+		$('input[name="total_sgst"]').val(total_sgst.toFixed(2));
+		$('input[name="total_igst"]').val(total_igst.toFixed(2));
+		$('input[name="total_other_charge"]').val(total_other.toFixed(2));
+		$('input[name="total"]').val(total_row_amount.toFixed(2));
+		$('input[name="total_rate_to_post"]').val(total_rate_to_post);
+	}
+	
+   calculate_total();
+	$('.cal').die().live("keyup",function() { 
+		calculate_total();
+    });
+	$('.fright_igst_percent').die().live("change",function() 
+	{
+		calculate_total();
+	});
+	function calculate_total(){ 
+		var total_amount=0; var total_misc=0; var total_discount=0; 
+		var total_pnf=0; var total_ex=0; var total_rate_to_post=0; var total_other=0; var total_row_amount=0; 
+		var total_cgst=0;var total_sgst=0;var total_igst=0; var total_taxable_value=0;
+		$("#main_tb tbody tr.tr1").each(function(){ var row_total=0;
+			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
+			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
+			var amount=urate*qty;
+			row_total=row_total+amount;
+			
+			var misc=parseFloat($(this).find("td:nth-child(5) input").val());
+			if(!misc){ misc=0; $(this).find("td:nth-child(6) input").val('');}
+			var amount_after_misc=amount+misc;
+			row_total=row_total+misc;
+			total_amount=total_amount+amount_after_misc;
+			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
+		
+			var discount=parseFloat($(this).find("td:nth-child(7) input").val()); 
+			//alert(discount_amt);
+			if(!discount){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
+			    var amount_after_discount=amount_after_misc*(discount)/100;
+				total_discount=total_discount+(amount_after_misc*discount/100);
+				row_total=row_total-(amount_after_misc*discount/100);
+				
+				if(discount){ 
+			    $(this).find("td:nth-child(8) input").val(amount_after_discount.toFixed(2));}
+			
+			var pnf=parseFloat($(this).find("td:nth-child(9) input").val()); 
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val()); 
+			if(!pnf && pnf_amt){ pnf=0; 
+					$(this).find("td:nth-child(10) input").val(pnf);
+			}
+			    
+				var amount_after_pnf = row_total*(pnf)/100;
+				total_pnf = total_pnf+(row_total*(pnf)/100);
+				row_total = row_total+(row_total*(pnf)/100);
+				total_taxable_value = total_taxable_value+parseFloat(row_total.toFixed(2));
+				if(pnf)
+				{ 
+					$(this).find("td:nth-child(10) input").val(amount_after_pnf.toFixed(2));
+				}
+				$(this).find("td:nth-child(11) input").val(row_total.toFixed(2));
+			    
+			var cgst_percentage=parseFloat($(this).find("td:nth-child(12) option:selected").attr("percentage"));
+			if(isNaN(cgst_percentage))
+			{ 
+					var cgst_amount = 0; 
+					$(this).find("td:nth-child(13) input").val(cgst_amount.toFixed(2));
+			}else
+			{  
+					var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+					var cgst_amount = (taxable_value*cgst_percentage)/100;
+					$(this).find("td:nth-child(13) input").val(cgst_amount.toFixed(2));
+					row_total=row_total+((taxable_value*cgst_percentage)/100);
+			}
+			total_cgst=total_cgst+cgst_amount;
+			
+			var sgst_percentage=parseFloat($(this).find("td:nth-child(14) option:selected").attr("percentage"));
+			if(isNaN(sgst_percentage)){ 
+				 var sgst_amount = 0; 
+				$(this).find("td:nth-child(15) input").val(sgst_amount.toFixed(2));
+			}else{ 
+			    var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+				var sgst_amount = (taxable_value*sgst_percentage)/100;
+				$(this).find("td:nth-child(15) input").val(sgst_amount.toFixed(2));
+				row_total=row_total+((taxable_value*sgst_percentage)/100);
+			}
+			total_sgst=total_sgst+sgst_amount;
+			var igst_percentage=parseFloat($(this).find("td:nth-child(16) option:selected").attr("percentage"));
+			if(isNaN(igst_percentage)){ 
+				 var igst_amount = 0; 
+				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
+			}else{ 
+				var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+				var igst_amount = (taxable_value*igst_percentage)/100; 
 				$(this).find("td:nth-child(17) input").val(igst_amount.toFixed(2));
 				row_total=row_total+((taxable_value*igst_percentage)/100);
 			}
