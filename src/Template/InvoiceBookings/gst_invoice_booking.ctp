@@ -229,11 +229,11 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.amount',['label' => false,'class' => 'form-control input-sm row_textbox','value'=>$grn->purchase_order->purchase_order_rows[$q]->rate*$grn_rows->quantity,'type'=>'text','readonly']); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox']); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_amt']); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly']); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_per']); ?>
 							</td>
 							
 							<td align="center">
@@ -528,6 +528,10 @@ $(document).ready(function() {
 		calculate_total();
     });
 	
+	
+	
+	
+	
    calculate_total();
 	$('#main_tb input:not(input[name="total_pnf"])').die().live("keyup",function() { 
 		calculate_total();
@@ -555,6 +559,8 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
 		
 			var discount=parseFloat($(this).find("td:nth-child(7) input").val()); 
+			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val()); 
+			//alert(discount_amt);
 			if(!discount){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
 			    var amount_after_discount=amount_after_misc*(discount)/100;
 				total_discount=total_discount+(amount_after_misc*discount/100);
