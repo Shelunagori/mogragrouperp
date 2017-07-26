@@ -28,7 +28,7 @@ margin-bottom: 0;
 }
 </style>
 <a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
-<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: auto;width: 90%;font-size:14px;" class="maindiv">	
+<div style="border:solid 1px #c7c7c7;background-color: #FFF;padding: 10px;margin: 5px;width: 90%;font-size:14px;" class="maindiv">	
 	<table width="100%" class="divHeader">
 		<tr>
 			<td width="30%"><?php echo $this->Html->image('/logos/'.$invoiceBooking->company->logo, ['width' => '40%']); ?></td>
@@ -101,7 +101,7 @@ margin-bottom: 0;
 					<tr>
 						<td><b>Purchase Account</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h($purchase_acc) ?></td>
+						<td><?= h($purchase_acc->name) ?></td>
 					</tr>
 				</table>
 			</td>
@@ -133,9 +133,12 @@ margin-bottom: 0;
 				<th style="text-align: center;" colspan="2" >Discount</th>
 				<th style="text-align: center;" colspan="2" >P&F </th>
 				<th style="text-align: center;" rowspan="2" >Taxable Value</th>
+				<?php if($purchase_acc->name=='Purchase GST'){ ?>
 				<th style="text-align: center;" colspan="2">CGST</th>
 				<th style="text-align: center;" colspan="2" >SGST</th>
-				<th style="text-align: center;" colspan="2" >IGST</th>
+				<?php }else { ?>
+				<th style="text-align: center;" colspan="2" >IGST</th> 
+				<?php } ?>
 				<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
 			<tr> 
@@ -143,12 +146,15 @@ margin-bottom: 0;
 				<th style="text-align: center;">Amt</th>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>
+				<?php if($purchase_acc->name=='Purchase GST'){ ?>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>
+				<?php }else { ?>
 				<th style="text-align: center; " >%</th>
 				<th style="text-align: center;" >Amt</th>
+				<?php }?>
 			</tr>
 		</thead>
 	<tbody>
@@ -164,12 +170,15 @@ margin-bottom: 0;
 			<td align="right"><?= $invoice_booking_row->gst_pnf_per.'%'; ?></td>
 			<td align="right"><?= $invoice_booking_row->pnf; ?></td>
 			<td align="right"><?= $invoice_booking_row->taxable_value; ?></td>
+			<?php if($purchase_acc->name=='Purchase GST'){ ?>
 			<td align="right"><?php if(!empty($cgst_per[$invoice_booking_row->id]['tax_figure'])){echo $cgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
 			<td align="right"><?= $invoice_booking_row->cgst; ?></td>
 			<td align="right"><?php if(!empty($sgst_per[$invoice_booking_row->id]['tax_figure'])){ echo $sgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
 			<td align="right"><?= $invoice_booking_row->sgst; ?></td>
+			<?php }else{ ?>
 			<td align="right"><?php if(!empty($igst_per[$invoice_booking_row->id]['tax_figure'])){ echo $igst_per[$invoice_booking_row->id]['tax_figure'].'%'; } ?></td>
 			<td align="right"><?= $invoice_booking_row->igst; ?></td>
+			<?php } ?>
 			<td align="right"><?= $invoice_booking_row->total; ?></td>
 		</tr>
 		<?php 
@@ -198,30 +207,18 @@ margin-bottom: 0;
 		endforeach; ?>
 	</tbody>
 	<tfoot>
-		
-		<?php if($invoiceBooking->purchase_ledger_account==538 || $invoiceBooking->purchase_ledger_account==308 || $invoiceBooking->purchase_ledger_account==160 ){ ?>
-		<tr>
-			<td colspan="3"></td>
-			<td style="font-size:14px;"  align="right"> VAT Amount
-				<?php if(empty($LedgerAccount->alias)){ ?>
-						: <?php echo $LedgerAccount->name; ?>
-					<?php }else{ ?>
-						: <?php echo $LedgerAccount->name; ?> (<?php echo $LedgerAccount->alias; ?>)
-					<?php } ?>
-			</td>
-			<td style="font-size:14px;"  align="right"><?= h($this->Number->format($Total,[ 'places' => 2])) ?></td>
-		</tr>
-		<?php } ?>
+
 		<tr>
 			
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="16"> Total</td>
+			<?php $col_span=12; if($purchase_acc->name=='Purchase GST'){ $col_span=14;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total</td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');
 			 ?></td>
 		</tr>
 	</tfoot>
 </table>
-<div style="border:solid 1px ;"></div>
+<div style="border:solid 0px ;"></div>
 <table width="100%" class="divFooter">
 	<tr>
 		<td style="vertical-align: top !important;">

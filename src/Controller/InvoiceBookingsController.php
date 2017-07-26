@@ -1393,31 +1393,10 @@ class InvoiceBookingsController extends AppController
 			}
 		}
 		
-		if($invoiceBooking->ledger_account_for_vat > 0){
-			$LedgerAccount=$this->InvoiceBookings->LedgerAccounts->get($invoiceBooking->ledger_account_for_vat);
-		}
-		
 		$purchase_acc='';
-		if($st_company_id==25){  
-			if($invoiceBooking->purchase_ledger_account==35){
-				$purchase_acc="CST Purchase";
-			}else{
-				$purchase_acc="VAT Purchase";
-			}
-		}else if($st_company_id==26){
-			if($invoiceBooking->purchase_ledger_account==161){
-				$purchase_acc="CST Purchase";
-			}else{
-				$purchase_acc="VAT Purchase";
-			}
-		}else if($st_company_id==27){
-			if($invoiceBooking->purchase_ledger_account==309){
-				$purchase_acc="CST Purchase";
-			}else{
-				$purchase_acc="VAT Purchase";
-			}
+		if($invoiceBooking->purchase_ledger_account > 0){
+			$purchase_acc=$this->InvoiceBookings->LedgerAccounts->get($invoiceBooking->purchase_ledger_account);
 		}
-		
 		
 		$c_LedgerAccount=$this->InvoiceBookings->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Vendors','source_id'=>$invoiceBooking->vendor_id])->first();
 		
