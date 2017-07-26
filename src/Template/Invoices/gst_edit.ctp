@@ -51,8 +51,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					</div>
 					<div class="col-md-2">
 						<div class="form-group">
-							<label class="control-label">Date</label>
-							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => date("d-m-Y"),'readonly']); ?>					
+							
+										
 						</div>
 					</div>
 				</div>

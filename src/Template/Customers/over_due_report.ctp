@@ -5,6 +5,7 @@
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Overdues For CUSTOMERS</span>
 		</div>
+
 	</div>
 	<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 20%;">
 	<div class="portlet-body">

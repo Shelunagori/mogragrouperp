@@ -5,7 +5,8 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-
+use Cake\Event\Event;
+use ArrayObject;
 /**
  * Grns Model
  *
@@ -41,6 +42,7 @@ class GrnsTable extends Table
 
 		$this->belongsTo('PurchaseOrderRows');
 		$this->belongsTo('ItemLedgers');
+		$this->belongsTo('FinancialYears');
 		
         $this->belongsTo('PurchaseOrders', [
             'foreignKey' => 'purchase_order_id',
@@ -127,6 +129,12 @@ class GrnsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
+	 
+	public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+	{
+		$data['date_created'] = date('Y-m-d',strtotime($data['date_created']));
+	}
+
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['purchase_order_id'], 'PurchaseOrders'));

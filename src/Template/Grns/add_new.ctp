@@ -49,9 +49,9 @@
 					</div>
 					<div class="col-md-2">
 						<div class="form-group">
-							<label class="control-label">Date</label>
+							<label class="control-label">Transaction Date</label>
 							<br/>
-							<?php echo date("d-m-Y"); ?>
+							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y"),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
 						</div>
 						<span style="color: red;"><?php if($chkdate == 'Not Found'){  ?>
 					You are not in Current Financial Year
