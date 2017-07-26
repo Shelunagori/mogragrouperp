@@ -215,7 +215,7 @@
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly','value'=>$invoice_booking_row->discount]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_per','value'=>$invoice_booking_row->discount]); ?>
 							</td>
 							
 							<td align="center">
@@ -223,7 +223,7 @@
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'readonly','value'=> $invoice_booking_row->pnf]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox dis_per','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'value'=> $invoice_booking_row->pnf]); ?>
 							</td>
 							
 							<td align="center">
@@ -528,6 +528,36 @@ $(document).ready(function() {
 		calculate_total();
     });
    
+   $('.dis_per').die().live("keyup",function() {
+		calculate_pnf_discount();
+	});
+	function calculate_pnf_discount()
+	{
+		
+		$("#main_tb tbody tr.tr1").each(function()
+		{
+			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
+			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
+			var amount=urate*qty;
+			
+			
+			var misc=parseFloat($(this).find("td:nth-child(5) input").val());
+			if(!misc){ misc=0; $(this).find("td:nth-child(6) input").val('');}
+			var amount_after_misc=amount+misc;
+			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
+			
+			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val()); 
+			var discount_per=100*(discount_amt)/amount_after_misc;
+			if(!discount_per){discount_per=0;}
+			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(2));
+			var amount_after_discount = amount_after_misc-discount_amt;
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val());
+			var pnf_per=100*(pnf_amt)/amount_after_discount;
+			if(!pnf_per){pnf_per=0;}
+			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(2));
+		});
+	}
+	
 	$('.per_check').die().live("click",function() {
 		if($(this).is(':checked')==true){
 			$(this).closest('td').find('span.check_text').text('In percentages');
@@ -572,7 +602,7 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
 		
 			var discount=parseFloat($(this).find("td:nth-child(7) input").val()); 
-			if(!discount){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
+			if(!discount && !discount_amt){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
 			    var amount_after_discount=amount_after_misc*(discount)/100;
 				total_discount=total_discount+(amount_after_misc*discount/100);
 				row_total=row_total-(amount_after_misc*discount/100);
@@ -580,7 +610,8 @@ $(document).ready(function() {
 			    $(this).find("td:nth-child(8) input").val(amount_after_discount);}
 			
 			var pnf=parseFloat($(this).find("td:nth-child(9) input").val()); 
-			if(!pnf){ pnf=0; 
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val()); 
+			if(!pnf && !pnf_amt){ pnf=0; 
 					$(this).find("td:nth-child(10) input").val(pnf);
 			}
 			    

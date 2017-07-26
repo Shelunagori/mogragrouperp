@@ -588,16 +588,17 @@ $(document).ready(function() {
 			var discount=parseFloat($(this).find("td:nth-child(7) input").val()); 
 			var discount_amt=parseFloat($(this).find("td:nth-child(8) input").val()); 
 			//alert(discount_amt);
-			if(!discount){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
+			if(!discount && !discount_amt){ discount=0; $(this).find("td:nth-child(8) input").val(discount);}
 			    var amount_after_discount=amount_after_misc*(discount)/100;
 				total_discount=total_discount+(amount_after_misc*discount/100);
 				row_total=row_total-(amount_after_misc*discount/100);
 				
 				if(discount){ 
-			    $(this).find("td:nth-child(8) input").val(amount_after_discount);}
+			    $(this).find("td:nth-child(8) input").val(amount_after_discount.toFixed(2));}
 			
 			var pnf=parseFloat($(this).find("td:nth-child(9) input").val()); 
-			if(!pnf){ pnf=0; 
+			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val()); 
+			if(!pnf && !pnf_amt){ pnf=0; 
 					$(this).find("td:nth-child(10) input").val(pnf);
 			}
 			    
