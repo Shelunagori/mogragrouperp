@@ -1070,13 +1070,13 @@ class InvoiceBookingsController extends AppController
 				$cst_purchase=161;
 			}else if($st_company_id=='27'){
 				$cst_purchase=309;
-		
-			}	
-			$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+		}	
+			$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>6])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				);
+			//	pr($GstTaxes->toArray());exit;
         $companies = $this->InvoiceBookings->Companies->find('all');
         $grns = $this->InvoiceBookings->Grns->find('list');
 		//pr($ledger_account_details->toArray());exit;
@@ -1359,7 +1359,7 @@ class InvoiceBookingsController extends AppController
 		$ledger_account_vat = $this->InvoiceBookings->LedgerAccounts->find('list')->contain(['AccountSecondSubgroups'=>['AccountFirstSubgroups' => function($q) use($AccountReference){
 			return $q->where(['AccountFirstSubgroups.id'=>$AccountReference->account_first_subgroup_id]);
 		}]])->order(['LedgerAccounts.name' => 'ASC'])->where(['LedgerAccounts.company_id'=>$st_company_id]);
-		$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>6])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 

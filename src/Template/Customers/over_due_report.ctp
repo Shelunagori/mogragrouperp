@@ -1,12 +1,35 @@
 
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Overdues For CUSTOMERS</span>
 		</div>
-
-	</div>
+		<div class="portlet-body">
+			<div class="row">
+				<div class="col-md-12">
+					<form method="GET" >
+						<table class="table table-condensed">
+							<tbody>
+								<tr>
+								<td width="15%">
+										<label class="control-label">Stock</label>
+										<div id="item_sub_group_div">
+										<?php 
+											$options = [];
+											$options = [['text'=>'All','value'=>'All'],['text'=>'Negative','value'=>'Negative'],['text'=>'Zero','value'=>'Zero'],['text'=>'Close Stock','value'=>'Positive']];
+										echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
+									</td>
+								<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
 	<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 20%;">
 	<div class="portlet-body">
 	 
@@ -28,7 +51,8 @@
 				</thead>
 				<tbody>
 					<?php  $page_no=0; $total_over_due_amount=0;					
-					foreach ($LedgerAccounts as $LedgerAccount){ 
+					foreach ($LedgerAccounts as $LedgerAccount){
+						
 					?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>
@@ -99,7 +123,7 @@
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
 					</tr>
-					<?php $total_over_due_amount = $total_over_due_amount+$total_data;} ?>	
+					<?php $total_over_due_amount = $total_over_due_amount+$total_data; } ?>	
 				
 				</tbody>
 				<tfoot>

@@ -1776,7 +1776,7 @@ class InvoicesController extends AppController
 		$ledger_account_details_for_fright = $this->Invoices->LedgerAccounts->find('list')->contain(['AccountSecondSubgroups'=>['AccountFirstSubgroups' => function($q) use($account_first_subgroup_id_for_fright){
 			return $q->where(['AccountFirstSubgroups.id'=>$account_first_subgroup_id_for_fright]);
 		}]])->where(['LedgerAccounts.company_id'=>$st_company_id])->order(['LedgerAccounts.name' => 'ASC']);
-		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>5])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
@@ -2278,7 +2278,7 @@ class InvoicesController extends AppController
 		$items = $this->Invoices->Items->find('list');
 		$transporters = $this->Invoices->Transporters->find('list');
 		$termsConditions = $this->Invoices->TermsConditions->find('all');
-		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->Invoices->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>5])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
