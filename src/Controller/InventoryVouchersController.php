@@ -32,6 +32,30 @@ class InventoryVouchersController extends AppController
         $this->set('_serialize', ['inventoryVouchers']);
     }
 
+	public function indexx()
+    {
+		$inventerys =$this->InventoryVouchers->find()->where(['transaction_date'=>''])->order(['id'=>'asc'])->toArray();
+		//pr($inventerys);exit;
+	   foreach($inventerys as $inventery)
+		{
+			$ledgers =$this->InventoryVouchers->ItemLedgers->find()->where(['ItemLedgers.source_model'=>'Inventory Vouchers','ItemLedgers.source_id'=>$inventery->id,'ItemLedgers.in_out' => 'in']);
+			//pr($ledgers->toArray());exit;
+			echo $inventery->id;echo "<br>";
+			foreach($ledgers as $ledger)
+		    {
+			    $transaction_date = date("Y-m-d",strtotime($ledger->processed_on));
+				                $query = $this->InventoryVouchers->query();
+								$query->update()
+									->set(['transaction_date' => $transaction_date])
+									->where(['id' => $inventery->id])
+									->execute(); 
+									
+			}
+			
+			
+		} 
+		exit;
+	}
     /**
      * View method
      *
