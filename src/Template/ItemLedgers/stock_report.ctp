@@ -92,9 +92,11 @@
 						$total_inv+=$amount;
 						?>
 							
-						<tr>
+						<tr class="main_tr" id="<?= h($key) ?>">
 							<td><?= h(++$page_no) ?></td>
-							<td><?= $this->Html->link($items_names[$key], ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?></td>
+							<td width="90%" id="<?= h($key) ?>" class="loop_class"><button type="button"  class="btn btn-xs tooltips revision_hide show_data" id="<?= h($key) ?>" value="" style="margin-left:5px;margin-bottom:2px;"><i class="fa fa-plus-circle"></i></button>
+								<button type="button" class="btn btn-xs tooltips revision_show" style="margin-left:5px;margin-bottom:2px; display:none;"><i class="fa fa-minus-circle"></i></button>
+								&nbsp;&nbsp;<?= h($items_names[$key]) ?><div class="show_ledger"></div></td>
 							<td><?= h($item_stock) ?></td>
 							<td><?= h($items_unit_names[$key]) ?></td>
 							<td align="right"><?= h($this->Number->format(@$per_unit,['places'=>2])) ?></td>
@@ -171,6 +173,37 @@ var $rows = $('#main_tble tbody tr');
 	});
 	
 		
+		$('.show_data').live("click",function() {
+		var sel=$(this); 
+		var item_id=$(this).attr("id");
+		show_ledger_data(sel,item_id);
+	});
+	 function show_ledger_data(sel,item_id)
+	 {
+		//var from_date = $("#from_date").val();
+		//var to_date = $("#to_date").val();
+		//alert(from_date+'-'+to_date);
+		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
+		url=url+'/'+item_id;
+		
+	       $.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'text'
+			}).done(function(response) {  
+			    $(sel).closest('tr.main_tr').find('.revision_show').show();
+				$(sel).closest('tr.main_tr').find('.revision_hide').hide();
+				$(sel).closest('tr.main_tr').find('.show_ledger').html(response);
+				
+			});
+		 
+	 }
+	 $('.revision_show').live("click",function() { 
+		var sel=$(this);
+		$(sel).closest('tr.main_tr').find('.revision_show').hide();
+		$(sel).closest('tr.main_tr').find('.revision_hide').show();
+		$(sel).closest('tr.main_tr').find('.show_ledger').html('');
+	 });
 });
 		
 </script>
