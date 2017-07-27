@@ -18,7 +18,7 @@
 										<div id="item_sub_group_div">
 										<?php 
 											$options = [];
-											$options = [['text'=>'All','value'=>'All'],['text'=>'Negative','value'=>'Negative'],['text'=>'Zero','value'=>'Zero'],['text'=>'Close Stock','value'=>'Positive']];
+											$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
 										echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
 									</td>
 								<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
@@ -30,7 +30,12 @@
 				</div>
 			</div>
 		</div>
+		<?php 
+		    if($stock=="" || empty($stock))
+			{
+		?>
 	<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 20%;">
+			<?php } ?>
 	<div class="portlet-body">
 	 
 		<div class="table-scrollable">
@@ -40,11 +45,11 @@
 						<th>Sr. No.</th>
 						<th>Customer Name</th>
 						<th style="text-align:center">Payment Terms</th>
-						<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?></th>
-						<th style="text-align:center"><?php echo $to_range_datas->range2.'-'.$to_range_datas->range3?></th>
-						<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?></th>
-						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?></th>
-						<th style="text-align:center"><?php echo $to_range_datas->range7?> ></th>
+						<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?> Days</th>
+						<th style="text-align:center"><?php echo $to_range_datas->range2.'-'.$to_range_datas->range3?> Days</th>
+						<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?> Days</th>
+						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?>Days</th>
+						<th style="text-align:center">Days > <?php echo $to_range_datas->range7?></th>
 						<th>On Account</th>
 						<th style="text-align: right;">Total Over-Due</th>
 					</tr>
@@ -52,10 +57,88 @@
 				<tbody>
 					<?php  $page_no=0; $total_over_due_amount=0;					
 					foreach ($LedgerAccounts as $LedgerAccount){
-						
+						@$hide ="style='display:;'";
+						if((!empty($total_debit_1)) || (!empty($total_credit_1))){
+									$total1=@$total_debit_1[ $LedgerAccount->id] - @$total_credit_1[ $LedgerAccount->id];
+						}
+						if((!empty($total_debit_2)) || (!empty($total_credit_2))){
+									$total2=@$total_debit_2[ $LedgerAccount->id] - @$total_credit_2[ $LedgerAccount->id];
+						}
+						if((!empty($total_debit_3)) || (!empty($total_credit_3))){
+									$total3=@$total_debit_3[ $LedgerAccount->id] - @$total_credit_3[ $LedgerAccount->id];
+						}
+						if((!empty($total_debit_4)) || (!empty($total_credit_4))){
+									$total4=@$total_debit_4[ $LedgerAccount->id] - @$total_credit_4[ $LedgerAccount->id];
+						}
+						if((!empty($total_debit_5)) || (!empty($total_credit_5))){
+									$total5=@$total_debit_5[ $LedgerAccount->id] - @$total_credit_5[ $LedgerAccount->id];
+						}
+						$grand_total=$total1+$total2+$total3+$total4+$total5;
+						$on_acc=0;
+						$on_dr=@$ledger_debit[ $LedgerAccount->id]-@$ref_bal_debit[ $LedgerAccount->id];
+						$on_cr=@$ledger_credit[ $LedgerAccount->id]-@$ref_bal_credit[ $LedgerAccount->id];
+						$on_acc=$on_dr-$on_cr;
+						if($grand_total >= 0){
+							if($on_acc >=0){
+								$total_data=$grand_total+$on_acc;
+							}else{
+								//$on_acc=abs($on_acc);
+								
+								 $total_data=number_format((float)$grand_total, 2, '.', '') - number_format((float)abs($on_acc), 2, '.', '');
+							
+							} 
+						}else{
+							if($on_acc >=0){
+								$total_data=$grand_total+$on_acc;
+							}else{
+								
+								//$total_data=$grand_total-abs($on_acc);
+								//$on_acc=abs($on_acc);
+								
+								 $total_data=number_format((float)$grand_total, 2, '.', '') - number_format((float)abs($on_acc), 2, '.', '');
+							}
+						}
+						if(empty($stock))
+						{
+							$page_no =++$page_no; 
+							$total_over_due_amount = $total_over_due_amount+$total_data;
+						}
+						if(@$stock=="Positive")
+						{ 
+							if($total_data <= 0 )
+							{
+								@$hide ="style='display:none;'";
+							}
+							else{
+								$page_no =++$page_no;
+								$total_over_due_amount = $total_over_due_amount+$total_data;
+							}
+						}
+						if(@$stock=="Negative")
+						{
+							if($total_data > 0 || $total_data==0)
+							{
+								  @$hide ="style='display:none;'";
+							}
+							else{
+								$page_no =++$page_no;
+								$total_over_due_amount = $total_over_due_amount+$total_data;
+							}
+						}
+						if(@$stock=="Zero")
+						{
+							if($total_data > 0 || $total_data < 0 )
+							{
+								@$hide ="style='display:none;'";
+							}
+							else{
+								$page_no =++$page_no;
+								$total_over_due_amount = $total_over_due_amount+$total_data;
+							}
+						}
 					?>
-					<tr>
-						<td><?= h(++$page_no) ?></td>
+					<tr <?php echo @$hide; ?>>
+						<td><?= h($page_no) ?></td>
 						<td><?php echo $LedgerAccount->name."(". $LedgerAccount->alias.")"?></td>
 						<td><?php echo $custmer_payment_terms[$LedgerAccount->id];?></td>
 						<?php if((!empty($total_debit_1)) || (!empty($total_credit_1))){
@@ -96,34 +179,14 @@
 									<td align="right" style="color: red;"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
 						<?php } else { ?>
 									<td align="right"><?php echo $this->Number->format($total5,['places'=>2]); ?></td>
-						<?php } } 
-						$grand_total=$total1+$total2+$total3+$total4+$total5;
-						?>
+						<?php } } ?>
 
-						<?php 
-						$on_acc=0;
-						$on_dr=@$ledger_debit[ $LedgerAccount->id]-@$ref_bal_debit[ $LedgerAccount->id];
-						$on_cr=@$ledger_credit[ $LedgerAccount->id]-@$ref_bal_credit[ $LedgerAccount->id];
-						$on_acc=$on_dr-$on_cr;
-						if($grand_total >= 0){
-							if($on_acc >=0){
-								$total_data=$grand_total+$on_acc;
-							}else{
-								$total_data=$grand_total-abs($on_acc);
-							}
-						}else{
-							if($on_acc >=0){
-								$total_data=$grand_total+$on_acc;
-							}else{
-								$total_data=$grand_total-abs($on_acc);
-							}
-						}
-						?><?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
+						<?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color; ?>"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
-						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
+						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo sprintf ("%.2f", $total_data); ?></td>
 					</tr>
-					<?php $total_over_due_amount = $total_over_due_amount+$total_data; } ?>	
+					<?php  } ?>	
 				
 				</tbody>
 				<tfoot>

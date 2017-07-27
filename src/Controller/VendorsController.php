@@ -280,6 +280,7 @@ class VendorsController extends AppController
 		$this->viewBuilder()->layout('report_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$stock=$this->request->query('total');
 		$to_range_datas =json_decode($to_send);
 		$LedgerAccounts =$this->Vendors->LedgerAccounts->find()
 			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Vendors']);
@@ -558,7 +559,7 @@ class VendorsController extends AppController
 			} 
 			
 		
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','stock'));
         $this->set('_serialize', ['Vendors']);
     }
 }
