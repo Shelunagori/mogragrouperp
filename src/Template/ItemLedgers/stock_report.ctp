@@ -108,8 +108,9 @@
 						
 						<tr>
 							<td><?= h(++$page_no1) ?></td>
-							<td><?= $this->Html->link(@$ItemData, ['controller' => 'ItemLedgers', 'action' => 'index',$key]) ?></td>
+							<td><?= h($ItemData) ?></td>
 							<td><?= h(0) ?></td>
+							<td><?= h($ItemUnits[$key]) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 						</tr>

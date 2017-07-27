@@ -357,7 +357,7 @@ class ItemLedgersController extends AppController
 			}
 		$ItemLedgers = $this->ItemLedgers->find()->contain(['Items'=>function ($q) use($where){
 			return $q->where($where);
-		}]);
+		}])->where(['ItemLedgers.company_id'=>$st_company_id]);
 		//pr(sizeof($item_stocks)); exit;
 		$item_rate=[];
 		$in_qty=[];
@@ -367,6 +367,7 @@ class ItemLedgersController extends AppController
 					@$in_qty[$ItemLedger->item_id] += $ItemLedger->quantity;
 				}
 		}
+		
 		
 		$where=[];
 		if(!empty($item_name)){ 
@@ -387,15 +388,18 @@ class ItemLedgersController extends AppController
             $where1['processed_on <=']=$search_date;
 		}
 		 $ItemDatas=[];
+		 $ItemUnits=[];
 		if(!$stock){
-		$Items =$this->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id){
+		$Items =$this->ItemLedgers->Items->find()->contain(['Units','ItemCompanies'=>function($p) use($st_company_id){
 						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 		}])->where($where);
 		
-		foreach($Items as $Item){
+		
+		foreach($Items as $Item){ 
 			$ItemLedgersexists = $this->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
 			if(empty($ItemLedgersexists)){
 				$ItemDatas[$Item->id]=$Item->name;
+				$ItemUnits[$Item->id]=$Item->unit->name;
 			}
 		}
 	}		
@@ -403,7 +407,7 @@ class ItemLedgersController extends AppController
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date','ItemDatas','items_unit_names'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date','ItemDatas','items_unit_names','ItemUnits'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
 	
