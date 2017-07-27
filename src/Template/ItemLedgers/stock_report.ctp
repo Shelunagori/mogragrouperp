@@ -115,7 +115,7 @@
 						</tr>
 						<?php } ?>
 						<tr>
-							<td colspan="4" align="right">Total</td>
+							<td colspan="5" align="right">Total</td>
 							<td align="right"><?= h($this->Number->format($total_inv,['places'=>2])) ?></td>
 						</tr>
 					</tbody>

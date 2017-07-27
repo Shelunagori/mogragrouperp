@@ -11,7 +11,8 @@
 			<tbody>
 				<tr>
 					<td width="15%">
-						<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm input-medium  select2me','required','value'=>@$ledger_account_id]); ?>
+						<?php echo $this->Form->input('ledgerid', ['empty'=>'--Select--','options' => $ledger,'empty' => "--Select Ledger Account--",'label' => false,'class' => 'form-control input-sm input-medium  select2me','required','value'=>@$ledger_account_id]); ?>
+						<?php echo $this->Form->input('status', ['type'=>'hidden','value'=>'Pending']); ?>
 					</td>
 					<td width="75%">
 						<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
@@ -27,7 +28,7 @@
 			<div class="col-md-12">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
-					<div class="col-md-12" style="text-align:center; font-size: 20px;">Statement of Account As on Today Date of <?php echo date('d-m-Y');?><div class="uppercase"><?php
+					<div class="col-md-12" style="text-align:center; font-size: 20px;">Statement of Account As on  <?php echo date('d-m-Y');?> of<div class="uppercase"><?php
 					echo $Ledger_Account_data->name.' ('.$Ledger_Account_data->alias.')'
 					?></div></div>
 				</div>
@@ -42,6 +43,8 @@
 				<thead>
 					<tr>
 						<th>Reference</th>
+						<th>Transaction Date</th>
+						<th>Due Date</th>
 						<th style="text-align:right;">Dr</th>
 						<th style="text-align:right;">Cr</th>
 					</tr>
@@ -53,6 +56,8 @@
 				
 				<tr>
 						<td><?php echo $ReferenceBalance->reference_no; ?></td>
+						<td><?php echo (date('d-m-Y',strtotime($ReferenceBalance->transaction_date))); ?></td>
+						<td><?php echo (date('d-m-Y',strtotime($ReferenceBalance->due_date))); ?></td>
 						<td align="right"><?= $this->Number->format($ReferenceBalance->debit,[ 'places' => 2]); ?></td>
 						<td align="right"><?= $this->Number->format($ReferenceBalance->credit,[ 'places' => 2]);  ?></td>
 						<?php $total_debit+=$ReferenceBalance->debit;
@@ -61,12 +66,12 @@
 				</tr>
 				<?php } } ?>
 				<tr>
-					<td align="right">Total</td>
+					<td align="right" colspan="3">Total</td>
 					<td align="right"><?= $this->Number->format($total_debit,[ 'places' => 2]); ?>Dr.</td>
 					<td align="right"><?= $this->Number->format($total_credit,[ 'places' => 2]); ?>Cr.</td>
 				</tr>
 				<tr>
-					<td  align="right">On Account</td>	
+					<td  align="right" colspan="3">On Account</td>	
 					<?php 
 						$on_acc=0;
 						$closing_balance=0;

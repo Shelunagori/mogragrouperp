@@ -120,6 +120,10 @@
 					$url_path="/purchase-returns/view/".$ledger->voucher_id;
 					$url_path="Sale Return";
 					//pr($voucher_no); exit;
+				}else if($ledger->voucher_source=="Inventory Return"){
+					$Receipt=$url_link[$ledger->id];
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$url_path="/rivs/view/".$ledger->voucher_id;
 				}
 				
 				?>

@@ -31,7 +31,9 @@
 							<td><?= h($riv->sale_return->sr1.'/SR-'.str_pad($riv->sale_return->sr2, 3, '0', STR_PAD_LEFT).'/'.$riv->sale_return->sr3.'/'.$riv->sale_return->sr4); ?>
 							<td>
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit/'.$riv->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
+							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $riv->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
 							</td>
+							
 							
 						</tr>
 						<?php endforeach; ?>

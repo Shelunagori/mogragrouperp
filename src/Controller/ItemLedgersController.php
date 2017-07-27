@@ -91,7 +91,8 @@ class ItemLedgersController extends AppController
 			return ['voucher_info'=>$InventoryTransferVouchers,'party_type'=>'-','party_info'=>'-'];
 		} 
 		if($source_model=="Inventory Return"){ 
-			$Inventoryreturn=$this->ItemLedgers->Rivs->get($source_id);//pr($source_id);exit;
+			$Inventoryreturn=$this->ItemLedgers->Rivs->get($source_id);
+			//pr($source_id);exit;
 			//pr($Inventoryreturn);exit;
 			return ['voucher_info'=>$Inventoryreturn,'party_type'=>'-','party_info'=>'-'];
 		} 

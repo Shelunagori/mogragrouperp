@@ -60,6 +60,7 @@ class RivsController extends AppController
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$s_employee_id=$this->viewVars['s_employee_id'];
 		$sale_return_data=$this->Rivs->SaleReturns->get($id,[
 			'contain'=>['SaleReturnRows'=>['Items']]
 		]);
@@ -97,14 +98,14 @@ class RivsController extends AppController
 			$riv->created_by=$s_employee_id; 
 			$riv->sale_return_id = $id;
 			if ($this->Rivs->save($riv)) {
-							
+			
 			foreach($riv->left_rivs as $left_riv){
 					foreach($left_riv->right_rivs as $right_riv){
 						$itemLedger_in = $this->Rivs->ItemLedgers->newEntity();
 						$itemLedger_in->item_id = $right_riv->item_id;
 						$itemLedger_in->quantity = $right_riv->quantity;
 						$itemLedger_in->source_model = 'Inventory Return';
-						$itemLedger_in->source_id = $id;
+						$itemLedger_in->source_id = $riv->id;
 						$itemLedger_in->in_out = 'In';
 						$itemLedger_in->rate = 0;
 						$itemLedger_in->company_id = $st_company_id;
@@ -115,7 +116,7 @@ class RivsController extends AppController
 				$itemLedger_out->item_id = $left_riv->item_id;
 				$itemLedger_out->quantity = $left_riv->quantity;
 				$itemLedger_out->source_model = 'Inventory Return';
-				$itemLedger_out->source_id = $id;
+				$itemLedger_out->source_id = $riv->id;
 				$itemLedger_out->in_out = 'Out';
 				$itemLedger_out->rate = 0;
 				$itemLedger_out->company_id = $st_company_id;
@@ -195,8 +196,8 @@ class RivsController extends AppController
 							]);
 		//pr($riv); exit;
             if ($this->Rivs->save($riv)) {
-				
-				$this->Rivs->ItemLedgers->deleteAll(['source_id' =>$riv->sale_return_id, 'source_model' => 'Inventory Return','company_id'=>$st_company_id]);
+				//pr($riv->sale_return_id); exit;
+				$this->Rivs->ItemLedgers->deleteAll(['source_id' =>$riv->id, 'source_model' => 'Inventory Return','company_id'=>$st_company_id]);
 				
 				foreach($riv->left_rivs as $left_riv){
 					foreach($left_riv->right_rivs as $right_riv){
@@ -204,22 +205,22 @@ class RivsController extends AppController
 						$itemLedger_in->item_id = $right_riv->item_id;
 						$itemLedger_in->quantity = $right_riv->quantity;
 						$itemLedger_in->source_model = 'Inventory Return';
-						$itemLedger_in->source_id = $id;
+						$itemLedger_in->source_id = $riv->id;
 						$itemLedger_in->in_out = 'In';
 						$itemLedger_in->rate = 0;
 						$itemLedger_in->company_id = $st_company_id;
-						$itemLedger_in->processed_on = date("Y-m-d");
+						$itemLedger_in->processed_on = $riv->created_on;
 						$this->Rivs->ItemLedgers->save($itemLedger_in);
 					}
 				$itemLedger_out = $this->Rivs->ItemLedgers->newEntity();
 				$itemLedger_out->item_id = $left_riv->item_id;
 				$itemLedger_out->quantity = $left_riv->quantity;
 				$itemLedger_out->source_model = 'Inventory Return';
-				$itemLedger_out->source_id = $id;
+				$itemLedger_out->source_id = $riv->id;
 				$itemLedger_out->in_out = 'Out';
 				$itemLedger_out->rate = 0;
 				$itemLedger_out->company_id = $st_company_id;
-				$itemLedger_out->processed_on = date("Y-m-d");
+				$itemLedger_out->processed_on = $riv->created_on;
 				$this->Rivs->ItemLedgers->save($itemLedger_out);
 			}
 				

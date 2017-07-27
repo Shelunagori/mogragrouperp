@@ -380,7 +380,7 @@ class InventoryTransferVouchersController extends AppController
 			$inventoryTransferVoucher->transaction_date=date("Y-m-d",strtotime($inventoryTransferVoucher->transaction_date));
 			
 			if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
-				//pr($inventory_transfer_voucher_rows); exit;
+			$this->InventoryTransferVouchers->ItemLedgers->deleteAll(['source_id'=>$inventoryTransferVoucher->id,'source_model'=>'Inventory Transfer Voucher','company_id'=>$st_company_id]);
 				foreach($inventory_transfer_voucher_rows as $inventory_transfer_voucher_row_data){
 				
 				if($inventory_transfer_voucher_row_data['status'] == 'out'){
