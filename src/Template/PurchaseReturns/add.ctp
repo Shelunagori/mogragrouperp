@@ -61,9 +61,10 @@ $this->Form->templates([
 					</div>
 					<div class="col-md-2 pull-right">
 									<div class="form-group">
-										<label class="control-label">Date</label>
+										<label class="control-label">Transaction Date</label>
 										<br/>
-										<?php echo date("d-m-Y"); ?> <br >
+										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text']); ?>
+										<br >
 											<span style="color: red;">
 												<?php if($chkdate == 'Not Found'){  ?>
 													You are not in Current Financial Year
