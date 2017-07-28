@@ -456,13 +456,13 @@ class PettyCashVouchersController extends AppController
             //pr($payment); exit;
 			$grn    = $this->PettyCashVouchers->Grns->query();
 				    $grn->update()
-				    ->set(['purchase_thela_bhada_status' => 'no','payment_id' => ''])
-				    ->where(['payment_id' => $pettycashvoucher->id])
+				    ->set(['purchase_thela_bhada_status' => 'no','pettycashvoucher_id' => ''])
+				    ->where(['pettycashvoucher_id' => $pettycashvoucher->id])
 				    ->execute();
 		   $invoice = $this->PettyCashVouchers->Invoices->query();
 					  $invoice->update()
-					  ->set(['sales_thela_bhada_status' => 'no','payment_id' => ''])
-					  ->where(['payment_id' => $pettycashvoucher->id])
+					  ->set(['sales_thela_bhada_status' => 'no','pettycashvoucher_id' => ''])
+					  ->where(['pettycashvoucher_id' => $pettycashvoucher->id])
 					  ->execute();
 			foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
 			{
@@ -492,7 +492,7 @@ class PettyCashVouchersController extends AppController
                     $this->PettyCashVouchers->Ledgers->save($ledger);
                     foreach($pettycashvoucher->petty_cash_voucher_rows as $key => $petty_cash_voucher_row)
 				    {
-					if(count($grnIds)>0)
+					if(count(@$grnIds)>0)
 					{
 						$grnArrays = explode(',',@$grnIds[$key]);
 						foreach($grnArrays as $grnArray)
@@ -504,9 +504,10 @@ class PettyCashVouchersController extends AppController
 							->execute();
 						}
 					}
-					if(count($invoiceIds)>0)
+					if(count(@$invoiceIds)>0)
 					{
 						$invoiceArrays = explode(',',@$invoiceIds[$key]);
+						pr($invoiceArrays); exit;
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$grn = $this->PettyCashVouchers->Invoices->query();

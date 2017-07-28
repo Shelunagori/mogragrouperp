@@ -83,7 +83,25 @@ class InvoiceBookingsController extends AppController
         $this->set('_serialize', ['invoiceBookings']);
 		$this->set(compact('url'));
     }
-
+	
+	public function Report(){
+		$invoiceBookings =$this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.processed_on >= ' => '2017-07-01','ItemLedgers.source_model'=>'Grns']);
+		$Grns =$this->InvoiceBookings->Grns->find();
+		$Grn_date=[];
+		$Grn_no=[];
+		foreach($Grns as $Grn){
+			$Grn_date[$Grn->id]=$Grn->date_created;
+			$Grn_no[$Grn->id]=$Grn->grn2;
+		}
+		$missmatch_grn=[];
+		foreach($invoiceBookings as $invoiceBooking){
+			if(@$Grn_date[$invoiceBooking->source_id] != @$invoiceBooking->processed_on){
+				$missmatch_grn[@$invoiceBooking->source_id]=@$Grn_no[$invoiceBooking->source_id];
+			}
+		}
+		
+		pr($missmatch_grn);exit;
+	}
 	public function PurchaseReturnIndex($status = null){
 		$this->viewBuilder()->layout('index_layout');
 		$url=$this->request->here();

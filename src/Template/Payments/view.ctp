@@ -80,8 +80,19 @@ margin-bottom: 0;
 			<th><?= __('Narration') ?></th>
 		</tr>
 		<?php $total_cr=0; $total_dr=0; foreach ($payment->payment_rows as $paymentRows):  ?>
+		<?php $name=""; if(empty($paymentRows->ReceivedFrom->alias)){
+			$name=$paymentRows->ReceivedFrom->name;
+		} else{
+			$name=$paymentRows->ReceivedFrom->name.'('; echo $paymentRows->ReceivedFrom->alias.')'; 
+		}?>
 		<tr>
-			<td style="white-space: nowrap;"><?= h($paymentRows->ReceivedFrom->name) ?></td>
+			<td style="white-space: nowrap;">
+			<?php $name=""; if(empty($paymentRows->ReceivedFrom->alias)){
+			 echo $paymentRows->ReceivedFrom->name;
+			} else{
+				 echo $paymentRows->ReceivedFrom->name.'('; echo $paymentRows->ReceivedFrom->alias.')'; 
+			}?>
+			</td>
 			<td style="white-space: nowrap;"><?= h($this->Number->format($paymentRows->amount,[ 'places' => 2])) ?> <?= h($paymentRows->cr_dr) ?></td>
 			<td><?= h($paymentRows->narration) ?></td>
 			
