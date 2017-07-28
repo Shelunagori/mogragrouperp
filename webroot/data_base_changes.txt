@@ -38,4 +38,5 @@ insert new field in journal_voucher_rows => grn_ids(varchar(200)),invoice_ids(va
 
 insert new field in payment_rows => grn_ids(varchar(200)),invoice_ids(varchar(200))
 
-
+<!---Manoj---28/07/2017----->
+insert new field in customers => hsn_code(varchar(25))

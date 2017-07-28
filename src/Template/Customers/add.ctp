@@ -201,6 +201,14 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label">HSN Code <span class="required" aria-required="true">*</span></label>
+							<div id="account_second_subgroup_div">
+							<?php echo $this->Form->input('hsn_code', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'HSN Code','maxlength'=>'8']); ?>
+							</div>
+						</div>
+					</div>
 				</div>
 				<h4 style="font-size:13px'">Customer's Contacts</h4>
 				<table class="table tableitm" id="main_tb">

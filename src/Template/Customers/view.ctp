@@ -43,7 +43,10 @@ color: #113775;
 			    <td><label class="control-label1">Payment Terms </label></td>
 				<td><?= h($customer->payment_terms) ?></td>
 			</tr>
-			
+			<tr>
+				<td><label class="control-label1">HSN Code</label></td>
+				<td><?= h($customer->hsn_code) ?></td>
+			</tr>
 			 
 		</tbody>
 	</table>

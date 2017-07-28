@@ -286,6 +286,9 @@ $(document).ready(function() {
 				required: true,
 				min : 1,
 			},
+			transaction_date:{
+				required: true
+			}
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
