@@ -12,7 +12,7 @@
 			<th>Voucher No.</th>
 			<th>In</th>
 			<th>Out</th>
-			<th style="text-align:right;">Rate</th>
+			<th style="text-align:right;">Unit Rate</th>
 		</tr>
 	</thead>
 	<tbody>
