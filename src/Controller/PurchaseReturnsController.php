@@ -151,6 +151,7 @@ class PurchaseReturnsController extends AppController
 			}else{
 				$purchaseReturn->voucher_no=1;
 			}
+			$purchaseReturn->transaction_date = date("Y-m-d",strtotime($this->request->data['transaction_date']));
 			 if ($this->PurchaseReturns->save($purchaseReturn)) {   
 				foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
 					$results=$this->PurchaseReturns->ItemLedgers->find()->where(['ItemLedgers.item_id' => $purchase_return_row->item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id])->first();
@@ -275,6 +276,7 @@ class PurchaseReturnsController extends AppController
 				$ledger->company_id = $invoiceBooking->company_id;
 				$ledger->transaction_date = date("Y-m-d");
 				$ledger->voucher_source = 'Purchase Return';
+				
 				$this->PurchaseReturns->Ledgers->save($ledger);
 
 					if(sizeof(@$ref_rows)>0){
@@ -393,7 +395,7 @@ class PurchaseReturnsController extends AppController
 			$ref_rows=@$this->request->data['ref_rows'];
 			$purchaseReturn->purchase_ledger_account=$invoiceBooking->purchase_ledger_account;
 			$purchaseReturn->vendor_id=$invoiceBooking->vendor_id;
-			
+			$purchaseReturn->transaction_date = date("Y-m-d",strtotime($this->request->data['transaction_date']));
             if ($this->PurchaseReturns->save($purchaseReturn)) {
 				$this->PurchaseReturns->Ledgers->deleteAll(['voucher_id' => $purchaseReturn->id, 'voucher_source' => 'Purchase Return']);
 				$this->PurchaseReturns->ItemLedgers->deleteAll(['source_id' => $purchaseReturn->id, 'source_model' => 'Purchase Return','company_id'=>$st_company_id]);
