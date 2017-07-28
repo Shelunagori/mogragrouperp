@@ -48,7 +48,7 @@ class LedgersController extends AppController
         $this->paginate = [
             'contain' => ['LedgerAccounts']
         ];
-        $ledgers = $this->paginate($this->Ledgers->find()->where($where)->order(['Ledgers.transaction_date' => 'DESC']));
+        $ledgers = $this->paginate($this->Ledgers->find()->where($where)->order(['Ledgers.transaction_date' => 'DESC','Ledgers.voucher_id'=>'DESC','Ledgers.voucher_source'=>'DESC']));
 		
 					$url_link=[];
 			foreach($ledgers as $ledger){
@@ -83,6 +83,7 @@ class LedgersController extends AppController
 		
 		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
+		//pr($ledgers);exit;
         $this->set(compact('ledgers','ledgerAccounts','url_link'));
         $this->set('_serialize', ['ledgers']);
 		$this->set(compact('url'));
