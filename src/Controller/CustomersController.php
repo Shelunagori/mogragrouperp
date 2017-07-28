@@ -232,6 +232,20 @@ class CustomersController extends AppController
 		//pr($defaultAddress); exit;
 		echo $defaultAddress->address; 
     }
+	public function checkAddress($id = null)
+    { 
+		$defaultAddress = $this->Customers->find('list')->contain(['Districts'])->where(['Customers.customer_id' => $id]);
+		
+         if($defaultAddress->districts->state=='Rajasthan')
+		 {
+			 echo "Rajasthan";
+		 }
+		 else
+		 {
+			 echo "other";
+		 }
+		//echo $defaultAddress->address; 
+    }
 	
 	public function defaultContact($id = null)
     {

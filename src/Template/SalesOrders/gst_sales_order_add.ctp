@@ -1103,8 +1103,17 @@ $(document).ready(function() {
 
 	
 	  
-	$('select[name="customer_id"]').on("change",function() {
+	$('select[name="customer_id"]').on("change",function() { 
 		var customer_id=$('select[name="customer_id"] option:selected').val();
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'checkAddress']); ?>";
+		url=url+'/'+customer_id,
+		$.ajax({
+			url: url,
+		}).done(function(response) {
+			alert(response);
+		});
+		
 		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'defaultAddress']); ?>";
 		url=url+'/'+customer_id,
 		$.ajax({
