@@ -1377,10 +1377,10 @@ class InvoicesController extends AppController
 								'ItemCompanies'=>function($q) use($st_company_id){
 									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
 								}]);
-						},'Companies','Customers','Employees'
+						},'Companies','Customers'=>['Districts'],'Employees'
 					]
 			]);
-			
+			//pr($sales_order->customer->district->state); exit;
 			$c_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$sales_order->customer->id])->first();
 			
 			

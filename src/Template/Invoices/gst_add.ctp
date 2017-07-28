@@ -177,7 +177,21 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					</div>
 					<?php } ?>
 				</div>
-			
+		<?php $gst_hide="style:display:;";
+			  $igst_hide="style:display:;" ;
+			  $tr2_colspan=15;
+			  $tr3colspan=8; 
+			  $tr4_colspan=5; ?>
+	<?php if($sales_order->customer->district->state!="Rajasthan"){
+		$gst_hide="display:none;" ;
+	}else{
+		$tr2_colspan=14;
+		 $tr3colspan=6; 
+		  $tr4_colspan=3;
+		$igst_hide="display:none;" ;
+	}?>
+	<?php echo $gst_hide; ?>		
+	<?php echo $igst_hide; ?>		
 	<div style="overflow: auto;">
 		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" />
 			<table  class="table tableitm" id="main_tb" border="1">
@@ -191,9 +205,11 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<th style="text-align: center;" colspan="2" width="50%">Discount</th>
 							<th style="text-align: center;" colspan="2" width="50%">P&F </th>
 							<th rowspan="2"  width="100px">Taxable Value</th>
-							<th style="text-align: center;" colspan="2" width="50%">CGST</th>
-							<th style="text-align: center;" colspan="2" width="20%">SGST</th>
-							<th style="text-align: center;" colspan="2" width="20%">IGST</th>
+							
+							<th style="<?php echo $gst_hide; ?> text-align: center;" colspan="2" width="50%">CGST</th>
+							<th style="<?php echo $gst_hide; ?> text-align: center;" colspan="2" width="20%">SGST</th>
+							
+							<th  style="<?php echo $igst_hide; ?> text-align: center;" colspan="2" width="20%">IGST</th>
 							
 							<th rowspan="2" width="100px">Total</th>
 							<th rowspan="2" width="100px"></th>
@@ -202,12 +218,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<th style="text-align: center;" width="150px">Amt</th>
 							<th style="text-align: center;" width="150px">%</th>
 							<th style="text-align: center;" width="150px">Amt</th>
-							<th style="text-align: center;" width="150px">%</th>
-							<th style="text-align: center;" width="150px">Amt</th>
-							<th style="text-align: center;" width="150px">%</th>
-							<th style="text-align: center;" width="150px">Amt</th>
-							<th style="text-align: center;" width="150px">%</th>
-							<th style="text-align: center;" width="150px">Amt</th>
+							<th style="<?php echo $gst_hide; ?>text-align: center;" width="150px">%</th>
+							<th style="<?php echo $gst_hide; ?>text-align: center;" width="150px">Amt</th>
+							<th style="<?php echo $gst_hide; ?>text-align: center;" width="150px">%</th>
+							<th style="<?php echo $gst_hide; ?>text-align: center;" width="150px">Amt</th>
+							<th style="<?php echo $igst_hide; ?>text-align: center;" width="150px">%</th>
+							<th style="<?php echo $igst_hide; ?>text-align: center;" width="150px">Amt</th>
 						</tr>
 						
 				</thead>
@@ -250,18 +266,18 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox pnf_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->pnf_per]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->pnf]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Taxable Value','readonly','step'=>0.01,'value' => @$sales_order_rows->taxable_value]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->cgst_per]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->cgst_amount]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->sgst_per]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->sgst_amount]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->igst_per]); ?></td>
-							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->igst_amount]); ?></td>
+							<td style="<?php echo $gst_hide; ?>" ><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox cgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->cgst_per]); ?></td>
+							<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->cgst_amount]); ?></td>
+							<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox sgst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->sgst_per]); ?></td>
+							<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->sgst_amount]); ?></td>
+							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm select2me','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$sales_order_rows->igst_per]); ?></td>
+							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$sales_order_rows->igst_amount]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$sales_order_rows->total]); ?></td>
 							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$sales_order_rows->id]); ?></label>
 							</td>
 						</tr>
 						<tr class="tr2  secondtr" row_no='<?php echo @$sales_order_rows->id; ?>'>
-							<td colspan="16">
+							<td colspan="<?php echo $tr2_colspan; ?>">
 							<div contenteditable="true" class="note-editable" id="summer<?php echo $q; ?>"><?php echo @$sales_order_rows->description; ?></div>
 							<?php echo $this->Form->input('q', ['label' => false,'type' => 'textarea','class' => 'form-control input-sm ','placeholder'=>'Description','style'=>['display:none'],'value' => @$sales_order_rows->description,'readonly','required']); ?>
 							</td>
@@ -276,7 +292,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							if($sales_order_rows->item->item_companies[0]->serial_number_enable==1) { ?>
 							<tr class="tr3" row_no='<?php echo @$sales_order_rows->id; ?>'>
 							<td></td>
-							<td colspan="16">
+							<td colspan="<?php echo $tr2_colspan; ?>">
 							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%']);  ?></td>
 							</tr><?php } ?>
 						<?php $q++; endforeach; }?>
@@ -300,7 +316,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							}
 						?>
 					<tr>
-						<td align="right" colspan="8">Fright Ledger Account</td>
+						<td align="right" colspan="<?php echo $tr3_colspan; ?>">Fright Ledger Account</td>
 						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
 						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
 						<td><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
@@ -313,7 +329,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						
 					</tr>
 					<tr>
-						<td align="right" colspan="5"><?php echo $this->Form->input('total_amt', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
+						<td align="right" colspan="<?php echo $tr4_colspan; ?>"><?php echo $this->Form->input('total_amt', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td align="right" colspan="2"><?php echo $this->Form->input('total_discount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Discount','readonly','step'=>0.01]); ?></td>
 						<td align="right" colspan="2"><?php echo $this->Form->input('total_pnf', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'P&F','readonly','step'=>0.01]); ?></td>
 						<td align="right"><?php echo $this->Form->input('total_taxable_value', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>

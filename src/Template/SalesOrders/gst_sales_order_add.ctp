@@ -300,7 +300,7 @@ if(!empty($copy))
 							<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 						</tr>
 						<tr class="tr2 <?php echo $disable_class; ?> maintr" row_no='<?php echo @$quotation_rows->id; ?>'>
-							<td colspan="11">
+							<td colspan="11" class="main">
 							<div class="note-editable" id="summer<?php echo $q; ?>" ><?php echo $quotation_rows->description; ?></div>
 							</td>
 							<td></td>
@@ -908,7 +908,7 @@ $(document).ready(function() {
 		i++; });
 		
 		var i=0;
-		$("#main_tb tbody tr.tr2").each(function(){
+		$("#main_tb tbody tr.tr2").each(function(){ 
 			var htm=$(this).find('td:nth-child(1)').find('div.note-editable').html();
 			
 			if(!htm){ htm=""; }

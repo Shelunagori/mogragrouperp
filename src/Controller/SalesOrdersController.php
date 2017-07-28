@@ -895,7 +895,7 @@ class SalesOrdersController extends AppController
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				);
-		$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+		$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>5])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
@@ -1058,12 +1058,8 @@ class SalesOrdersController extends AppController
 			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);
 			//$SaleTaxes = $this->SalesOrders->SaleTaxes->find('all')->where(['SaleTaxes.freeze'=>0]);
 			$Filenames = $this->SalesOrders->Filenames->find()->where(['customer_id' => $salesOrder->customer_id]);
-			$SaleTaxes = $this->SalesOrders->SaleTaxes->find('all')->where(['SaleTaxes.freeze'=>0])->matching(
-						'SaleTaxCompanies', function ($q) use($st_company_id) {
-							return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
-						} 
-					);
-			$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.freeze'=>0])->matching(
+			
+			$GstTaxes = $this->SalesOrders->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>5])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
