@@ -1803,10 +1803,11 @@ class InvoicesController extends AppController
 		$invoice = $this->Invoices->get($id, [
             'contain' => ['ItemSerialNumbers','InvoiceRows','SalesOrders' => ['Invoices'=>['InvoiceRows'],'SalesOrderRows' => ['Items'=>['ItemSerialNumbers','ItemCompanies'=>function($q) use($st_company_id){
 									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
-								}],'SaleTaxes']],'Companies','Customers'=>['CustomerAddress'=> function ($q) {
+								}]]],'Companies','Customers'=>['Districts','CustomerAddress'=> function ($q) {
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees']
         ]);
+		// pr($invoice->sales_order); exit;
 		$closed_month=$this->viewVars['closed_month'];
 		if(!in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month))
 		{
@@ -1820,12 +1821,6 @@ class InvoicesController extends AppController
 			}
 		}
 		
-		$sale_tax_ledger_accounts=[];
-			foreach($invoice->sales_order->sales_order_rows as $sales_order_row){
-				$st_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['source_id'=>$sales_order_row->sale_tax->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id])->first();
-				
-				$sale_tax_ledger_accounts[$sales_order_row->sale_tax->id]=$st_LedgerAccount->id;
-			}	
 		
 		foreach($invoice->invoice_rows as $invoice_row){
 			if($invoice_row->item_serial_number){
@@ -2195,7 +2190,7 @@ class InvoicesController extends AppController
                 $this->Flash->success(__('The invoice has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
-            } else { 
+            } else {  //pr($invoice); exit;
                 $this->Flash->error(__('The invoice could not be saved. Please, try again.'));
             }
         }
