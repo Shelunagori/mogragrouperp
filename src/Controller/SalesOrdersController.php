@@ -236,7 +236,25 @@ class SalesOrdersController extends AppController
 				return $q->order(['SalesOrderRows.id' => 'ASC'])->contain(['Items'=>['Units']]);
 			}]
         ]);
-		$this->set('salesOrder', $salesOrder);
+		
+		$cgst_per=[];
+		$sgst_per=[];
+		$igst_per=[];
+		foreach($salesOrder->sales_order_rows as $sales_order_row){
+			if($sales_order_row->cgst_per > 0){
+				$cgst_per[$sales_order_row->id]=$this->SalesOrders->SaleTaxes->get(@$sales_order_row->cgst_per);
+			}
+			if($sales_order_row->sgst_per > 0){
+				$sgst_per[$sales_order_row->id]=$this->SalesOrders->SaleTaxes->get(@$sales_order_row->sgst_per);
+			}
+			if($sales_order_row->igst_per > 0){
+				$igst_per[$sales_order_row->id]=$this->SalesOrders->SaleTaxes->get(@$sales_order_row->igst_per);
+			}
+		}
+		
+		
+		$this->set(compact('salesOrder','cgst_per','sgst_per','igst_per'));
+		//$this->set('salesOrder', $salesOrder,'cgst_per','sgst_per','igst_per');
         $this->set('_serialize', ['salesOrder']);
     }
 	

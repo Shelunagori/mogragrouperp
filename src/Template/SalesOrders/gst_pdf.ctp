@@ -10,7 +10,7 @@ $dompdf = new Dompdf($options);
 
 $dompdf = new Dompdf();
 
-
+//$html = pr($salesOrder);
 $html = '
 <html>
 <head>
@@ -199,19 +199,34 @@ $html.='
 		if($salesOrderRows->cgst_amount==0){ 
 		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($salesOrderRows->cgst_per,[ 'places' => 2]) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->cgst_amount) .'</td>';
+			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+            if(!empty($cgst_per[$salesOrderRows->id]['tax_figure']))
+			{
+				$html.=$cgst_per[$salesOrderRows->id]['tax_figure'].'%';
+			}
+			$html.='</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->cgst_amount) .'</td>';
 		}
 		
 		if($salesOrderRows->sgst_amount==0){ 
 		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($salesOrderRows->sgst_per,[ 'places' => 2]) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->sgst_amount) .'</td>';
+			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+			if(!empty($sgst_per[$salesOrderRows->id]['tax_figure']))
+			{
+				$html.=$sgst_per[$salesOrderRows->id]['tax_figure'].'%';
+			}
+		$html.='</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->sgst_amount) .'</td>';
 		}
 		
 		if($salesOrderRows->igst_amount==0){ 
 		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($salesOrderRows->igst_per,[ 'places' => 2]) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->igst_amount) .'</td>';
+			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+			if(!empty($igst_per[$salesOrderRows->id]['tax_figure']))
+			{
+				$html.=$igst_per[$salesOrderRows->id]['tax_figure'].'%';
+			}
+			$html.='</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->igst_amount) .'</td>';
 		}
 		
 		$html.='</td><td align="center" valign="top" style="padding-top:10px;">'. h($salesOrderRows->total) .'</td>
