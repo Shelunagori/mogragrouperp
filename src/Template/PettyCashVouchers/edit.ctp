@@ -78,7 +78,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                 <th width="3%"></th>
             </thead>
             <tbody id="main_tbody">
-            <?php foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row){ ?> 
+            <?php $ii=0; foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row){ ?> 
                 <tr class="main_tr" old_received_from_id="<?php echo $petty_cash_voucher_row->received_from_id; ?>">
                     <td><?php echo $this->Form->input('received_from_id', ['empty'=>'--Select-','options'=>$receivedFroms,'label' => false,'class' => 'form-control input-sm received_from','value'=>$petty_cash_voucher_row->received_from_id]); ?>
 					<div class="show_result">
@@ -102,7 +102,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								} 
 
 							}
-							echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control grns','style'=>'width:100%']);
+							echo $this->Form->input('petty_cash_voucher_rows.'.$ii.'.grn_ids[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control grns select2','style'=>'width:100%']);
 							}
 							elseif($petty_cash_voucher_row->received_from_id=='105' || $petty_cash_voucher_row->received_from_id=="168" || $petty_cash_voucher_row->received_from_id=='316')
 							{
@@ -125,7 +125,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								} 
 
 							}
-							echo $this->Form->input('q[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control  invoices','style'=>'width:100%']);
+							echo $this->Form->input('petty_cash_voucher_rows.'.$ii.'.invoice_ids[]', ['label'=>false,'options' => $option,'multiple' => 'multiple','class'=>'form-control  invoices select2','style'=>'width:100%']);
 							}
 
 							?>
@@ -177,7 +177,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                                     </td>
                                     <td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button" old_ref="<?php echo $old_ref_row->reference_no; ?>" old_ref_type="<?php echo $old_ref_row->reference_type; ?>"><i class="fa fa-times"></i></a></td>
                                 </tr>
-                            <?php } ?>
+                            <?php $i++; } ?>
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -200,7 +200,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                     <td><?php echo $this->Form->input('narration', ['type'=>'textarea','label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','value'=>$petty_cash_voucher_row->narration]); ?></td>
                     <td><a class="btn btn-xs btn-default deleterow" href="#" role="button"><i class="fa fa-times"></i></a></td>
                 </tr>
-            <?php } ?>
+            <?php $ii++;} ?>
             </tbody>
             <tfoot>
                 <td><a class="btn btn-xs btn-default addrow" href="#" role="button"><i class="fa fa-plus"></i> Add row</a></td>
@@ -328,7 +328,7 @@ $(document).ready(function() {
 	//--	 END OF VALIDATION
 	$('.invoices').select2(); 
 	
-	rename_rows();
+	//rename_rows();
 	$('.addrow').live("click",function() {
 		add_row();
 	});
@@ -348,14 +348,18 @@ $(document).ready(function() {
 		rename_rows();
 	}
 	
+	
     function rename_rows(){ 
         var i=0;
         $("#main_table tbody#main_tbody tr.main_tr").each(function(){
-            $(this).find("td:eq(0) select.received_from").select2().attr({name:"petty_cash_voucher_rows["+i+"][received_from_id]", id:"petty_cash_voucher_rows-"+i+"-received_from_id"}).rules("add", "required");
-			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
-			if(serial_l > 1)
-			{
+            $(this).find("td:eq(0) select.received_from").select2().attr({name:"petty_cash_voucher_rows["+i+"][received_from_id]", id:"petty_cash_voucher_rows-"+i+"-received_from_id"}).rules('add', {
+						required: true,
+						
+					});
+			//var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length; 
+			
 				var thela_type = $(this).find("td:eq(0) select.received_from").val();
+				
                 if(thela_type=='101' || thela_type=='165' || thela_type=='313')
 		        {				
 					$(this).find("td:eq(0) select.grns").select2().attr({name:"petty_cash_voucher_rows["+i+"][grn_ids][]", id:"petty_cash_voucher_rows-"+i+"-grn_ids"}).rules('add', {
@@ -376,7 +380,7 @@ $(document).ready(function() {
 						}
 					});
 				}
-			}
+			
             $(this).find("td:eq(1) input").attr({name:"petty_cash_voucher_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"}).rules('add', {
                         required: true,
                         min: 0.01,

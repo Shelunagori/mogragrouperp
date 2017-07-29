@@ -507,7 +507,6 @@ class PettyCashVouchersController extends AppController
 					if(count(@$invoiceIds)>0)
 					{
 						$invoiceArrays = explode(',',@$invoiceIds[$key]);
-						pr($invoiceArrays); exit;
 						foreach($invoiceArrays as $invoiceArray)
 						{ 
 							$grn = $this->PettyCashVouchers->Invoices->query();
