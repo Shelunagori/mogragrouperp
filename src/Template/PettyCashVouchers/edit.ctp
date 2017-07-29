@@ -509,6 +509,7 @@ $(document).ready(function() {
 				type: 'GET',
 				dataType: 'text'
 			}).done(function(response) {
+				
 				$(sel).closest('tr.main_tr').find('.show_result').html(response);
 				rename_rows();
 			});
@@ -528,8 +529,6 @@ $(document).ready(function() {
 				dataType: 'text'
 			}).done(function(response) {  
 				$(sel).closest('tr.main_tr').find('.show_result').html(response);
-				
-				$('.invoices').select2();
 				rename_rows(); 
 			});
 		}

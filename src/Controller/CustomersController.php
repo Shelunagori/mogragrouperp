@@ -19,6 +19,7 @@ class CustomersController extends AppController
      *
      * @return \Cake\Network\Response|null
      */
+	
     public function index()
     {
 		$this->viewBuilder()->layout('index_layout');
@@ -234,17 +235,19 @@ class CustomersController extends AppController
     }
 	public function checkAddress($id = null)
     { 
-		$defaultAddress = $this->Customers->find('list')->contain(['Districts'])->where(['Customers.customer_id' => $id]);
-		
-         if($defaultAddress->districts->state=='Rajasthan')
-		 {
-			 echo "Rajasthan";
-		 }
-		 else
-		 {
-			 echo "other";
-		 }
-		//echo $defaultAddress->address; 
+		$defaultAddress = $this->Customers->find()->contain(['Districts'])->where(['Customers.id' => $id]);
+		foreach($defaultAddress as $district)
+		{
+			if($district->district->state=='Rajasthan')
+			{
+				echo "Rajasthan";
+			}
+			else
+			{
+				echo "other";
+			}
+		}
+      exit;		
     }
 	
 	public function defaultContact($id = null)

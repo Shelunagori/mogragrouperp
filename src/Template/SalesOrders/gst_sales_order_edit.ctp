@@ -985,6 +985,26 @@ $(document).ready(function() {
 
 	$('select[name="customer_id"]').on("change",function() {
 		var customer_id=$('select[name="customer_id"] option:selected').val();
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'checkAddress']); ?>";
+		url=url+'/'+customer_id,
+		$.ajax({
+			url: url,
+		}).done(function(response) {
+			if(response=="Rajasthan")
+			{ 
+				$('.igst_display').css("display", "none");
+				$('.cgst_display').css("display", "block");
+				$('.sgst_display').css("display", "block");
+			}
+			else
+			{
+				$('.igst_display').css("display", "block");
+				$('.cgst_display').css("display", "none");
+				$('.sgst_display').css("display", "none");
+			}
+		});
+		
 		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'defaultAddress']); ?>";
 		url=url+'/'+customer_id,
 		$.ajax({
