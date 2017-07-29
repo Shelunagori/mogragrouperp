@@ -224,9 +224,9 @@ $(document).ready(function() {
             $(this).find("td:eq(0) select.received_from").select2().attr({name:"nppayment_rows["+i+"][received_from_id]", id:"quotation_rows-"+i+"-received_from_id"}).rules('add', {
                         required: true
                     });
-			var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
+			/*var serial_l=$('#main_table tbody#main_tbody tr.main_tr td:eq(0) select').length;
 			if(serial_l > 1)
-			{
+			{*/
 				var thela_type = $(this).find("td:eq(0) select.received_from").val();
                 if(thela_type=='101' || thela_type=='165' || thela_type=='313')
 		        {				
@@ -248,7 +248,7 @@ $(document).ready(function() {
 						}
 					});
 				}
-			}
+			//}
             $(this).find("td:eq(1) input").attr({name:"nppayment_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"}).rules('add', {
                         required: true,
                         min: 0.01,
