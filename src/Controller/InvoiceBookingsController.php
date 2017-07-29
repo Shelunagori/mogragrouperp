@@ -85,8 +85,8 @@ class InvoiceBookingsController extends AppController
     }
 	
 	public function Report(){
-		$invoiceBookings =$this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.processed_on >= ' => '2017-07-01','ItemLedgers.source_model'=>'Grns']);
-		$Grns =$this->InvoiceBookings->Grns->find();
+		$invoiceBookings =$this->InvoiceBookings->find();
+		$Grns =$this->InvoiceBookings->Grns->find()->where(['Grns.date_created >= ' => '2017-07-01']);
 		$Grn_date=[];
 		$Grn_no=[];
 		foreach($Grns as $Grn){
@@ -95,12 +95,12 @@ class InvoiceBookingsController extends AppController
 		}
 		$missmatch_grn=[];
 		foreach($invoiceBookings as $invoiceBooking){
-			if(@$Grn_date[$invoiceBooking->source_id] != @$invoiceBooking->processed_on){
-				$missmatch_grn[@$invoiceBooking->source_id]=@$Grn_no[$invoiceBooking->source_id];
+			if(@$Grn_date[$invoiceBooking->grn_id] >= '2017-07-01' || $invoiceBooking->supplier_date < '2017-07-01'){
+				$missmatch_grn[@$invoiceBooking->grn_id]=@$Grn_no[$invoiceBooking->grn_id];
 			}
 		}
 		
-		pr($missmatch_grn);exit;
+		pr($Grn_date);exit;
 	}
 	public function PurchaseReturnIndex($status = null){
 		$this->viewBuilder()->layout('index_layout');

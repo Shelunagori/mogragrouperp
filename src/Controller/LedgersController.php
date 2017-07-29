@@ -1103,7 +1103,7 @@ class LedgersController extends AppController
 					$Customer =$this->Ledgers->Customers->get(@$LedgerAccount->source_id);
 					$date = $financial_year->date_from;
 					$due_date= $financial_year->date_from;
-					pr($due_date); exit;
+					//pr($due_date); exit;
 					$query = $this->Ledgers->ReferenceBalances->query();
 					$query->update()
 							->set(['transaction_date' =>$date,'due_date'=>$due_date])
