@@ -177,7 +177,6 @@ class VendorsController extends AppController
 			$employee_Company_exist= $this->Vendors->VendorCompanies->exists(['vendor_id' => $vendor_id,'company_id'=>$Company->id]);
 			if($employee_Company_exist){
 				$bill_to_bill_account= $this->Vendors->LedgerAccounts->find()->where(['source_model'=>'Vendors','source_id' => $vendor_id,'company_id'=>$Company->id])->first();
-
 				$Company_array[$Company->id]='Yes';
 				$Company_array1[$Company->id]=$Company->name;
 				$Company_array2[$Company->id]=$bill_to_bill_account->bill_to_bill_account;

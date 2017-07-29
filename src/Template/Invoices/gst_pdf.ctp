@@ -175,8 +175,24 @@ $html = '
 			</td>
 		</tr>
 	</thead>
-</table>';
-
+</table>'; 
+$gst_hide="style:display:;";
+			  $igst_hide="style:display:;" ;
+			  $tr2_colspan=15;
+			  $tr3_colspan=10; 
+			  $tr4_colspan=7; 
+	if($invoice->customer->district->state!="Rajasthan"){
+		$gst_hide="display:none;" ;
+		$tr2_colspan=12;
+		 $tr3_colspan=8; 
+		 $tr4_colspan=5;
+	}else{
+		$tr2_colspan=14;
+		 $tr3_colspan=8; 
+		 $tr4_colspan=5;
+		$igst_hide="display:none;" ;
+	}
+//echo $igst_hide;
 $html.='
 <table width="100%" class="table_rows ">
 		<thead>
@@ -188,22 +204,22 @@ $html.='
 				<th style="text-align: center;" rowspan="2" > Amount</th>
 				<th style="text-align: center;" colspan="2" >Discount</th>
 				<th style="text-align: center;" colspan="2" >P&F </th>
-				<th style="text-align: center;" rowspan="2" >Taxable Value</th>
-				<th style="text-align: center;" colspan="2">CGST</th>
-				<th style="text-align: center;" colspan="2" >SGST</th>
-				<th style="text-align: center;" colspan="2" >IGST</th>
+				<th style=" text-align: center;" rowspan="2" >Taxable Value</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" colspan="2">CGST</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" colspan="2" >SGST</th>
+				<th style="'.$igst_hide.'"';$html.='text-align: center;" colspan="2" >IGST</th>
 				<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
 			<tr> <th style="text-align: center;" > %</th>
 				<th style="text-align: center;">Amt</th>
 				<th style="text-align: center;" > %</th>
 				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center;" > %</th>
-				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center;" > %</th>
-				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center; " >%</th>
-				<th style="text-align: center;" >Amt</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" > %</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" >Amt</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" > %</th>
+				<th style="'.$gst_hide.'"';$html.='text-align: center;" >Amt</th>
+				<th style="'.$igst_hide.'"';$html.='text-align: center; " >%</th>
+				<th style="'.$igst_hide.'"';$html.='text-align: center;" >Amt</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -243,31 +259,31 @@ $html.='
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->taxable_value,[ 'places' => 2]) .'</td>';
 		if($invoiceRows->cgst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->cgst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->cgst_amount,[ 'places' => 2]) .'</td>';
 		
 		}
 		if($invoiceRows->sgst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$sgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->sgst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$sgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->sgst_amount,[ 'places' => 2]) .'</td>';
 		}
 		if($invoiceRows->igst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$igst_per[$invoiceRows->id]['tax_figure']) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->igst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$igst_per[$invoiceRows->id]['tax_figure']) .'%</td>
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->igst_amount,[ 'places' => 2]) .'</td>';
 		}
 		$html.='
 
@@ -283,32 +299,32 @@ $html.='<tr>
 		
 		if($invoice->fright_cgst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_cgst->tax_figure) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_cgst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_cgst->tax_figure) .'%</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_cgst_amount,[ 'places' => 2]) .'</td>';
 		}
 		
 		if($invoice->fright_sgst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_sgst->tax_figure) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_sgst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_sgst->tax_figure) .'%</td>
+			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_sgst_amount,[ 'places' => 2]) .'</td>';
 		}
 		
 		if($invoice->fright_igst_amount==0){ 
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
-			<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
 		}else{
 		$html.='
-			<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_igst->tax_figure) .'%</td>
-			<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_igst_amount,[ 'places' => 2]) .'</td>';
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$fright_ledger_igst->tax_figure) .'%</td>
+			<td style="'.$igst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" valign="top" align="right"  >'. $this->Number->format($invoice->fright_igst_amount,[ 'places' => 2]) .'</td>';
 		}
 		$html.='	
 			

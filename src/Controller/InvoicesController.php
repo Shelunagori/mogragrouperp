@@ -2299,7 +2299,7 @@ class InvoicesController extends AppController
 		$this->viewBuilder()->layout('');
 		
         $invoice = $this->Invoices->get($id, [
-		'contain' => ['Customers',
+		'contain' => ['Customers'=>['Districts'],
 					'Employees','Transporters','Creator'=>['Designations'],
 					'Companies'=> ['CompanyBanks'=> function ($q) {
 						return $q
