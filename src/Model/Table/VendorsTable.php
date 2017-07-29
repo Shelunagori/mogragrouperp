@@ -62,7 +62,11 @@ class VendorsTable extends Table
 			'foreignKey' => 'account_first_subgroup_id',
             'joinType' => 'INNER'
         ]);
-
+    
+	    $this->belongsTo('Districts', [
+			'foreignKey' => 'district_id',
+            'joinType' => 'INNER'
+        ]);
 		   
 		$this->belongsTo('AccountSecondSubgroups', [
             'foreignKey' => 'account_second_subgroup_id',

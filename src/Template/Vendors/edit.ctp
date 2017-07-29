@@ -126,6 +126,12 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label">Districts <span class="required" aria-required="true">*</span></label>
+							<?php echo $this->Form->input('district_id', ['options' => $Districts,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Districts','empty'=>'--Select District--']); ?>
+						</div>
+					</div>
 				</div>
 				<h4 style="font-size:13px'">Contact Persons</h4>
 				<table class="table table-condensed tableitm" id="main_tb">

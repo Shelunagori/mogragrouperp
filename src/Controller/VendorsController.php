@@ -100,9 +100,10 @@ class VendorsController extends AppController
         }
 		$ItemGroups = $this->Vendors->ItemGroups->find('list');
 		$AccountCategories = $this->Vendors->AccountCategories->find('list');
+		$Districts = $this->Vendors->Districts->find('list');
 		$Companies = $this->Vendors->Companies->find('list');
         
-        $this->set(compact('vendor','ItemGroups','AccountCategories','Companies'));
+        $this->set(compact('vendor','ItemGroups','AccountCategories','Companies','Districts'));
         $this->set('_serialize', ['vendor']);
     }
 
@@ -141,8 +142,8 @@ class VendorsController extends AppController
 		$AccountGroups = $this->Vendors->AccountGroups->find('list');
 		$AccountFirstSubgroups = $this->Vendors->AccountFirstSubgroups->find('list');
 		$AccountSecondSubgroups = $this->Vendors->AccountSecondSubgroups->find('list');
-		
-        $this->set(compact('vendor','ItemGroups','AccountCategories','AccountGroups','AccountFirstSubgroups','AccountSecondSubgroups'));
+		$Districts = $this->Vendors->Districts->find('list');
+        $this->set(compact('vendor','ItemGroups','AccountCategories','AccountGroups','AccountFirstSubgroups','AccountSecondSubgroups','Districts'));
         $this->set('_serialize', ['vendor']);
     }
 
