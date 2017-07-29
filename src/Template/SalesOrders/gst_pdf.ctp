@@ -256,7 +256,7 @@ $html.='
 		$html.='
 		<tr class="even">
 			<td></td>
-			<td colspan="'.$colspan.'" style="text-align: justify;"><b> </b>'.$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div></td>
+			<td colspan="'.@$colspan.'" style="text-align: justify;"><b> </b>'.$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div></td>
 		</tr>';
 	}
 endforeach;
