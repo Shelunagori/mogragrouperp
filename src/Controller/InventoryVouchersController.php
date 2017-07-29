@@ -330,17 +330,20 @@ class InventoryVouchersController extends AppController
 		]);
 		
 		$display_items=[];
+		$display_quantity=[];
 		$sales_order_id=$invoice_data->sales_order_id;
 		foreach($invoice_data->invoice_rows as $invoice_row){ 
 		
 			$SalesOrderRow=$this->InventoryVouchers->SalesOrderRows->find()->where(['sales_order_id'=>$sales_order_id,'item_id'=>$invoice_row->item_id])->first();
-			//pr($invoice_row->item->source); 
+			
 			if($invoice_row->item->source=='Purchessed/Manufactured'){ 
 				if($SalesOrderRow->source_type=="Manufactured" || $SalesOrderRow->source_type=="" ){
 					$display_items[$invoice_row->item->id]=$invoice_row->item->name; 
+					$display_quantity[$invoice_row->item->id]=$SalesOrderRow->quantity; 
 				}
 			}elseif($invoice_row->item->source=='Assembled' or $invoice_row->item->source=='Manufactured'){
 				$display_items[$invoice_row->item->id]=$invoice_row->item->name; 
+				$display_quantity[$invoice_row->item->id]=$SalesOrderRow->quantity; 
 			}
 		}
 		
@@ -688,8 +691,9 @@ class InventoryVouchersController extends AppController
 				);
 				
 		//pr($Items->toArray()); exit;	
+		//pr($q_qty); exit;	
         $InventoryVoucher_detail=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id])->toArray();	
-		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status','InventoryVoucher_detail'));
+		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status','InventoryVoucher_detail','display_quantity'));
     }
 
     /**

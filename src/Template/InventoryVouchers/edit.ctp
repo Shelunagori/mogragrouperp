@@ -16,7 +16,7 @@
 				<ul class="nav nav-tabs tabs-left">
 					<?php foreach($display_items as $item_id=>$display_item){ ?>
 					<li <?php if($q_item_id==$item_id){ echo 'class="active"'; } ?> >
-						<?php	echo $this->Html->link($display_item.' ( '.$q_qty. ' )','/Inventory-Vouchers/edit?invoice='.$invoice_id.'&item-id='.$item_id.'&item-qty='.$q_qty); ?>
+						<?php	echo $this->Html->link($display_item.' ( '.$display_quantity[$item_id]. ' )','/Inventory-Vouchers/edit?invoice='.$invoice_id.'&item-id='.$item_id.'&item-qty='.$display_quantity[$item_id]); ?>
 					
 					</li>
 					<?php } ?>
