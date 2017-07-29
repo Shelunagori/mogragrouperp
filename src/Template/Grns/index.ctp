@@ -86,7 +86,7 @@
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Book Invoice','/InvoiceBookings/Add?grn='.$grn->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								}else if($grn_pull_request=="true")
 								{
-									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Grn Book Invoice','/InvoiceBookings/gstInvoiceBooking?grn='.$grn->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Gst Book Invoice','/InvoiceBookings/gstInvoiceBooking?grn='.$grn->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								}
   							else { ?>
 							<?php if(in_array(35,$allowed_pages)){ ?>
