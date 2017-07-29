@@ -124,6 +124,10 @@
 					$Receipt=$url_link[$ledger->id];
 					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
 					$url_path="/rivs/view/".$ledger->voucher_id;
+				}else if($ledger->voucher_source=="Inventory Voucher"){
+					$Receipt=$url_link[$ledger->id];
+					$voucher_no=h(str_pad(@$Receipt->voucher_no,4,'0',STR_PAD_LEFT));
+					$url_path="/Inventory/view/".$ledger->voucher_id;
 				}
 				
 				?>

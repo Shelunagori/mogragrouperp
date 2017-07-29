@@ -78,6 +78,8 @@ class LedgersController extends AppController
 					$url_link[$ledger->id]=$this->Ledgers->SaleReturns->get($ledger->voucher_id);
 				}else if($ledger->voucher_source=="Inventory Return"){
 					$url_link[$ledger->id]=$this->Ledgers->Rivs->get($ledger->voucher_id);
+				}else if($ledger->voucher_source=="Inventory Voucher"){
+					$url_link[$ledger->id]=$this->Ledgers->InventoryVouchers->get($ledger->voucher_id);
 				}
 			}
 		
