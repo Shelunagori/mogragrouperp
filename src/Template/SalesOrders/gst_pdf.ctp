@@ -132,7 +132,13 @@ $html.='
 			</td>
 		</tr>
 	</table>';
- 
+ foreach ($salesOrder->sales_order_rows as $salesOrderRows)
+ {
+	 if($salesOrderRows->cgst_amount!=0){ $cgst=1;}
+	 if($salesOrderRows->sgst_amount!=0){ $sgst=1;}
+	 if($salesOrderRows->igst_amount!=0){ $igst=1;}
+		 
+ }
 $html.='<br/>
 <table width="100%" class="table_rows">
 		<tr>
@@ -144,24 +150,45 @@ $html.='<br/>
 			<th rowspan="2">Amount</th>
 			<th style="text-align: center;" colspan="2" >Discount</th>
 			<th style="text-align: center;" colspan="2" >P&F </th>
-			<th style="text-align: center;" rowspan="2" >Taxable Value</th>
-			<th style="text-align: center;" colspan="2">CGST</th>
-			<th style="text-align: center;" colspan="2" >SGST</th>
-			<th style="text-align: center;" colspan="2" >IGST</th>
-			<th style="text-align: center;" rowspan="2" >Total</th>
+			<th style="text-align: center;" rowspan="2" >Taxable Value</th>';
+			if(@$cgst)
+			{
+			   $colspan=15;
+			   $html .='<th style="text-align: center;" colspan="2">CGST</th>';
+			}
+			if(@$sgst)
+			{
+			   $html .='<th style="text-align: center;" colspan="2" >SGST</th>';
+			}
+			if(@$igst)
+			{
+				$colspan=13;
+			   $html .='<th style="text-align: center;" colspan="2" >IGST</th>';
+			}
+			
+			$html .='<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
 			<tr> <th style="text-align: center;" > %</th>
 				<th style="text-align: center;">Amt</th>
 				<th style="text-align: center;" > %</th>
-				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center;" > %</th>
-				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center;" > %</th>
-				<th style="text-align: center;" >Amt</th>
-				<th style="text-align: center; " >%</th>
-				<th style="text-align: center;" >Amt</th>
-			</tr>
-';
+				<th style="text-align: center;" >Amt</th>';
+				if(@$cgst)
+			    {
+					$html .='<th style="text-align: center;" > %</th>
+							 <th style="text-align: center;" >Amt</th>';
+				}
+				if(@$sgst)
+			    {
+					$html .='<th style="text-align: center;" > %</th>
+				             <th style="text-align: center;" >Amt</th>';
+				}
+				if(@$igst)
+			    {
+					$html .='<th style="text-align: center; " >%</th>
+				             <th style="text-align: center;" >Amt</th>';
+				}
+				
+				$html .='</tr>';
 $sr=0; $h="-"; foreach ($salesOrder->sales_order_rows as $salesOrderRows): $sr++; 
 $html.='
 	<tr class="odd">
@@ -196,10 +223,8 @@ $html.='
 		}
 		
 		$html.='<td align="center" valign="top" style="padding-top:10px;">'. h($salesOrderRows->taxable_value) .'</td>';
-		if($salesOrderRows->cgst_amount==0){ 
-		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
-		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+		if($salesOrderRows->cgst_amount!=0){ 
+		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
             if(!empty($cgst_per[$salesOrderRows->id]['tax_figure']))
 			{
 				$html.=$cgst_per[$salesOrderRows->id]['tax_figure'].'%';
@@ -207,10 +232,8 @@ $html.='
 			$html.='</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->cgst_amount) .'</td>';
 		}
 		
-		if($salesOrderRows->sgst_amount==0){ 
-		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
-		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+		if($salesOrderRows->sgst_amount!=0){ 
+		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
 			if(!empty($sgst_per[$salesOrderRows->id]['tax_figure']))
 			{
 				$html.=$sgst_per[$salesOrderRows->id]['tax_figure'].'%';
@@ -218,10 +241,8 @@ $html.='
 		$html.='</td><td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. h($salesOrderRows->sgst_amount) .'</td>';
 		}
 		
-		if($salesOrderRows->igst_amount==0){ 
-		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td><td style="padding-top:8px;padding-bottom:5px;" align="center" valign="top">'. h($h) .'</td>';
-		}else{
-			$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
+		if($salesOrderRows->igst_amount!=0){ 
+		$html.='<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">';
 			if(!empty($igst_per[$salesOrderRows->id]['tax_figure']))
 			{
 				$html.=$igst_per[$salesOrderRows->id]['tax_figure'].'%';
@@ -235,7 +256,7 @@ $html.='
 		$html.='
 		<tr class="even">
 			<td></td>
-			<td colspan="17" style="text-align: justify;"><b> </b>'.$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div></td>
+			<td colspan="'.$colspan.'" style="text-align: justify;"><b> </b>'.$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div></td>
 		</tr>';
 	}
 endforeach;
