@@ -1,7 +1,7 @@
 <?php //pr($salesorder); exit;
 $pdf_url=$this->Url->build(['controller'=>'SalesOrders','action'=>'gst_pdf']);
 $list_url=$this->Url->build(['controller'=>'SalesOrders','action'=>'index']);
-$edit_url=$this->Url->build(['controller'=>'SalesOrders','action'=>'Edit']);
+$edit_url=$this->Url->build(['controller'=>'SalesOrders','action'=>'gstSalesOrderEdit']);
 ?>
 <table width="100%">
 	<tr>
