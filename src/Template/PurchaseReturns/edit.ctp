@@ -64,7 +64,7 @@ $this->Form->templates([
 									<div class="form-group">
 										<label class="control-label">Transaction Date</label>
 										<br/>
-										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text']); ?>
+										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text','value'=>date("d-m-Y",strtotime($purchaseReturn->transaction_date))]); ?>
 										 <br/>
 									<span style="color: red;">
 										<?php if($chkdate == 'Not Found'){  ?>
@@ -528,7 +528,7 @@ rename_ref_rows();
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));
 	}
 	
-	function delete_one_ref_no(sel){ alert();
+	function delete_one_ref_no(sel){ 
 		var old_received_from_id='<?php echo $v_LedgerAccount->id; ?>';
 		
 		var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');

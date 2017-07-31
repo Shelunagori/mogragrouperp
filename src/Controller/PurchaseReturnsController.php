@@ -163,7 +163,7 @@ class PurchaseReturnsController extends AppController
 					$itemLedger->in_out = 'Out';
 					$itemLedger->rate = $results->rate;
 					$itemLedger->company_id = $st_company_id;
-					$itemLedger->processed_on = date("Y-m-d");
+					$itemLedger->processed_on = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->ItemLedgers->save($itemLedger);
 				}
 				$vat_amounts=[]; $total_amounts=[];
@@ -241,7 +241,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 				}else{
 					//ledger posting for PURCHASE ACCOUNT
@@ -252,7 +252,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 					
 					//ledger posting for PURCHASE ACCOUNT
@@ -263,7 +263,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 				}
 
@@ -274,7 +274,7 @@ class PurchaseReturnsController extends AppController
 				$ledger->credit =0;
 				$ledger->voucher_id = $purchaseReturn->id;
 				$ledger->company_id = $invoiceBooking->company_id;
-				$ledger->transaction_date = date("Y-m-d");
+				$ledger->transaction_date =$purchaseReturn->transaction_date;
 				$ledger->voucher_source = 'Purchase Return';
 				
 				$this->PurchaseReturns->Ledgers->save($ledger);
@@ -410,7 +410,7 @@ class PurchaseReturnsController extends AppController
 					$itemLedger->in_out = 'Out';
 					$itemLedger->rate = $results->rate;
 					$itemLedger->company_id = $st_company_id;
-					$itemLedger->processed_on = date("Y-m-d");
+					$itemLedger->processed_on = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->ItemLedgers->save($itemLedger);
 				}
 				$vat_amounts=[]; $total_amounts=[];
@@ -491,7 +491,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date =$purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 				}else{
 					//ledger posting for PURCHASE ACCOUNT
@@ -502,7 +502,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date =$purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 					
 					//ledger posting for PURCHASE ACCOUNT
@@ -513,7 +513,7 @@ class PurchaseReturnsController extends AppController
 					$ledger->voucher_id = $purchaseReturn->id;
 					$ledger->company_id = $st_company_id;
 					$ledger->voucher_source = 'Purchase Return';
-					$ledger->transaction_date = date("Y-m-d");
+					$ledger->transaction_date = $purchaseReturn->transaction_date;
 					$this->PurchaseReturns->Ledgers->save($ledger);
 				}
 
@@ -524,7 +524,7 @@ class PurchaseReturnsController extends AppController
 				$ledger->credit =0;
 				$ledger->voucher_id = $purchaseReturn->id;
 				$ledger->company_id = $invoiceBooking->company_id;
-				$ledger->transaction_date = date("Y-m-d");
+				$ledger->transaction_date = $purchaseReturn->transaction_date;
 				$ledger->voucher_source = 'Purchase Return';
 				$this->PurchaseReturns->Ledgers->save($ledger);
 				
