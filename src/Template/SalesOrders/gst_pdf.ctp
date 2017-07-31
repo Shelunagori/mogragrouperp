@@ -108,7 +108,7 @@ $html = '
   <div id="content"> ';
   
 $html.='
-	<table width="100%" class="table table-striped table-bordered table-advance table-hover">
+	<table width="100%" class="table table-striped table-bordered table-advance table-hover" frame="box">
 		<tr>
 			<td width="53%">
 				<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
