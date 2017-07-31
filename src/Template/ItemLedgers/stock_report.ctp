@@ -38,17 +38,33 @@
 										echo $this->Form->input('stock', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
 									</td>
 									<td width="15%">
-										<label class="control-label">Date</label>
+										<label class="control-label">From</label>
 										<div>
 										<?php 
-										if(!empty($search_date))
+										if(!empty($from_date))
 										{
-											$date=date("d-m-Y",strtotime($search_date));
-											echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>@$date]);
+											$from_date=date("d-m-Y",strtotime($from_date));
+											echo $this->Form->input('from_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','id'=>'from_date','value' =>@$from_date]);
+											
 											
 										}else{
-											echo $this->Form->input('search_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','value' =>date('d-m-Y')]);
+											echo $this->Form->input('from_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','id'=>'from_date','data-date-format'=>'dd-mm-yyyy','value' =>date('d-m-Y')]);
+											
 										} ?>
+									</div>	
+									
+									</td>
+									<td width="15%">
+									<label class="control-label">To</label>
+									<div><?php 
+										if(!empty($to_date))
+										{
+											$to_date=date("d-m-Y",strtotime($to_date));
+											echo $this->Form->input('to_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','id'=>'to_date','value' =>@$to_date]);
+										}else{
+											echo $this->Form->input('to_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Date','data-date-format'=>'dd-mm-yyyy','id'=>'to_date','value' =>date('d-m-Y')]);
+										}
+									?>
 									</div>	
 									</td>
 									<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
@@ -181,11 +197,10 @@ var $rows = $('#main_tble tbody tr');
 	});
 	 function show_ledger_data(sel,item_id)
 	 {
-		//var from_date = $("#from_date").val();
-		//var to_date = $("#to_date").val();
-		//alert(from_date+'-'+to_date);
+		var from_date = $("#from_date").val();
+		var to_date = $("#to_date").val();
 		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
-		url=url+'/'+item_id;
+		url=url+'/'+item_id+'/'+from_date+'/'+to_date;
 		
 	       $.ajax({
 				url: url,

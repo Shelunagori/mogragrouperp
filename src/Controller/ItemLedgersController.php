@@ -260,11 +260,20 @@ class ItemLedgersController extends AppController
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
-		$search_date=$this->request->query('search_date');
+		$from_date=$this->request->query('from_date');
+		$to_date=$this->request->query('to_date');
 		$stock=$this->request->query('stock');
 		$item_sub_group=$this->request->query('item_sub_group_id');
-		
-		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->ItemLedgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$date = $financial_year->date_from;
+		$due_date= $financial_year->date_from;
+		if(empty($from_date)){
+			$from_date=$date;
+			$to_date=date('Y-m-d');
+		};
+		//pr($from_date);
+		//pr($to_date); exit;
 		$where=[];
 		$where1=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
@@ -287,7 +296,8 @@ class ItemLedgersController extends AppController
 		}
 			//pr($where);exit;
 		$item_stocks =[];$items_names =[];
-		$query = $this->ItemLedgers->find();
+		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date))]);
+				//pr($query->toArray()); exit;
 		$totalInCase = $query->newExpr()
 			->addCase(
 				$query->newExpr()->add(['in_out' => 'In']),
@@ -313,7 +323,7 @@ class ItemLedgersController extends AppController
 		->group('item_id')
 		->autoFields(true)
 		->where($where)
-		->where($where1)
+		
 		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
 		
@@ -407,7 +417,7 @@ class ItemLedgersController extends AppController
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','search_date','ItemDatas','items_unit_names','ItemUnits'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','from_date','to_date','ItemDatas','items_unit_names','ItemUnits'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
 	

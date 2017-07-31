@@ -93,6 +93,35 @@ class PaymentsController extends AppController
             'contain' => ['BankCashes', 'Companies', 'PaymentRows' => ['ReceivedFroms'], 'Creator']
         ]);
 		
+		
+		$petty_cash_voucher_row_data=[];
+		$petty_cash_grn_data=[];
+		$petty_cash_invoice_data=[];
+		$aval=0;
+		foreach($payment->payment_rows as $petty_cash_voucher_row){
+			if(!empty($petty_cash_voucher_row->grn_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->grn_ids,','));
+			$i=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Grn= $this->Payments->Grns->get($petty_cash_voucher_row_data);
+				//echo $petty_cash_voucher_row->id;
+				$petty_cash_grn_data[$petty_cash_voucher_row->id][$i]=$Grn;
+				$i++;
+				$aval=1;
+				}
+			}	
+			if(!empty($petty_cash_voucher_row->invoice_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->invoice_ids,','));
+			$j=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Invoice= $this->Payments->Invoices->get($petty_cash_voucher_row_data);
+				$petty_cash_invoice_data[$petty_cash_voucher_row->id][$j]=$Invoice;
+				$j++;
+				$aval=1;
+				}
+			}
+	    }
+		
 		$ref_details=[];
 		foreach($payment->payment_rows as $payment_row){
 			$ReferenceDetails=$this->Payments->ReferenceDetails->find()->where(['ledger_account_id'=>$payment_row->received_from_id,'payment_id'=>$payment->id]);
@@ -100,7 +129,7 @@ class PaymentsController extends AppController
 		}
 		
 		
-		$this->set(compact('ref_details'));
+		$this->set(compact('ref_details','petty_cash_invoice_data','petty_cash_grn_data','aval'));
         $this->set('payment', $payment);
         $this->set('_serialize', ['payment']);
     }
@@ -768,7 +797,10 @@ class PaymentsController extends AppController
 		}else{
 			echo 'false';
 		}
+	exit;
 	}
+	
+	
 	
 	function checkRefNumberUniqueEdit($received_from_id,$i,$is_old){
 		$reference_no=$this->request->query['ref_rows'][$received_from_id][$i]['ref_no'];

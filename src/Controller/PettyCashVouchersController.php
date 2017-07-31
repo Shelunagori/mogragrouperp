@@ -43,7 +43,35 @@ class PettyCashVouchersController extends AppController
         $pettycashvoucher = $this->PettyCashVouchers->get($id, [
             'contain' => ['BankCashes', 'Companies', 'PettyCashVoucherRows' => ['ReceivedFroms'], 'Creator']
         ]);
-		//pr($pettycashvoucher);exit;
+		
+		$petty_cash_voucher_row_data=[];
+		$petty_cash_grn_data=[];
+		$petty_cash_invoice_data=[];
+		$aval=0;
+		foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row){
+			if(!empty($petty_cash_voucher_row->grn_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->grn_ids,','));
+			$i=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Grn= $this->PettyCashVouchers->Grns->get($petty_cash_voucher_row_data);
+				//echo $petty_cash_voucher_row->id;
+				$petty_cash_grn_data[$petty_cash_voucher_row->id][$i]=$Grn;
+				$i++;
+				$aval=1;
+				}
+			}	
+			if(!empty($petty_cash_voucher_row->invoice_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->invoice_ids,','));
+			$j=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Invoice= $this->PettyCashVouchers->Invoices->get($petty_cash_voucher_row_data);
+				$petty_cash_invoice_data[$petty_cash_voucher_row->id][$j]=$Invoice;
+				$j++;
+				$aval=1;
+				}
+			}
+	    }
+		//pr($petty_cash_grn_data); exit;
 		$ref_bal=[];
 		foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row){
 			$ReferenceBalancess=$this->PettyCashVouchers->ReferenceDetails->find()->where(['ledger_account_id'=>$petty_cash_voucher_row->received_from_id,'petty_cash_voucher_id'=>$pettycashvoucher->id]);
@@ -51,7 +79,7 @@ class PettyCashVouchersController extends AppController
 		}
 		//pr($ref_bal);exit;
 										
-		$this->set(compact('ref_bal'));
+		$this->set(compact('ref_bal','petty_cash_grn_data','petty_cash_invoice_data','aval'));
 
         $this->set('pettycashvoucher', $pettycashvoucher);
         $this->set('_serialize', ['pettycashvoucher']);

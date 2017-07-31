@@ -90,7 +90,35 @@ class NppaymentsController extends AppController
         $nppayment = $this->Nppayments->get($id, [
             'contain' => ['BankCashes', 'Companies', 'NppaymentRows' => ['ReceivedFroms'], 'Creator']
         ]);
-
+		
+		$petty_cash_voucher_row_data=[];
+		$petty_cash_grn_data=[];
+		$petty_cash_invoice_data=[];
+		$aval=0;
+		foreach($nppayment->nppayment_rows as $petty_cash_voucher_row){
+			if(!empty($petty_cash_voucher_row->grn_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->grn_ids,','));
+			$i=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Grn= $this->Nppayments->Grns->get($petty_cash_voucher_row_data);
+				//echo $petty_cash_voucher_row->id;
+				$petty_cash_grn_data[$petty_cash_voucher_row->id][$i]=$Grn;
+				$i++;
+				$aval=1;
+				}
+			}	
+			if(!empty($petty_cash_voucher_row->invoice_ids)){
+			$petty_cash_voucher_row_data = explode(',',trim(@$petty_cash_voucher_row->invoice_ids,','));
+			$j=0;
+				foreach($petty_cash_voucher_row_data as $petty_cash_voucher_row_data){
+				$Invoice= $this->Nppayments->Invoices->get($petty_cash_voucher_row_data);
+				$petty_cash_invoice_data[$petty_cash_voucher_row->id][$j]=$Invoice;
+				$j++;
+				$aval=1;
+				}
+			}
+	    }
+		$this->set(compact('petty_cash_grn_data','petty_cash_invoice_data','aval'));
         $this->set('nppayment', $nppayment);
         $this->set('_serialize', ['nppayment']);
     }

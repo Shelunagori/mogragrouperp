@@ -74,13 +74,32 @@ margin-bottom: 0;
     <table width="100%" class="table" style="font-size:12px">
         <tr>
             <th><?= __('Paid to') ?></th>
+			<?php if($aval==1){ ?>
+            <th><?= __('Grn/Invoice') ?></th>
+			<?php } ?>
             <th><?= __('Amount') ?></th>
             <th><?= __('Narration') ?></th>
         </tr>
         <?php $total_cr=0; $total_dr=0; 
-         foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row): ?>
+         foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row): // pr($petty_cash_grn_data); ?>
         <tr>
             <td style="white-space: nowrap;"><?= h($petty_cash_voucher_row->ReceivedFrom->name) ?></td>
+			<?php if($aval==1){ ?>
+			<td style="white-space: nowrap;">
+			<?php  if(!empty($petty_cash_voucher_row->grn_ids)){ 
+			 foreach($petty_cash_grn_data[@$petty_cash_voucher_row->id] as $petty_cash_voucher_row1){
+				echo $petty_cash_voucher_row1->grn1.'/GRN-'.str_pad($petty_cash_voucher_row1->grn2, 3, '0', STR_PAD_LEFT).'/'.$petty_cash_voucher_row1->grn3.'/'.$petty_cash_voucher_row1->grn4;
+					echo "<br/>"; 
+				}
+			 } 
+			 if(!empty($petty_cash_voucher_row->invoice_ids)){ 
+			 foreach($petty_cash_invoice_data[@$petty_cash_voucher_row->id] as $petty_cash_voucher_row2){
+				echo $petty_cash_voucher_row2->in1.'/IN-'.str_pad($petty_cash_voucher_row2->in2, 3, '0', STR_PAD_LEFT).'/'.$petty_cash_voucher_row2->in3.'/'.$petty_cash_voucher_row2->in4;
+				echo "<br/>"; 
+				}
+			 }
+			 ?></td>
+			 <?php } ?>
             <td style="white-space: nowrap;"><?= h($this->Number->format($petty_cash_voucher_row->amount,[ 'places' => 2])) ?> <?= h($petty_cash_voucher_row->cr_dr) ?></td>
             <td><?= h($petty_cash_voucher_row->narration) ?></td>
         </tr>
@@ -100,7 +119,7 @@ margin-bottom: 0;
 					<?= h($this->Number->format($refbal->debit,['places'=>2])) ?> Dr
 					<?php } ?></td>
 					</tr>
-			<?php endforeach; ?>
+			<?php endforeach; exit;?>
 			</table>
 		</td>
 		
