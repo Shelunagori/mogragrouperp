@@ -195,7 +195,7 @@ if(!empty($copy))
 			</div>
 			<br/>
 			<div style="overflow: auto;">
-			<table class="table tableitm" id="main_tb" style="width:1700px;">
+			<table class="table tableitm" id="main_tb" style="width:1700px;" border="1">
 				<thead>
 					<tr>
 						<th rowspan="2">S No</th>
@@ -283,24 +283,24 @@ if(!empty($copy))
 							<td width="110px;><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf Per','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.taxable_value', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Taxable Value','value' => '']); ?></td>
-							<td width="150px;" ><?php 
+							<td width="150px;" class="cgst_width"><?php 
 							echo $this->Form->input('sales_order_rows.'.$q.'.cgst_per', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_display','empty'=>'Select',]); ?></td>
-							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
-							<td width="150px;" >
+							<td width="150px;" class="cgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
+							<td width="150px;" class="sgst_width">
 							<?php  echo $this->Form->input('sales_order_rows.'.$q.'.sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_display','empty'=>'Select',]);
 							?>
 							</td>
-							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
-							<td width="200px;" >
+							<td width="150px;" class="sgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
+							<td width="200px;" class="igst_width">
 							<?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_display','empty'=>'Select',]);
 							?>
 							</td>
-							<td width="150px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
+							<td width="150px;" class="igst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
 							<td width="200px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.total', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 							<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 						</tr>
 						<tr class="tr2 <?php echo $disable_class; ?> maintr" row_no='<?php echo @$quotation_rows->id; ?>'>
-							<td colspan="11" class="main">
+							<td colspan="16" class="main">
 							<div class="note-editable" id="summer<?php echo $q; ?>" ><?php echo $quotation_rows->description; ?></div>
 							</td>
 							<td></td>
@@ -341,24 +341,24 @@ if(!empty($copy))
 							<td width="110px;><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf Per','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.taxable_value', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Taxable Value','value' => '']); ?></td>
-							<td width="150px;" ><?php 
+							<td width="150px;" class="cgst_width"><?php 
 							echo $this->Form->input('sales_order_rows.'.$q.'.cgst_per', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_display','empty'=>'Select',]); ?></td>
-							<td width="150px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
-							<td width="150px;" >
+							<td width="150px;" class="cgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
+							<td width="150px;" class="sgst_width">
 							<?php  echo $this->Form->input('sales_order_rows.'.$q.'.sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_display','empty'=>'Select',]);
 							?>
 							</td>
-							<td width="150px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
-							<td width="200px;" >
+							<td width="150px;" class="sgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
+							<td width="200px;" class="igst_width">
 							<?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_display','empty'=>'Select',]);
 							?>
 							</td>
-							<td width="150px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
+							<td width="150px;" class="igst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
 							<td width="200px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.total', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 							<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 						</tr>
 						<tr class="tr2 maintr" row_no='<?php echo @$sales_order_rows->id; ?>'>
-							<td colspan="11" class="main">
+							<td colspan="16" class="main">
 								<div class="note-editable" id="summer<?php echo $q; ?>" ><?php echo $sales_order_rows->description; ?></div>
 							</td>
 							<td></td>
@@ -581,24 +581,24 @@ if(!empty($copy))
 			echo $this->Form->input('pnf_per	', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'P&F Percentage']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('pnf[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'P&f Amount']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('taxable_value[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Taxable Value']); ?></td>
-			<td width="150px;" ><?php 
+			<td width="150px;" class="cgst_width"><?php 
 			echo $this->Form->input('cgst_amount	', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_display','empty'=>'Select',]); ?></td>
-			<td width="150px;" ><?php echo $this->Form->input('cgst_amount	[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
-			<td width="150px;" >
+			<td width="150px;" class="cgst_width"><?php echo $this->Form->input('cgst_amount	[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
+			<td width="150px;" class="sgst_width">
 			<?php  echo $this->Form->input('sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_display','empty'=>'Select',]);
 			?>
 			</td>
-			<td width="150px;"><?php echo $this->Form->input('sgst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
-			<td width="200px;" >
+			<td width="150px;" class="sgst_width"><?php echo $this->Form->input('sgst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
+			<td width="200px;" class="igst_width">
 			<?php echo $this->Form->input('igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_display','empty'=>'Select',]);
 			?>
 			</td>
-			<td width="150px;" ><?php echo $this->Form->input('igst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
+			<td width="150px;" class="igst_width"><?php echo $this->Form->input('igst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('total[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 			<td width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
 		<tr class="tr2 preimp maintr">
-			<td colspan="11" class="main"></td>
+			<td colspan="16" class="main"></td>
 		</tr>
 	</tbody>
 </table>
@@ -1110,12 +1110,18 @@ $(document).ready(function() {
 				$('.igst_display').css("display", "none");
 				$('.cgst_display').css("display", "block");
 				$('.sgst_display').css("display", "block");
+				$('.igst_width').css("width", "1px");
+				$('.cgst_width').css("width", "150px");
+				$('.sgst_width').css("width", "150px");
 			}
 			else
 			{
 				$('.igst_display').css("display", "block");
 				$('.cgst_display').css("display", "none");
 				$('.sgst_display').css("display", "none");
+				$('.igst_width').css("width", "200px");
+				$('.cgst_width').css("width", "1px");
+				$('.sgst_width').css("width", "1px");
 			}
 		});
 		

@@ -108,7 +108,7 @@ $html = '
   <div id="content"> ';
   
 $html.='
-	<table width="100%">
+	<table width="100%" class="table table-striped table-bordered table-advance table-hover">
 		<tr>
 			<td width="53%">
 				<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
@@ -137,8 +137,7 @@ $html.='
 	 if($salesOrderRows->cgst_amount!=0){ $cgst=1;}
 	 if($salesOrderRows->sgst_amount!=0){ $sgst=1;}
 	 if($salesOrderRows->igst_amount!=0){ $igst=1;}
-		 
- }
+}
 $html.='<br/>
 <table width="100%" class="table_rows">
 		<tr>
