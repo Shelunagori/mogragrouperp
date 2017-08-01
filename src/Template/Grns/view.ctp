@@ -120,7 +120,16 @@ if($grn_row->item->item_companies[0]->serial_number_enable == 1) {
 </table>
 <div style="border:solid 1px ;"></div>
 <table width="100%" class="divFooter">
-	<tr>
+	<tr> 
+		<td width="70%" align="left" valign="top">
+		   <table >
+			     <tr>
+					<td valign="top" align="left"><b>Narration</b></td>
+					<td width="20" align="center">:</td>
+					<td valign="top"><?= h($grn->narration) ?></td>
+				</tr>
+			</table >
+		</td>
 		<td align="right">
 		<table>
 			<tr>

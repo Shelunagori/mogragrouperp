@@ -379,6 +379,9 @@ class InventoryTransferVouchersController extends AppController
             $inventoryTransferVoucher = $this->InventoryTransferVouchers->patchEntity($inventoryTransferVoucher, $this->request->data);
 			$inventoryTransferVoucher->transaction_date=date("Y-m-d",strtotime($inventoryTransferVoucher->transaction_date));
 			
+			$inventoryTransferVoucher->edited_on = date("Y-m-d"); 
+			$inventoryTransferVoucher->edited_by=$this->viewVars['s_employee_id'];
+			
 			if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
 			$this->InventoryTransferVouchers->ItemLedgers->deleteAll(['source_id'=>$inventoryTransferVoucher->id,'source_model'=>'Inventory Transfer Voucher','company_id'=>$st_company_id]);
 				foreach($inventory_transfer_voucher_rows as $inventory_transfer_voucher_row_data){
@@ -828,6 +831,8 @@ class InventoryTransferVouchersController extends AppController
 		
 		if ($this->request->is(['patch', 'post', 'put'])) {
             $inventoryTransferVoucher = $this->InventoryTransferVouchers->patchEntity($inventoryTransferVoucher, $this->request->data);
+			$inventoryTransferVoucher->edited_on = date("Y-m-d"); 
+			$inventoryTransferVoucher->edited_by=$this->viewVars['s_employee_id'];
 			
 			$inventoryTransferVoucher_datas = $this->InventoryTransferVouchers->ItemSerialNumbers->find()->where(['inventory_transfer_voucher_id'=>$inventoryTransferVoucher->id,'status'=>'Out']);
 			//pr($inventoryTransferVoucher_datas->toArray()); exit;
@@ -942,7 +947,8 @@ class InventoryTransferVouchersController extends AppController
 		
 		if ($this->request->is(['patch', 'post', 'put'])) {
             $inventoryTransferVoucher = $this->InventoryTransferVouchers->patchEntity($inventoryTransferVouchers, $this->request->data);
-		
+			$inventoryTransferVoucher->edited_on = date("Y-m-d"); 
+			$inventoryTransferVoucher->edited_by=$this->viewVars['s_employee_id'];
 			$inventoryTransferVoucher->company_id=$st_company_id;
 			$inventoryTransferVoucher->in_out='in';
 			$inventoryTransferVoucher->created_by=$s_employee_id;

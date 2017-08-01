@@ -61,6 +61,7 @@ class SalesOrdersTable extends Table
         $this->belongsTo('Quotations');
 		$this->belongsTo('TermsConditions');
 		$this->belongsTo('TaxDetails');
+		$this->belongsTo('Departments');
 		
 		$this->belongsTo('Employees', [
             'foreignKey' => 'employee_id',

@@ -400,7 +400,8 @@ class GrnsController extends AppController
 			}
 			
             $grn = $this->Grns->patchEntity($grn, $this->request->data);
-			$grn->date_created = date("Y-m-d",strtotime($grn->date_created)); 
+			$grn->edited_on = date("Y-m-d"); 
+			$grn->edited_by=$this->viewVars['s_employee_id'];
 			
 				if ($this->Grns->save($grn)) {
 					$this->Grns->ItemLedgers->deleteAll(['source_id' => $grn->id, 'source_model' => 'Grns']);

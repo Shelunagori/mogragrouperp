@@ -85,22 +85,20 @@ class InvoiceBookingsController extends AppController
     }
 	
 	public function Report(){
-		$invoiceBookings =$this->InvoiceBookings->find();
-		$Grns =$this->InvoiceBookings->Grns->find()->where(['Grns.date_created >= ' => '2017-07-01']);
-		$Grn_date=[];
-		$Grn_no=[];
-		foreach($Grns as $Grn){
-			$Grn_date[$Grn->id]=$Grn->date_created;
-			$Grn_no[$Grn->id]=$Grn->grn2;
-		}
-		$missmatch_grn=[];
-		foreach($invoiceBookings as $invoiceBooking){
-			if(@$Grn_date[$invoiceBooking->grn_id] >= '2017-07-01' || $invoiceBooking->supplier_date < '2017-07-01'){
-				$missmatch_grn[@$invoiceBooking->grn_id]=@$Grn_no[$invoiceBooking->grn_id];
+		$Invoices =$this->InvoiceBookings->Invoices->find();
+		foreach($Invoices as $Invoice){
+			$AccountGroupsexists = $this->InvoiceBookings->ItemLedgers->exists(['source_model' => 'Invoices','source_id'=>$Invoice->id,'processed_on'=>$Invoice->date_created]);
+			
+			if(!$AccountGroupsexists){
+				//$ItemLedger = $this->InvoiceBookings->ItemLedgers->find()->where(['source_model' => 'Invoices','source_id'=>$Invoice->id])->first();
+				$query = $this->InvoiceBookings->ItemLedgers->query();
+					$query->update()
+						->set(['processed_on' => $Invoice->date_created])
+						->where(['source_model' => 'Invoices','source_id'=>$Invoice->id])
+						->execute();
 			}
 		}
-		
-		pr($Grn_date);exit;
+		exit;
 	}
 	public function PurchaseReturnIndex($status = null){
 		$this->viewBuilder()->layout('index_layout');
@@ -521,6 +519,8 @@ class InvoiceBookingsController extends AppController
 					}else if($st_company_id=='27'){
 						$cst_purchase=309;
 					}
+			$invoiceBooking->edited_on = date("Y-m-d"); 
+			$invoiceBooking->edited_by=$this->viewVars['s_employee_id'];
 				
             if ($this->InvoiceBookings->save($invoiceBooking)) { 
 				$ref_rows=@$this->request->data['ref_rows'];
@@ -1171,7 +1171,9 @@ class InvoiceBookingsController extends AppController
 					}else if($st_company_id=='27'){
 						$cst_purchase=309;
 					}
-				
+			$invoiceBooking->edited_on = date("Y-m-d"); 
+			$invoiceBooking->edited_by=$this->viewVars['s_employee_id'];
+			
             if ($this->InvoiceBookings->save($invoiceBooking)) { 
 				$ref_rows=@$this->request->data['ref_rows'];
 				$invoiceBookingId=$invoiceBooking->id;

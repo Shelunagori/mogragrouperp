@@ -121,8 +121,13 @@ class SalesOrdersController extends AppController
 			);
 		}
 		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
-        $SalesMans = $this->SalesOrders->Employees->find('list')->toArray();
-		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find()->toArray();
+        $SalesMans = $this->SalesOrders->Employees->find('list')->matching(
+					'Departments', function ($q) use($items,$st_company_id) {
+						return $q->where(['Departments.id' =>1]);
+					}
+				);
+				//pr($SalesMans->toArray()); exit;
+		$SalesOrderRows = $this->SalesOrders->SalesOrderRows->find();
         $this->set(compact('salesOrders','status','copy_request','gst_copy_request','job_card','SalesOrderRows','Items','gst','SalesMans','salesman_name'));
 		 $this->set('_serialize', ['salesOrders']);
 		$this->set(compact('url'));

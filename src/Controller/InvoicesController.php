@@ -795,6 +795,8 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
+			$invoice->edited_on = date("Y-m-d"); 
+			$invoice->edited_by=$this->viewVars['s_employee_id'];
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
@@ -1004,7 +1006,7 @@ class InvoicesController extends AppController
 						$itemLedger->in_out = 'Out';
 						$itemLedger->rate = $rate-$item_discount+$item_excise+$item_pf;
 						$itemLedger->company_id = $invoice->company_id;
-						$itemLedger->processed_on = date("Y-m-d");
+						$itemLedger->processed_on = $invoice->date_created;
 						
 						$this->Invoices->ItemLedgers->save($itemLedger);
 						$i++;
@@ -1489,6 +1491,7 @@ class InvoicesController extends AppController
 				$ledger->voucher_source = 'Invoice';
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
+				
 				$this->Invoices->Ledgers->save($ledger); 
 				
 				
@@ -1859,9 +1862,11 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
-			
+			//pr($invoice->date_created); exit;
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
+			$invoice->edited_on = date("Y-m-d"); 
+			$invoice->edited_by=$this->viewVars['s_employee_id'];
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
@@ -2125,7 +2130,7 @@ class InvoicesController extends AppController
 						$itemLedger->in_out = 'Out';
 						$itemLedger->rate = $rate-$item_discount+$item_excise+$item_pf;
 						$itemLedger->company_id = $invoice->company_id;
-						$itemLedger->processed_on = date("Y-m-d");
+						$itemLedger->processed_on = $invoice->date_created;
 						
 						$this->Invoices->ItemLedgers->save($itemLedger);
 						$i++;

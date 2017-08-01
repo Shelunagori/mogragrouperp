@@ -72,6 +72,12 @@
 							<?php echo $this->Form->input('road_permit_no', ['label' => false,'class' => 'form-control input-sm','placeholder' => 'Road permit No']); ?>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>Narration</label>
+							<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
+						</div>
+					</div>
 				</div>
 			
 				<div class="alert alert-danger" id="row_error_item" style="display:none;padding: 5px !important;">

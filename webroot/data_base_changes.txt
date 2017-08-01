@@ -1,42 +1,13 @@
 <--------------Gopal------------>
-Add New Field iun Ledger Account auto_inc int(10).
-Add New Field in ledgers reconciliation_date
+Add New Field in GRN narration varchar(255).
+Add New Field in GRN edited_on date(10).
+Add New Field in GRN edited_by int(10).
 
+Add New Field in PO edited_on date.
+Add New Field in PO edited_by int(10).
 
+Add New Field in IB edited_on date.
+Add New Field in IB edited_by int(10).
 
-<----------------Dimpal--------->
-create new table inventory_transfer_voucher & inventory_transfer_voucher_rows [see structure of webroot]
-
-create new field in item_serial_ number table => inventory_transfer_voucher_id (int)
-
-
-
-
-<!----- Shailendra ------>
-need to import debit_note & debit_note_rows table
-you can the file in web root (debit_note.sql)
-
-
-<!-----Dimpal ---- 27/5/2017--->
-create new field in employee table => otp_no (int)
-
-
-<!----Dimpal--- 3/6/2017--->
-create new field in quotation_rows => proceed_qty(int)
-
-<!---Manoj---7/7/2017----->
-insert new field in invoice_bookings => narration(text)
-
-<!---Manoj---19/07/2017----->
-insert new field in grns => purchase_thela_bhada_status(varchar(10),Default(no)),payment_id int(10),journal_voucher_id   int(10),pettycashvoucher_id int(10)
-
-insert new field in invoice => sales_thela_bhada_status(varchar(10),Default(no)),payment_id int(10),journal_voucher_id   int(10),pettycashvoucher_id int(10)
-
-insert new field in petty_cash_voucher_rows => grn_ids(varchar(200)),invoice_ids(varchar(200))
-
-insert new field in journal_voucher_rows => grn_ids(varchar(200)),invoice_ids(varchar(200))
-
-insert new field in payment_rows => grn_ids(varchar(200)),invoice_ids(varchar(200))
-
-<!---Manoj---28/07/2017----->
-insert new field in customers => hsn_code(varchar(25))
+Add New Field in IN edited_on date.
+Add New Field in IN edited_by int(10).

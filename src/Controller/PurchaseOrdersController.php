@@ -332,6 +332,8 @@ class PurchaseOrdersController extends AppController
 			$purchaseOrder->date_created=date("Y-m-d",strtotime($purchaseOrder->date_created));
 			$purchaseOrder->delivery_date=date("Y-m-d",strtotime($purchaseOrder->delivery_date));
 			$purchaseOrder->company_id=$st_company_id;
+			$purchaseOrder->edited_on = date("Y-m-d"); 
+			$purchaseOrder->edited_by=$this->viewVars['s_employee_id'];
 			
 			//pr($purchaseOrder); exit;
 			foreach($purchaseOrder_old->purchase_order_rows as $purchase_order_row){

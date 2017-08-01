@@ -69,6 +69,12 @@
 							<?php echo $this->Form->input('road_permit_no', ['label' => false,'class' => 'form-control input-sm','placeholder' => 'Road permit No']); ?>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>Narration</label>
+							<?php echo $this->Form->input('narration', ['type' => 'textarea','label' => false,'class' => 'form-control input-sm ','placeholder' => 'Narration']); ?>
+						</div>
+					</div>
 				</div>
 			
 				<table class="table tableitm" id="main_tb">
@@ -89,12 +95,12 @@
 							$current_row_items=[];
 							foreach($grn->purchase_order->grns as $data){
 								foreach($data->grn_rows as $data2){
-									$processed_items[$data2->item_id]=@$processed_items[$data2->item_id]+$data2->quantity;
+									$existing_rows[$data2->item_id]=@$existing_rows[$data2->item_id]+$data2->quantity;
 								}
 							}
 							
 							foreach($grn->grn_rows as $current_invoice_row){
-								@$processed_items[$current_invoice_row->item_id]=$processed_items[$current_invoice_row->item_id]-$current_invoice_row->quantity;
+								@$existing_rows[$current_invoice_row->item_id]=$existing_rows[$current_invoice_row->item_id]-$current_invoice_row->quantity;
 								$current_rows[]=$current_invoice_row->item_id;
 								$current_row_items[$current_invoice_row->item_id]=$current_invoice_row->quantity;
 								$descriptions[$current_invoice_row->item_id]=$current_invoice_row->description;
@@ -122,6 +128,7 @@
 									}
 							} 
 							?>
+							<?php if(@$existing_rows[$grn_rows->item_id]!=$grn_rows->quantity) { ?> 
 							<tr class="tr1" row_no='<?php echo @$grn_rows->id; ?>'>
 								<td rowspan="2"><?php echo ++$q; --$q; ?></td>
 								<td>
@@ -133,9 +140,11 @@
 								<td>
 								
 								<?php  
-								echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm quan quantity','placeholder' => 'Quantity','value' => @$current_row_items[$grn_rows->item_id],'min'=>$min_val1,'max'=>$grn_rows->quantity-@$existing_rows[$grn_rows->item_id]]); 
-								?>
+								echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm quan quantity','placeholder' => 'Quantity','value' => @$current_row_items[$grn_rows->item_id]]); 
 								
+								
+								?>
+								<span>Max: <?= h($grn_rows->quantity-@$existing_rows[$grn_rows->item_id]) ?></span>
 								
 								</td>
 								<td>
@@ -146,7 +155,7 @@
 											$check='';
 										}
 									
-									echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','old_qty'=>@$current_row_items[$grn_rows->item_id],'value' => @$grn_rows->id,$check]); ?></label>
+									echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','old_qty'=>@$current_row_items[$grn_rows->item_id],'value' => @$grn_rows->id,$check,'max_qty'=>$grn_rows->quantity-@$existing_rows[$grn_rows->item_id]]); ?></label>
 								</td>
 								
 							</tr>
@@ -189,6 +198,8 @@
 									
 								</td>
 							</tr>
+							<?php } 
+							?>
 						<?php $q++; endforeach; ?>
 					</tbody>
 				</table>
@@ -321,30 +332,7 @@ $(document).ready(function() {
 				
 		});
 	}
-		/* function add_sr_textbox(){
-		var r=0;
-		$("#main_tb tbody tr.tr1").each(function(){
-			var row_no=$(this).attr('row_no');
-			var val=$(this).find('td:nth-child(4) input[type="checkbox"]:checked').val();
-			var serial_number_enable=$(this).find('td:nth-child(2) input[type="hidden"]:nth-child(2)').val();
-			
-			var item_id=$(this).find('td:nth-child(2) input[type="hidden"]:nth-child(1)').val();
-			var quantity=$(this).find('td:nth-child(3) input[type="text"]').val();
-			if(val && serial_number_enable){ 
-			
-			var p=1;
-				$('tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').find('input.sr_no').remove();
-				for (i = 1; i <= quantity; i++) {
-					
-					$('tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').append('<input type="text" class="sr_no" name="serial_numbers['+item_id+'][]" placeholder="'+p+' serial number" id="sr_no'+r+'" ids="sr_no['+i+']",id="sr_no['+r+']" />').rules("add", "required");
-					p++;
-					r++;
-				}
-			}else{
-				$('tr.tr2[row_no="'+row_no+'"] td:nth-child(1)').find('input.sr_no').remove();
-			}
-		});
-	} */
+		
 	
 	$('.rename_check').die().live("click",function() { 
 		rename_rows();
@@ -388,10 +376,17 @@ $(document).ready(function() {
 		$("#main_tb tbody tr.tr1").each(function(){
 			var row_no=$(this).attr('row_no');
 			var val=$(this).find('td:nth-child(4) input[type="checkbox"]:checked').val();
-						
+			var qty=$(this).find('td:nth-child(4) input[type="checkbox"]:checked').attr('max_qty');			
 			if(val){
 				$(this).find('td:nth-child(2) input[type="hidden"]:nth-child(1)').attr({ name:"grn_rows["+val+"][item_id]"});
-				$(this).find('td:nth-child(3) input').attr({ name:"grn_rows["+val+"][quantity]", id:"grn_rows-"+val+"-quantity"}).removeAttr('readonly');
+				
+				$(this).find('td:nth-child(3) input').attr({ name:"grn_rows["+val+"][quantity]", id:"grn_rows-"+val+"-quantity"}).removeAttr('readonly').attr('max',qty).rules('add', {
+						    
+							max: qty,
+							messages: {
+								max: "please select equal to the max quantity",
+							}
+					});
 				$(this).css('background-color','#fffcda');
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#fffcda');
 			}
