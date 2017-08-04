@@ -400,6 +400,8 @@ $(document).ready(function() {
         do_mian_amount_total();
     });
 	
+	
+	
 	 $('.addrefrow').live("click",function() {
         var sel=$(this).closest('tr.main_tr');
         var received_from_id=$(this).closest('tr.main_tr').find('td:nth-child(1) select').val();
@@ -455,12 +457,22 @@ $(document).ready(function() {
         
     }
     
-	 $('.deleterefrow').live("click",function() {
+	 /* $('.deleterefrow').live("click",function() {
         var sel=$(this);
         delete_one_ref_no(sel);
         $(this).closest("tr").remove();
         do_ref_total();
-    });
+    }); */
+	
+	$('.deleterefrow').live("click",function() {
+		var sel=$(this);
+		delete_one_ref_no(sel);
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
+		do_ref_total();
+	});
     
     $('.received_from').live("change",function() {
         var sel=$(this);

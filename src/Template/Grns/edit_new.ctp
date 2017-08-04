@@ -48,7 +48,7 @@
 						<div class="form-group">
 							<label class="control-label">Transaction Date</label>
 							<br/>
-							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to)),'value' => date("d-m-Y",strtotime($grn->date_created))]); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to)),'value' => date("d-m-Y",strtotime($grn->transaction_date))]); ?>
 						</div>
 						<span style="color: red;"><?php if($chkdate == 'Not Found'){  ?>
 					You are not in Current Financial Year
@@ -99,13 +99,14 @@
 								}
 							}
 							
-							foreach($grn->grn_rows as $current_invoice_row){
+							foreach($grn->grn_rows as $current_invoice_row){ //pr($current_invoice_row); 
 								@$existing_rows[$current_invoice_row->item_id]=$existing_rows[$current_invoice_row->item_id]-$current_invoice_row->quantity;
 								$current_rows[]=$current_invoice_row->item_id;
 								$current_row_items[$current_invoice_row->item_id]=$current_invoice_row->quantity;
 								$descriptions[$current_invoice_row->item_id]=$current_invoice_row->description;
 								
-							} 
+							}
+								//pr($current_rows); 	 exit;
 							
 							foreach($grn->purchase_order->purchase_order_rows as $data3){
 								$total_items[$data3->item_id]=@$total_items[$data3->item_id]+$data3->quantity;
@@ -116,7 +117,7 @@
 							
 							
 							$q=0; foreach ($grn->purchase_order->purchase_order_rows as $grn_rows): ?>
-							<?php 
+							<?php  
 							$min_val=0;
 							$min_val1=0;
 							foreach($grn->item_serial_numbers as $item_serial_number){
@@ -128,7 +129,8 @@
 									}
 							} 
 							?>
-							<?php if(@$existing_rows[$grn_rows->item_id]!=$grn_rows->quantity) { ?> 
+							<?php if(@$existing_rows[$grn_rows->item_id]!=$grn_rows->quantity) { 
+							//pr($grn_rows); ?> 
 							<tr class="tr1" row_no='<?php echo @$grn_rows->id; ?>'>
 								<td rowspan="2"><?php echo ++$q; --$q; ?></td>
 								<td>
@@ -152,7 +154,7 @@
 									if(in_array($grn_rows->item_id,$current_rows)){
 									$check='checked';
 										}else{
-											$check='';
+											$check=' ';
 										}
 									
 									echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','old_qty'=>@$current_row_items[$grn_rows->item_id],'value' => @$grn_rows->id,$check,'max_qty'=>$grn_rows->quantity-@$existing_rows[$grn_rows->item_id]]); ?></label>

@@ -316,7 +316,6 @@ class InventoryVouchersController extends AppController
 				 { $chkdate = 'Found'; }
 				 else
 				 { $chkdate = 'Not Found'; }
-
 			   }
 			   else
 				{
@@ -339,11 +338,11 @@ class InventoryVouchersController extends AppController
 			if($invoice_row->item->source=='Purchessed/Manufactured'){ 
 				if($SalesOrderRow->source_type=="Manufactured" || $SalesOrderRow->source_type=="" ){
 					$display_items[$invoice_row->item->id]=$invoice_row->item->name; 
-					$display_quantity[$invoice_row->item->id]=$SalesOrderRow->quantity; 
+					$display_quantity[$invoice_row->item->id]=$invoice_row->quantity; 
 				}
 			}elseif($invoice_row->item->source=='Assembled' or $invoice_row->item->source=='Manufactured'){
 				$display_items[$invoice_row->item->id]=$invoice_row->item->name; 
-				$display_quantity[$invoice_row->item->id]=$SalesOrderRow->quantity; 
+				$display_quantity[$invoice_row->item->id]=$invoice_row->quantity; 
 			}
 		}
 		

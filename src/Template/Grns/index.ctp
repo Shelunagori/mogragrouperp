@@ -91,8 +91,11 @@
   							else { ?>
 							<?php if(in_array(35,$allowed_pages)){ ?>
 							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $grn->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View '));  ?>	
+							
 							 <?php } ?>
 							<?php if($status!='Invoice-Booked' and in_array(16,$allowed_pages)){ ?>
+							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'EditNew', $grn->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));?> <?php } ?>
+							<?php if($status=='Invoice-Booked' and in_array(16,$allowed_pages)){ ?>
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'EditNew', $grn->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));?> <?php } ?>
                              <?php } ?>
 							</td>

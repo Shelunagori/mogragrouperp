@@ -315,10 +315,18 @@ $(document).ready(function() {
         }
     }
     
-    $('.deleterefrow').live("click",function() {
+    /* $('.deleterefrow').live("click",function() {
         $(this).closest("tr").remove();
         do_ref_total();
-    });
+    }); */
+	
+	$('.deleterefrow').live("click",function() {
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
+		do_ref_total();
+	});
     
     $('.received_from').live("change",function() {
         var sel=$(this);

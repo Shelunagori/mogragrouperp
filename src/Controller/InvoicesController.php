@@ -1334,10 +1334,13 @@ class InvoicesController extends AppController
 		exit;
 	}
 	public function salesReport(){
+		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
+		$salesman_id=$this->request->query('salesman_name');
+		
 		$where=[];
 		
 		if(!empty($From)){
@@ -1348,13 +1351,34 @@ class InvoicesController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['Invoices.date_created <=']=$To;
 		}
-		$this->set(compact('From','To'));
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['Invoices.employee_id']=$salesman_id;
+		}
+		$this->set(compact('From','To','salesman_id'));
 		
 		
-		$this->viewBuilder()->layout('index_layout');
+		
+		/*  $SalesMans = $this->Invoices->Employees->find('list')->matching(
+					'Departments', function ($q) {
+						return $q->where(['Departments.id' =>1]);
+					}
+				); */
+			$SalesMans = $this->Invoices->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])
+			->matching(
+					'EmployeeCompanies', function ($q) use($st_company_id) {
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
+					}
+				)
+			->matching(
+					'Departments', function ($q) {
+						return $q->where(['Departments.id' =>1]);
+					}
+				); 
+				//pr($SalesMans); exit;
 		$invoices = $this->Invoices->find()->where($where)->contain(['InvoiceRows','Customers'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
 		//pr($invoices->toArray()); exit;
-		$this->set(compact('invoices'));
+		$this->set(compact('invoices','SalesMans'));
 	}
 	
 	

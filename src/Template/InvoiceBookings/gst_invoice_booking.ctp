@@ -127,7 +127,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 									$option[$key] = $ledger_account_detail;
 								}
 							}
-							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'class' => 'form-control input-sm']); ?>
+							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'empty'=>'Select','class' => 'form-control input-sm gst_type']); ?>
 							<?php echo $this->Form->input('cst_vat', ['label' => false,'type' => 'hidden']); ?>
 							<br/>
 							<? ?>
@@ -143,6 +143,14 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 					</div>
 				</div>
 			
+			
+			<?php $gst_hide="style:display:;";
+			  $igst_hide="style:display:;" ;
+			  $tr2_colspan=15;
+			  $tr3_colspan=10; 
+			  $tr4_colspan=7; 
+			?>
+			
 			<div style="overflow: auto;">
 			<table class="table tableitm" id="main_tb" border="1" >
 				<thead>
@@ -156,9 +164,9 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						<th width="100" colspan="2"><div align="center"><b>Discount</b></div></th>
 						<th width="100" colspan="2" align="center"><div align="center"><b>P & F</b></div></th>
 						<th width="100" rowspan="2"><b>Taxable Value </b></th>
-						<th width="100" colspan="2" align="center"><div align="center"><b>CGST</b></div></th>
-						<th width="100" colspan="2" align="center"><div align="center"><b>SGST</b></div></th>
-						<th width="100" colspan="2" align="center"><div align="center"><b>IGST</b></div></th>
+						<th  class="cgst_display" width="100" colspan="2" align="center"><div align="center"><b>CGST</b></div></th>
+						<th class="sgst_display" width="100" colspan="2" align="center"><div align="center"><b>SGST</b></div></th>
+						<th class="igst_display" width="100" colspan="2" align="center"><div align="center"><b>IGST</b></div></th>
 						<th width="100" rowspan="2"><b>Others</b></th>
 						<th width="100" rowspan="2"><b>Total</b></th>
 						<th width="100" rowspan="2"><b>rate to be posted</b></th>
@@ -168,12 +176,12 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						<th align="right">Rs</th>
 						<th align="right">%</th>
 						<th align="right">Rs</th>
-						<th align="right">%</th>
-						<th align="right">Rs</th>
-						<th align="right">%</th>
-						<th align="right">Rs</th>
-						<th align="right">%</th>
-						<th align="right">Rs</th>
+						<th class="cgst_display" align="right">%</th>
+						<th class="cgst_display" align="right">Rs</th>
+						<th class="sgst_display" align="right">%</th>
+						<th class="sgst_display" align="right">Rs</th>
+						<th class="igst_display" align="right">%</th>
+						<th class="igst_display" align="right">Rs</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -248,24 +256,24 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.taxable_value',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal']); ?>
 							</td>
 							
-							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<td class="cgst_display" align="center">
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01]); ?>
 							</td>
 							
-							<td align="center">
+							<td class="cgst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01]); ?>
 							</td>
 							
-							<td align="center">
+							<td class="sgst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+							<td class="igst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 							
-							<td align="center">
+							<td class="igst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
 							</td>
 							
@@ -303,12 +311,12 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						<td></td>
 						<td><?php echo $this->Form->input('total_pnf', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('taxable_value', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
-						<td></td>
-						<td><?php echo $this->Form->input('total_cgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
-						<td></td>
-						<td><?php echo $this->Form->input('total_sgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
-						<td></td>
-						<td><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="cgst_display" ></td>
+						<td class="cgst_display" ><?php echo $this->Form->input('total_cgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="sgst_display" ></td>
+						<td class="sgst_display" ><?php echo $this->Form->input('total_sgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="igst_display" ></td>
+						<td class="igst_display" ><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_other_charge', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_rate_to_post', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'rate to be post','readonly']); ?></td>
@@ -658,6 +666,9 @@ $(document).ready(function() {
 			cheque_no :{
 				required: true,
 			},
+			purchase_ledger_account :{
+				required: true,
+			},
 			
 		},
 		
@@ -703,7 +714,6 @@ $(document).ready(function() {
 		
 
 		submitHandler: function (form) {
-			
 			success3.show();
 			error3.hide();
 			form[0].submit();
@@ -818,6 +828,35 @@ $(document).ready(function() {
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));
 	}
 	
+	
+	$('select[name="purchase_ledger_account"]').on("change",function() { 
+	var gst_ledger_id=$('select[name="purchase_ledger_account"] option:selected').val();
+	
+		if(gst_ledger_id=="799" || gst_ledger_id=="800" )
+		{  
+			//$('.ledger_account_for_gst').val(gst_ledger_id);
+				$('.igst_display').css("display", "none");
+				$('.cgst_display').css("display", "");
+				$('.sgst_display').css("display", "");
+				$('.igst_percent option:selected').prop('selected', false);
+				calculate_total();
+				//$('.igst_percent :selected').attr('selected', '');
+				//$('.igst_percent').removeAttr("selected");
+				
+		}else{
+			//$('.ledger_account_for_gst').val(gst_ledger_id);
+				$('.igst_display').css("display", "");
+				$('.cgst_display').css("display", "none");
+				$('.sgst_display').css("display", "none");
+				$('.cgst_percent option:selected').prop('selected', false);
+				$('.sgst_percent option:selected').prop('selected', false);
+				 calculate_total();
+				//$('.cgst_percent :selected').attr('selected', '');
+				//$('.sgst_percent :selected').attr('selected', '');
+				
+	
+		}
+	});
 
 
 });

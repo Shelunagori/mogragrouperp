@@ -83,8 +83,8 @@ fieldset legend {
 						</label>
 						<label class="checkbox-inline">
 							<?php 
-							if(in_array(151,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
-							echo $this->Form->input('user_rights.151.page_id', ['label' => 'Gst Sales Order Add','class' => '','type'=>'checkbox','value'=>151,$checked_status]); ?>
+							if(in_array(149,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+							echo $this->Form->input('user_rights.149.page_id', ['label' => 'Gst Sales Order Add','class' => '','type'=>'checkbox','value'=>149,$checked_status]); ?>
 						</label>
 					</div>
 					</fieldset>
@@ -478,8 +478,8 @@ fieldset legend {
 						<div class="checkbox-list">
 							<label class="checkbox-inline">
 								<?php 
-								if(in_array(149,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
-								echo $this->Form->input('user_rights.149.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>149,$checked_status]); ?>
+								if(in_array(151,$page_ids)){ $checked_status='checked'; }else{ $checked_status=''; }
+								echo $this->Form->input('user_rights.151.page_id', ['label' => 'View','class' => '','type'=>'checkbox','value'=>151,$checked_status]); ?>
 							</label>
 						</div>
 				</div>

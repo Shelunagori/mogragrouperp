@@ -58,6 +58,7 @@
 					<?php  $page_no=0; $total_over_due_amount=0;					
 					foreach ($LedgerAccounts as $LedgerAccount){
 						@$hide ="style='display:;'";
+						if(!empty($total_debit_1[ $LedgerAccount->id])  || !empty($total_credit_1[ $LedgerAccount->id]) || !empty($total_debit_2[ $LedgerAccount->id])  || !empty($total_credit_2[ $LedgerAccount->id]) || !empty($total_debit_3[ $LedgerAccount->id])  || !empty($total_credit_3[ $LedgerAccount->id]) || !empty($total_debit_4[ $LedgerAccount->id])  || !empty($total_credit_4[ $LedgerAccount->id])|| !empty($total_debit_5[ $LedgerAccount->id])  || !empty($total_credit_5[ $LedgerAccount->id]) ){
 						if((!empty($total_debit_1)) || (!empty($total_credit_1))){
 									$total1=@$total_debit_1[ $LedgerAccount->id] - @$total_credit_1[ $LedgerAccount->id];
 						}
@@ -139,7 +140,7 @@
 					?>
 					<tr <?php echo @$hide; ?>>
 						<td><?= h($page_no) ?></td>
-						<td><?php echo $LedgerAccount->name."(". $LedgerAccount->alias.")"?></td>
+						<td><?php echo $LedgerAccount->name." (". $LedgerAccount->alias.")"?></td>
 						<td><?php echo $custmer_payment_terms[$LedgerAccount->id];?></td>
 						<?php if((!empty($total_debit_1)) || (!empty($total_credit_1))){
 									$total1=@$total_debit_1[ $LedgerAccount->id] - @$total_credit_1[ $LedgerAccount->id];
@@ -184,15 +185,16 @@
 						<?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color; ?>"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
-						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo sprintf ("%.2f", $total_data); ?></td>
+						<td align="right" style="color:<?php echo $acc_color2; ?>">
+						<?php echo sprintf ("%.2f", $total_data); ?></td>
 					</tr>
-					<?php  } ?>	
+						<?php } } ?>	
 				
 				</tbody>
 				<tfoot>
 				<tr>
 					<td colspan="9" align="right">Total : </td>
-					<td align="right"><?php echo @$total_over_due_amount;?></td>
+					<td align="right"><?php echo $this->Number->format($total_over_due_amount,['places'=>2]);?></td>
 				</tr>
 				</tfoot>
 			</table>

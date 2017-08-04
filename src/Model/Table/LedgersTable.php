@@ -59,6 +59,7 @@ class LedgersTable extends Table
 		$this->belongsTo('SaleReturns');
 		$this->belongsTo('Customers');
 		$this->belongsTo('Rivs');
+		$this->belongsTo('Vendors');
     }
 
     /**

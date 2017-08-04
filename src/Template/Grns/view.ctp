@@ -60,9 +60,14 @@ margin-bottom: 0;
 			<td width="50%" valign="top" align="right">
 				<table>
 					<tr>
-						<td  width="48%" valign="top">Date.</td>
+						<td  width="48%" valign="top">Created Date.</td>
 						<td  width="2%" valign="top">:</td>
 						<td valign="top"><?= h(date("d-m-Y",strtotime($grn->date_created))) ?></td>
+					</tr>
+					<tr>
+						<td  width="48%" valign="top">Transaction Date.</td>
+						<td  width="2%" valign="top">:</td>
+						<td valign="top"><?= h(date("d-m-Y",strtotime($grn->transaction_date))) ?></td>
 					</tr>
 					<tr>
 						<td  width="50%" valign="top">Road Permit No</td>

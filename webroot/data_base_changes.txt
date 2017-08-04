@@ -11,3 +11,6 @@ Add New Field in IB edited_by int(10).
 
 Add New Field in IN edited_on date.
 Add New Field in IN edited_by int(10).
+
+
+Add New Field in Customer hsn_code int(10).

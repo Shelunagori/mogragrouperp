@@ -170,7 +170,13 @@
 						<?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color; ?>"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
-						<td align="right" style="color:<?php echo $acc_color2; ?>"><?php echo $this->Number->format($total_data,['places'=>2]); ?></td>
+						<td align="right">
+						<?php 
+						if((@$total_debit_6[ $LedgerAccount->id]) > (@$total_credit_6[ $LedgerAccount->id])){
+						echo  $this->Number->format($total_data+((@$total_debit_6[$LedgerAccount->id])-(@$total_credit_6[ $LedgerAccount->id])),['places'=>2]);  
+						}else{
+							echo  $this->Number->format($total_data+((@$total_credit_6[$LedgerAccount->id])-(@$total_debit_6[ $LedgerAccount->id])),['places'=>2]);
+						}?></td>
 					</tr>
 					<?php }  ?>	
 				

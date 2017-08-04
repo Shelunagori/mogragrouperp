@@ -324,6 +324,8 @@ select
 					<ul class="sub-menu">
 						<?php if(in_array(3,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create', '/Sales-Orders/add' ).'</li>';
+						} ?>
+						<?php if(in_array(149,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create Gst Sales Order', '/Sales-Orders/gstSalesOrderAdd' ).'</li>';
 						} ?>
 						<?php if(in_array(22,$allowed_pages) || in_array(4,$allowed_pages)){

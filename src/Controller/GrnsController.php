@@ -89,7 +89,18 @@ class GrnsController extends AppController
         $this->set('_serialize', ['grn']);
     }
 
-	
+    public function report()
+    {
+		$grn = $this->Grns->find();
+		
+		foreach($grn as $grn){
+			$query = $this->Grns->query();
+			$query->update()
+				->set(['transaction_date' => $grn->date_created])
+				->where(['id' => $grn->id])
+				->execute();
+		} exit;
+	}	
 	
 	
     /**
@@ -288,7 +299,7 @@ class GrnsController extends AppController
 			//pr($this->request->data); exit;
 			}
 			$grn = $this->Grns->patchEntity($grn, $this->request->data);
-			$grn->date_created = date("Y-m-d",strtotime($grn->date_created)); 
+			$grn->date_created = date("Y-m-d"); 
 			//pr($grn->date_created); exit;
 			$grn->purchase_order_id=$purchase_order_id;
 			$grn->company_id=$st_company_id ;
@@ -402,6 +413,7 @@ class GrnsController extends AppController
             $grn = $this->Grns->patchEntity($grn, $this->request->data);
 			$grn->edited_on = date("Y-m-d"); 
 			$grn->edited_by=$this->viewVars['s_employee_id'];
+			//pr($grn->transaction_date); exit;
 			
 				if ($this->Grns->save($grn)) {
 					$this->Grns->ItemLedgers->deleteAll(['source_id' => $grn->id, 'source_model' => 'Grns']);
@@ -421,7 +433,7 @@ class GrnsController extends AppController
 							$itemLedger->source_model = 'Grns';
 							$itemLedger->source_id = $grn->id;
 							$itemLedger->in_out = 'In';
-							$itemLedger->processed_on = $grn->date_created;
+							$itemLedger->processed_on = $grn->transaction_date;
 							$this->Grns->ItemLedgers->save($itemLedger);
 						} 
 					$qq=0; foreach($grn->grn_rows as $grn_row){

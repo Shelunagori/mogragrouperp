@@ -12,10 +12,10 @@
 					
 						<div class="row">
 							<div class="col-md-3">
-								<input type="text" name="date" class="form-control date-picker from_date" placeholder="From Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo $date; ?>">
+								<input type="text" name="date" class="form-control date-picker from_date" placeholder="From Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo date("d-m-Y",strtotime($date)); ?>">
 							</div>
 							<div class="col-md-3">
-								<input type="text" name="to_date" class="form-control date-picker to_date" placeholder="To Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo $to_date; ?>">
+								<input type="text" name="to_date" class="form-control date-picker to_date" placeholder="To Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo date("d-m-Y",strtotime($to_date)); ?>">
 							</div>
 							<div class="col-md-3">
 								<span class="input-group-btn">

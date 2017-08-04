@@ -384,10 +384,21 @@ $(document).ready(function() {
 		
 	}
 	
-	$('.deleterefrow').live("click",function() {
+/* 	$('.deleterefrow').live("click",function() {
 		var sel=$(this);
 		delete_one_ref_no(sel);
 		$(this).closest("tr").remove();
+		do_ref_total();
+	}); */
+	
+	
+	$('.deleterefrow').live("click",function() {
+		var sel=$(this);
+		delete_one_ref_no(sel);
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
 		do_ref_total();
 	});
 	

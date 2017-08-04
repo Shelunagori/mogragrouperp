@@ -586,8 +586,13 @@ class ContraVouchersController extends AppController
         $this->set(compact('ReferenceBalances','cr_dr'));
     }
     
-    public function fetchRefNumbersEdit($received_from_id=null,$reference_no=null,$debit=null,$credit=null,$cr_dr=null){
+   public function fetchRefNumbersEdit($received_from_id=null,$cr_dr=null,$reference_no=null,$debit=null,$credit=null){
         $this->viewBuilder()->layout('');
+		$received_from_id=$this->request->query['received_from_id'];
+		$cr_dr=$this->request->query['cr_dr'];
+		$reference_no=$this->request->query['reference_no'];
+		$debit=$this->request->query['debit'];
+		$credit=$this->request->query['credit'];
         $ReferenceBalances=$this->ContraVouchers->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id]);
         $this->set(compact('ReferenceBalances', 'reference_no', 'credit', 'debit', 'cr_dr'));
     }

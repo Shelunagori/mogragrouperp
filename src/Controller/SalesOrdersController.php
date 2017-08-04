@@ -134,7 +134,18 @@ class SalesOrdersController extends AppController
     }
 	
 	
-	 public function exportExcel($status=null)
+	 public function report($status=null)
+    { 
+		$SalesOrderRows=$this->SalesOrders->SalesOrderRows->find();
+		$data=[];
+		foreach($SalesOrderRows as $SalesOrderRow){
+			if($SalesOrderRow->quantity < $SalesOrderRow->processed_quantity ){
+				$data[$SalesOrderRow->sales_order_id]=$SalesOrderRow->processed_quantity-$SalesOrderRow->quantity;
+			}
+		}
+		pr($data); exit;
+	}
+	public function exportExcel($status=null)
     {
 		$this->viewBuilder()->layout('');
 		$where=[];

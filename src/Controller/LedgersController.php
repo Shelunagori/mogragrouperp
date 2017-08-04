@@ -772,7 +772,6 @@ class LedgersController extends AppController
 				}else if($ledger->voucher_source=="Receipt Voucher"){
 				$url_link[$ledger->id]=$this->Ledgers->Receipts->get($ledger->voucher_id); 
 				}else if($ledger->voucher_source=="Invoice"){ 
-				
 					$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id);
 					
 				}else if($ledger->voucher_source=="Invoice Booking"){
@@ -1088,7 +1087,7 @@ class LedgersController extends AppController
 				$Receipt =$this->Ledgers->InvoiceBookings->get($ReferenceDetail->invoice_booking_id);
 				$LedgerAccount =$this->Ledgers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
 				if($LedgerAccount->source_model=='Vendors'){
-					$Customer =$this->Ledgers->Customers->get($LedgerAccount->source_id);
+					$Customer =$this->Ledgers->Vendors->get($LedgerAccount->source_id);
 					$date = date("Y-m-d", strtotime($Receipt->created_on));
 					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
 					$query = $this->Ledgers->ReferenceBalances->query();

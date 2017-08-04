@@ -113,7 +113,14 @@ class CustomersController extends AppController
         $companyGroups = $this->Customers->CompanyGroups->find('list', ['limit' => 200]);
 		$CustomerGroups = $this->Customers->CustomerGroups->find('list')->order(['CustomerGroups.name' => 'ASC']);
         $customerSegs = $this->Customers->CustomerSegs->find('list')->order(['CustomerSegs.name' => 'ASC']);
-		$employees = $this->Customers->Employees->find('list', ['limit' => 200])->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']);
+		/* $employees = $this->Customers->Employees->find('list', ['limit' => 200])->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']); */
+		
+		 $employees = $this->Customers->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
+					'EmployeeCompanies', function ($q) use($st_company_id) {
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
+					}
+				); 
+		
 		
 		$transporters = $this->Customers->Transporters->find('list')->order(['Transporters.transporter_name' => 'ASC']);
 		$AccountCategories = $this->Customers->AccountCategories->find('list')->order(['AccountCategories.name' => 'ASC']);
@@ -132,6 +139,8 @@ class CustomersController extends AppController
     public function edit($id = null)
     {
 		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
         $customer = $this->Customers->get($id, [
             'contain' => ['CustomerContacts','CustomerAddress']
         ]);
@@ -159,7 +168,11 @@ class CustomersController extends AppController
         $companyGroups = $this->Customers->CompanyGroups->find('list', ['limit' => 200]);
 		$CustomerGroups = $this->Customers->CustomerGroups->find('list')->order(['CustomerGroups.name' => 'ASC']);
         $customerSegs = $this->Customers->CustomerSegs->find('list')->order(['CustomerSegs.name' => 'ASC']);
-		$employees = $this->Customers->Employees->find('list', ['limit' => 200])->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC']);
+		$employees = $this->Customers->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
+					'EmployeeCompanies', function ($q) use($st_company_id) {
+						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
+					}
+				); 
 		
 		$transporters = $this->Customers->Transporters->find('list')->order(['Transporters.transporter_name' => 'ASC']);
 		$AccountCategories = $this->Customers->AccountCategories->find('list');
@@ -320,7 +333,7 @@ class CustomersController extends AppController
 		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 
-		 foreach($ReferenceDetails as $ReferenceDetail){
+		 /* foreach($ReferenceDetails as $ReferenceDetail){
 			 if($ReferenceDetail->invoice_id !=0){ 
 				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
 				$Customer =$this->Customers->get($Receipt->customer_id);
@@ -469,7 +482,7 @@ class CustomersController extends AppController
 				}
 			}
 		}
- 
+  */
 	 
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
@@ -508,7 +521,7 @@ class CustomersController extends AppController
 							}
 					} 
 				}
-				else if($ReferenceBalance->due_date >= $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
+				else if($ReferenceBalance->due_date <= $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_2[$ReferenceBalance->ledger_account_id]=@$total_debit_2[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -538,7 +551,7 @@ class CustomersController extends AppController
 						}
 						
 				}else{
-					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+					if($ReferenceBalance->debit != $ReferenceBalance->credit && $ReferenceBalance->due_date){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
 							}else{

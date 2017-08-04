@@ -62,6 +62,14 @@ $min_qty=0; foreach($item->item_serial_numbers as $item_serial_number){
 							</div>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label">HSN Code <span class="required" aria-required="true">*</span></label>
+							<div>
+							<?php echo $this->Form->input('hsn_code', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'HSN Code','maxlength'=>'8']); ?>
+							</div>
+						</div>
+					</div>
 				</div>
 				
 				

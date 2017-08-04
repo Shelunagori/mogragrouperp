@@ -85,27 +85,19 @@ class InvoiceBookingsController extends AppController
     }
 	
 	public function Report(){
-		$LedgerAccounts =$this->InvoiceBookings->LedgerAccounts->find()->where(['company_id'=>25]);
-		
-		$sml_ledger=[];
-		$fmsl_ledger=[];
-		
-		foreach($LedgerAccounts as $LedgerAccount){
-			$smlexists = $this->InvoiceBookings->ItemLedgers->exists(['source_model' =>$LedgerAccount->source_model,'source_id'=>$LedgerAccount->id,'company_id'=>26]);
+		$Invoices =$this->InvoiceBookings->Invoices->find();
+		foreach($Invoices as $Invoice){
+			$AccountGroupsexists = $this->InvoiceBookings->ItemLedgers->exists(['source_model' => 'Invoices','source_id'=>$Invoice->id,'processed_on'=>$Invoice->date_created]);
 			
-			$fmslexists = $this->InvoiceBookings->ItemLedgers->exists(['source_model' =>$LedgerAccount->source_model,'source_id'=>$LedgerAccount->id,'company_id'=>27]);
-			
-			if(!$smlexists){
-				$sml_ledger[]=$LedgerAccount->name.' ('.$LedgerAccount->alias.')';
+			if(!$AccountGroupsexists){
+				//$ItemLedger = $this->InvoiceBookings->ItemLedgers->find()->where(['source_model' => 'Invoices','source_id'=>$Invoice->id])->first();
+				$query = $this->InvoiceBookings->ItemLedgers->query();
+					$query->update()
+						->set(['processed_on' => $Invoice->date_created])
+						->where(['source_model' => 'Invoices','source_id'=>$Invoice->id])
+						->execute();
 			}
-		
-			if(!$fmslexists){
-				$fmsl_ledger[]=$LedgerAccount->name.' ('.$LedgerAccount->alias.')';
-			}
-		
-	}
-	$data=	array_unique(array_merge($sml_ledger,$fmsl_ledger));
-		pr($data);exit;
+		}
 		exit;
 	}
 	public function PurchaseReturnIndex($status = null){

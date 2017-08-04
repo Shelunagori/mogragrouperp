@@ -132,7 +132,7 @@ class GrnsTable extends Table
 	 
 	public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
 	{
-		$data['date_created'] = date('Y-m-d',strtotime($data['date_created']));
+		$data['transaction_date'] = date('Y-m-d',strtotime($data['transaction_date']));
 	}
 
     public function buildRules(RulesChecker $rules)

@@ -177,7 +177,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                                     </td>
                                     <td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button" old_ref="<?php echo $old_ref_row->reference_no; ?>" old_ref_type="<?php echo $old_ref_row->reference_type; ?>"><i class="fa fa-times"></i></a></td>
                                 </tr>
-                            <?php $i++; } ?>
+                            <?php  } ?>
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -462,10 +462,21 @@ $(document).ready(function() {
 		
 	}
 	
-	$('.deleterefrow').live("click",function() {
+	/* $('.deleterefrow').live("click",function() {
 		var sel=$(this);
 		delete_one_ref_no(sel);
 		$(this).closest("tr").remove();
+		do_ref_total();
+	});
+	 */
+	
+	$('.deleterefrow').live("click",function() {
+		var sel=$(this);
+		delete_one_ref_no(sel);
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
 		do_ref_total();
 	});
 		

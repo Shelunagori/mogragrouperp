@@ -133,9 +133,9 @@
 						<th  colspan="2"><div align="center">Discount</div></th>
 						<th  colspan="2"><div align="center">P&f </div></th>
 						<th  rowspan="2"><div align="center">Taxable Value </div></th>
-						<th  colspan="2"><div align="center" class="cgst_display">CGST</div></th>
-						<th  colspan="2"><div align="center" class="sgst_display">SGST</div></th>
-						<th  colspan="2"><div align="center" class="igst_display">IGST</div></th>
+						<th class="cgst_display"  colspan="2" ><div align="center">CGST</div></th>
+						<th class="sgst_display" colspan="2" ><div align="center" >SGST</div></th>
+						<th class="igst_display"  colspan="2" ><div align="center" >IGST</div></th>
 						<th  rowspan="2"><div align="center">Total</div></th>
 						<th  rowspan="2"></th>
 					</tr>
@@ -144,12 +144,12 @@
 						<th><div align="center">Amt</div></th>
 						<th><div align="center">%</div></th>
 						<th><div align="center">Amt</div></th>
-						<th><div align="center" class="cgst_display">%</div></th>
-						<th><div align="center" class="cgst_display">Amt</div></th>
-						<th><div align="center" class="sgst_display">%</div></th>
-						<th><div align="center" class="sgst_display">Amt</div></th>
-						<th><div align="center" class="igst_display">%</div></th>
-						<th><div align="center" class="igst_display">Amt</div></th>
+						<th class="cgst_display" align="right">%</th>
+						<th class="cgst_display" align="right">Rs</th>
+						<th class="sgst_display" align="right">%</th>
+						<th class="sgst_display" align="right">Rs</th>
+						<th class="igst_display" align="right">%</th>
+						<th class="igst_display" align="right">Rs</th>
 					</tr>
 				</thead>
 				<tbody id="main_tbody">
@@ -193,7 +193,7 @@
 								<div class="col-md-10 padding-right-decrease">
 									<?php echo $this->Form->input('sales_order_rows.'.$q.'.item_id', ['empty'=>'Select','options' => $items,'label' => false,'class' => 'form-control input-sm item_box item_id','value' => @$sales_order_rows->item->id,'popup_id'=>$q]); ?>
 								</div>
-								<div class="col-md-1 padding-left-decrease">
+								<div class="col-md-1 padding-left-decrease" style="display:none">
 									<a href="#" class="btn btn-default btn-sm popup_btn" role="button" popup_id="<?php echo $q; ?>"> <i class="fa fa-info-circle"></i> </a>
 									<div class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="false" style="display: none; padding-right: 12px;" popup_div_id="<?php echo $q; ?>"><div class="modal-backdrop fade in" ></div>
 										<div class="modal-dialog">
@@ -251,19 +251,19 @@
 						<td width="110px;><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf Per','value' => $sales_order_rows->pnf_per]); ?></td>
 						<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.pnf', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Pnf','value' => $sales_order_rows->pnf]); ?></td>
 						<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.taxable_value', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Taxable Value','value' => $sales_order_rows->taxable_value]); ?></td>
-						<td width="150px;" class="cgst_width"><?php 
-						echo $this->Form->input('sales_order_rows.'.$q.'.cgst_per', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_display','empty'=>'Select','value' => $sales_order_rows->cgst_per]); ?></td>
-						<td width="150px;" class="cgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount','value' => $sales_order_rows->cgst_amount]); ?></td>
-						<td width="150px;" class="sgst_width">
-						<?php  echo $this->Form->input('sales_order_rows.'.$q.'.sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_display','empty'=>'Select','value' => $sales_order_rows->sgst_per]);
+						<td class="cgst_display" width="151px;" ><?php 
+						echo $this->Form->input('sales_order_rows.'.$q.'.cgst_per', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_percent','empty'=>'Select','value' => $sales_order_rows->cgst_per]); ?></td>
+						<td class="cgst_display" width="151px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.cgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_percent','placeholder' => 'cgst Amount','value' => $sales_order_rows->cgst_amount]); ?></td>
+						<td class="sgst_display" width="151px;" >
+						<?php  echo $this->Form->input('sales_order_rows.'.$q.'.sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_percent','empty'=>'Select','value' => $sales_order_rows->sgst_per]);
 						?>
 						</td>
-						<td width="150px;" class="sgst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount','value' => $sales_order_rows->sgst_amount]); ?></td>
-						<td width="200px;" class="igst_width">
-						<?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_display','empty'=>'Select','value' => $sales_order_rows->igst_per]);
+						<td class="sgst_display" width="151px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.sgst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_percent','placeholder' => 'Sgst Amount','value' => $sales_order_rows->sgst_amount]); ?></td>
+						<td class="igst_display" width="151px;" >
+						<?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_percent','empty'=>'Select','value' => $sales_order_rows->igst_per]);
 						?>
 						</td>
-						<td width="150px;" class="igst_width"><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount','value' => $sales_order_rows->igst_amount]); ?></td>
+						<td class="igst_display" width="151px;" ><?php echo $this->Form->input('sales_order_rows.'.$q.'.igst_amount', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_percent','placeholder' => 'Igst Amount','value' => $sales_order_rows->igst_amount]); ?></td>
 						<td width="200px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.total', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total','value' => $sales_order_rows->total]); ?></td>
 						<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 					</tr>
@@ -271,7 +271,7 @@
 						<td colspan="16" class="main">
 							<div class="note-editable"><?php echo $sales_order_rows->description; ?></div>
 						</td>
-						<td></td>
+						
 					</tr>
 
 					<?php  $q++; endforeach; ?>
@@ -446,19 +446,19 @@
 			echo $this->Form->input('pnf_per	', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'P&F Percentage']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('pnf[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'P&f Amount']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('taxable_value[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Taxable Value']); ?></td>
-			<td width="150px;" class="cgst_width"><?php 
-			echo $this->Form->input('cgst_amount	', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_display','empty'=>'Select',]); ?></td>
-			<td width="150px;" class="cgst_width"><?php echo $this->Form->input('cgst_amount	[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_display','placeholder' => 'cgst Amount']); ?></td>
-			<td width="150px;" class="sgst_width">
-			<?php  echo $this->Form->input('sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_display','empty'=>'Select',]);
+			<td width="150px;" class="cgst_display"><?php 
+			echo $this->Form->input('cgst_amount	', ['options'=>$cgst_options,'label' => false,'class' => 'form-control input-sm cgst_percent','empty'=>'Select',]); ?></td>
+			<td width="150px;" class="cgst_display"><?php echo $this->Form->input('cgst_amount	[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity cgst_percent','placeholder' => 'cgst Amount']); ?></td>
+			<td width="150px;" class="sgst_display">
+			<?php  echo $this->Form->input('sgst_per', ['options'=>$sgst_options,'label' => false,'class' => 'form-control input-sm change_des sgst_percent','empty'=>'Select',]);
 			?>
 			</td>
-			<td width="150px;" class="sgst_width"><?php echo $this->Form->input('sgst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_display','placeholder' => 'Sgst Amount']); ?></td>
-			<td width="200px;" class="igst_width">
+			<td width="150px;" class="sgst_display"><?php echo $this->Form->input('sgst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity sgst_percent','placeholder' => 'Sgst Amount']); ?></td>
+			<td width="200px;" class="igst_display">
 			<?php echo $this->Form->input('igst_per', ['options'=>$igst_options,'label' => false,'class' => 'form-control input-sm change_des igst_display','empty'=>'Select',]);
 			?>
 			</td>
-			<td width="150px;" class="igst_width"><?php echo $this->Form->input('igst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
+			<td width="150px;" class="igst_display"><?php echo $this->Form->input('igst_amount[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity igst_display','placeholder' => 'Igst Amount']); ?></td>
 			<td width="200px;"><?php echo $this->Form->input('total[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 			<td width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
@@ -975,33 +975,102 @@ $(document).ready(function() {
 		$("#myModal12").hide();
     });
 
-	
-
-	$('select[name="customer_id"]').on("change",function() {
 		var customer_id=$('select[name="customer_id"] option:selected').val();
-		
 		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'checkAddress']); ?>";
 		url=url+'/'+customer_id,
 		$.ajax({
 			url: url,
 		}).done(function(response) {
-			if(response=="Rajasthan")
+		if(response=="Rajasthan")
 			{ 
 				$('.igst_display').css("display", "none");
-				$('.cgst_display').css("display", "block");
-				$('.sgst_display').css("display", "block");
-				$('.igst_width').css("width", "0px");
-				$('.cgst_width').css("width", "150px");
-				$('.sgst_width').css("width", "150px");
+				$('.cgst_display').css("display", "");
+				$('.sgst_display').css("display", "");
+				$('.igst_percent option:selected').prop('selected', false);
+				$('.cgst_amt').val(0);
+					var i=0; 
+					$("#main_tb tbody tr.tr1").each(function(){ 
+						$(this).find("td:nth-child(11) select").attr("name","sales_order_rows["+i+"][cgst_per]").rules("add", "required");
+						$(this).find("td:nth-child(12) input").attr("name","sales_order_rows["+i+"][cgst_amount]").rules("add", "required");
+						$(this).find("td:nth-child(13) select").attr("name","sales_order_rows["+i+"][sgst_per]").rules("add", "required");
+						$(this).find("td:nth-child(14) input").attr("name","sales_order_rows["+i+"][sgst_amount]").rules("add", "required");
+						$(this).find("td:nth-child(15) select").attr("name","sales_order_rows["+i+"][igst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][igst_amount]").rules("remove", "required");
+						i++;
+					});
+				calculate_total();
 			}
 			else
 			{
-				$('.igst_display').css("display", "block");
+				$('.igst_display').css("display", "");
 				$('.cgst_display').css("display", "none");
 				$('.sgst_display').css("display", "none");
-				$('.igst_width').css("width", "200px");
-				$('.cgst_width').css("width", "0px");
-				$('.sgst_width').css("width", "0px");
+				$('.cgst_percent option:selected').prop('selected', false);
+				$('.sgst_percent option:selected').prop('selected', false);
+				$('.sgst_amt').val(0);
+				$('.igst_amt').val(0);
+				var i=0; 
+					$("#main_tb tbody tr.tr1").each(function(){  
+						$(this).find("td:nth-child(11) select").attr("name","sales_order_rows["+i+"][cgst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(12) input").attr("name","sales_order_rows["+i+"][cgst_amount]").rules("remove", "required");
+						$(this).find("td:nth-child(13) select").attr("name","sales_order_rows["+i+"][sgst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(14) input").attr("name","sales_order_rows["+i+"][sgst_amount]").rules("remove", "required");
+						$(this).find("td:nth-child(15) select").attr("name","sales_order_rows["+i+"][igst_per]").rules("add", "required");
+						$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][igst_amount]").rules("add", "required");
+						i++;
+					});
+				 calculate_total();
+			}
+		});
+	
+	
+
+	$('select[name="customer_id"]').on("change",function() {
+		var customer_id=$('select[name="customer_id"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'Customers','action'=>'checkAddress']); ?>";
+		url=url+'/'+customer_id,
+		$.ajax({
+			url: url,
+		}).done(function(response) {
+		if(response=="Rajasthan")
+			{ 
+				$('.igst_display').css("display", "none");
+				$('.cgst_display').css("display", "");
+				$('.sgst_display').css("display", "");
+				$('.igst_percent option:selected').prop('selected', false);
+				$('.cgst_amt').val(0);
+					var i=0; 
+					$("#main_tb tbody tr.tr1").each(function(){ 
+						$(this).find("td:nth-child(11) select").attr("name","sales_order_rows["+i+"][cgst_per]").rules("add", "required");
+						$(this).find("td:nth-child(12) input").attr("name","sales_order_rows["+i+"][cgst_amount]").rules("add", "required");
+						$(this).find("td:nth-child(13) select").attr("name","sales_order_rows["+i+"][sgst_per]").rules("add", "required");
+						$(this).find("td:nth-child(14) input").attr("name","sales_order_rows["+i+"][sgst_amount]").rules("add", "required");
+						$(this).find("td:nth-child(15) select").attr("name","sales_order_rows["+i+"][igst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][igst_amount]").rules("remove", "required");
+						i++;
+					});
+				calculate_total();
+			}
+			else
+			{
+				$('.igst_display').css("display", "");
+				$('.cgst_display').css("display", "none");
+				$('.sgst_display').css("display", "none");
+				$('.cgst_percent option:selected').prop('selected', false);
+				$('.sgst_percent option:selected').prop('selected', false);
+				$('.sgst_amt').val(0);
+				$('.igst_amt').val(0);
+				var i=0; 
+					$("#main_tb tbody tr.tr1").each(function(){  
+						$(this).find("td:nth-child(11) select").attr("name","sales_order_rows["+i+"][cgst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(12) input").attr("name","sales_order_rows["+i+"][cgst_amount]").rules("remove", "required");
+						$(this).find("td:nth-child(13) select").attr("name","sales_order_rows["+i+"][sgst_per]").rules("remove", "required");
+						$(this).find("td:nth-child(14) input").attr("name","sales_order_rows["+i+"][sgst_amount]").rules("remove", "required");
+						$(this).find("td:nth-child(15) select").attr("name","sales_order_rows["+i+"][igst_per]").rules("add", "required");
+						$(this).find("td:nth-child(16) input").attr("name","sales_order_rows["+i+"][igst_amount]").rules("add", "required");
+						i++;
+					});
+				 calculate_total();
 			}
 		});
 		

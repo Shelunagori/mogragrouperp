@@ -188,7 +188,18 @@ class LedgerAccountsController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$st_year_id = $session->read('st_year_id');
 		$date=$this->request->query('date');
+		
+		$financial_year = $this->LedgerAccounts->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		
+		if(empty($date)){
+			//$date = date("Y-m-d",strtotime($SessionCheckDate->date_from));
+			$date= date("d-m-Y");
+			$this->set(compact('date'));
+		}
+		
 		if($date){
 			$query=$this->LedgerAccounts->Ledgers->find();
 			$Ledgers_Assets=$query->select(['total_debit' => $query->func()->sum('debit'),'total_credit' => $query->func()->sum('credit')])
@@ -238,7 +249,7 @@ class LedgerAccountsController extends AppController
 				$liablitie_groups[$Ledgers_Liablitie->_matchingData['AccountGroups']->id]['sequence']
 					=$Ledgers_Liablitie->_matchingData['AccountGroups']->sequence;
 			} 
-			
+
 			$this->set(compact('Ledgers_Assets','Ledgers_Liablities', 'asset_groups', 'liablitie_groups'));
 		}
 		$this->set(compact('date'));
@@ -340,13 +351,21 @@ class LedgerAccountsController extends AppController
 
 
 	
-public function ProfitLossStatement (){
+	public function ProfitLossStatement (){
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
+		$st_year_id = $session->read('st_year_id');
 		$st_company_id = $session->read('st_company_id');
 		$date=$this->request->query('date');
 		$to_date=$this->request->query('to_date');
-	
+		$financial_year = $this->LedgerAccounts->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		
+		if(empty($date)){
+			$date = date("Y-m-d",strtotime($SessionCheckDate->date_from));
+			$to_date= date("d-m-Y");
+			$this->set(compact('date','to_date'));
+		}
 	if($date){
 			$query=$this->LedgerAccounts->Ledgers->find();
 			$Ledgers_Expense=$query->select(['total_debit' => $query->func()->sum('debit'),'total_credit' => $query->func()->sum('credit')])
@@ -401,7 +420,8 @@ public function ProfitLossStatement (){
 			
 			
 			
-			$this->set(compact('Expense_groups','Income_groups'));
+			$this->set(compact('Expense_groups','Income_groups','from_date','to_date'));
+			
 		}
 		$this->set(compact('date','to_date'));
 	}

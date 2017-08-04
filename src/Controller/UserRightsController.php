@@ -55,6 +55,7 @@ class UserRightsController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		
 		$login=$this->UserRights->Logins->find()->select(['employee_id'])->where(['id'=>$login_id])->first();
+		//pr($login_id); exit;
 		$employee=$this->UserRights->Employees->find()->select(['name'])->where(['id'=>$login->employee_id])->first();
 		$EmployeeName=$employee->name;
 		
@@ -81,6 +82,18 @@ class UserRightsController extends AppController
 					
 				}
 			} 
+			//exit;
+			if($user_rights[149]['page_id']>0){ 
+				$query = $this->UserRights->query();
+					$query->insert(['login_id', 'page_id'])
+						->values([
+							'login_id' => $login_id,
+							'page_id' => 150
+						])
+						->execute();
+			}
+			
+			
 			
 			if($user_rights[21]['page_id']>0){
 				$query = $this->UserRights->query();

@@ -258,6 +258,7 @@ $(document).ready(function() {
 			var is_input=$(this).find("td:nth-child(2) input").length;
 			
 			if(is_select){
+				//$(this).find("td:nth-child(2) input").rules("remove", "required");
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+received_from_id+"]["+i+"][ref_no]", id:"ref_rows-"+received_from_id+"-"+i+"-ref_no"}).rules("add", "required");
 			}else if(is_input){
 				var url='<?php echo $this->Url->build(['controller'=>'Receipts','action'=>'checkRefNumberUnique']); ?>';
@@ -288,7 +289,10 @@ $(document).ready(function() {
 	}
 	
 	$('.deleterefrow').live("click",function() {
-		$(this).closest("tr").remove();
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
 		do_ref_total();
 	});
 	

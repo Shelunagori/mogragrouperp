@@ -112,7 +112,10 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
                                     <td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
                                     <td class="ref_no">
                                     <?php if($old_ref_row->reference_type=="Against Reference"){
-                                        echo $this->requestAction('Payments/fetchRefNumbersEdit/'.$contra_voucher_row->received_from_id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$contra_voucher_row->cr_dr);
+										
+										echo $this->requestAction('/ContraVouchers/fetchRefNumbersEdit?received_from_id='.$contra_voucher_row->received_from_id.'&cr_dr='.$contra_voucher_row->cr_dr.'&reference_no='.$old_ref_row->reference_no.'&debit='.$old_ref_row->debit.'&credit='.$old_ref_row->credit); 
+										
+                                       // echo $this->requestAction('/ContraVouchers/fetchRefNumbersEdit/'.$contra_voucher_row->received_from_id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$contra_voucher_row->cr_dr);
                                     }else{
                                         echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
                                     }?>
@@ -390,12 +393,22 @@ $(document).ready(function() {
         
     }
     
-    $('.deleterefrow').live("click",function() {
+/*     $('.deleterefrow').live("click",function() {
         var sel=$(this);
         delete_one_ref_no(sel);
         $(this).closest("tr").remove();
         do_ref_total();
-    });
+    }); */
+	
+	$('.deleterefrow').live("click",function() {
+		var sel=$(this);
+		delete_one_ref_no(sel);
+		var l=$(this).closest("table.ref_table tbody").find("tr").length;
+			if(l>1){
+				$(this).closest("tr").remove();
+			}
+		do_ref_total();
+	});
     
     $('.received_from').live("change",function() {
         var sel=$(this);
