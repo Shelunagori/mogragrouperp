@@ -31,13 +31,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</div>
 				<?php 
 //pr($ledger_account_details->toArray()); exit;?>
-				<div class="col-md-3">
-				</div>
-				<div class="col-md-3">
+				
+				<div class="col-md-4">
 					<div class="form-group">
-						<label class="col-md-3 control-label">Date</label>
-						<div class="col-md-9">
-							<?php echo $this->Form->input('date_created', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => date("d-m-Y",strtotime($invoice->date_created)),'readonly']); ?>
+						<label class="col-md-6 control-label">Transaction Date</label>
+						<div class="col-md-6">
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy']); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -388,8 +387,10 @@ $(document).ready(function() {
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
-			
-			
+				transaction_date:{
+				required: true,
+			},
+				
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes

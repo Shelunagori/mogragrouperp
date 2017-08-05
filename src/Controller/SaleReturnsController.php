@@ -168,8 +168,10 @@ class SaleReturnsController extends AppController
 			$saleReturn->sales_ledger_account = $invoice->sales_ledger_account;;
 			$saleReturn->fright_ledger_account = $invoice->fright_ledger_account;;
 			$saleReturn->transporter_id = $invoice->transporter_id;;
-			$saleReturn->employee_id = $s_employee_id;;
+			$saleReturn->employee_id = $s_employee_id;
 			
+			$saleReturn->transaction_date = date("Y-m-d",strtotime($saleReturn->transaction_date)); 
+			//pr($saleReturn->transaction_date); exit;
 			
 			//exit;
 			 if ($this->SaleReturns->save($saleReturn)) {
@@ -184,7 +186,7 @@ class SaleReturnsController extends AppController
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->voucher_source = 'Sale Return';
 				$ledger->company_id = $invoice->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				if($ledger_grand>0)
 				{
 					$this->SaleReturns->Ledgers->save($ledger); 
@@ -198,7 +200,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit = 0;
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $invoice->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_pnf>0)
 				{
@@ -215,7 +217,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit = 0;
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $invoice->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_saletax>0)
 				{
@@ -229,7 +231,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit =0; 
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $invoice->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_fright>0)
 				{
@@ -287,7 +289,7 @@ class SaleReturnsController extends AppController
 							$itemLedger->rate = $item_detail->rate;
 						}
 						$itemLedger->company_id = $invoice->company_id;
-						$itemLedger->processed_on = date("Y-m-d");
+						$itemLedger->processed_on = $saleReturn->transaction_date;
 						$this->SaleReturns->ItemLedgers->save($itemLedger);
 						$i++;
 					}
@@ -543,6 +545,7 @@ class SaleReturnsController extends AppController
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 			$saleReturn->edited_on = date("Y-m-d"); 
 			$saleReturn->edited_by=$this->viewVars['s_employee_id'];
+			$$saleReturn->transaction_date=$saleReturn->transaction_date;;
 //pr($invoice); exit;
 			
         if ($this->SaleReturns->save($saleReturn)) {
@@ -559,7 +562,7 @@ class SaleReturnsController extends AppController
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->voucher_source = 'Sale Return';
 				$ledger->company_id = $saleReturn->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				if($ledger_grand>0)
 				{
 					$this->SaleReturns->Ledgers->save($ledger); 
@@ -573,7 +576,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit = 0;
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $saleReturn->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_pnf>0)
 				{
@@ -590,7 +593,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit = 0;
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $saleReturn->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_saletax > 0)
 				{  
@@ -604,7 +607,7 @@ class SaleReturnsController extends AppController
 				$ledger->credit =0; 
 				$ledger->voucher_id = $saleReturn->id;
 				$ledger->company_id = $saleReturn->company_id;
-				$ledger->transaction_date = $saleReturn->date_created;
+				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
 				if($ledger_fright>0)
 				{

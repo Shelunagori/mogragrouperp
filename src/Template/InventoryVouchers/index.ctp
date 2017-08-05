@@ -26,8 +26,17 @@
 							<td><?= h(++$page_no) ?></td>
 							<td><?= h('#'.str_pad($inventoryVoucher->iv_number, 4, '0', STR_PAD_LEFT)) ?></td>
 							<td><?php if(!empty($inventoryVoucher->transaction_date)){echo date("d-m-Y",strtotime($inventoryVoucher->transaction_date));} ?></td>
-							<td><?php echo $this->Html->link($inventoryVoucher->invoice->in1.'/IN-'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4,[
-							'controller'=>'Invoices','action' => 'confirm',$inventoryVoucher->invoice->id],array('target'=>'_blank')); ?>
+							<td><?php 
+							if($inventoryVoucher->invoice->invoice_type=="GST"){
+							echo $this->Html->link($inventoryVoucher->invoice->in1.'/IN-'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4,[
+							'controller'=>'Invoices','action' => 'gst-confirm',$inventoryVoucher->invoice->id],array('target'=>'_blank')); 
+							}else{
+								echo $this->Html->link($inventoryVoucher->invoice->in1.'/IN-'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4,[
+								'controller'=>'Invoices','action' => 'confirm',$inventoryVoucher->invoice->id],array('target'=>'_blank')); 
+							}
+							
+							
+							?></td>
 							<td><?php echo $inventoryVoucher->invoice->customer->customer_name.'('.$inventoryVoucher->invoice->customer->alias.')' ?></td>
 							<?php if(in_array(10,$allowed_pages)){  ?>
 							<td>

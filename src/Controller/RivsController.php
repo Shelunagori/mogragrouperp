@@ -65,6 +65,7 @@ class RivsController extends AppController
 			'contain'=>['SaleReturnRows'=>['Items']]
 		]);
 		$data1=json_decode($data);
+		//pr($data1); exit;
 		$InventoryVoucherRows=[];
 		$inventory_return=[];
 		$Item_serial_no=[];
@@ -94,6 +95,8 @@ class RivsController extends AppController
 
 			
 			$riv->created_on = date("Y-m-d");
+			//pr($sale_return_data); exit;
+			$riv->transaction_date = $sale_return_data->transaction_date;
 			$riv->company_id = $st_company_id;
 			$riv->created_by=$s_employee_id; 
 			$riv->sale_return_id = $id;
@@ -109,7 +112,7 @@ class RivsController extends AppController
 						$itemLedger_in->in_out = 'In';
 						$itemLedger_in->rate = 0;
 						$itemLedger_in->company_id = $st_company_id;
-						$itemLedger_in->processed_on = date("Y-m-d");
+						$itemLedger_in->processed_on = $sale_return_data->transaction_date;
 						$this->Rivs->ItemLedgers->save($itemLedger_in);
 					}
 				$itemLedger_out = $this->Rivs->ItemLedgers->newEntity();
@@ -120,7 +123,7 @@ class RivsController extends AppController
 				$itemLedger_out->in_out = 'Out';
 				$itemLedger_out->rate = 0;
 				$itemLedger_out->company_id = $st_company_id;
-				$itemLedger_out->processed_on = date("Y-m-d");
+				$itemLedger_out->processed_on = $sale_return_data->transaction_date;
 				$this->Rivs->ItemLedgers->save($itemLedger_out);
 			}
 				
@@ -209,7 +212,7 @@ class RivsController extends AppController
 						$itemLedger_in->in_out = 'In';
 						$itemLedger_in->rate = 0;
 						$itemLedger_in->company_id = $st_company_id;
-						$itemLedger_in->processed_on = $riv->created_on;
+						$itemLedger_in->processed_on = $riv->transaction_date;
 						$this->Rivs->ItemLedgers->save($itemLedger_in);
 					}
 				$itemLedger_out = $this->Rivs->ItemLedgers->newEntity();
@@ -220,7 +223,7 @@ class RivsController extends AppController
 				$itemLedger_out->in_out = 'Out';
 				$itemLedger_out->rate = 0;
 				$itemLedger_out->company_id = $st_company_id;
-				$itemLedger_out->processed_on = $riv->created_on;
+				$itemLedger_out->processed_on = $riv->transaction_date;
 				$this->Rivs->ItemLedgers->save($itemLedger_out);
 			}
 				
