@@ -545,7 +545,7 @@ class SaleReturnsController extends AppController
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 			$saleReturn->edited_on = date("Y-m-d"); 
 			$saleReturn->edited_by=$this->viewVars['s_employee_id'];
-			$$saleReturn->transaction_date=$saleReturn->transaction_date;;
+			$saleReturn->transaction_date=$saleReturn->transaction_date;;
 //pr($invoice); exit;
 			
         if ($this->SaleReturns->save($saleReturn)) {

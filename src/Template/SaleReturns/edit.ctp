@@ -205,7 +205,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</tr>
 				<tr>
 					<td  align="right"><b>Grand Total </b></td>
-					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$saleReturn->grand_total]); ?></td>
+					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm grand_total','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$saleReturn->grand_total]); ?></td>
 				</tr>
 			</table>
 			<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
@@ -415,7 +415,7 @@ $('.quantity').die().live("keyup",function() {
 		if(isNaN(fright_amount)) { var fright_amount = 0; }
 		
 		grand_total=total_after_pnf+sale_tax+fright_amount;
-		$('input[name="grand_total"]').val(grand_total.toFixed(2));
+		$('.grand_total').val(grand_total.toFixed(2));
 	}
 		$('.addrefrow').live("click",function() { 
 		add_ref_row();
