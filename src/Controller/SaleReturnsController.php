@@ -253,6 +253,7 @@ class SaleReturnsController extends AppController
 					$ItemSerialNumbers->sale_return_id=$saleReturn->id;
 					$ItemSerialNumbers->serial_no=$ItemSerialNumber_data->serial_no;
 					$ItemSerialNumbers->item_id=$ItemSerialNumber_data->item_id;
+					$ItemSerialNumbers->company_id=$st_company_id;
 					$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->save($ItemSerialNumbers);
 					}
 					}
@@ -450,6 +451,7 @@ class SaleReturnsController extends AppController
 						$ItemSerialNumbers->sale_return_id=$id;
 						$ItemSerialNumbers->serial_no=$item_serial_number_data->serial_no;
 						$ItemSerialNumbers->item_id=$item_serial_number_data->item_id;
+						$ItemSerialNumbers->company_id=$st_company_id;
 						$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->save($ItemSerialNumbers);
 					} 
 				}
@@ -639,6 +641,7 @@ class SaleReturnsController extends AppController
 							$ItemSerialNumbers->sale_return_id=$id;
 							$ItemSerialNumbers->serial_no=$item_serial_number_data->serial_no;
 							$ItemSerialNumbers->item_id=$item_serial_number_data->item_id;
+							$ItemSerialNumbers->company_id=$st_company_id;
 							$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->save($ItemSerialNumbers);
 						}
 					}

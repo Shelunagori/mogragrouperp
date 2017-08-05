@@ -373,7 +373,7 @@ class InvoicesController extends AppController
 						},'SalesOrderRows.SaleTaxes','Companies','Customers','Employees'
 					]
 			]);
-			
+			//pr($sales_order); exit;
 			$c_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$sales_order->customer->id])->first();
 			//pr($sales_order); exit;
 			
