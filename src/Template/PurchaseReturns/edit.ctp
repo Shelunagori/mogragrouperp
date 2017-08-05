@@ -513,9 +513,15 @@ rename_ref_rows();
 		
 		var total_ref=0;
 		$("table.main_ref_table tbody tr").each(function(){
-			var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+			var is_ref_old_amount=$(this).find("td:nth-child(3) input.ref_old_amount").length;
+				if(is_ref_old_amount){
+					var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+				}else{
+					var am=parseFloat($(this).find('td:nth-child(3) input:eq(0)').val());
+				}
 			if(!am){ am=0; }
 			total_ref=total_ref+am;
+			 
 		});
 		
 		var on_acc=main_amount-total_ref; 

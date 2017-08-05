@@ -532,15 +532,16 @@ class PurchaseReturnsController extends AppController
 				$this->PurchaseReturns->Ledgers->save($ledger);
 				
 				if(sizeof(@$ref_rows)>0){
+					//pr($ref_rows); exit;
 					foreach($ref_rows as $ref_row){
 							$ref_row=(object)$ref_row;
-							
+							//pr($ref_row); exit;
 							$ReferenceDetail=$this->PurchaseReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$v_LedgerAccount->id,'reference_no'=>$ref_row->ref_no,'purchase_return_id'=>$purchaseReturn->id])->first();
 							
 							if($ReferenceDetail){ //pr($ref_row->ref_old_amount); exit;
 								$ReferenceBalance=$this->PurchaseReturns->ReferenceBalances->find()->where(['ledger_account_id'=>$v_LedgerAccount->id,'reference_no'=>$ref_row->ref_no])->first();
 								$ReferenceBalance=$this->PurchaseReturns->ReferenceBalances->get($ReferenceBalance->id);
-								$ReferenceBalance->debit=$ReferenceBalance->debit-$ref_row->ref_old_amount+$ref_row->ref_amount;
+								$ReferenceBalance->debit=$ReferenceBalance->debit-@$ref_row->ref_old_amount+$ref_row->ref_amount;
 								$this->PurchaseReturns->ReferenceBalances->save($ReferenceBalance);
 								
 								$ReferenceDetail=$this->PurchaseReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$v_LedgerAccount->id,'reference_no'=>$ref_row->ref_no,'purchase_return_id'=>$purchaseReturn->id])->first();
