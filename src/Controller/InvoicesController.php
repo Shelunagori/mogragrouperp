@@ -2401,6 +2401,41 @@ class InvoicesController extends AppController
 		$this->set(compact('invoice','id'));
     }
 	
-	
+	public function invoiceData(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$invoices=$this->Invoices->find()->where(['company_id'=>$st_company_id]);
+		?>
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<th>No</th>
+				<th>Transaction Date</th>
+				<th>itemledgers</th>
+			</tr>
+			<?php foreach($invoices as $invoice){
+				$itemledgers=$this->Invoices->ItemLedgers->find()->where(['source_model LIKE'=>'%Invoices%','source_id'=>$invoice->id]);
+			?>
+			<tr>
+				<td><?php echo $invoice->id; ?></td>
+				<td><?= h('#'.$invoice->in2) ?></td>
+				<td><?php echo strtotime($invoice->date_created); ?></td>
+				<td>
+					<?php 
+					$q=0;
+					foreach($itemledgers as $itemledger){ 
+						$q+=strtotime($itemledger->processed_on);
+					}
+					echo $q/sizeof($itemledgers->toArray());
+					?>
+				</td>
+			</tr>
+			<?php } ?>
+		</table>
+		<?php
+		exit;
+	}
 	
 }

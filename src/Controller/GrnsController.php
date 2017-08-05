@@ -510,4 +510,45 @@ class GrnsController extends AppController
 		
 		return $this->redirect(['action' => 'EditNew/'.$grn_id]);
 	}
+	
+	public function grnData(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$grns=$this->Grns->find()->where(['company_id'=>$st_company_id])->contain(['GrnRows']);
+		$grns->count();
+		?>
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<th>No</th>
+				<th>Transaction Date</th>
+				<th>itemledgers</th>
+				<th>grn rows count</th>
+				<th>itemLedger count</th>
+			</tr>
+			<?php foreach($grns as $grn){
+				$itemledgers=$this->Grns->ItemLedgers->find()->where(['source_model LIKE'=>'%grns%','source_id'=>$grn->id]);
+			?>
+			<tr>
+				<td><?php echo $grn->id; ?></td>
+				<td><?= h(str_pad($grn->grn2, 3, '0', STR_PAD_LEFT)) ?></td>
+				<td><?php echo strtotime($grn->transaction_date); ?></td>
+				<td>
+					<?php 
+					$q=0;
+					foreach($itemledgers as $itemledger){ 
+						$q+=strtotime($itemledger->processed_on);
+					}
+					echo $q/sizeof($itemledgers->toArray());
+					?>
+				</td>
+				<td><?php echo sizeof($grn->grn_rows); ?></td>
+				<td><?php echo sizeof($itemledgers->toArray()); ?></td>
+			</tr>
+			<?php } ?>
+		</table>
+		<?php
+	}
 }

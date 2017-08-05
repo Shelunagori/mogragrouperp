@@ -1005,4 +1005,41 @@ class InventoryTransferVouchersController extends AppController
 		$this->set(compact('display_items','inventoryTransferVoucher','inventoryTransferVouchers','display_items','id'));
 		//pr($inventoryTransferVouchersin); exit;
 	}
+	
+	public function itvData(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$InventoryTransferVoucher=$this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id]);
+		?>
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<th>No</th>
+				<th>Transaction Date</th>
+				<th>itemledgers</th>
+			</tr>
+			<?php foreach($InventoryTransferVoucher as $InventoryTransferVoucher){
+				$itemledgers=$this->InventoryTransferVouchers->ItemLedgers->find()->where(['source_model LIKE'=>'%Inventory Transfer Voucher%','source_id'=>$InventoryTransferVoucher->id]);
+			?>
+			<tr>
+				<td><?php echo $InventoryTransferVoucher->id; ?></td>
+				<td><?= h('#'.$InventoryTransferVoucher->voucher_no) ?></td>
+				<td><?php echo strtotime($InventoryTransferVoucher->transaction_date); ?></td>
+				<td>
+					<?php 
+					$q=0;
+					foreach($itemledgers as $itemledger){ 
+						$q+=strtotime($itemledger->processed_on);
+					}
+					echo $q/sizeof($itemledgers->toArray());
+					?>
+				</td>
+			</tr>
+			<?php } ?>
+		</table>
+		<?php
+		exit;
+	}
 }
