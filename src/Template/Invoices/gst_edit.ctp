@@ -961,7 +961,27 @@ $(document).ready(function() {
 		$("table.main_ref_table tbody").append(tr);
 		rename_ref_rows();
 	}
-	
+	$('.ref_type').live("change",function() {
+		var current_obj=$(this);
+		
+		var ref_type=$(this).find('option:selected').val();
+		if(ref_type=="Against Reference"){
+			var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'fetchRefNumbers']); ?>";
+			url=url,
+			$.ajax({
+				url: url+'/<?php echo $c_LedgerAccount->id; ?>',
+				type: 'GET',
+			}).done(function(response) {
+				current_obj.closest('tr').find('td:eq(1)').html(response);
+				rename_ref_rows();
+			});
+		}else if(ref_type=="New Reference" || ref_type=="Advance Reference"){
+			current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
+			rename_ref_rows();
+		}else{
+			current_obj.closest('tr').find('td:eq(1)').html('');
+		}
+	});
 	rename_ref_rows();
 	function rename_ref_rows(){
 		var i=0; var customer_suppiler_id = $('#customer_suppiler_id').val();
@@ -972,7 +992,7 @@ $(document).ready(function() {
 			
 			if(is_select){
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
-			}else if(is_input){
+			}else if(is_input){ alert();
 				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/'+customer_suppiler_id+'/'+i;
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
@@ -1013,27 +1033,7 @@ $(document).ready(function() {
 		delete_one_ref_no(sel);
 	});
 	
-	$('.ref_type').live("change",function() {
-		var current_obj=$(this);
-		
-		var ref_type=$(this).find('option:selected').val();
-		if(ref_type=="Against Reference"){
-			var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'fetchRefNumbers']); ?>";
-			url=url,
-			$.ajax({
-				url: url+'/<?php echo $c_LedgerAccount->id; ?>',
-				type: 'GET',
-			}).done(function(response) {
-				current_obj.closest('tr').find('td:eq(1)').html(response);
-				rename_ref_rows();
-			});
-		}else if(ref_type=="New Reference" || ref_type=="Advance Reference"){
-			current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
-			rename_ref_rows();
-		}else{
-			current_obj.closest('tr').find('td:eq(1)').html('');
-		}
-	});
+	
 	
 	$('.ref_list').live("change",function() {
 		var current_obj=$(this);

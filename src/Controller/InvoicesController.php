@@ -2419,24 +2419,18 @@ class InvoicesController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['Invoices.date_created <=']=$To;
 		}
-		if(!empty($To)){
-			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['Invoices.employee_id']=$salesman_id;
-		}
+		
+		//pr($where); exit;
 		$this->set(compact('From','To','salesman_id'));
 		$SalesMans = $this->Invoices->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])
-			->matching(
-					'EmployeeCompanies', function ($q) use($st_company_id) {
-						return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
-					}
-				)
+			
 			->matching(
 					'Departments', function ($q) {
 						return $q->where(['Departments.id' =>1]);
 					}
 		); 
 				//pr($SalesMans); exit;
-		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
 		//pr($invoices->toArray()); exit;
 		$this->set(compact('invoices','SalesMans'));
 	}
