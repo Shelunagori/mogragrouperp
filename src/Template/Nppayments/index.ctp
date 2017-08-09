@@ -1,11 +1,15 @@
 <?php //pr($pettyCashReceiptVouchers); exit; ?>
+<?php $url_excel="/?".$url; ?>
+
 <div class="portlet light bordered">
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-globe font-blue-steel"></i>
             <span class="caption-subject font-blue-steel uppercase">Non Print Payment Vouchers</span>
         </div>
-    
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Nppayments/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+		</div>
     <div class="portlet-body">
         <div class="row">
         <form method="GET" >
@@ -16,7 +20,7 @@
 								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction Date From" value="<?php echo @$From; ?>" data-date-format="dd-mm-yyyy" >
                             </td>
 							<td width="15%">	
-                                        <input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction Date To" value="<?php echo @$To; ?>" data-date-format="dd-mm-yyyy" >
+                                <input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction Date To" value="<?php echo @$To; ?>" data-date-format="dd-mm-yyyy" >
                             </td>
                             <td width="10%">
 								<input type="text" name="vouch_no" class="form-control input-sm" placeholder="Voucher No" value="<?php echo @$vouch_no; ?>">

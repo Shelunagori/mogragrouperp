@@ -18,6 +18,8 @@ class JournalVouchersController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
 		$this->viewBuilder()->layout('index_layout');
 		$this->paginate = [
             'contain' => ['JournalVoucherRows']
@@ -49,9 +51,45 @@ class JournalVouchersController extends AppController
        $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
 
         $this->set('journalVoucher');
-		$this->set(compact('journalVouchers'));
+		$this->set(compact('journalVouchers','url'));
 		$this->set('_serialize', ['journalVouchers']);
     }
+	
+	public function exportExcel(){
+		$this->viewBuilder()->layout('');
+		$this->paginate = [
+            'contain' => ['JournalVoucherRows']
+        ];
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$where = [];
+		
+		$vouch_no = $this->request->query('vouch_no');
+		$From    = $this->request->query('From');
+		$To    = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['JournalVouchers.voucher_no Like']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['JournalVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['JournalVouchers.transaction_date <=']=$To;
+		}
+		
+       $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
+
+        $this->set('journalVoucher');
+		$this->set(compact('journalVouchers','url'));
+		$this->set('_serialize', ['journalVouchers']);
+	}	
 
     /**
      * View method

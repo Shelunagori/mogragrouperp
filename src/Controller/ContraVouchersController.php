@@ -17,6 +17,9 @@ class ContraVouchersController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
         $this->viewBuilder()->layout('index_layout');
         
         $session = $this->request->session();
@@ -51,9 +54,48 @@ class ContraVouchersController extends AppController
         }])->order(['voucher_no'=>'DESC']));
         
 
-        $this->set(compact('contravouchers'));
+        $this->set(compact('contravouchers','url'));
         $this->set('_serialize', ['contravouchers']);
     }
+	
+	public function exportExcel(){
+		$this->viewBuilder()->layout('');
+        
+        $session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+        $this->paginate = [
+            'contain' => []
+        ];
+        
+        
+        $contravouchers = $this->paginate($this->ContraVouchers->find()->where(['company_id'=>$st_company_id])->contain(['ContraVoucherRows'=>function($q){
+            $ContraVoucherRows = $this->ContraVouchers->ContraVoucherRows->find();
+            $totalCrCase = $ContraVoucherRows->newExpr()
+                ->addCase(
+                    $ContraVoucherRows->newExpr()->add(['cr_dr' => 'Cr']),
+                    $ContraVoucherRows->newExpr()->add(['amount']),
+                    'integer'
+                );
+            $totalDrCase = $ContraVoucherRows->newExpr()
+                ->addCase(
+                    $ContraVoucherRows->newExpr()->add(['cr_dr' => 'Dr']),
+                    $ContraVoucherRows->newExpr()->add(['amount']),
+                    'integer'
+                );
+            return $ContraVoucherRows->select([
+                    'total_cr' => $ContraVoucherRows->func()->sum($totalCrCase),
+                    'total_dr' => $ContraVoucherRows->func()->sum($totalDrCase)
+                ])
+                ->group('contra_voucher_id')
+                
+                ->autoFields(true);
+            
+        }])->order(['voucher_no'=>'DESC']));
+        
+
+        $this->set(compact('contravouchers','url'));
+        $this->set('_serialize', ['contravouchers']);
+	}
 
     /**
      * View method
