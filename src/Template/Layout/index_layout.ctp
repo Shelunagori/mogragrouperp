@@ -686,7 +686,7 @@ select
 										echo $this->Html->link('Non GST Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 									</li>
 									<li><?php $today =date('d-m-Y');
-										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 									</li>
 							</ul>
 						</li>

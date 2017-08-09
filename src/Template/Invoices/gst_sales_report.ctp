@@ -55,50 +55,50 @@
 						<th style="text-align:right;">Sales @ 28 % IGST</th>
 					</tr>
 				</thead>
-				<tbody><?php $i=1; ?>
-				<?php foreach ($invoices as $invoice): ?>
+				<?php foreach ($invoices as $invoice):  ?>
+				<tbody><?php $i=1; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0;  ?>
 					<tr>
 						<td><?php echo $i; ?></td>
 						<td><?= h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4)) ?></td>
 							<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
 							<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
 						<td>
-							<?php  if($invoice->fright_cgst_percent==8 && $invoice->fright_sgst_percent==11){
+							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==8 && $invoice->invoice_rows[0]['sgst_percentage']==11){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($invoice->fright_cgst_percent==9 && $invoice->fright_sgst_percent==12){
+							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==9 && $invoice->invoice_rows[0]['sgst_percentage']==12){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($invoice->fright_cgst_percent==10 && $invoice->fright_sgst_percent==13){
+							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==10 && $invoice->invoice_rows[0]['sgst_percentage']==13){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($invoice->fright_igst_percent==14){
+							<?php  if($invoice->invoice_rows[0]['igst_percentage']==14){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($invoice->fright_igst_percent==15){
+							<?php  if($invoice->invoice_rows[0]['igst_percentage']==15){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($invoice->fright_igst_percent==16){
+							<?php  if($invoice->invoice_rows[0]['igst_percentage']==16){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
 								}else{
 									echo "-";
