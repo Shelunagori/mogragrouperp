@@ -690,6 +690,33 @@ $(document).ready(function() {
 		 put_code_description();
     });
 	
+	
+	<?php if($invoice->customer->district->state!="Rajasthan"){ ?>
+		$("#main_tb tbody tr.tr1").each(function(){  
+			var row_no=$(this).attr('row_no');
+			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+			if(val){ 
+			
+			$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").rules("remove", "required");
+			} 
+		});
+	<?php } else{ ?> 
+			$("#main_tb tbody tr.tr1").each(function(){  
+			var row_no=$(this).attr('row_no');
+			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+			if(val){ 
+			
+			$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").rules("remove", "required");
+			} 
+		});
+			
+	<?php } ?>
+	
+	
 	rename_rows();
 	
 	function rename_rows(){
@@ -992,7 +1019,7 @@ $(document).ready(function() {
 			
 			if(is_select){
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
-			}else if(is_input){ alert();
+			}else if(is_input){
 				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/'+customer_suppiler_id+'/'+i;
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
