@@ -710,11 +710,19 @@ $(document).ready(function() {
 				}
 				
 			});
-			
-				
-					//alert(p);
-				
 		}
+		
+		
+	<?php if($sales_order->customer->district->state!="Rajasthan"){ ?>
+			$('.fright_amount').rules("add", "required");
+			$('.fright_igst_percent').rules("add", "required");
+			
+	<?php } else{ ?> 
+			$('.fright_amount').rules("add", "required");
+			$('.fright_cgst_percent').rules("add", "required");
+			$('.fright_sgst_percent').rules("add", "required");
+			
+	<?php } ?>
 		
 	function put_code_description(){ 
 		var i=0;

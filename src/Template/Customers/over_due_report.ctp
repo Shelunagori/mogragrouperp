@@ -14,8 +14,8 @@
 							<tbody>
 								<tr>
 								<td width="15%">
-										<label class="control-label">Stock</label>
-										<div id="item_sub_group_div">
+										
+										<div id="">
 										<?php 
 											$options = [];
 											$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];

@@ -415,7 +415,7 @@ $('.quantity').die().live("keyup",function() {
 		if(isNaN(fright_amount)) { var fright_amount = 0; }
 		
 		grand_total=total_after_pnf+sale_tax+fright_amount;
-		$('.grand_total').val(grand_total.toFixed(2));
+		$('input[name="grand_total"]').val(grand_total.toFixed(2));
 	}
 		$('.addrefrow').live("click",function() { 
 		add_ref_row();

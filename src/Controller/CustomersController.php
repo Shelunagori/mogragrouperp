@@ -333,7 +333,7 @@ class CustomersController extends AppController
 		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 
-		 /* foreach($ReferenceDetails as $ReferenceDetail){
+		foreach($ReferenceDetails as $ReferenceDetail){
 			 if($ReferenceDetail->invoice_id !=0){ 
 				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
 				$Customer =$this->Customers->get($Receipt->customer_id);
@@ -482,7 +482,7 @@ class CustomersController extends AppController
 				}
 			}
 		}
-  */
+  
 	 
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
@@ -550,7 +550,7 @@ class CustomersController extends AppController
 							}
 						}
 						
-				}else{
+				}else if($ReferenceBalance->due_date <  $over_date8){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit && $ReferenceBalance->due_date){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);

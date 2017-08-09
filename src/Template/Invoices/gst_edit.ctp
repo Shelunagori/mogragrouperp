@@ -366,9 +366,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<td align="right" colspan="<?php echo $tr3_colspan; ?>">Fright Ledger Account</td>
 						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
 						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
@@ -497,7 +497,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			   <?php if($chkdate == 'Not Found'){  ?>
 					<label class="btn btn-danger"> You are not in Current Financial Year </label>
 				<?php } else { ?>
-					<?= $this->Form->button(__('EDIT INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+					<?= $this->Form->button(__('EDIT INVOICE'),['class'=>'btn btn-primary ','id'=>'add_submit','type'=>'Submit']) ?>
 				<?php } ?>	
 
 				</div>
@@ -513,14 +513,13 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	background-color: #97b8ef;
 }
 </style>
-<?php echo $this->Html->css('/drag_drop/jquery-ui.css'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-1.12.4.js'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-ui.js'); ?>
+
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>	
 
 
 <script>
 $(document).ready(function() { 
+
 	//--------- FORM VALIDATION
 	var form3 = $('#form_sample_3');
 	var error3 = $('.alert-danger', form3);
@@ -531,53 +530,52 @@ $(document).ready(function() {
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
 			company_id:{
-				required: true,
+				required: true
 			},
 			date_created : {
-				  required: true,
+				  required: true
 			},
 			customer_id : {
-				  required: true,
+				  required: true
 			},
 			in1 : {
-				  required: true,
+				  required: true
 			},			
 			in3:{
 				required: true
 			},
 			in4:{
-				required: true,
+				required: true
 			},
 			customer_address:{
-				required: true,
+				required: true
 			},
 			lr_no : {
-				  required: true,
+				  required: true
 			},
 			customer_po_no  : {
-				  required: true,
+				  required: true
 			},
 			employee_id: {
-				  required: true,
+				  required: true
 			},
 			customer_tin: {
-				  required: true,
+				  required: true
+			},
+			checked_row_length: {
+				  required: true
 			},
 			
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
 			checked_row_length: {
-				required : "Please select atleast one row.",
-				max: "You can not select multiple rows of different sale tax rate."
+				required : "Please select atleast one row."
 			},
 			customer_tin: {
 				required: "Can't generate Invoice,Customer has not TIN"
-			},
-			service: {
-				required: "Please select  at least 2 types of Service",
-				minlength: jQuery.validator.format("Please select  at least {0} types of Service")
-			},
+			}
+			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -599,11 +597,9 @@ $(document).ready(function() {
 		},
 
 		invalidHandler: function (event, validator) { //display error alert on form submit   
-			put_code_description();
 			success3.hide();
 			error3.show();
 			$("#add_submit").removeAttr("disabled");
-			//Metronic.scrollTo(error3, -200);
 		},
 
 		highlight: function (element) { // hightlight error inputs
@@ -621,16 +617,20 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 	
-		submitHandler: function (form) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
+		submitHandler: function (form3) {
 			put_code_description();
+			check();
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
+			
 		}
 
 	});
+	
+	
+	
+	
 	$('.quantity').die().live("keyup",function() {
 		var qty =$(this).val();
 		rename_rows(); calculate_total(); do_ref_total();
@@ -776,6 +776,8 @@ $(document).ready(function() {
 				}
 			});
 		}
+		
+
 		
 	function put_code_description(){ 
 		var i=0;

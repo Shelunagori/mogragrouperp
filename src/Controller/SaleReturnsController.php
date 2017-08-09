@@ -275,7 +275,7 @@ class SaleReturnsController extends AppController
 					foreach($saleReturn->check as $sale_return_row){
 				
 						$item_id=$sale_return_row;
-						$item_detail=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row,'source_id'=>$invoice->id,'source_model != '=>'Sale Return','in_out'=>'In'])->first();
+						$item_detail=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row,'source_model != '=>'Sale Return','in_out'=>'In'])->first();
 						//pr($item_detail); exit;
 						$itemLedger = $this->SaleReturns->ItemLedgers->newEntity();
 						$itemLedger->item_id = $item_id;
@@ -524,7 +524,7 @@ class SaleReturnsController extends AppController
 							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
 							}]]]
         ]); 
-		//pr($saleReturn->toArray()); exit;
+		$transaction_date=$saleReturn->transaction_date;
 		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
 		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$id]);
 		 
@@ -545,7 +545,7 @@ class SaleReturnsController extends AppController
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 			$saleReturn->edited_on = date("Y-m-d"); 
 			$saleReturn->edited_by=$this->viewVars['s_employee_id'];
-			$saleReturn->transaction_date=$saleReturn->transaction_date;;
+			$saleReturn->transaction_date=date("Y-m-d",strtotime($saleReturn->transaction_date));   
 //pr($invoice); exit;
 			
         if ($this->SaleReturns->save($saleReturn)) {
@@ -677,7 +677,7 @@ class SaleReturnsController extends AppController
 							$itemLedger->rate = $item_detail->rate;
 						}
 						$itemLedger->company_id = $saleReturn->company_id;
-						$itemLedger->processed_on = date("Y-m-d");
+						$itemLedger->processed_on = $saleReturn->transaction_date;
 						$this->SaleReturns->ItemLedgers->save($itemLedger);
 						$i++;
 					}
