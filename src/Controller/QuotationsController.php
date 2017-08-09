@@ -125,11 +125,12 @@ class QuotationsController extends AppController
 		$this->set(compact('url'));
 	}
 	
-	 public function exportExcel($status=null)
+	 public function exportExcel()
     {
-		
 		$this->viewBuilder()->layout('');
 		$where=[];
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		$company_alise=$this->request->query('company_alise');
 		$quotation_no=$this->request->query('quotation_no');
 		$file=$this->request->query('file');
@@ -169,15 +170,10 @@ class QuotationsController extends AppController
         $this->paginate = [
             'contain' => ['Customers','Employees','ItemGroups']
         ];
-		if($status==null or $status=='Pending'){
-			$where['status']='Pending';
-		}elseif($status=='Converted Into Sales Order'){
-			$where['status']='Converted Into Sales Order';
-		}elseif($status=='Closed'){
-			$where['status']='Closed';
-		}
+		
+		$quotations = $this->paginate($this->Quotations->find()->where($where)->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC']));
 	
-        $quotations = $this->paginate($this->Quotations->find()->where($where)->order(['Quotations.id' => 'DESC']));
+        //$quotations = $this->paginate($this->Quotations->find()->where($where)->order(['Quotations.id' => 'DESC']));
         $this->set(compact('quotations','status'));
         $this->set('_serialize', ['quotations']);
     }

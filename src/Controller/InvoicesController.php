@@ -22,6 +22,7 @@ class InvoicesController extends AppController
     {
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		$inventory_voucher=$this->request->query('inventory_voucher');
 		$sales_return=$this->request->query('sales_return');
@@ -105,7 +106,7 @@ class InvoicesController extends AppController
 		} 
 		//pr($invoices); exit;
 		$Items = $this->Invoices->InvoiceRows->Items->find('list')->order(['Items.name' => 'ASC']);
-		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows','Items'));
+		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows','Items','url'));
 		
         $this->set('_serialize', ['invoices']);
 		$this->set(compact('url'));
@@ -156,26 +157,28 @@ class InvoicesController extends AppController
 		$this->set(compact('url'));
     }
 
-	public function exportExcel()
+	public function exportInvoiceExcel()
 	{
+		$this->viewBuilder()->layout(''); 
+		$inventory_voucher=$this->request->query('inventory_voucher');
+		$sales_return=$this->request->query('sales_return');
+		//pr($sales_return); exit;
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		
-		$this->viewBuilder()->layout('');
 		$where=[];
-		$company_alise=$this->request->query('company_alise');
 		$invoice_no=$this->request->query('invoice_no');
 		$file=$this->request->query('file');
 		$customer=$this->request->query('customer');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		$total_From=$this->request->query('total_From');
-		$total_To=$this->request->query('total_To');
 		$page=$this->request->query('page');
-		$this->set(compact('ref_no','customer','total_From','total_To','From','To','page','invoice_no','company_alise','file'));
-		if(!empty($company_alise)){
-			$where['Invoices.in1 LIKE']='%'.$company_alise.'%';
-		}
+		$items=$this->request->query('items');
+		$this->set(compact('customer','total_From','From','To','page','invoice_no','file','items'));
+		
 		if(!empty($invoice_no)){
-			$where['Invoices.id']=$invoice_no;
+			$where['Invoices.in2 LIKE']=$invoice_no;
 		}
 		if(!empty($file)){
 			$where['Invoices.in3 LIKE']='%'.$file.'%';
@@ -185,23 +188,24 @@ class InvoicesController extends AppController
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['date_created >=']=$From;
+			$where['Invoices.date_created >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['date_created <=']=$To;
+			$where['Invoices.date_created <=']=$To;
 		}
 		if(!empty($total_From)){
-			$where['total_after_pnf >=']=$total_From;
+			$where['Invoices.total_after_pnf']=$total_From;
 		}
-		if(!empty($total_To)){
-			$where['total_after_pnf <=']=$total_To;
-		}
-		$this->paginate = [
-			'contain' => ['Customers', 'Companies']
-		];
-		$invoices = $this->paginate($this->Invoices->find()->where($where)->order(['Invoices.id' => 'DESC']));
 		
+		  $this->paginate = [
+            'contain' => ['Customers', 'Companies']
+        ];
+		
+		$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.in2' => 'DESC']));
+		
+		//$invoices = $this->paginate($this->Invoices->find()->where($where)->order(['Invoices.id' => 'DESC']));
+		//pr($invoices);exit;
 		$this->set(compact('invoices'));
 		$this->set('_serialize', ['invoices']);
 	}

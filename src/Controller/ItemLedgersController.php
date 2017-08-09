@@ -335,8 +335,7 @@ class ItemLedgersController extends AppController
 					$items_names[$result->item_id] = $result->item->name;
 					$items_unit_names[$result->item_id] = $result->item->unit->name;
 				}
-		}
-			
+			}
 		}elseif($stock == "Zero"){
 			foreach($results as $result){
 				if($result->total_in - $result->total_out == 0){
@@ -344,8 +343,7 @@ class ItemLedgersController extends AppController
 					$items_names[$result->item_id] = $result->item->name;
 					$items_unit_names[$result->item_id] = $result->item->unit->name;
 				}
-		}
-			
+			}
 		}elseif($stock == "Positive"){
 			foreach($results as $result){
 				if($result->total_in - $result->total_out > 0){
@@ -354,8 +352,7 @@ class ItemLedgersController extends AppController
 					$items_unit_names[$result->item_id] = $result->item->unit->name;
 					//pr($item_stocks);
 				}
-		}
-			
+			}
 		}else{
 			foreach($results as $result){
 				
