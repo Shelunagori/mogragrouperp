@@ -1886,7 +1886,7 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
-			//pr($invoice->date_created); exit;
+			//pr($invoice->total_taxable_value); exit;
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
 			$invoice->edited_on = date("Y-m-d"); 
