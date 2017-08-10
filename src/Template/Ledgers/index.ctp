@@ -46,8 +46,6 @@
 			</table>
 		</form>
 		
-						
-		
 		
 		<!-- BEGIN FORM-->
 		<?php $page_no=$this->Paginator->current('Ledgers'); $page_no=($page_no-1)*20; ?>

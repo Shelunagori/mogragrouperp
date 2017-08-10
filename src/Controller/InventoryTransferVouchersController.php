@@ -177,7 +177,7 @@ class InventoryTransferVouchersController extends AppController
 
 	
 			if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
-				
+				//pr($inventoryTransferVoucher);exit;
 			foreach($inventory_transfer_voucher_rows as $inventory_transfer_voucher_row_data){
 				//pr($inventory_transfer_voucher_row_data); exit;
 				if($inventory_transfer_voucher_row_data['status'] == 'out'){
@@ -195,9 +195,9 @@ class InventoryTransferVouchersController extends AppController
 					}
 					
 					
-				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row_data['item_id'],'in_out'=>'In']);
+				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row_data['item_id'],'in_out'=>'In','processed_on <='=>$inventoryTransferVoucher->transaction_date,'rate >'=>0]);
 				$ledger_data=$Itemledgers->count();
-				
+				//pr($Itemledgers->toArray());exit;
 				if($ledger_data>0){ 
 					$j=0; $qty_total=0; $total_amount=0;
 					foreach($Itemledgers as $Itemledger){
@@ -409,7 +409,7 @@ class InventoryTransferVouchersController extends AppController
 					}
 					
 					
-				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row_data['item_id'],'in_out'=>'In']);
+				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row_data['item_id'],'in_out'=>'In','processed_on <='=>$inventoryTransferVoucher->transaction_date,'rate >'=>0]);
 				$ledger_data=$Itemledgers->count();
 				
 				if($ledger_data>0){ 
@@ -736,8 +736,8 @@ class InventoryTransferVouchersController extends AppController
 				if ($this->InventoryTransferVouchers->save($inventoryTransferVoucher)) {
 				
 			foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){
-				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row->item_id,'in_out'=>'In']);
-				
+				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row->item_id,'in_out'=>'In','processed_on <='=>$inventoryTransferVoucher->transaction_date,'rate >'=>0]);
+				//pr($Itemledgers->toArray());exit;
 				$ledger_data=$Itemledgers->count();
 				
 				if($ledger_data>0){ 
@@ -854,7 +854,7 @@ class InventoryTransferVouchersController extends AppController
 				$this->InventoryTransferVouchers->ItemLedgers->deleteAll(['source_id'=>$inventoryTransferVoucher->id,'source_model'=>'Inventory Transfer Voucher','company_id'=>$st_company_id]);
 				
 			foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $inventory_transfer_voucher_row){
-				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row->item_id,'in_out'=>'In']);
+				$Itemledgers = $this->InventoryTransferVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_transfer_voucher_row->item_id,'in_out'=>'In','processed_on <='=>$inventoryTransferVoucher->transaction_date,'rate >'=>0]);
 				
 				$ledger_data=$Itemledgers->count();
 				

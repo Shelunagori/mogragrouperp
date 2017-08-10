@@ -34,7 +34,7 @@ class GrnsController extends AppController
 		$vendor=$this->request->query('vendor');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
-		$this->set(compact('grn_no','vendor','From','po_no','To'));
+		$this->set(compact('grn_no','vendor','From','po_no','To','grn_pull_request','pull_request'));
 		if(!empty($grn_no)){
 			//pr($grn_no); exit;
 			$where1['grn2 LIKE']=$grn_no;
@@ -61,6 +61,7 @@ class GrnsController extends AppController
 		}elseif($status=='Invoice-Booked'){
 			$where['status']='Invoice-Booked';
 		}
+		
 		$grns = $this->paginate($this->Grns->find()->where($where)->where($where1)->where(['Grns.company_id'=>$st_company_id])->order(['Grns.id' => 'DESC']));
         $this->set(compact('grns','pull_request','status','grn_pull_request'));
         $this->set('_serialize', ['grns']);
