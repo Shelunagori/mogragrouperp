@@ -18,6 +18,9 @@ class PettyCashVouchersController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
         $this->viewBuilder()->layout('index_layout');
         
         $session = $this->request->session();
@@ -26,10 +29,22 @@ class PettyCashVouchersController extends AppController
             'contain' => []
         ];
         $pettycashvouchers = $this->paginate($this->PettyCashVouchers->find()->where(['company_id'=>$st_company_id])->contain(['PettyCashVoucherRows'])->order(['voucher_no'=>'DESC']));
-        $this->set(compact('pettycashvouchers'));
+        $this->set(compact('pettycashvouchers','url'));
         $this->set('_serialize', ['pettycashvouchers']);
     }
 
+	public function exportExcel(){
+		 $this->viewBuilder()->layout('');
+        
+        $session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+        $this->paginate = [
+            'contain' => []
+        ];
+        $pettycashvouchers = $this->paginate($this->PettyCashVouchers->find()->where(['company_id'=>$st_company_id])->contain(['PettyCashVoucherRows'])->order(['voucher_no'=>'DESC']));
+        $this->set(compact('pettycashvouchers','url'));
+        $this->set('_serialize', ['pettycashvouchers']);
+	}
     /**
      * View method
      *

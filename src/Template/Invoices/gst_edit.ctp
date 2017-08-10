@@ -366,9 +366,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<td align="right" colspan="<?php echo $tr3_colspan; ?>">Fright Ledger Account</td>
 						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
 						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
@@ -497,7 +497,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			   <?php if($chkdate == 'Not Found'){  ?>
 					<label class="btn btn-danger"> You are not in Current Financial Year </label>
 				<?php } else { ?>
-					<?= $this->Form->button(__('EDIT INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+					<?= $this->Form->button(__('EDIT INVOICE'),['class'=>'btn btn-primary ','id'=>'add_submit','type'=>'Submit']) ?>
 				<?php } ?>	
 
 				</div>
@@ -513,14 +513,40 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	background-color: #97b8ef;
 }
 </style>
-<?php echo $this->Html->css('/drag_drop/jquery-ui.css'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-1.12.4.js'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-ui.js'); ?>
+
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>	
 
 
 <script>
 $(document).ready(function() { 
+/////////////////////////////////////////////////////////////////////
+	jQuery.validator.addMethod("noSpace", function(value, element) { 
+	  return value.indexOf(" ") < 0 && value != ""; 
+	}, "No space please and don't leave it empty");
+	
+	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
+    // get all the elements passed here with the same class
+    var elems = $(element).parents('form').find(options[0]);
+    // the value of the current element
+    var valueToCompare = value;
+    // count
+    var matchesFound = 0;
+    // loop each element and compare its value with the current value
+    // and increase the count every time we find one
+    jQuery.each(elems, function () {
+        thisVal = $(this).val();
+        if (thisVal == valueToCompare) {
+            matchesFound++;
+        }
+    });
+    // count should be either 0 or 1 max
+    if (this.optional(element) || matchesFound <= 1) {
+        //elems.removeClass('error');
+        return true;
+    } else {
+        //elems.addClass('error');
+    }
+}, jQuery.format("Please enter a Unique Value."));
 	//--------- FORM VALIDATION
 	var form3 = $('#form_sample_3');
 	var error3 = $('.alert-danger', form3);
@@ -531,53 +557,52 @@ $(document).ready(function() {
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
 			company_id:{
-				required: true,
+				required: true
 			},
 			date_created : {
-				  required: true,
+				  required: true
 			},
 			customer_id : {
-				  required: true,
+				  required: true
 			},
 			in1 : {
-				  required: true,
+				  required: true
 			},			
 			in3:{
 				required: true
 			},
 			in4:{
-				required: true,
+				required: true
 			},
 			customer_address:{
-				required: true,
+				required: true
 			},
 			lr_no : {
-				  required: true,
+				  required: true
 			},
 			customer_po_no  : {
-				  required: true,
+				  required: true
 			},
 			employee_id: {
-				  required: true,
+				  required: true
 			},
 			customer_tin: {
-				  required: true,
+				  required: true
+			},
+			checked_row_length: {
+				  required: true
 			},
 			
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
 			checked_row_length: {
-				required : "Please select atleast one row.",
-				max: "You can not select multiple rows of different sale tax rate."
+				required : "Please select atleast one row."
 			},
 			customer_tin: {
 				required: "Can't generate Invoice,Customer has not TIN"
-			},
-			service: {
-				required: "Please select  at least 2 types of Service",
-				minlength: jQuery.validator.format("Please select  at least {0} types of Service")
-			},
+			}
+			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -599,11 +624,9 @@ $(document).ready(function() {
 		},
 
 		invalidHandler: function (event, validator) { //display error alert on form submit   
-			put_code_description();
 			success3.hide();
 			error3.show();
 			$("#add_submit").removeAttr("disabled");
-			//Metronic.scrollTo(error3, -200);
 		},
 
 		highlight: function (element) { // hightlight error inputs
@@ -621,16 +644,20 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 	
-		submitHandler: function (form) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
+		submitHandler: function (form3) {
 			put_code_description();
+			check();
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
+			
 		}
 
 	});
+	
+	
+	
+	
 	$('.quantity').die().live("keyup",function() {
 		var qty =$(this).val();
 		rename_rows(); calculate_total(); do_ref_total();
@@ -689,6 +716,33 @@ $(document).ready(function() {
 		rename_rows();   calculate_total();
 		 put_code_description();
     });
+	
+	
+	<?php if($invoice->customer->district->state!="Rajasthan"){ ?>
+		$("#main_tb tbody tr.tr1").each(function(){  
+			var row_no=$(this).attr('row_no');
+			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+			if(val){ 
+			
+			$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").rules("remove", "required");
+			} 
+		});
+	<?php } else{ ?> 
+			$("#main_tb tbody tr.tr1").each(function(){  
+			var row_no=$(this).attr('row_no');
+			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+			if(val){ 
+			
+			$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").rules("add", "required");
+			$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").rules("remove", "required");
+			} 
+		});
+			
+	<?php } ?>
+	
 	
 	rename_rows();
 	
@@ -776,6 +830,8 @@ $(document).ready(function() {
 				}
 			});
 		}
+		
+
 		
 	function put_code_description(){ 
 		var i=0;
@@ -959,7 +1015,27 @@ $(document).ready(function() {
 		$("table.main_ref_table tbody").append(tr);
 		rename_ref_rows();
 	}
-	
+	$('.ref_type').live("change",function() {
+		var current_obj=$(this);
+		
+		var ref_type=$(this).find('option:selected').val();
+		if(ref_type=="Against Reference"){
+			var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'fetchRefNumbers']); ?>";
+			url=url,
+			$.ajax({
+				url: url+'/<?php echo $c_LedgerAccount->id; ?>',
+				type: 'GET',
+			}).done(function(response) {
+				current_obj.closest('tr').find('td:eq(1)').html(response);
+				rename_ref_rows();
+			});
+		}else if(ref_type=="New Reference" || ref_type=="Advance Reference"){
+			current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
+			rename_ref_rows();
+		}else{
+			current_obj.closest('tr').find('td:eq(1)').html('');
+		}
+	});
 	rename_ref_rows();
 	function rename_ref_rows(){
 		var i=0; var customer_suppiler_id = $('#customer_suppiler_id').val();
@@ -972,17 +1048,12 @@ $(document).ready(function() {
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
 			}else if(is_input){
 				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
-				url=url+'/'+customer_suppiler_id+'/'+i;
+				url=url+'/<?php echo $c_LedgerAccount->id; ?>/'+i;
+				//alert(url);
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
 							noSpace: true,
-							notEqualToGroup: ['.ref_number'],
-							remote: {
-								url: url,
-							},
-							messages: {
-								remote: "Not an unique."
-							}
+							
 						});
 			}
 			var is_ref_old_amount=$(this).find("td:nth-child(3) input.old_amount_data").length;
@@ -1011,27 +1082,7 @@ $(document).ready(function() {
 		delete_one_ref_no(sel);
 	});
 	
-	$('.ref_type').live("change",function() {
-		var current_obj=$(this);
-		
-		var ref_type=$(this).find('option:selected').val();
-		if(ref_type=="Against Reference"){
-			var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'fetchRefNumbers']); ?>";
-			url=url,
-			$.ajax({
-				url: url+'/<?php echo $c_LedgerAccount->id; ?>',
-				type: 'GET',
-			}).done(function(response) {
-				current_obj.closest('tr').find('td:eq(1)').html(response);
-				rename_ref_rows();
-			});
-		}else if(ref_type=="New Reference" || ref_type=="Advance Reference"){
-			current_obj.closest('tr').find('td:eq(1)').html('<input type="text" class="form-control input-sm" placeholder="Ref No." >');
-			rename_ref_rows();
-		}else{
-			current_obj.closest('tr').find('td:eq(1)').html('');
-		}
-	});
+	
 	
 	$('.ref_list').live("change",function() {
 		var current_obj=$(this);

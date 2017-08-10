@@ -1,14 +1,18 @@
 <?php //pr($pettyCashReceiptVouchers); exit; ?>
+<?php $url_excel="/?".$url; ?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Receipt Vouchers</span>
 		</div>
-	
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Receipts/Excel-Export/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+		</div>
 	<div class="portlet-body">
 		<div class="row">
-		<form method="GET" >
+		<form method="GET">
 				<table class="table table-condensed">
 					<tbody>
 						<tr>
@@ -23,10 +27,6 @@
 							</td>
 							<td width="10%"><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
 
-							<td>
-								<?php echo $this->Html->link('<i class="fa fa-file-excel-o"></i> Export',['action' => 'ReceiptVoucherExport'],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-primary btn-sm','data-original-title'=>'Export')); ?>
-							
-							</td>
 							</tr>
 					</tbody>
 				</table>

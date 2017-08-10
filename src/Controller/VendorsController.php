@@ -528,7 +528,7 @@ class VendorsController extends AppController
 							}
 						}
 						
-				}else {
+				}else if($ReferenceBalance->due_date <  $over_date8){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit && $ReferenceBalance->due_date){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);

@@ -22,6 +22,7 @@ class InvoicesController extends AppController
     {
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		$inventory_voucher=$this->request->query('inventory_voucher');
 		$sales_return=$this->request->query('sales_return');
@@ -105,7 +106,7 @@ class InvoicesController extends AppController
 		} 
 		//pr($invoices); exit;
 		$Items = $this->Invoices->InvoiceRows->Items->find('list')->order(['Items.name' => 'ASC']);
-		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows','Items'));
+		$this->set(compact('invoices','status','inventory_voucher','sales_return','InvoiceRows','Items','url'));
 		
         $this->set('_serialize', ['invoices']);
 		$this->set(compact('url'));
@@ -156,26 +157,28 @@ class InvoicesController extends AppController
 		$this->set(compact('url'));
     }
 
-	public function exportExcel()
+	public function exportInvoiceExcel()
 	{
+		$this->viewBuilder()->layout(''); 
+		$inventory_voucher=$this->request->query('inventory_voucher');
+		$sales_return=$this->request->query('sales_return');
+		//pr($sales_return); exit;
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		
-		$this->viewBuilder()->layout('');
 		$where=[];
-		$company_alise=$this->request->query('company_alise');
 		$invoice_no=$this->request->query('invoice_no');
 		$file=$this->request->query('file');
 		$customer=$this->request->query('customer');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		$total_From=$this->request->query('total_From');
-		$total_To=$this->request->query('total_To');
 		$page=$this->request->query('page');
-		$this->set(compact('ref_no','customer','total_From','total_To','From','To','page','invoice_no','company_alise','file'));
-		if(!empty($company_alise)){
-			$where['Invoices.in1 LIKE']='%'.$company_alise.'%';
-		}
+		$items=$this->request->query('items');
+		$this->set(compact('customer','total_From','From','To','page','invoice_no','file','items'));
+		
 		if(!empty($invoice_no)){
-			$where['Invoices.id']=$invoice_no;
+			$where['Invoices.in2 LIKE']=$invoice_no;
 		}
 		if(!empty($file)){
 			$where['Invoices.in3 LIKE']='%'.$file.'%';
@@ -185,23 +188,24 @@ class InvoicesController extends AppController
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['date_created >=']=$From;
+			$where['Invoices.date_created >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['date_created <=']=$To;
+			$where['Invoices.date_created <=']=$To;
 		}
 		if(!empty($total_From)){
-			$where['total_after_pnf >=']=$total_From;
+			$where['Invoices.total_after_pnf']=$total_From;
 		}
-		if(!empty($total_To)){
-			$where['total_after_pnf <=']=$total_To;
-		}
-		$this->paginate = [
-			'contain' => ['Customers', 'Companies']
-		];
-		$invoices = $this->paginate($this->Invoices->find()->where($where)->order(['Invoices.id' => 'DESC']));
 		
+		  $this->paginate = [
+            'contain' => ['Customers', 'Companies']
+        ];
+		
+		$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.in2' => 'DESC']));
+		
+		//$invoices = $this->paginate($this->Invoices->find()->where($where)->order(['Invoices.id' => 'DESC']));
+		//pr($invoices);exit;
 		$this->set(compact('invoices'));
 		$this->set('_serialize', ['invoices']);
 	}
@@ -1351,13 +1355,13 @@ class InvoicesController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['Invoices.date_created <=']=$To;
 		}
-		if(!empty($To)){
-			$To=date("Y-m-d",strtotime($this->request->query('To')));
+		if(!empty($salesman_id)){ 
+			
 			$where['Invoices.employee_id']=$salesman_id;
 		}
 		$this->set(compact('From','To','salesman_id'));
 		
-		
+		//pr($where); exit;
 		
 		/*  $SalesMans = $this->Invoices->Employees->find('list')->matching(
 					'Departments', function ($q) {
@@ -1376,7 +1380,7 @@ class InvoicesController extends AppController
 					}
 				); 
 				//pr($SalesMans); exit;
-		$invoices = $this->Invoices->find()->where($where)->contain(['InvoiceRows','Customers'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
+		$invoices = $this->Invoices->find()->where($where)->contain(['InvoiceRows','Customers'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'Invoices.invoice_type'=>'Non-GST	']);
 		//pr($invoices->toArray()); exit;
 		$this->set(compact('invoices','SalesMans'));
 	}
@@ -1886,7 +1890,7 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
-			//pr($invoice->date_created); exit;
+			//pr($invoice->total_taxable_value); exit;
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
 			$invoice->edited_on = date("Y-m-d"); 
@@ -2401,41 +2405,38 @@ class InvoicesController extends AppController
 		$this->set(compact('invoice','id'));
     }
 	
-	public function invoiceData(){
-		$this->viewBuilder()->layout('');
+	public function gstSalesReport(){
+		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$salesman_id=$this->request->query('salesman_name');
 		
-		$invoices=$this->Invoices->find()->where(['company_id'=>$st_company_id]);
-		?>
-		<table border="1">
-			<tr>
-				<th>ID</th>
-				<th>No</th>
-				<th>Transaction Date</th>
-				<th>itemledgers</th>
-			</tr>
-			<?php foreach($invoices as $invoice){
-				$itemledgers=$this->Invoices->ItemLedgers->find()->where(['source_model LIKE'=>'%Invoices%','source_id'=>$invoice->id]);
-			?>
-			<tr>
-				<td><?php echo $invoice->id; ?></td>
-				<td><?= h('#'.$invoice->in2) ?></td>
-				<td><?php echo strtotime($invoice->date_created); ?></td>
-				<td>
-					<?php 
-					$q=0;
-					foreach($itemledgers as $itemledger){ 
-						$q+=strtotime($itemledger->processed_on);
+		$where=[];
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['Invoices.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['Invoices.date_created <=']=$To;
+		}
+		
+		//pr($where); exit;
+		$this->set(compact('From','To','salesman_id'));
+		$SalesMans = $this->Invoices->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])
+			
+			->matching(
+					'Departments', function ($q) {
+						return $q->where(['Departments.id' =>1]);
 					}
-					echo $q/sizeof($itemledgers->toArray());
-					?>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
-		<?php
-		exit;
+		); 
+				//pr($SalesMans); exit;
+		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
+		//pr($invoices->toArray()); exit;
+		$this->set(compact('invoices','SalesMans'));
 	}
 	
 }

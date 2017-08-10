@@ -67,6 +67,9 @@ class ReceiptsController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		
 		$session = $this->request->session();
@@ -120,10 +123,67 @@ class ReceiptsController extends AppController
 		}])->order(['transaction_date' => 'DESC']));
 		
 		
-        $this->set(compact('receipts'));
+        $this->set(compact('receipts','url'));
         $this->set('_serialize', ['receipts']);
     }
 
+	public function excelExport(){
+		$this->viewBuilder()->layout('');
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$where = [];
+		$vouch_no = $this->request->query('vouch_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['Receipts.voucher_no LIKE']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['Receipts.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['Receipts.transaction_date <=']=$To;
+		}
+		
+		
+        $this->paginate = [
+            'contain' => []
+        ];
+        $receipts = $this->paginate($this->Receipts->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['ReceiptRows'=>function($q){
+			$ReceiptRows = $this->Receipts->ReceiptRows->find();
+			$totalCrCase = $ReceiptRows->newExpr()
+				->addCase(
+					$ReceiptRows->newExpr()->add(['cr_dr' => 'Cr']),
+					$ReceiptRows->newExpr()->add(['amount']),
+					'integer'
+				);
+			$totalDrCase = $ReceiptRows->newExpr()
+				->addCase(
+					$ReceiptRows->newExpr()->add(['cr_dr' => 'Dr']),
+					$ReceiptRows->newExpr()->add(['amount']),
+					'integer'
+				);
+			return $ReceiptRows->select([
+					'total_cr' => $ReceiptRows->func()->sum($totalCrCase),
+					'total_dr' => $ReceiptRows->func()->sum($totalDrCase)
+				])
+				->group('receipt_id')
+				->autoFields(true);
+			
+		}])->order(['transaction_date' => 'DESC']));
+		
+		
+        $this->set(compact('receipts','From','To'));
+        $this->set('_serialize', ['receipts']);
+	}
     /**
      * View method
      *

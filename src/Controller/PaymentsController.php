@@ -18,6 +18,9 @@ class PaymentsController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		
 		$session = $this->request->session();
@@ -75,10 +78,71 @@ class PaymentsController extends AppController
 		}])->order(['voucher_no'=>'DESC']));
 		
 
-        $this->set(compact('payments'));
+        $this->set(compact('payments','url'));
         $this->set('_serialize', ['payments']);
     }
 
+	public function excelExport(){
+		$this->viewBuilder()->layout('');
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$where = [];
+		$vouch_no = $this->request->query('vouch_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['Payments.voucher_no LIKE']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['Payments.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['Payments.transaction_date <=']=$To;
+		}
+		
+		
+		
+        $this->paginate = [
+            'contain' => []
+        ];
+		
+		
+		$payments = $this->paginate($this->Payments->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['PaymentRows'=>function($q){
+			$PaymentRows = $this->Payments->PaymentRows->find();
+			$totalCrCase = $PaymentRows->newExpr()
+				->addCase(
+					$PaymentRows->newExpr()->add(['cr_dr' => 'Cr']),
+					$PaymentRows->newExpr()->add(['amount']),
+					'integer'
+				);
+			$totalDrCase = $PaymentRows->newExpr()
+				->addCase(
+					$PaymentRows->newExpr()->add(['cr_dr' => 'Dr']),
+					$PaymentRows->newExpr()->add(['amount']),
+					'integer'
+				);
+			return $PaymentRows->select([
+					'total_cr' => $PaymentRows->func()->sum($totalCrCase),
+					'total_dr' => $PaymentRows->func()->sum($totalDrCase)
+				])
+				->group('payment_id')
+				
+				->autoFields(true);
+			
+		}])->order(['voucher_no'=>'DESC']));
+		
+
+        $this->set(compact('payments','From','To'));
+        $this->set('_serialize', ['payments']);
+	}
     /**
      * View method
      *

@@ -1,4 +1,4 @@
-'<?php $url_excel="/?".$url; ?>
+<?php $url_excel="/?".$url; ?>
 
 <div class="portlet light bordered">
 	<div class="portlet-title">
@@ -25,7 +25,11 @@
 				'/Invoices/index/Cancel',
 				['class' => $class3]
 			); ?>
-			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Invoices/Export-Excel/'.@$url_excel.'',['class' =>'btn btn-sm green tooltips pull-right','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+			
+			
+				
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Invoices/Export-Invoice-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+			
 		<?php } ?>
 		</div>
 	

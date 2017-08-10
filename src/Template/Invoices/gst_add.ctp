@@ -468,6 +468,34 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 
 <script>
 $(document).ready(function() { 
+/////////////////////////////////////////////////////////////////////
+	jQuery.validator.addMethod("noSpace", function(value, element) { 
+	  return value.indexOf(" ") < 0 && value != ""; 
+	}, "No space please and don't leave it empty");
+	
+	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
+    // get all the elements passed here with the same class
+    var elems = $(element).parents('form').find(options[0]);
+    // the value of the current element
+    var valueToCompare = value;
+    // count
+    var matchesFound = 0;
+    // loop each element and compare its value with the current value
+    // and increase the count every time we find one
+    jQuery.each(elems, function () {
+        thisVal = $(this).val();
+        if (thisVal == valueToCompare) {
+            matchesFound++;
+        }
+    });
+    // count should be either 0 or 1 max
+    if (this.optional(element) || matchesFound <= 1) {
+        //elems.removeClass('error');
+        return true;
+    } else {
+        //elems.addClass('error');
+    }
+}, jQuery.format("Please enter a Unique Value."));
 	//--------- FORM VALIDATION
 	var form3 = $('#form_sample_3');
 	var error3 = $('.alert-danger', form3);
@@ -710,11 +738,19 @@ $(document).ready(function() {
 				}
 				
 			});
-			
-				
-					//alert(p);
-				
 		}
+		
+		
+	<?php if($sales_order->customer->district->state!="Rajasthan"){ ?>
+			$('.fright_amount').rules("add", "required");
+			$('.fright_igst_percent').rules("add", "required");
+			
+	<?php } else{ ?> 
+			$('.fright_amount').rules("add", "required");
+			$('.fright_cgst_percent').rules("add", "required");
+			$('.fright_sgst_percent').rules("add", "required");
+			
+	<?php } ?>
 		
 	function put_code_description(){ 
 		var i=0;
@@ -905,11 +941,12 @@ $(document).ready(function() {
 			var is_input=$(this).find("td:nth-child(2) input").length;
 			
 			if(is_select){
-				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"});
-			}else if(is_input){
+				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
+			}else if(is_input){ 
 				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/<?php echo $c_LedgerAccount->id; ?>/'+i;
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
+							required: true,
 							noSpace: true,
 							notEqualToGroup: ['.ref_number'],
 							remote: {
@@ -921,7 +958,7 @@ $(document).ready(function() {
 						});
 			}
 			
-			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"});
+			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules( "add", "required" );
 			i++;
 		});
 		

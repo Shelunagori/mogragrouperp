@@ -34,7 +34,7 @@
 		<?php $i=0; foreach ($quotations as $quotation): ?>
 		<tr >
 			<td><?= h(++$i) ?></td>
-			<td><?= h(($quotation->qt1.'/QT-'.str_pad($quotation->id, 3, '0', STR_PAD_LEFT).'/'.$quotation->qt3.'/'.$quotation->qt4)) ?></td>
+			<td><?= h(($quotation->qt1.'/QT-'.str_pad($quotation->qt2, 3, '0', STR_PAD_LEFT).'/'.$quotation->qt3.'/'.$quotation->qt4)) ?></td>
 			<td><?= h($quotation->customer->customer_name) ?></td>
 			<td><?= h($quotation->employee->name) ?></td>
 			<td><?= h($quotation->item_group->name) ?></td>

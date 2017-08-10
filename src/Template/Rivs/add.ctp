@@ -49,7 +49,7 @@
 															$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
 														} 
 												?>
-												<td ><?php echo $this->Form->input('left_rivs.'.$p.'.right_rivs.'.$q.'.item_serial_numbers[]', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
+												<td ><?php echo $this->Form->input('left_rivs.'.$p.'.right_rivs.'.$q.'.item_serial_numbers[]', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','min'=>$total_quant,'readonly']);  ?></td>
 												<?php } ?>
 										</tr>
 									<?php $q++; } ?>

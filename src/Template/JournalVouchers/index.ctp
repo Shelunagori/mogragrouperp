@@ -1,11 +1,15 @@
 <?php //pr($journalVouchers); exit; ?>
+<?php $url_excel="/?".$url; ?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Journal Vouchers</span>
 		</div>
-	
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/JournalVouchers/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+		</div>
 	<div class="portlet-body">
 		<div class="row">
 			<div class="col-md-12">
