@@ -394,10 +394,7 @@ $(document).ready(function() {
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
-			service: {
-				required: "Please select  at least 2 types of Service",
-				minlength: jQuery.validator.format("Please select  at least {0} types of Service")
-			},
+			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -442,7 +439,7 @@ $(document).ready(function() {
 		submitHandler: function (form3) {
 			//$('#add_submit').prop('disabled', true);
 			//$('#add_submit').text('Submitting.....');
-			rename_rows();
+			//rename_rows();
 			success3.show();
 			error3.hide();
 			form3[0].submit();
@@ -727,6 +724,7 @@ $(document).ready(function() {
 			$("table.main_ref_table tfoot tr:nth-child(1) td:nth-child(3) input").val(on_acc.toFixed(2));
 			total_ref=total_ref+on_acc;
 		}else{
+
 			$("table.main_ref_table tfoot tr:nth-child(1) td:nth-child(3) input").val(0);
 		}
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));

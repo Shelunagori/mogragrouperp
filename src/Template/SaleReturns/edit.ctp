@@ -169,6 +169,9 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					if($saleReturn->pnf_type==1){ $checked3="Checked";
 					}else{	$checked3="";
 					} 
+					$val = $this->Number->format($invoice->grand_total,['places'=>2]);
+					$val = str_replace(",",".",$val);
+					$val1 = preg_replace('/\.(?=.*\.)/', '', $val);
 					?> 
 					<td  align="right">
 					<b>P&F <label style="display:none"><?php echo $this->Form->input('pnf_type', ['type' => 'checkbox','label' => false,'class' => 'form-control input-sm','id'=>'pnfper','Checked'=>$checked2]); ?></label>(in %)</b>
@@ -205,7 +208,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				</tr>
 				<tr>
 					<td  align="right"><b>Grand Total </b></td>
-					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm grand_total','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$saleReturn->grand_total]); ?></td>
+					<td><?php echo $this->Form->input('grand_total', ['type' => 'text','label' => false,'class' => 'form-control input-sm grand_total','placeholder' => 'Grand Total','readonly','step'=>0.01,'value'=>$val1]); ?></td>
 				</tr>
 			</table>
 			<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
@@ -221,7 +224,13 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach($ReferenceDetails as $old_ref_row){ ?>
+							<?php foreach($ReferenceDetails as $old_ref_row){ 
+								$val = $this->Number->format($old_ref_row->credit,['places'=>2]);
+								$val = str_replace(",",".",$val);
+								$val1 = preg_replace('/\.(?=.*\.)/', '', $val);
+							
+							
+							?>
 								<tr>
 									<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
 									<td class="ref_no">
@@ -233,8 +242,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									</td>
 									<td>
 									<?php 
-										echo $this->Form->input('old_amount', ['label' => false,'class' => 'ref_old_amount','type'=>'hidden','value'=>$old_ref_row->credit]);
-										echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount','value'=>$old_ref_row->credit]);
+										echo $this->Form->input('old_amount', ['label' => false,'class' => 'ref_old_amount','type'=>'hidden','value'=>$val1]);
+										echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount','value'=>$val1]);
 																
 									?>
 									</td>
@@ -288,7 +297,33 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>
 $(document).ready(function() { 
+	jQuery.validator.addMethod("noSpace", function(value, element) { 
+	  return value.indexOf(" ") < 0 && value != ""; 
+	}, "No space please and don't leave it empty");
 	
+	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
+		// get all the elements passed here with the same class
+		var elems = $(element).parents('form').find(options[0]);
+		// the value of the current element
+		var valueToCompare = value;
+		// count
+		var matchesFound = 0;
+		// loop each element and compare its value with the current value
+		// and increase the count every time we find one
+		jQuery.each(elems, function () {
+			thisVal = $(this).val();
+			if (thisVal == valueToCompare) {
+				matchesFound++;
+			}
+		});
+		// count should be either 0 or 1 max
+		if (this.optional(element) || matchesFound <= 1) {
+			//elems.removeClass('error');
+			return true;
+		} else {
+			//elems.addClass('error');
+		}
+	}, jQuery.format("Please enter a Unique Value."));
 	//--------- FORM VALIDATION
 	var form3 = $('#form_sample_3');
 	var error3 = $('.alert-danger', form3);
@@ -352,12 +387,12 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 
-		submitHandler: function (form) {
+		submitHandler: function (form3) {
 			$('#add_submit').prop('disabled', true);
 			$('#add_submit').text('Submitting.....');	
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
 		}
 
 	});
