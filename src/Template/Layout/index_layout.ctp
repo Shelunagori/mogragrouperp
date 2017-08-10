@@ -747,7 +747,7 @@ select
 				</li>
 				<?php } ?>
 				
-					<li>
+					<!--<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
 					<span class="title">Reverse Inventory Voucher</span>
@@ -759,7 +759,7 @@ select
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/Rivs/',array('escape'=>false)).'</li>';
 						 ?>
 					</ul>
-				</li>
+				</li> -->
 				<?php if(in_array(129,$allowed_pages)||in_array(130,$allowed_pages)|| in_array(131,$allowed_pages) ||in_array(132,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
