@@ -367,7 +367,7 @@ class ItemLedgersController extends AppController
 			}
 		$ItemLedgers = $this->ItemLedgers->find()->contain(['Items'=>function ($q) use($where){
 			return $q->where($where);
-		}])->where(['ItemLedgers.company_id'=>$st_company_id]);
+		}])->where(['ItemLedgers.company_id'=>$st_company_id,'ItemLedgers.rate >'=>0]);
 		//pr(sizeof($item_stocks)); exit;
 		$item_rate=[];
 		$in_qty=[];
@@ -560,5 +560,11 @@ class ItemLedgersController extends AppController
 			$itemLedgers[]=$itemLedger;
 		}
 		$this->set(compact('itemLedgers'));
+	}
+	
+	public function repair_all_rates(){
+		$this->viewBuilder()->layout('');
+		
+		
 	}
 }

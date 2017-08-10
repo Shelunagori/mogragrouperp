@@ -88,18 +88,19 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php $total_inv=0; $page_no=0; foreach ($item_stocks as $key=> $item_stock):
+						<?php $total_inv=0; $page_no=0; 
+						foreach ($item_stocks as $key=> $item_stock){
 						if($item_stock!=0){
 							if(@$in_qty[$key]==0){ 
 								$per_unit=@$item_rate[$key];
 							}else{
-							$per_unit=@$item_rate[$key]/@$in_qty[$key];
+								$per_unit=@$item_rate[$key]/@$in_qty[$key];
 							}
 						}else{ 
 							if(@$in_qty[$key]==0){ 
 								$per_unit=@$item_rate[$key];
 							}else{
-							$per_unit=@$item_rate[$key]/@$in_qty[$key];
+								$per_unit=@$item_rate[$key]/@$in_qty[$key];
 							}
 							
 						}
@@ -115,11 +116,15 @@
 								&nbsp;&nbsp;<?= h($items_names[$key]) ?><div class="show_ledger"></div></td>
 							<td><?= h($item_stock) ?></td>
 							<td><?= h($items_unit_names[$key]) ?></td>
-							<td align="right"><?= h($this->Number->format(@$per_unit,['places'=>2])) ?></td>
-							<td align="right"><?= h($this->Number->format($amount,['places'=>2])) ?></td>
+							<td align="right">
+								<?php if($item_stock>0){ ?>
+									<?= h($this->Number->format(@$per_unit,['places'=>2])) ?>
+								<?php } ?>
+							</td>
+							<td align="right"><?php if(abs($amount)==0){ $amount=abs($amount);  } ?><?= h($this->Number->format($amount,['places'=>2])) ?></td>
 						</tr>
 						
-						<?php endforeach; ?>
+						<?php } ?>
 						<?php $page_no1=$page_no; foreach($ItemDatas as $key=>$ItemData){ ?>
 						
 						<tr>
