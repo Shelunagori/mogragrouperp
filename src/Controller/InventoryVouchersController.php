@@ -479,16 +479,16 @@ class InventoryVouchersController extends AppController
 				}
 				
 				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date])->toArray();
-				//pr($itemLedgers); exit;
+				
 				$rate=0; $count=0;
 				foreach($itemLedgers as $itemLedger){
-					if($itemLedger->rate > 0 ){
+					if($itemLedger->rate > 0 ){  //pr($itemLedgers); 
 						$count=$count+$itemLedger->quantity;
 						$rate=$rate+($itemLedger->rate*$itemLedger->quantity);
 					}
 				}
 				
-				if($count>0){
+				if($count > 0){ 
 				$toupdate_rate=$rate/$count;
 				}else{
 				$toupdate_rate=$rate;	
