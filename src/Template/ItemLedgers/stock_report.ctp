@@ -117,7 +117,7 @@
 							<td><?= h($item_stock) ?></td>
 							<td><?= h($items_unit_names[$key]) ?></td>
 							<td align="right">
-								<?php if($item_stock>0){ ?>
+								<?php if($item_stock!=0){ ?>
 									<?= h($this->Number->format(@$per_unit,['places'=>2])) ?>
 								<?php } ?>
 							</td>
