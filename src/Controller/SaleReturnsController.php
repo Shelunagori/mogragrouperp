@@ -275,8 +275,40 @@ class SaleReturnsController extends AppController
 					foreach($saleReturn->check as $sale_return_row){
 				
 						$item_id=$sale_return_row;
-						$item_detail=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row,'source_model != '=>'Sale Return','in_out'=>'In'])->first();
-						//pr($item_detail); exit;
+						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0]);
+						//pr($item_details->toArray()); exit;
+						$ledger_data=$item_details->count();
+						$Itemledger_qty=0;
+						$Itemledger_rate=0;
+						if($ledger_data>0){ 
+							$j=0; $qty_total=0; $total_amount=0;
+							foreach($item_details as $item_detail){
+								$Itemledger_qty = $Itemledger_qty+$item_detail->quantity;
+								$Itemledger_rate = $Itemledger_rate+$item_detail->rate;
+								$j++;
+						}
+						}else{ 
+							$Itemledger_qty=1;
+							$Itemledger_rate=0;
+						}
+						
+						$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+						
+						$query= $this->SaleReturns->ItemLedgers->query();
+						$query->insert(['item_id','quantity' ,'rate', 'in_out','source_model','processed_on','company_id','source_id'])
+							  ->values([
+											'item_id' => $item_id,
+											'quantity' => $saleReturn->sale_return_rows[$i]['quantity'],
+											'rate' => $per_unit_cost,
+											'source_model' => 'Sale Return',
+											'processed_on' => date("Y-m-d",strtotime($saleReturn->transaction_date)),
+											'in_out'=>'In',
+											'company_id'=>$st_company_id,
+											'source_id'=>$saleReturn->id
+										])
+					    ->execute();
+						$i++;
+						/* pr($ledger_data); exit;
 						$itemLedger = $this->SaleReturns->ItemLedgers->newEntity();
 						$itemLedger->item_id = $item_id;
 						$itemLedger->quantity = $saleReturn->sale_return_rows[$i]['quantity'];
@@ -291,7 +323,7 @@ class SaleReturnsController extends AppController
 						$itemLedger->company_id = $invoice->company_id;
 						$itemLedger->processed_on = $saleReturn->transaction_date;
 						$this->SaleReturns->ItemLedgers->save($itemLedger);
-						$i++;
+						$i++; */
 					}
 					
 					$query = $this->SaleReturns->Invoices->query();
@@ -341,7 +373,7 @@ class SaleReturnsController extends AppController
 				
 				
 				
-				$flag=0;
+				/* $flag=0;
 				$data=[];
 				foreach($saleReturn->sale_return_rows as $sale_return_row){
 					$invoice_data=$this->SaleReturns->Invoices->InvoiceRows->find()->where(['invoice_id'=>$saleReturn->invoice_id,
@@ -362,10 +394,10 @@ class SaleReturnsController extends AppController
 							->execute();
 						$this->redirect(['controller'=>'Rivs','action' => 'Add/'.$saleReturn->id,$data]);
 				}
-				else{
+				else{ */
 						$this->Flash->success(__('The sale return has been saved.'));
 						return $this->redirect(['action' => 'index']);
-				}
+				//}
 			
                
             } else { //pr($saleReturn); exit;
@@ -671,7 +703,43 @@ class SaleReturnsController extends AppController
 				
 					$i=0; 
 					foreach($saleReturn->sale_return_rows as $sale_return_row){
-				
+						
+						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0]);
+						//pr($item_details->toArray()); exit;
+						$ledger_data=$item_details->count();
+						$Itemledger_qty=0;
+						$Itemledger_rate=0;
+						if($ledger_data>0){ 
+							$j=0; $qty_total=0; $total_amount=0;
+							foreach($item_details as $item_detail){
+								$Itemledger_qty = $Itemledger_qty+$item_detail->quantity;
+								$Itemledger_rate = $Itemledger_rate+$item_detail->rate;
+								$j++;
+						}
+						}else{ 
+							$Itemledger_qty=1;
+							$Itemledger_rate=0;
+						}
+						
+						$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+						
+						$query= $this->SaleReturns->ItemLedgers->query();
+						$query->insert(['item_id','quantity' ,'rate', 'in_out','source_model','processed_on','company_id','source_id'])
+							  ->values([
+											'item_id' => $sale_return_row->item_id,
+											'quantity' => $sale_return_row->quantity,
+											'rate' => $per_unit_cost,
+											'source_model' => 'Sale Return',
+											'processed_on' => date("Y-m-d",strtotime($saleReturn->transaction_date)),
+											'in_out'=>'In',
+											'company_id'=>$st_company_id,
+											'source_id'=>$saleReturn->id
+										])
+					    ->execute();
+						$i++;
+						/* 
+						
+						
 						//$item_id=$sale_return_row;
 						$item_detail=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'source_model != '=>'Invoices'])->first();
 						//pr($item_detail); exit;
@@ -688,7 +756,7 @@ class SaleReturnsController extends AppController
 						$itemLedger->company_id = $saleReturn->company_id;
 						$itemLedger->processed_on = $saleReturn->transaction_date;
 						$this->SaleReturns->ItemLedgers->save($itemLedger);
-						$i++;
+						$i++; */
 					}
 					
 					$query = $this->SaleReturns->Invoices->query();

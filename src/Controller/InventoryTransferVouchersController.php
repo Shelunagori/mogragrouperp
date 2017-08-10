@@ -215,7 +215,7 @@ class InventoryTransferVouchersController extends AppController
 				
 				
 				$per_unit_cost=$total_amount/$qty_total;
-				$today_date =  Time::now();
+				//$today_date =  Time::now();
 				$query= $this->InventoryTransferVouchers->ItemLedgers->query();
 						$query->insert(['item_id','quantity' ,'rate', 'in_out','source_model','processed_on','company_id','source_id'])
 							  ->values([

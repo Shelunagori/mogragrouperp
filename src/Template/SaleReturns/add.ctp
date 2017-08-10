@@ -439,13 +439,13 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 
-		submitHandler: function (form) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
+		submitHandler: function (form3) {
+			//$('#add_submit').prop('disabled', true);
+			//$('#add_submit').text('Submitting.....');
 			rename_rows();
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
 		}
 
 	});
