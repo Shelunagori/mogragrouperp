@@ -44,8 +44,8 @@ class InvoiceBookingsController extends AppController
 			$where['InvoiceBookings.ib3 LIKE']='%'.$file.'%';
 		}
 		
-		if(!empty($grn_no)){
-			$where['Grns.grn2 LIKE']='%'.$grn_no.'%';
+		if(!empty($grn_no)){ 
+			$where['Grns.grn2 LIKE']=$grn_no;
 		}
 		
 		if(!empty($file_grn_no)){
@@ -67,7 +67,7 @@ class InvoiceBookingsController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['InvoiceBookings.created_on <=']=$To;
 		}
-		
+		//pr($where); exit;
         $this->paginate = [
             'contain' => ['Grns','Vendors']
         ];

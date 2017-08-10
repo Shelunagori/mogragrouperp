@@ -6,10 +6,6 @@
 		</div>
 		<div class="actions">
 			
-			<?php $today =date('d-m-Y'); echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false,'class'=>'btn btn-primary')); ?>
-			<?php echo $this->Html->link('Sales Return Report','/SaleReturns/salesReturnReport',array('escape'=>false,'class'=>'btn btn-default')); ?>
-			<?php echo $this->Html->link('Purchase Report','/InvoiceBookings/purchaseReport',array('escape'=>false,'class'=>'btn btn-default')); ?>
-			<?php echo $this->Html->link('Purchase Return Report','/PurchaseReturns/purchaseReturnReport',array('escape'=>false,'class'=>'btn btn-default')); ?>
 		</div>
 		
 	
@@ -24,9 +20,7 @@
 						<td width="2%">
 							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @date('d-m-Y', strtotime($To));  ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
-						<td width="3%">
-								<?php echo $this->Form->input('salesman_name', ['empty'=>'--SalesMans--','options' => $SalesMans,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'SalesMan Name','value'=> h(@$salesman_id) ]); ?>
-							</td>
+					
 						<td width="10%">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 						</td>
@@ -39,7 +33,7 @@
 		
 		<div class="col-md-12">
 		
-		 <?php $page_no=$this->Paginator->current('Ledgers'); $page_no=($page_no-1)*20; ?>
+		 
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
@@ -55,16 +49,21 @@
 						<th style="text-align:right;">Sales @ 28 % IGST</th>
 					</tr>
 				</thead>
-				<?php foreach ($invoices as $invoice):  ?>
-				<tbody><?php $i=1; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0; $salesgst12=0;  ?>
+				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIgst12=0; $salesIgst18=0; $salesIgst28=0; 
+				foreach ($invoices as $invoice):  ?>
+				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
-						<td><?= h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4)) ?></td>
-							<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
-							<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
+						<td>
+							<?php echo $this->Html->link( $invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4,[
+							'controller'=>'Invoices','action' => 'gstConfirm',$invoice->id],array('target'=>'_blank')); ?>
+						</td>
+						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
+						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==8 && $invoice->invoice_rows[0]['sgst_percentage']==11){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
+										$salesGst12=$salesGst12+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -72,6 +71,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==9 && $invoice->invoice_rows[0]['sgst_percentage']==12){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
+										$salesGst18=$salesGst18+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -79,6 +79,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==10 && $invoice->invoice_rows[0]['sgst_percentage']==13){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
+										$salesGst28=$salesGst28+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -86,6 +87,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==14){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst12=$salesIgst12+($invoice->total_igst_amount+$invoice->fright_igst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -93,6 +95,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==15){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst18=$salesIgst18+($invoice->total_igst_amount+$invoice->fright_igst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -100,6 +103,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==16){
 										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst28=$salesIgst28+($invoice->total_igst_amount+$invoice->fright_igst_amount);
 								}else{
 									echo "-";
 								} ?>
@@ -107,9 +111,112 @@
 						
 					</tr>
 				<?php $i++; endforeach; ?>
-				
+				<tr>
+					<td colspan="4"></td>
+					<td align="right"><?php echo $this->Number->format($salesGst12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesGst18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesGst28,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst28,['places'=>2]); ?></td>
+				</tr>
 				</tbody>
-			</table>
+				</table>
+				
+				
+		<table class="table table-bordered table-striped table-hover">
+				<thead>
+					<tr>
+						<th>Sr.No.</th>
+						<th>Sales Order  No</th>
+						<th>Date</th>
+						<th>Customer</th>
+						<th style="text-align:right;">Sales @ 12 % GST</th>
+						<th style="text-align:right;">Sales @ 18 % GST</th>
+						<th style="text-align:right;">Sales @ 28 % GST</th>
+						<th style="text-align:right;">Sales @ 12 % IGST</th>
+						<th style="text-align:right;">Sales @ 18 % IGST</th>
+						<th style="text-align:right;">Sales @ 28 % IGST</th>
+						<th style="text-align:right;">Expected Delivery Date</th>
+					</tr>
+				</thead>
+				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIgst12=0; $salesIgst18=0; $salesIgst28=0; 
+				foreach ($SalesOrders as $SalesOrder):  ?>
+				<tbody>
+					<tr>
+						<td><?php echo $i; ?></td>
+						<td>
+							<?php echo $this->Html->link( $SalesOrder->so1.'/SO-'.str_pad($SalesOrder->so2, 3, '0', STR_PAD_LEFT).'/'.$SalesOrder->so3.'/'.$SalesOrder->so4,[
+							'controller'=>'SalesOrders','action' => 'gstConfirm',$SalesOrder->id],array('target'=>'_blank')); ?>
+						</td>
+						<td><?php echo date("d-m-Y",strtotime($SalesOrder->created_on)); ?></td>
+						<td><?php echo $SalesOrder->customer->customer_name.'('.$SalesOrder->customer->alias.')'?></td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==8 && $SalesOrder->sales_order_rows[0]['sgst_per']==11){
+										echo $SalesOrder->total_cgst_amount+$SalesOrder->total_sgst_amount+ $SalesOrder->fright_cgst_amount+ $SalesOrder->fright_sgst_amount;
+										$salesGst12=$salesGst12+($SalesOrder->total_cgst_amount+$SalesOrder->total_sgst_amount+ $SalesOrder->fright_cgst_amount+ $SalesOrder->fright_sgst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==9 && $SalesOrder->sales_order_rows[0]['sgst_per']==12){ 
+										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $SalesOrder->fright_sgst_amount;
+										$salesGst18=$salesGst18+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==10 && $SalesOrder->sales_order_rows[0]['sgst_per']==13){
+										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
+										$salesGst28=$salesGst28+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==14){
+										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst12=$salesIgst12+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==15){
+										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst18=$salesIgst18+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						<td>
+							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==16){
+										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
+										$salesIgst28=$salesIgst28+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						
+					</tr>
+				<?php $i++; endforeach; ?>
+				<tr>
+					<td colspan="4"></td>
+					<td align="right"><?php echo $this->Number->format($salesGst12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesGst18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesGst28,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesIgst28,['places'=>2]); ?></td>
+				</tr>
+				</tbody>
+				</table>
+			
+				
+				
+				
 			</div>
 		</div>
 	</div>

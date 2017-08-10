@@ -517,6 +517,7 @@ class SaleReturnsController extends AppController
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes']
         ]); */
 		$invoice = $this->SaleReturns->get($id);
+		//pr($invoice->st_ledger_account_id); exit;
 		$saleReturn = $this->SaleReturns->get($id, [
             'contain' => ['Customers','SaleTaxes','Employees','SaleReturnRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($id,$invoice){
 							return $q->where(['ItemSerialNumbers.Status' => 'Out','invoice_id'=>$invoice->invoice_id]);
@@ -525,6 +526,8 @@ class SaleReturnsController extends AppController
 							}]]]
         ]); 
 		$transaction_date=$saleReturn->transaction_date;
+		$date_created=$saleReturn->date_created;
+		
 		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
 		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$id]);
 		 
@@ -540,7 +543,10 @@ class SaleReturnsController extends AppController
 				}
 					
 			}
-			$saleReturn->date_created=date("Y-m-d");
+			
+			
+			$saleReturn->date_created=$date_created;
+			//pr($saleReturn->date_created); exit;
 			$saleReturn->invoice_id=$saleReturn->invoice_id;
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 			$saleReturn->edited_on = date("Y-m-d"); 
@@ -584,21 +590,23 @@ class SaleReturnsController extends AppController
 				}
 				
 				//Ledger posting for Sale Tax
-				//pr($saleReturn->sale_tax_amount); exit;
+				
 				$ledger_saletax=$saleReturn->sale_tax_amount;
 				//pr($saleReturn->st_ledger_account_id); exit;
-				$ledger = $this->SaleReturns->Ledgers->newEntity();
-				$ledger->ledger_account_id = $invoice->st_ledger_account_id;
-				$ledger->debit = $saleReturn->sale_tax_amount;
-				$ledger->credit = 0;
-				$ledger->voucher_id = $saleReturn->id;
-				$ledger->company_id = $saleReturn->company_id;
-				$ledger->transaction_date = $saleReturn->transaction_date;
-				$ledger->voucher_source = 'Sale Return';
+				$ledger1 = $this->SaleReturns->Ledgers->newEntity();
+				$ledger1->ledger_account_id = $saleReturn->st_ledger_account_id;
+				$ledger1->debit = $saleReturn->sale_tax_amount;
+				$ledger1->credit = 0;
+				$ledger1->voucher_id = $saleReturn->id;
+				$ledger1->company_id = $saleReturn->company_id;
+				$ledger1->transaction_date = $saleReturn->transaction_date;
+				$ledger1->voucher_source = 'Sale Return';
+				
 				if($ledger_saletax > 0)
 				{  
-					$this->SaleReturns->Ledgers->save($ledger); 
+					$this->SaleReturns->Ledgers->save($ledger1); 
 				}
+				//pr($saleReturn->st_ledger_account_id); exit;
 				//Ledger posting for Fright Amount
 				$ledger_fright= $saleReturn->fright_amount;
 				$ledger = $this->SaleReturns->Ledgers->newEntity();
@@ -609,10 +617,11 @@ class SaleReturnsController extends AppController
 				$ledger->company_id = $saleReturn->company_id;
 				$ledger->transaction_date = $saleReturn->transaction_date;
 				$ledger->voucher_source = 'Sale Return';
-				if($ledger_fright>0)
+				if($ledger_fright >0)
 				{
 					$this->SaleReturns->Ledgers->save($ledger); 
 				}
+				
 				$discount=$saleReturn->discount;
 				$pf=$saleReturn->pnf;
 				$exciseDuty=$saleReturn->exceise_duty;

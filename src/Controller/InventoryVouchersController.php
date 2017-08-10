@@ -49,10 +49,7 @@ class InventoryVouchersController extends AppController
 									->set(['transaction_date' => $transaction_date])
 									->where(['id' => $inventery->id])
 									->execute(); 
-									
 			}
-			
-			
 		} 
 		exit;
 	}
@@ -288,7 +285,8 @@ class InventoryVouchersController extends AppController
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function edit() 
-    { 	$this->viewBuilder()->layout('index_layout');
+    {
+		$this->viewBuilder()->layout('index_layout');
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -480,14 +478,14 @@ class InventoryVouchersController extends AppController
 					}
 				}
 				
-
-				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','rate_updated'=>'Yes','company_id' => $st_company_id])->toArray();
-				
+				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date])->toArray();
+				//pr($itemLedgers); exit;
 				$rate=0; $count=0;
 				foreach($itemLedgers as $itemLedger){
-				$count++;
-				$rate=$rate+$itemLedger->rate;
-				
+					if($itemLedger->rate > 0 ){
+						$count=$count+$itemLedger->quantity;
+						$rate=$rate+($itemLedger->rate*$itemLedger->quantity);
+					}
 				}
 				
 				if($count>0){

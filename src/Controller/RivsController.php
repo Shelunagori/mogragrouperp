@@ -104,6 +104,9 @@ class RivsController extends AppController
 			
 			foreach($riv->left_rivs as $left_riv){
 					foreach($left_riv->right_rivs as $right_riv){
+						
+						
+						
 						$itemLedger_in = $this->Rivs->ItemLedgers->newEntity();
 						$itemLedger_in->item_id = $right_riv->item_id;
 						$itemLedger_in->quantity = $right_riv->quantity;
@@ -204,17 +207,35 @@ class RivsController extends AppController
 				
 				foreach($riv->left_rivs as $left_riv){
 					foreach($left_riv->right_rivs as $right_riv){
+						
+						//pr($left_riv['quantity']); exit;
+						$itemLedgers = $this->Rivs->ItemLedgers->find()->where(['item_id'=>$right_riv['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$riv->transaction_date])->toArray();
+						
+							$rate=0; $count=0;
+							foreach($itemLedgers as $itemLedger){ //pr($itemLedger['quantity']); exit;
+								if($itemLedger->rate > 0 ){
+									$count=$count+$itemLedger['quantity'];
+									$rate=$rate+($itemLedger['rate']*$itemLedger['quantity']);
+								}
+							}
+						if($count>0){
+							$toupdate_rate=$rate/$count;
+							}else{
+							$toupdate_rate=$rate;	
+							}
+						
 						$itemLedger_in = $this->Rivs->ItemLedgers->newEntity();
 						$itemLedger_in->item_id = $right_riv->item_id;
 						$itemLedger_in->quantity = $right_riv->quantity;
 						$itemLedger_in->source_model = 'Inventory Return';
 						$itemLedger_in->source_id = $riv->id;
 						$itemLedger_in->in_out = 'In';
-						$itemLedger_in->rate = 0;
+						$itemLedger_in->rate = $toupdate_rate/$left_riv['quantity'];
 						$itemLedger_in->company_id = $st_company_id;
 						$itemLedger_in->processed_on = $riv->transaction_date;
 						$this->Rivs->ItemLedgers->save($itemLedger_in);
 					}
+					
 				$itemLedger_out = $this->Rivs->ItemLedgers->newEntity();
 				$itemLedger_out->item_id = $left_riv->item_id;
 				$itemLedger_out->quantity = $left_riv->quantity;
