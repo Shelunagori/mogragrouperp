@@ -169,10 +169,11 @@ class SaleReturnsController extends AppController
 			$saleReturn->fright_ledger_account = $invoice->fright_ledger_account;;
 			$saleReturn->transporter_id = $invoice->transporter_id;;
 			$saleReturn->employee_id = $s_employee_id;
+			$saleReturn->st_ledger_account_id = $invoice->st_ledger_account_id;
 			
 			$saleReturn->transaction_date = date("Y-m-d",strtotime($saleReturn->transaction_date)); 
 			//pr($saleReturn->transaction_date); exit;
-			
+			//pr($invoice->st_ledger_account_id); exit;
 			//exit;
 			 if ($this->SaleReturns->save($saleReturn)) {
 				

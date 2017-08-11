@@ -35,7 +35,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-6 control-label">Transaction Date</label>
 						<div class="col-md-6">
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value'=>date("d-m-Y",strtotime($saleReturn->transaction_date))]); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required','value'=>date("d-m-Y",strtotime($saleReturn->transaction_date))]); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -333,19 +333,10 @@ $(document).ready(function() {
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
-			company_id:{
-				required: true,
-			},
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
-			service: {
-				required: "Please select  at least 2 types of Service",
-				minlength: jQuery.validator.format("Please select  at least {0} types of Service")
-			},
-			'reference_no[]': {
-				remote: "Reference no. is alredy taken."
-			}
+			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
