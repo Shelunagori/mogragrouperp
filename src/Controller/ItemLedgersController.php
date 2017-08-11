@@ -263,6 +263,7 @@ class ItemLedgersController extends AppController
 		$from_date=$this->request->query('from_date');
 		$to_date=$this->request->query('to_date');
 		$stock=$this->request->query('stock');
+		$status=$this->request->query('status');
 		$item_sub_group=$this->request->query('item_sub_group_id');
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->ItemLedgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
@@ -273,31 +274,9 @@ class ItemLedgersController extends AppController
 			$to_date=date('Y-m-d');
 		};
 		
-		$Itemdatas = $this->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'in_out'=>'In','rate >'=>0]);
-		
-		foreach($Itemdatas as $Itemdata){
-				$Itemledger_rate=0;
-				$Itemledger_qty=0;
-				$Itemledgers = $this->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0]);
-				//pr($Itemledgers->toArray()); 
-				if($Itemledgers){ 
-					$j=0; $qty_total=0; $total_amount=0;
-						foreach($Itemledgers as $Itemledger){
-							$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
-							$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
-						}
-						$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
-				}
-				else{
-					$per_unit_cost=0;
-				}
-				
-				$query2 = $this->ItemLedgers->query();
-						$query2->update()
-							->set(['rate' => $per_unit_cost,'in_out' => 'In'])
-							->where(['id' => $Itemdata['id']])
-							->execute();
-			}
+		if(empty($status)){
+			return $this->redirect(['action'=>'redirectStock']);
+		}
 		$where=[];
 		$where1=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
@@ -441,6 +420,40 @@ class ItemLedgersController extends AppController
         $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','from_date','to_date','ItemDatas','items_unit_names','ItemUnits'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
+	
+	public function redirectStock(){
+		//exit;
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$Itemdatas = $this->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'in_out'=>'In','rate >'=>0]);
+		
+		foreach($Itemdatas as $Itemdata){
+				$Itemledger_rate=0;
+				$Itemledger_qty=0;
+				$Itemledgers = $this->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0]);
+				//pr($Itemledgers->toArray()); 
+				if($Itemledgers){ 
+					$j=0; $qty_total=0; $total_amount=0;
+						foreach($Itemledgers as $Itemledger){
+							$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
+							$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
+						}
+						$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+				}
+				else{
+					$per_unit_cost=0;
+				}
+				
+				$query2 = $this->ItemLedgers->query();
+						$query2->update()
+							->set(['rate' => $per_unit_cost,'in_out' => 'In'])
+							->where(['id' => $Itemdata['id']])
+							->execute();
+			}
+			 return $this->redirect(['action'=>'stockReport?status=completed']);
+			
+	}
 	
 	 public function materialindentreport(){
 		$this->viewBuilder()->layout('index_layout'); 

@@ -276,7 +276,7 @@ class SaleReturnsController extends AppController
 					foreach($saleReturn->check as $sale_return_row){
 				
 						$item_id=$sale_return_row;
-						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0]);
+						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0,'quantity >'=>0]);
 						//pr($item_details->toArray()); exit;
 						$ledger_data=$item_details->count();
 						$Itemledger_qty=0;
@@ -705,7 +705,7 @@ class SaleReturnsController extends AppController
 					$i=0; 
 					foreach($saleReturn->sale_return_rows as $sale_return_row){
 						
-						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0]);
+						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0,'quantity >'=>0]);
 						//pr($item_details->toArray()); exit;
 						$ledger_data=$item_details->count();
 						$Itemledger_qty=0;

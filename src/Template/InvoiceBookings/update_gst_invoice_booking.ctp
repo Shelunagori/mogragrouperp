@@ -409,14 +409,14 @@ $(document).ready(function() {
             total_discount = total_discount+discount_amt;			
 			var discount_per=100*(discount_amt)/amount_after_misc;
 			if(!discount_per){discount_per=0;}
-			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(2));
+			$(this).find("td:nth-child(7) input").val(discount_per.toFixed(8));
 			row_total=row_total-discount_amt;
 			var amount_after_discount = amount_after_misc-discount_amt;
 			var pnf_amt=parseFloat($(this).find("td:nth-child(10) input").val());
 			total_pnf = total_pnf+pnf_amt;
 			var pnf_per=100*(pnf_amt)/amount_after_discount;
 			if(!pnf_per){pnf_per=0;}
-			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(2));
+			$(this).find("td:nth-child(9) input").val(pnf_per.toFixed(8));
 			row_total = row_total+pnf_amt;
 			total_taxable_value = total_taxable_value+parseFloat(row_total.toFixed(2));
 			$(this).find("td:nth-child(11) input").val(row_total.toFixed(2));
@@ -481,7 +481,7 @@ $(document).ready(function() {
 	}
 	
    calculate_total();
-	$('.cal').die().live("keyup",function() { 
+	$('.cal').die().live("blur",function() { 
 		calculate_total();
     });
 	$('.fright_igst_percent').die().live("change",function() 
