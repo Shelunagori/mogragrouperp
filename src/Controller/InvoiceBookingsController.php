@@ -552,8 +552,9 @@ class InvoiceBookingsController extends AppController
 					->set(['rate' => $rate, 'rate_updated' => 'Yes'])
 					->where(['item_id' => $item_id, 'source_id' => $grn_id, 'company_id' => $st_company_id, 'source_model'=> 'Grns'])
 					->execute();
-				$results=$this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.item_id' => $item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id]); 
+				$results=$this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.item_id' => $item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id,'quantity >'=>0]); 
 				$j=0; $qty_total=0; $rate_total=0; $per_unit_cost=0;
+				
 				foreach($results as $result){
 					$qty=$result->quantity;
 					$rate=$result->rate;

@@ -455,7 +455,6 @@ class InventoryVouchersController extends AppController
 			$inventory_voucher_rows=$this->request->data['inventory_voucher_rows'];
 			$total_rate=0;
 			foreach($inventory_voucher_rows as $inventory_voucher_row){
-			
 
 				$query3 = $this->InventoryVouchers->InventoryVoucherRows->query();
 				$query3->insert(['inventory_voucher_id', 'item_id', 'quantity', 'left_item_id', 'invoice_id'])
@@ -478,7 +477,7 @@ class InventoryVouchersController extends AppController
 					}
 				}
 				
-				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date])->toArray();
+				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date]);
 				
 				$rate=0; $count=0;
 				foreach($itemLedgers as $itemLedger){
@@ -493,7 +492,7 @@ class InventoryVouchersController extends AppController
 				}else{
 				$toupdate_rate=$rate;	
 				}
-				
+				//pr($toupdate_rate); exit;
 				$out_rate=$toupdate_rate*$inventory_voucher_row['quantity'];
 				$total_rate=$total_rate+$out_rate;
 				//pr($inventory_voucher_row['quantity']);
@@ -514,7 +513,7 @@ class InventoryVouchersController extends AppController
 				->execute();
 
 
-			}
+			} //pr($toupdate_rate); exit;
 			$total_rate_out=$total_rate/$q_item_qty;
 			$query= $this->InventoryVouchers->ItemLedgers->query();
 					$query->insert(['item_id', 'quantity', 'source_model', 'source_id','in_out','rate','company_id','left_item_id','processed_on','rate_updated'])
