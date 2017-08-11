@@ -3,7 +3,7 @@
 	$date= date("d-m-Y"); 
 	$time=date('h:i:a',time());
 
-	$filename="Daily_report_".$date.'_'.$time;
+	$filename="Accountant_statement_".$date.'_'.$time;
 
 	header ("Expires: 0");
 	header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");

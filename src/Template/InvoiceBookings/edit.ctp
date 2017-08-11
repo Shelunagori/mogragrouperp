@@ -179,14 +179,23 @@
 							
 							<td>
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['value'=>$invoice_booking_row->discount,'label'=>false,'type'=>'text','class'=>'form-control input-sm row_textbox']); ?>
+							
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount_per',['label'=>false,'type'=>'checkbox','class'=>'per_check']); ?>
-							<span class="check_text">In Amount</span>
+							<?php if($invoice_booking_row->discount_per == 1){ ?>
+								<span class="check_text">In percentages</span>
+							<?php }else{ ?>
+								<span class="check_text">In Amount</span>
+							<?php } ?>
 							</td>
 								
 							<td>
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['value'=> $invoice_booking_row->pnf,'label'=>false,'type'=>'text','class'=>'form-control input-sm row_textbox']); ?>
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf_per',['label'=>false,'type'=>'checkbox','class'=>'per_check']); ?>
-							<span class="check_text">In Amount</span>
+							<?php if($invoice_booking_row->pnf_per == 1){ ?>
+								<span class="check_text">In percentages</span>
+							<?php }else{ ?>
+								<span class="check_text">In Amount</span>
+							<?php } ?>
 							</td>
 							
 							<td>

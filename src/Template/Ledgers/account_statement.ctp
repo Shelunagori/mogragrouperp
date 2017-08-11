@@ -42,12 +42,9 @@ $url_excel="/?".$url;
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Account Statement</span>
 		</div>
-		<div class="col-md-12">
-			<div class="col-md-11"></div>
-				<div class="col-md-1" align="right">
-					<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Ledgers/Export-Ob/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
-				</div>
-			</div><br/>
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Ledgers/Export-Ob/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+		</div>
 		<div class="portlet-body form">
 	<form method="GET" >
 				<table class="table table-condensed" >
