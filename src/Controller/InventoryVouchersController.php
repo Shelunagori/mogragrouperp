@@ -477,7 +477,7 @@ class InventoryVouchersController extends AppController
 					}
 				}
 				
-				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date]);
+				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$inventory_voucher_row['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$InventoryVoucher->transaction_date,'rate >'=>0,'quantity >'=>0]);
 				
 				$rate=0; $count=0;
 				foreach($itemLedgers as $itemLedger){
