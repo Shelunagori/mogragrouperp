@@ -747,7 +747,6 @@ class InventoryTransferVouchersController extends AppController
 						$Itemledger_qty = $Itemledger->quantity;
 						$Itemledger_rate = $Itemledger->rate;
 						$total_amount = $total_amount+($Itemledger_qty * $Itemledger_rate);
-						
 						$qty_total=$qty_total+$Itemledger_qty;
 						$j++;
 						
