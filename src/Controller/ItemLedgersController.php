@@ -274,11 +274,11 @@ class ItemLedgersController extends AppController
 			$to_date=date('Y-m-d');
 		};
 		
-<<<<<<< HEAD
-		if(empty($status)){
+
+		/* if(empty($status)){
 			return $this->redirect(['action'=>'redirectStock']);
-		}
-=======
+		} */
+
 		$Itemdatas = $this->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'in_out'=>'In','rate >'=>0]);
 		
 		foreach($Itemdatas as $Itemdata){
@@ -304,7 +304,6 @@ class ItemLedgersController extends AppController
 							->execute();
 			}
 		
->>>>>>> c7c6acb614566d3bbe9cccdd91c8b6aaa1db561b
 		$where=[];
 		$where1=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));

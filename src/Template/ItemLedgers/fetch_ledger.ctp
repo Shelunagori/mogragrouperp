@@ -6,7 +6,7 @@
 	<thead>
 		<tr>
 			<th>Sr. No.</th>
-			<th><?= $this->Paginator->sort('processed_on') ?></th>
+			<th>Transaction Date</th>
 			<th>Party</th>
 			<th>Voucher Source</th>
 			<th>Voucher No.</th>
@@ -43,8 +43,8 @@
 		}
 		else if($party=='Supplier')
 		{
-			$data=$itemLedger->voucher_info['created_on'];
-			//pr($data);
+			$data=$itemLedger->voucher_info->transaction_date;
+			//pr($data);exit;
 			$party_name=$itemLedger->party_info->company_name;
 			$voucher_no='-';
 			
@@ -103,7 +103,7 @@
 		{ 
 			$party_name = $itemLedger->party_info->company_name;
 			$voucher_no=$itemLedger->voucher_info->grn1.'/GRN-'.str_pad($itemLedger->voucher_info->grn2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->grn3.'/'.$itemLedger->voucher_info->grn4;
-			
+			$data=$itemLedger->voucher_info->transaction_date;
 			$url_path="/grns/view/".$itemLedger->voucher_info->id;
 		}
 		else{
