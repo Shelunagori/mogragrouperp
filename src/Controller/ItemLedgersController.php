@@ -599,9 +599,21 @@ class ItemLedgersController extends AppController
 		$this->set(compact('itemLedgers'));
 	}
 	
-	public function repair_all_rates(){
+	public function entryCount(){
 		$this->viewBuilder()->layout('');
 		
-		
+		$ItemLedgers=$this->ItemLedgers->find()->distinct(['item_id'])->where(['company_id'=>25]);
+		//echo $ItemLedgers->count();
+		?>
+		<table border="1">
+		<?php foreach($ItemLedgers as $ItemLedger){ 
+			$countItemLedgers=$this->ItemLedgers->find()->where(['company_id'=>25,'item_id'=>$ItemLedger->item_id]);
+		?>
+			<tr>
+				<td><?php echo $ItemLedger->item_id; ?></td>
+				<td><?php echo $countItemLedgers->count(); ?></td>
+			</tr>
+		<?php } ?>
+		<table> <?php exit;
 	}
 }
