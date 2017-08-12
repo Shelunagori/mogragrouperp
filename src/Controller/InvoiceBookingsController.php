@@ -883,17 +883,7 @@ class InvoiceBookingsController extends AppController
 			$invoiceBooking->created_by=$this->viewVars['s_employee_id'];
 			$invoiceBooking->due_payment=$invoiceBooking->total;
 
-			$cst_purchase=0;
-			if($st_company_id=='25'){
-				$cst_purchase=35;
-			}else if($st_company_id=='26'){
-				$cst_purchase=161;
-			}else if($st_company_id=='27'){
-				$cst_purchase=309;
-			}
-			
-			
-            if ($this->InvoiceBookings->save($invoiceBooking)) {
+			if ($this->InvoiceBookings->save($invoiceBooking)) {
 				$i=0;
 				foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row)
 				{
@@ -1058,7 +1048,32 @@ class InvoiceBookingsController extends AppController
 						}
 					}
 
-				
+				//rate update code//
+				$Itemdatas = $this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'rate'=>0]);
+		
+				foreach($Itemdatas as $Itemdata){
+					$Itemledger_rate=0;
+					$Itemledger_qty=0;
+					$Itemledgers = $this->InvoiceBookings->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0,'quantity >'=>0]);
+					if($Itemledgers){ 
+						$j=0; $qty_total=0; $total_amount=0;
+							foreach($Itemledgers as $Itemledger){
+								$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
+								$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
+							}
+							$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+					}
+					else{
+						$per_unit_cost=0;
+					}
+					
+					$query2 = $this->InvoiceBookings->ItemLedgers->query();
+							$query2->update()
+								->set(['rate' => $per_unit_cost,'in_out' => 'In'])
+								->where(['id' => $Itemdata['id']])
+								->execute();
+				}
+			
 				
                 $this->Flash->success(__('The invoice booking has been saved.'));
 
@@ -1090,14 +1105,7 @@ class InvoiceBookingsController extends AppController
 			return $q->where(['AccountFirstSubgroups.id'=>$AccountReference->account_first_subgroup_id]);
 		}]])->order(['LedgerAccounts.name' => 'ASC'])->where(['LedgerAccounts.company_id'=>$st_company_id]);
 		
-		$cst_purchase=0;
-			if($st_company_id=='25'){
-				$cst_purchase=35;
-			}else if($st_company_id=='26'){
-				$cst_purchase=161;
-			}else if($st_company_id=='27'){
-				$cst_purchase=309;
-		}	
+			
 			$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>6])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
@@ -1368,7 +1376,33 @@ class InvoiceBookingsController extends AppController
 							}
 						}
 					}
-
+				
+				
+				//rate update code//
+				$Itemdatas = $this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'rate'=>0]);
+		
+				foreach($Itemdatas as $Itemdata){
+					$Itemledger_rate=0;
+					$Itemledger_qty=0;
+					$Itemledgers = $this->InvoiceBookings->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0,'quantity >'=>0]);
+					if($Itemledgers){ 
+						$j=0; $qty_total=0; $total_amount=0;
+							foreach($Itemledgers as $Itemledger){
+								$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
+								$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
+							}
+							$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+					}
+					else{
+						$per_unit_cost=0;
+					}
+					
+					$query2 = $this->InvoiceBookings->ItemLedgers->query();
+							$query2->update()
+								->set(['rate' => $per_unit_cost,'in_out' => 'In'])
+								->where(['id' => $Itemdata['id']])
+								->execute();
+				}
 				
                 $this->Flash->success(__('The invoice booking has been saved.'));
 
