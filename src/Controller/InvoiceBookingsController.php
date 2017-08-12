@@ -1058,7 +1058,32 @@ class InvoiceBookingsController extends AppController
 						}
 					}
 
-				
+				//rate update code//
+				$Itemdatas = $this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'rate'=>0]);
+		
+				foreach($Itemdatas as $Itemdata){
+					$Itemledger_rate=0;
+					$Itemledger_qty=0;
+					$Itemledgers = $this->InvoiceBookings->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0,'quantity >'=>0]);
+					if($Itemledgers){ 
+						$j=0; $qty_total=0; $total_amount=0;
+							foreach($Itemledgers as $Itemledger){
+								$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
+								$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
+							}
+							$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+					}
+					else{
+						$per_unit_cost=0;
+					}
+					
+					$query2 = $this->InvoiceBookings->ItemLedgers->query();
+							$query2->update()
+								->set(['rate' => $per_unit_cost,'in_out' => 'In'])
+								->where(['id' => $Itemdata['id']])
+								->execute();
+				}
+			
 				
                 $this->Flash->success(__('The invoice booking has been saved.'));
 
@@ -1368,7 +1393,33 @@ class InvoiceBookingsController extends AppController
 							}
 						}
 					}
-
+				
+				
+				//rate update code//
+				$Itemdatas = $this->InvoiceBookings->ItemLedgers->find()->where(['ItemLedgers.company_id'=>$st_company_id,'rate'=>0]);
+		
+				foreach($Itemdatas as $Itemdata){
+					$Itemledger_rate=0;
+					$Itemledger_qty=0;
+					$Itemledgers = $this->InvoiceBookings->ItemLedgers->find()->where(['item_id'=>$Itemdata['item_id'],'in_out'=>'In','processed_on <='=>$Itemdata['processed_on'],'rate >'=>0,'quantity >'=>0]);
+					if($Itemledgers){ 
+						$j=0; $qty_total=0; $total_amount=0;
+							foreach($Itemledgers as $Itemledger){
+								$Itemledger_qty = $Itemledger_qty+$Itemledger['quantity'];
+								$Itemledger_rate = $Itemledger_rate+($Itemledger['rate']*$Itemledger['quantity']);
+							}
+							$per_unit_cost=$Itemledger_rate/$Itemledger_qty;
+					}
+					else{
+						$per_unit_cost=0;
+					}
+					
+					$query2 = $this->InvoiceBookings->ItemLedgers->query();
+							$query2->update()
+								->set(['rate' => $per_unit_cost,'in_out' => 'In'])
+								->where(['id' => $Itemdata['id']])
+								->execute();
+				}
 				
                 $this->Flash->success(__('The invoice booking has been saved.'));
 
