@@ -883,17 +883,7 @@ class InvoiceBookingsController extends AppController
 			$invoiceBooking->created_by=$this->viewVars['s_employee_id'];
 			$invoiceBooking->due_payment=$invoiceBooking->total;
 
-			$cst_purchase=0;
-			if($st_company_id=='25'){
-				$cst_purchase=35;
-			}else if($st_company_id=='26'){
-				$cst_purchase=161;
-			}else if($st_company_id=='27'){
-				$cst_purchase=309;
-			}
-			
-			
-            if ($this->InvoiceBookings->save($invoiceBooking)) {
+			if ($this->InvoiceBookings->save($invoiceBooking)) {
 				$i=0;
 				foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row)
 				{
@@ -1115,14 +1105,7 @@ class InvoiceBookingsController extends AppController
 			return $q->where(['AccountFirstSubgroups.id'=>$AccountReference->account_first_subgroup_id]);
 		}]])->order(['LedgerAccounts.name' => 'ASC'])->where(['LedgerAccounts.company_id'=>$st_company_id]);
 		
-		$cst_purchase=0;
-			if($st_company_id=='25'){
-				$cst_purchase=35;
-			}else if($st_company_id=='26'){
-				$cst_purchase=161;
-			}else if($st_company_id=='27'){
-				$cst_purchase=309;
-		}	
+			
 			$GstTaxes = $this->InvoiceBookings->SaleTaxes->find()->where(['SaleTaxes.account_second_subgroup_id'=>6])->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);

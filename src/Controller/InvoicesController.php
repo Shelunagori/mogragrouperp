@@ -739,6 +739,10 @@ class InvoicesController extends AppController
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes']
         ]);
+		
+		$edited_by=$invoice->edited_by;
+		$edited_on=$invoice->edited_on;
+		
 		$closed_month=$this->viewVars['closed_month'];
 		if(!in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month))
 		{
@@ -799,8 +803,12 @@ class InvoicesController extends AppController
 			$invoice->po_date=date("Y-m-d",strtotime($invoice->po_date)); 
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
-			$invoice->edited_on = date("Y-m-d"); 
-			$invoice->edited_by=$this->viewVars['s_employee_id'];
+			
+			$invoice->edited_on = $edited_on; 
+//pr($invoice->edited_on); exit;			
+			$invoice->edited_by = $edited_by; 
+			//$invoice->edited_on = date("Y-m-d"); 
+			//$invoice->edited_by=$this->viewVars['s_employee_id'];
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
@@ -1838,7 +1846,9 @@ class InvoicesController extends AppController
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees']
         ]);
-		// pr($invoice->sales_order); exit;
+		// pr($invoice->edited_by); exit;
+		 $edited_by=$invoice->edited_by;
+		 $edited_on=$invoice->edited_on;
 		$closed_month=$this->viewVars['closed_month'];
 		if(!in_array(date("m-Y",strtotime($invoice->date_created)),$closed_month))
 		{
@@ -1893,8 +1903,8 @@ class InvoicesController extends AppController
 			//pr($invoice->total_taxable_value); exit;
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
-			$invoice->edited_on = date("Y-m-d"); 
-			$invoice->edited_by=$this->viewVars['s_employee_id'];
+			$invoice->edited_on =$edited_on; 
+			$invoice->edited_by=$edited_by;
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){

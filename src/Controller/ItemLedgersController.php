@@ -278,7 +278,7 @@ class ItemLedgersController extends AppController
 		if(empty($status)){
 			return $this->redirect(['action'=>'redirectStock']);
 		} */
-		
+
 		
 		$where=[];
 		$where1=[];
