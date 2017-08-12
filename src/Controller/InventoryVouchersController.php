@@ -734,40 +734,54 @@ class InventoryVouchersController extends AppController
 		$this->set(compact('SerialNumbers','flag','select_item_id','invoice_id','q_item_id','selectedSerialNumbers'));
     }
 	
-	public function ivData(){
-		$this->viewBuilder()->layout('');
-		$session = $this->request->session();
-		$st_company_id = $session->read('st_company_id');
-		
-		$inventoryvouchers=$this->InventoryVouchers->find()->where(['company_id'=>$st_company_id]);
-		?>
-		<table border="1">
-			<tr>
-				<th>ID</th>
-				<th>No</th>
-				<th>Transaction Date</th>
-				<th>itemledgers</th>
-			</tr>
-			<?php foreach($inventoryvouchers as $inventoryvoucher){
-				$itemledgers=$this->InventoryVouchers->ItemLedgers->find()->where(['source_model LIKE'=>'%Inventory Vouchers%','source_id'=>$inventoryvoucher->id]);
-			?>
-			<tr>
-				<td><?php echo $inventoryvoucher->id; ?></td>
-				<td><?= h('#'.$inventoryvoucher->iv_number) ?></td>
-				<td><?php echo strtotime($inventoryvoucher->transaction_date); ?></td>
-				<td>
-					<?php 
-					$q=0;
-					foreach($itemledgers as $itemledger){ 
-						$q+=strtotime($itemledger->processed_on);
+	public function itemLedgerUpdate(){
+			$this->viewBuilder()->layout('');
+			$session = $this->request->session();
+			$st_company_id = $session->read('st_company_id');
+
+			$itemLedgersdata = $this->InventoryVouchers->ItemLedgers->find()->where(['in_out'=>'Out','company_id' => $st_company_id,'source_model'=>'Inventory Vouchers']);
+				
+			foreach($itemLedgersdata as $itemLedgersdata){
+				$itemLedgers = $this->InventoryVouchers->ItemLedgers->find()->where(['item_id'=>$itemLedgersdata['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$itemLedgersdata['processed_on'],'rate >'=>0,'quantity >'=>0]);
+				$rate=0; $count=0;
+					foreach($itemLedgers as $itemLedger){
+						$count=$count+$itemLedger->quantity;
+						$rate=$rate+($itemLedger->rate*$itemLedger->quantity);
+					} 
+
+					if($count > 0){ 
+					$toupdate_rate=$rate/$count;
+					}else{
+					$toupdate_rate=$rate;	
 					}
-					echo $q/sizeof($itemledgers->toArray());
-					?>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
-		<?php
-		exit;
+					
+				$query = $this->InventoryVouchers->ItemLedgers->query();
+				$query->update()
+				->set(['rate' => $toupdate_rate])
+				->where(['item_id'=>$itemLedgersdata['item_id'],'in_out'=>'Out','company_id' => $st_company_id,'processed_on' =>$itemLedgersdata['processed_on'],'source_model'=>'Inventory Vouchers'])
+				->execute(); 
+			}
+			
+			$itemLedgersIndatas = $this->InventoryVouchers->ItemLedgers->find()->where(['in_out'=>'In','company_id' => $st_company_id,'source_model'=>'Inventory Vouchers']);
+			foreach($itemLedgersIndatas as $itemLedgersIndata){
+				
+				$itemLedgers1 = $this->InventoryVouchers->ItemLedgers->find()->where(['in_out'=>'Out','company_id' => $st_company_id,'rate >'=>0,'quantity >'=>0,'left_item_id'=>$itemLedgersIndata->left_item_id,'source_id'=>$itemLedgersIndata->source_id]);
+				
+				$rate=0; $count=0;
+					foreach($itemLedgers1 as $itemLedgers1){
+						$count=$count+$itemLedgers1->quantity;
+						$rate=$rate+($itemLedgers1->rate*$itemLedgers1->quantity);
+					} 
+
+				$toupdate_rate=$rate/$itemLedgersIndata['quantity'];
+				
+				$query = $this->InventoryVouchers->ItemLedgers->query();
+				$query->update()
+				->set(['rate' => $toupdate_rate])
+				->where(['item_id'=>$itemLedgersIndata['item_id'],'in_out'=>'In','company_id' => $st_company_id,'processed_on' =>$itemLedgersIndata['processed_on'],'source_model'=>'Inventory Vouchers'])
+				->execute(); 
+			
+		}
+		exit;	
 	}
 }

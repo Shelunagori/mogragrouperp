@@ -141,7 +141,7 @@
 					</tr>
 				</thead>
 				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIgst12=0; $salesIgst18=0; $salesIgst28=0; 
-				foreach ($SalesOrders as $SalesOrder):  ?>
+				foreach ($SalesOrders as $SalesOrder): pr($SalesOrder->sales_order_rows[0]); exit;  ?>
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
