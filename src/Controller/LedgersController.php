@@ -811,7 +811,17 @@ class LedgersController extends AppController
 				}else if($ledger->voucher_source=="Receipt Voucher"){
 				$url_link[$ledger->id]=$this->Ledgers->Receipts->get($ledger->voucher_id); 
 				}else if($ledger->voucher_source=="Invoice"){ 
-					$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id);
+					$inq=$this->Ledgers->Invoices->get($ledger->voucher_id);
+					if($inq->sale_tax_id==0){
+						$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id, [
+							'contain' => ['Customers']
+						]);
+					}else{
+						$url_link[$ledger->id]=$this->Ledgers->Invoices->get($ledger->voucher_id, [
+							'contain' => ['Customers','SaleTaxes']
+						]);
+					}
+					
 					
 				}else if($ledger->voucher_source=="Invoice Booking"){
 					$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
@@ -827,8 +837,7 @@ class LedgersController extends AppController
 				}
 			}
 		}			
-			//pr($url_link->toArray()); 
-			//exit;
+			//pr($url_link); exit;
 			$ledger=$this->Ledgers->LedgerAccounts->find('list',
 				['keyField' => function ($row) {
 					return $row['id'];
