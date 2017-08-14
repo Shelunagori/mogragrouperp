@@ -127,10 +127,14 @@
 						<?php } ?>
 						<?php $page_no1=$page_no; foreach($ItemDatas as $key=>$ItemData){ ?>
 						
-						<tr>
+						<tr class="main_tr1" id="<?= h($key) ?>">
 							<td><?= h(++$page_no1) ?></td>
-							<td><?= h($ItemData) ?></td>
+							<td width="90%" id="<?= h($key) ?>" class="loop_class"><button type="button"  class="btn btn-xs tooltips revision_hide1 show_data1" id="<?= h($key) ?>" value="" style="margin-left:5px;margin-bottom:2px;"><i class="fa fa-plus-circle"></i></button>
+								<button type="button" class="btn btn-xs tooltips revision_show1" style="margin-left:5px;margin-bottom:2px; display:none;"><i class="fa fa-minus-circle"></i></button>
+								&nbsp;&nbsp;<?= h($ItemData) ?><div class="show_ledger1"></div></td>
+							
 							<td><?= h(0) ?></td>
+							
 							<td><?= h($ItemUnits[$key]) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
@@ -195,7 +199,7 @@ var $rows = $('#main_tble tbody tr');
 	});
 	
 		
-		$('.show_data').live("click",function() {
+	$('.show_data').live("click",function() { 
 		var sel=$(this); 
 		var item_id=$(this).attr("id");
 		show_ledger_data(sel,item_id);
@@ -206,7 +210,6 @@ var $rows = $('#main_tble tbody tr');
 		var to_date = $("#to_date").val();
 		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'fetchLedger']); ?>";
 		url=url+'/'+item_id+'/'+from_date+'/'+to_date;
-		
 	       $.ajax({
 				url: url,
 				type: 'GET',
@@ -219,11 +222,31 @@ var $rows = $('#main_tble tbody tr');
 			});
 		 
 	 }
-	 $('.revision_show').live("click",function() { 
+	 $('.revision_show').live("click",function() {  
 		var sel=$(this);
 		$(sel).closest('tr.main_tr').find('.revision_show').hide();
 		$(sel).closest('tr.main_tr').find('.revision_hide').show();
 		$(sel).closest('tr.main_tr').find('.show_ledger').html('');
+	 });
+	 
+	 $('.show_data1').live("click",function() { 
+		var sel=$(this); 
+		
+		var item_id=$(this).attr("id");
+		show_ledger_data1(sel,item_id);
+	});
+	 function show_ledger_data1(sel,item_id)
+	 {
+		 $(sel).closest('tr.main_tr1').find('.revision_show1').show();
+		$(sel).closest('tr.main_tr1').find('.revision_hide1').hide();
+		$(sel).closest('tr.main_tr1').find('.show_ledger1').html('<span >No Transacaction</span>');
+		 
+	 }
+	 $('.revision_show1').live("click",function() {  
+		var sel=$(this);
+		$(sel).closest('tr.main_tr1').find('.revision_show1').hide();
+		$(sel).closest('tr.main_tr1').find('.revision_hide1').show();
+		$(sel).closest('tr.main_tr1').find('.show_ledger1').html('');
 	 });
 });
 		

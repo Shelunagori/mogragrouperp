@@ -824,7 +824,16 @@ class LedgersController extends AppController
 					
 					
 				}else if($ledger->voucher_source=="Invoice Booking"){
-					$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
+					$ib=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id);
+					if($ib->cst_vat=='vat'){
+						$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id, [
+							'contain' => ['Vendors']
+						]);
+					}else{
+						$url_link[$ledger->id]=$this->Ledgers->InvoiceBookings->get($ledger->voucher_id, [
+							'contain' => ['Vendors']
+						]);
+					}
 				}else if($ledger->voucher_source=="Non Print Payment Voucher"){ 
 						
 					$url_link[$ledger->id]=$this->Ledgers->Nppayments->get($ledger->voucher_id);
