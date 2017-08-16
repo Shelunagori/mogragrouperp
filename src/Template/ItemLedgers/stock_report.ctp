@@ -1,8 +1,13 @@
+<?php $url_excel="/?".$url; ?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Stock Report</span>
+		</div>
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Stock/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
 		<div class="portlet-body">
 			<div class="row">
@@ -125,6 +130,7 @@
 						</tr>
 						
 						<?php } ?>
+						<?php if($to_date == date('d-m-Y')){ ?>
 						<?php $page_no1=$page_no; foreach($ItemDatas as $key=>$ItemData){ ?>
 						
 						<tr class="main_tr1" id="<?= h($key) ?>">
@@ -139,7 +145,7 @@
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 							<td align="right"><?= h($this->Number->format(0,['places'=>2])) ?></td>
 						</tr>
-						<?php } ?>
+						<?php } } ?>
 						<tr>
 							<td colspan="5" align="right">Total</td>
 							<td align="right"><?= h($this->Number->format($total_inv,['places'=>2])) ?></td>

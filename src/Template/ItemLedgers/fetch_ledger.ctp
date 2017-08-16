@@ -88,6 +88,7 @@
 			}else{
 				$url_path="/inventory-transfer-vouchers/outView/".$itemLedger->voucher_info->id;
 			}
+			$data=$itemLedger->voucher_info->transaction_date;
 		}
 		else if($source_model=='Inventory Vouchers')
 		{ 
@@ -96,6 +97,7 @@
 			$voucher_no='#'.str_pad($itemLedger->voucher_info->iv_number, 4, '0', STR_PAD_LEFT);
 
 			$url_path="/inventory-vouchers/view/".$itemLedger->voucher_info->id;
+			$data=$itemLedger->voucher_info->transaction_date;
 			//pr($itemLedger);
 		} else if($source_model=='Inventory Return')
 		{
@@ -132,10 +134,10 @@
 			
 			<td><?= h(++$page_no) ?></td>
 			<td>
-			<?php if($party=='Supplier'){ ?>
-			<?= h(date("d-m-Y",strtotime($data))) ?>
+			<?php if(!empty($data)){ ?>
+			<?= h(date("d-m-Y",strtotime(@$data))) ?>
 			<?php }else{ ?>
-			<?= h(date("d-m-Y",strtotime($itemLedger->processed_on))) ?>
+			<?= h(date("d-m-Y",strtotime(@$itemLedger->processed_on))) ?>
 			<?php } ?>
 			</td>
 			

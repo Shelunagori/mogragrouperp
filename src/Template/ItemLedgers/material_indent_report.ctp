@@ -4,12 +4,15 @@
     margin-bottom:0px !important;
 }
 </style>
-<?php //pr($material_report); exit; ?>
+<?php $url_excel="/?".$url;?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Material Indent Report</span>
+		</div>
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Metarial-Export/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
 		<div class="portlet-body">
 			<?= $this->Form->create($mit) ?>

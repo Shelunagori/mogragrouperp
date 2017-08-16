@@ -666,6 +666,9 @@ class LedgersController extends AppController
 		return $this->response;
 	}
 	public function AccountStatementRefrence (){
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$status=$this->request->query('status');
 		$ledger_account_id=$this->request->query('ledgerid');
 		
@@ -740,10 +743,88 @@ class LedgersController extends AppController
 				
 			}])->where(['company_id'=>$st_company_id]);
 			
-			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data','ref_amt','ledger_amt'));
+			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data','ref_amt','ledger_amt','url'));
 		}
 	}
 	
+	public function excelExportAccountRef(){
+		$status=$this->request->query('status');
+		$ledger_account_id=$this->request->query('ledgerid');
+		
+		if($ledger_account_id > 0 && $status=='Pending'){  
+		$this->redirect(['controller'=>'Ledgers','action' => 'findDate/'.$ledger_account_id]);
+		}else{ 
+		$this->viewBuilder()->layout('');
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+        $st_year_id = $session->read('st_year_id');
+		$ledger_account_id=$this->request->query('ledgerid');
+		$financial_year = $this->Ledgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
+		$from = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
+		$To = date("Y-m-d"); 
+		$this->set(compact('ledger_account_id'));
+		$status=$this->request->query('status');
+		//pr($ledger_account_id); exit;
+		
+		
+		//exit;
+		$ReferenceBalance_transaction_date=[];
+		$ReferenceBalance_due_date=[];
+		if($ledger_account_id)
+		{
+		$Ledger_Account_data = $this->Ledgers->LedgerAccounts->get($ledger_account_id, [
+        'contain' => ['AccountSecondSubgroups'=>['AccountFirstSubgroups'=>['AccountGroups'=>['AccountCategories']]]] ]);
+		
+		if($Ledger_Account_data->source_model=='Customers'){
+			$customer_data = $this->Ledgers->LedgerAccounts->Customers->get($Ledger_Account_data->source_id);
+			$customer_ledger_data = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
+			//pr($customer_ledger_data->toArray()); exit;
+		}
+		
+		$Ledgers = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
+		
+		$ledger_amt = $this->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ledger_account_id]);
+		$ledger_amt->select([
+			'Debit' => $ledger_amt->func()->sum('Debit'),
+			'Credit' => $ledger_amt->func()->sum('Credit')
+		]);
+		
+		$ledger_amt=@$ledger_amt->first();
+		//$ledger_amt=@$ledger_amt->first();
+		
+		
+		$ReferenceBalances = $this->Ledgers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ledger_account_id]);
+		//pr($ReferenceBalances->toArray()); exit;
+		
+		$ref_amt = $this->Ledgers->ReferenceDetails->find()->where(['ReferenceDetails.ledger_account_id'=>$ledger_account_id]);
+		$ref_amt->select([
+			'debit' => $ref_amt->func()->sum('debit'),
+			'credit' => $ref_amt->func()->sum('credit')
+		]);
+		
+		$ref_amt=$ref_amt->first(); 
+		
+		}
+		
+		$ledger=$this->Ledgers->LedgerAccounts->find('list',
+			['keyField' => function ($row) {
+				return $row['id'];
+			},
+			'valueField' => function ($row) {
+				if(!empty($row['alias'])){
+					return  $row['name'] . ' (' . $row['alias'] . ')';
+				}else{
+					return $row['name'];
+				}
+				
+			}])->where(['company_id'=>$st_company_id]);
+			
+			$this->set(compact('Ledgers','ledger','financial_year','ReferenceBalances','Ledger_Account_data','ref_amt','ledger_amt'));
+		}
+	}
 	public function AccountStatement (){
 		$this->viewBuilder()->layout('index_layout');
 		$url=$this->request->here();

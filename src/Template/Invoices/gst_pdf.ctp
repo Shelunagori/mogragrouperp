@@ -102,10 +102,10 @@ $html = '
 				<td width="30%" valign="top">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
-				<td align="right" width="35%" style="font-size: 12px; " valign="top">
+				<td align="right" width="35%" style="font-size: 12px; ">
 				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" /> '. h($invoice->company->mobile_no).'</span> | 
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
+				<span ><img style="margin-top:3px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" /> '. h($invoice->company->mobile_no).'</span> | 
+				<span><img style="margin-top:2px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
 				</td>
 			</tr>
 			<!-- <tr>
