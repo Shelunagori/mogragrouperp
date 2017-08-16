@@ -884,7 +884,7 @@ $(document).ready(function() {
 	}
 	
 	calculate_total();	
-	function calculate_total(){ 
+	function calculate_total(){  
 		var total=0; var grand_total=0; var total_amt=0; var total_discount=0; var total_pnf=0; var total_taxable_value=0; var total_cgst=0; var total_sgst=0; var total_igst=0;  var total_row_amount=0
 		$("#main_tb tbody tr.tr1").each(function(){
 			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
@@ -962,7 +962,7 @@ $(document).ready(function() {
 					grand_total=grand_total+row_total;
 			}
 			
-						var fcgst=parseFloat($('input[name="fright_cgst_amount"]').val());
+			var fcgst=parseFloat($('input[name="fright_cgst_amount"]').val());
 			if(isNaN(fcgst)){ var fcgst = 0;  }
 			
 			var fsgst=parseFloat($('input[name="fright_sgst_amount"]').val());
@@ -994,8 +994,15 @@ $(document).ready(function() {
 			$('input[name="all_row_total"]').val(total_debit.toFixed(2));
 			
 			var all_row_total=parseFloat($('input[name="all_row_total"]').val());
-
-			grand_total=total_taxable_value+total_cgst_amt+total_sgst_amt+total_igst_amt+fright_amount;
+					
+			total_taxable_value1=parseFloat(total_taxable_value.toFixed(2));
+			total_cgst_amt1=parseFloat(total_cgst_amt.toFixed(2));
+			total_sgst_amt1=parseFloat(total_sgst_amt.toFixed(2));
+			total_igst_amt1=parseFloat(total_igst_amt.toFixed(2));
+			fright_amount1=parseFloat(fright_amount.toFixed(2));
+					
+					
+			grand_total=total_taxable_value1+total_cgst_amt1+total_sgst_amt1+total_igst_amt1+fright_amount1;
 			$('input[name="total"]').val(total_taxable_value.toFixed(2));
 			$('input[name="total_cgst_amount"]').val(total_cgst_amt.toFixed(2));
 			$('input[name="total_igst_amount"]').val(total_igst_amt.toFixed(2));

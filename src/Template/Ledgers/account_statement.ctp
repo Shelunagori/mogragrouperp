@@ -133,6 +133,10 @@ $url_excel="/?".$url;
 						<th>Transaction Date</th>
 						<th>Source</th>
 						<th>Reference</th>
+						<th>Party</th>
+						<th>TIN</th>
+						<th>VAT</th>
+						<th>Total</th>
 						<th style="text-align:right;">Dr</th>
 						<th style="text-align:right;">Cr</th>
 					</tr>
@@ -208,9 +212,39 @@ $url_excel="/?".$url;
 							}else{
 								echo str_pad($ledger->voucher_id,4,'0',STR_PAD_LEFT);
 							}
-						
 						?>
 						</td>
+						<td>
+							<?php if($ledger->voucher_source=="Invoice"){ ?>
+								<?php echo $url_link[$ledger->id]->customer->customer_name.' '.$url_link[$ledger->id]->customer->alias; ?>
+							<?php }elseif($ledger->voucher_source=="Invoice Booking"){ ?>
+								<?php echo $url_link[$ledger->id]->vendor->company_name; ?>
+							<?php } ?>
+						</td>
+						<td>
+							<?php if($ledger->voucher_source=="Invoice"){ ?>
+								<?php echo $url_link[$ledger->id]->customer->tin_no; ?>
+							<?php }elseif($ledger->voucher_source=="Invoice Booking"){ ?>
+								<?php echo $url_link[$ledger->id]->vendor->tin_no; ?>
+							<?php } ?>
+						</td>
+						<td align="right">
+							<?php if($ledger->voucher_source=="Invoice"){ ?>cst_vat
+								<?php echo @$url_link[$ledger->id]->sale_tax->invoice_description; ?>
+							<?php }elseif($ledger->voucher_source=="Invoice Booking"){ ?>
+								<?php //echo $url_link[$ledger->id]->cst_vat;
+								if($url_link[$ledger->id]->cst_vat=="VAT"){
+										echo $this->Number->format($url_link[$ledger->id]->total_saletax,[ 'places' => 2]); 
+									}else{
+										echo "-";
+									}
+							 } ?>
+						</td>
+						<?php if($ledger->voucher_source=="Invoice Booking"){ ?>
+						<td align="right"><?= $this->Number->format($url_link[$ledger->id]->total,[ 'places' => 2]); ?></td>
+						 <?php }else{ ?>
+						 <td><?php echo "-"; ?></td>
+						 <?php } ?>
 						<td align="right"><?= $this->Number->format($ledger->debit,[ 'places' => 2]); 
 							$total_debit+=$ledger->debit; ?></td>
 						<td align="right"><?= $this->Number->format($ledger->credit,[ 'places' => 2]); 
@@ -219,7 +253,7 @@ $url_excel="/?".$url;
 				</tr>
 				<?php } endforeach; ?>
 				<tr>
-					<td colspan="3" align="right">Total</td>
+					<td colspan="6" align="right">Total</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['debit'],2,'.',',') ;?> Dr</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['credit'],2,'.',',')?> Cr</td>
 					

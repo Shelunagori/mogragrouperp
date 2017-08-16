@@ -39,7 +39,13 @@
 		{
 			$party_name=$itemLedger->party_info->customer_name;
 			$voucher_no=$itemLedger->voucher_info->in1.'/IN-'.str_pad($itemLedger->voucher_info->in2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->in3.'/'.$itemLedger->voucher_info->in4;
-			$url_path="/Invoices/confirm/".$itemLedger->voucher_info->id;
+			if($itemLedger->voucher_info->invoice_type=='GST'){
+				$url_path="/Invoices/gst-confirm/".$itemLedger->voucher_info->id;
+			
+			}else{
+				$url_path="/Invoices/confirm/".$itemLedger->voucher_info->id;
+			}
+			
 		}
 		else if($party=='Supplier')
 		{

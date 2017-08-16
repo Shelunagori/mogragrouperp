@@ -589,9 +589,6 @@ class SalesOrdersController extends AppController
 				$salesOrder->edited_on=date("Y-m-d");
 				$salesOrder->edited_on_time= date("Y-m-d h:i:sA");
 				
-				//pr($salesOrder); exit;
-
-
 				if ($this->SalesOrders->save($salesOrder)) {
 					
 					foreach($salesOrder->sales_order_rows as $sales_order_row){
