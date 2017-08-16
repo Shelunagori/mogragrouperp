@@ -804,11 +804,10 @@ class InvoicesController extends AppController
 			$invoice->in3=$invoice->in3;
 			$invoice->due_payment=$invoice->grand_total;
 			
-			$invoice->edited_on = $edited_on; 
-//pr($invoice->edited_on); exit;			
-			$invoice->edited_by = $edited_by; 
-			//$invoice->edited_on = date("Y-m-d"); 
-			//$invoice->edited_by=$this->viewVars['s_employee_id'];
+			//$invoice->edited_on = $edited_on; 
+			//$invoice->edited_by = $edited_by; 
+			$invoice->edited_on = date("Y-m-d"); 
+			$invoice->edited_by=$this->viewVars['s_employee_id'];
 
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
@@ -1903,9 +1902,10 @@ class InvoicesController extends AppController
 			//pr($invoice->total_taxable_value); exit;
 			$invoice->total_after_pnf=$invoice->total_taxable_value;
 			$invoice->sales_ledger_account=$invoice->sales_ledger_account;
-			$invoice->edited_on =$edited_on; 
-			$invoice->edited_by=$edited_by;
-
+			//$invoice->edited_on =$edited_on; 
+			//$invoice->edited_by=$edited_by;
+			$invoice->edited_on = date("Y-m-d"); 
+			$invoice->edited_by=$this->viewVars['s_employee_id'];
 			if(@$ItemSerialNumber_In){
 				foreach(@$ItemSerialNumber_In as $key=>$serial_no){
 					
