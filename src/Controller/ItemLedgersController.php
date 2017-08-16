@@ -595,6 +595,37 @@ class ItemLedgersController extends AppController
 		$this->set(compact('itemLedgers'));
 	}
 	
+	public function inventoryDailyReport(){
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+		$from_date=$this->request->query('From');
+		$to_date=$this->request->query('To');
+		$where =[];
+		if(!empty($from_date)){
+			$From=date("Y-m-d",strtotime($from_date));
+			$where['processed_on >=']=$From;
+		}
+		if(!empty($to_date)){
+			$To=date("Y-m-d",strtotime($to_date));
+			$where['processed_on <=']=$To;
+		}
+		$itemLedgers = $this->ItemLedgers->find()->where($where)->order(['processed_on'=>'DESC'])->contain(['Items'=>['ItemSerialNumbers','ItemCompanies'=>function($q) use($st_company_id){
+									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
+								}]]); 
+		
+		$itemDatas=[];
+		foreach($itemLedgers as $itemLedger){
+			$itemDatas[$itemLedger['source_model'].$itemLedger['source_id']][]=$itemLedger;
+			 //pr($itemDatas);
+		}
+		//pr($itemDatas);
+		//exit;
+		$this->set(compact('itemDatas'));
+	}
+	
+	
+	
 	public function entryCount(){
 		$this->viewBuilder()->layout('');
 		
