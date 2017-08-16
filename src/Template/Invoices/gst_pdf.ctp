@@ -33,7 +33,7 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 13px !important;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 3px;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -84,7 +84,7 @@ $html = '
 		<table width="100%">
 			<tr>
 				<td width="35%" rowspan="2" valign="bottom">
-				<img src='.ROOT . DS  . 'webroot' . DS  .'logos/'.$invoice->company->logo.' height="80px" style="height:80px;"/>
+				<img src='.ROOT . DS  . 'webroot' . DS  .'logos/'.$invoice->company->logo.' height="80px" />
 				</td>
 				<td colspan="2" align="right">
 				<span style="font-size: 20px;">'. h($invoice->company->name) .'</span>
@@ -94,17 +94,17 @@ $html = '
 				<td width="30%" valign="bottom">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
-				<td align="right" width="35%" style="font-size: 12px; padding-top:-7px;">
+				<td align="right" width="35%" style="font-size: 12px; ">
 				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" style="height:11px;margin-top:5px;"/> '. h($invoice->company->mobile_no).'</span> | 
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($invoice->company->email).'</span>
+				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" /> '. h($invoice->company->mobile_no).'</span> | 
+				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
 				</td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td colspan="3" >
-					<div style="border:solid 2px #0685a8;margin-top: 5px; margin-top:15px;"></div>
+					<div style="border:solid 2px #0685a8;"></div>
 				</td>
-			</tr>
+			</tr>-->
 		</table>
   </div>
  
@@ -119,27 +119,29 @@ $html = '
 
 </style>
 
-<table width="100%" class="table_rows itemrow">
+<table width="100%" class="table_rows itemrow" style="margin-top:12px;">
 	<thead>
 		<tr>
 			<td align="">';
 				$html.='
-					<table  valign="center" width="100%" style="margin-top: 0px;" class="table2">
+					<table  valign="center" width="100%"  class="table2">
 						<tr>
-							<td width="80%" >
-								
+							<td width="50%" >
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								<div style="height:5px;"></div>
-								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
-								<span>GST  : '. h($invoice->customer->gst_no) .'</span>
-								<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
+								'. $this->Text->autoParagraph(h($invoice->customer_address));
+                                if(!empty($invoice->customer->gst_no))
+								{
+									$html.='<span>GST  : '. h($invoice->customer->gst_no).  '</span>';
+								}
+								$html.='<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
 								
 							</td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
 									<tr>
-										<td width="55" valign="top" style="vertical-align: top;">Invoice No.</td>
-										<td width="25" valign="top">:</td>
+										<td valign="top" style="vertical-align: top;">Invoice No.</td>
+										<td  valign="top">:</td>
 										<td valign="top">'. h(($invoice->in1." / IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3." / ".$invoice->in4)) .'</td>
 									</tr>
 									<tr>
@@ -155,12 +157,12 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;">Carrier</td>
 										<td valign="top">:</td>
-										<td valign="top" >'. h($invoice->transporter->transporter_name) .'</td>
+										<td valign="top" ><p>'. h($invoice->transporter->transporter_name) .'</p></td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
 										<td valign="top">:</td>
-										<td valign="top">'. h($invoice->delivery_description) .'</td>
+										<td width="25%" valign="top">'. h($invoice->delivery_description) .'</td>
 									</tr>
 								</table>
 							</td>
@@ -421,7 +423,7 @@ $html.='
 		
 		<tr>
 				<td colspan="2" >
-					<table width="100%" class="table2">
+					<table width="100%" class="table2" >
 						<tr>
 							<td  >
 								<table>

@@ -112,7 +112,7 @@ $html.='
 		<tr>
 			<td width="53%">
 				<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
-				'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'<br/>
+				'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'
 				<span>Customer P.O. No. '. h($salesOrder->customer_po_no).' dated '. h(date("d-m-Y",strtotime($salesOrder->po_date))).'</span><br/><br/>
 			</td>
 			<td width="47%" valign="top" align="right" style="float:right;">
@@ -193,10 +193,10 @@ $html.='
 	<tr class="odd">
 	    <td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($sr) .'</td>
 		<td style="padding-top:8px;" width="100%">';
-		//pr($salesOrderRows->description);
+		
 		if(!empty($salesOrderRows->description)){
 			$html.= h($salesOrderRows->item->name);
-		}else{ 
+		}else{
 			$html.= h($salesOrderRows->item->name).'<div style="height:'.$salesOrderRows->height.'"></div> ';
 		}
 		

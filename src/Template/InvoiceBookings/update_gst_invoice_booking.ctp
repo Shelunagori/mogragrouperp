@@ -287,7 +287,7 @@
 						<td class="igst_display" ></td>
 						<td class="igst_display" ><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_other_charge', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
-						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
+						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly','step'=>0.01]); ?></td>
 						<td><?php echo $this->Form->input('total_rate_to_post', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'rate to be post','readonly']); ?></td>
 					</tr>
 				</tfoot>
@@ -374,9 +374,7 @@
 	background-color: #97b8ef;
 }
 </style>
-<?php echo $this->Html->css('/drag_drop/jquery-ui.css'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-1.12.4.js'); ?>
-<?php echo $this->Html->script('/drag_drop/jquery-ui.js'); ?>
+
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 
 <script>
@@ -685,12 +683,12 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 
-		submitHandler: function (form) {
+		submitHandler: function (form3) {
 			$('#add_submit').prop('disabled', true);
 			$('#add_submit').text('Submitting.....');
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
 				
 				
 			
@@ -743,8 +741,9 @@ $(document).ready(function() {
 		});
 		
 		var is_tot_input=$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").length;
-		if(is_tot_input){
-			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: "#grand-total" });
+	
+		if(is_tot_input){ 
+			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: '#total' });
 		}
 	}
 	
