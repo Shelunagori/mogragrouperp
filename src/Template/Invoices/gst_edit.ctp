@@ -956,7 +956,13 @@ $(document).ready(function() {
 					var cgst_amount=parseFloat($(this).find("td:nth-child(12) input").val());
 					var sgst_amount=parseFloat($(this).find("td:nth-child(14) input").val());
 					var igst_amount=parseFloat($(this).find("td:nth-child(16) input").val());
+					taxable_value=parseFloat(taxable_value.toFixed(2));
+					cgst_amount=parseFloat(cgst_amount.toFixed(2));
+					sgst_amount=parseFloat(sgst_amount.toFixed(2));
+					igst_amount=parseFloat(igst_amount.toFixed(2));
+					
 					var row_total=taxable_value+cgst_amount+sgst_amount+igst_amount;
+					row_total=parseFloat(row_total.toFixed(2));
 					total_row_amount=total_row_amount+row_total;
 					$(this).find("td:nth-child(17) input").val(row_total.toFixed(2));
 					grand_total=grand_total+row_total;
@@ -983,6 +989,11 @@ $(document).ready(function() {
 			$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
 			$('input[name="total_taxable_value"]').val(total_tax.toFixed(2));
 			
+			total_row_amount=parseFloat(total_row_amount.toFixed(2));
+			total_cgst=parseFloat(total_cgst.toFixed(2));
+			total_sgst=parseFloat(total_sgst.toFixed(2));
+			total_igst=parseFloat(total_igst.toFixed(2));
+			total_fright_amount=parseFloat(total_fright_amount.toFixed(2));
 			total_debit=total_row_amount+total_fright_amount;
 			total_cgst_amt=total_cgst+fcgst;
 			total_sgst_amt=total_sgst+fsgst;
