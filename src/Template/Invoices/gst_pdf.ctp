@@ -11,7 +11,6 @@ $dompdf = new Dompdf();
 
 
 
-
 $html = '
 <html>
 <head>
@@ -33,7 +32,16 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 3px;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
+	}
+	.odd td p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: -1px;
+	}
+	.show td p{
+			margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
+	}
+	.topdata p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -91,10 +99,10 @@ $html = '
 				</td>
 			</tr>
 			<tr>
-				<td width="30%" valign="bottom">
+				<td width="30%" valign="top">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
-				<td align="right" width="35%" style="font-size: 12px; ">
+				<td align="right" width="35%" style="font-size: 12px; " valign="top">
 				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" /> '. h($invoice->company->mobile_no).'</span> | 
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
@@ -119,14 +127,14 @@ $html = '
 
 </style>
 
-<table width="100%" class="table_rows itemrow" style="margin-top:12px;">
+<table width="100%" class="table_rows itemrow" style="margin-top: -22px;">
 	<thead>
-		<tr>
+		<tr class="show">
 			<td align="">';
 				$html.='
 					<table  valign="center" width="100%"  class="table2">
 						<tr>
-							<td width="50%" >
+							<td width="50%" valign="top" text-align="right" >
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								<div style="height:5px;"></div>
 								'. $this->Text->autoParagraph(h($invoice->customer_address));
@@ -231,7 +239,7 @@ $sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invo
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top">'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></td>
+		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top"><span>'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></span></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';
@@ -267,7 +275,6 @@ $html.='
 		$html.='
 			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format(@$cgst_per[$invoiceRows->id]['tax_figure']) .'%</td>
 			<td style="'.$gst_hide.'"';$html.='padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->cgst_amount,[ 'places' => 2]) .'</td>';
-		
 		}
 		if($invoiceRows->sgst_amount==0){ 
 		$html.='
@@ -417,7 +424,7 @@ $html.='
 		</tr>
 		<tr>
 			<td valign="top" width="18%">Additional Note</td>
-			<td  valign="top">'. $this->Text->autoParagraph($invoice->additional_note).'</td>
+			<td  valign="top" class="topdata">'. $this->Text->autoParagraph($invoice->additional_note).'</td>
 
 		</tr>
 		

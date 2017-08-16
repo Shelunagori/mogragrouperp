@@ -287,7 +287,7 @@
 						<td class="igst_display" ></td>
 						<td class="igst_display" ><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_other_charge', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
-						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly','step'=>0.01]); ?></td>
+						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly','id'=>'total']); ?></td>
 						<td><?php echo $this->Form->input('total_rate_to_post', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'rate to be post','readonly']); ?></td>
 					</tr>
 				</tfoot>
@@ -374,7 +374,9 @@
 	background-color: #97b8ef;
 }
 </style>
-
+<?php echo $this->Html->css('/drag_drop/jquery-ui.css'); ?>
+<?php echo $this->Html->script('/drag_drop/jquery-1.12.4.js'); ?>
+<?php echo $this->Html->script('/drag_drop/jquery-ui.js'); ?>
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 
 <script>
@@ -628,20 +630,12 @@ $(document).ready(function() {
 		errorElement: 'span', //default input error message container
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
-		ignore: ":hidden,[readonly=readonly]",
 		rules: {
-			advance: {
-				min:0,
-			},
-			cheque_no :{
-				required: true,
-			},
+			
 		
 		},
 		messages: {
-			'reference_no[]': {
-				remote: "Reference no. is alredy taken."
-			},
+			
 		},
 		errorPlacement: function (error, element) { // render error placement for each input type
 			if (element.parent(".input-group").size() > 0) {
@@ -722,13 +716,7 @@ $(document).ready(function() {
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
 							noSpace: true,
-							notEqualToGroup: ['.ref_number'],
-							remote: {
-								url: url,
-							},
-							messages: {
-								remote: "Not an unique."
-							}
+							
 						});
 			}
 			var is_ref_old_amount=$(this).find("td:nth-child(3) input:eq(0)").length;
@@ -741,9 +729,8 @@ $(document).ready(function() {
 		});
 		
 		var is_tot_input=$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").length;
-	
 		if(is_tot_input){ 
-			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: '#total' });
+			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: "#total" });
 		}
 	}
 	
