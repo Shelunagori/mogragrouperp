@@ -1,6 +1,6 @@
 <?php 
 
-		$url_excel="/?".$url;
+		$url_excel="/?".$url; 
 ?>
 
 <div class="portlet light bordered">
@@ -131,7 +131,13 @@
 				?>
 					<tr>
 						<td><?php echo date("d-m-Y",strtotime($ledger->transaction_date)); ?></td>
-						<td><?= h($ledger->ledger_account->name); ?></td>
+						<td>
+							<?php $name=""; if(empty($ledger->ledger_account->alias)){
+							 echo $ledger->ledger_account->name;
+							} else{
+								 echo $ledger->ledger_account->name.'('; echo $ledger->ledger_account->alias.')'; 
+							}?>
+						</td>
 						<td><?= h($ledger->voucher_source); ?></td>
 						<td>
 						

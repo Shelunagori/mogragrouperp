@@ -83,11 +83,11 @@ margin-bottom: 0;
 			<th><?= __('Narration') ?></th>
 		</tr>
 		<?php $total_cr=0; $total_dr=0; foreach ($payment->payment_rows as $paymentRows):  ?>
-		<?php $name=""; if(empty($paymentRows->ReceivedFrom->alias)){
+		<!--<?php $name=""; if(empty($paymentRows->ReceivedFrom->alias)){
 			$name=$paymentRows->ReceivedFrom->name;
 		} else{
 			$name=$paymentRows->ReceivedFrom->name.'('; echo $paymentRows->ReceivedFrom->alias.')'; 
-		}?>
+		}?>-->
 		<tr>
 			<td style="white-space: nowrap;">
 			<?php $name=""; if(empty($paymentRows->ReceivedFrom->alias)){

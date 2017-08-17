@@ -43,6 +43,9 @@ $html = '
 	.topdata p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
 	}
+	.addressshw p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
+	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
 	}
@@ -103,7 +106,7 @@ $html = '
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px; ">
-				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
+				<span >'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
 				<span ><img style="margin-top:3px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" /> '. h($invoice->company->mobile_no).'</span> | 
 				<span><img style="margin-top:2px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
 				</td>
@@ -136,11 +139,11 @@ $html = '
 						<tr>
 							<td width="50%" valign="top" text-align="right" >
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
-								<div style="height:5px;"></div>
+								<div style="height:5px;"></div><span class="addressshw">
 								'. $this->Text->autoParagraph(h($invoice->customer_address));
                                 if(!empty($invoice->customer->gst_no))
 								{
-									$html.='<span>GST  : '. h($invoice->customer->gst_no).  '</span>';
+									$html.='</span><span>GST  : '. h($invoice->customer->gst_no).  '</span>';
 								}
 								$html.='<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
 								
@@ -186,8 +189,8 @@ $html = '
 		</tr>
 	</thead>
 </table>'; 
-$gst_hide="style:display:;";
-			  $igst_hide="style:display:;" ;
+$gst_hide="style:display:;padding-top:8px;padding-bottom:5px;";
+			  $igst_hide="style:display:;padding-top:8px;padding-bottom:5px;" ;
 			  $tr2_colspan=15;
 			  $tr3_colspan=10; 
 			  $tr4_colspan=7; 

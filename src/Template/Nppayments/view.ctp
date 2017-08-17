@@ -82,7 +82,13 @@ margin-bottom: 0;
         </tr>
         <?php $total_cr=0; $total_dr=0; foreach ($nppayment->nppayment_rows as $nppayment_row): ?>
         <tr>
-            <td style="white-space: nowrap;"><?= h($nppayment_row->ReceivedFrom->name) ?></td>
+            <td style="white-space: nowrap;">
+				<?php $name=""; if(empty($nppayment_row->ReceivedFrom->alias)){
+				 echo $nppayment_row->ReceivedFrom->name;
+				} else{
+					 echo $nppayment_row->ReceivedFrom->name.'('; echo $nppayment_row->ReceivedFrom->alias.')'; 
+				}?>
+			</td>	
 			<?php if($aval==1){ ?>
 			<td style="white-space: nowrap;">
 			<?php  if(!empty($nppayment_row->grn_ids)){ 

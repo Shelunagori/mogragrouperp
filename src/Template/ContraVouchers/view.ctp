@@ -80,7 +80,13 @@ margin-bottom: 0;
         <?php
          $total_cr=0; $total_dr=0; foreach ($contravoucher->contra_voucher_rows as $contra_voucher_row): ?>
         <tr>
-            <td style="white-space: nowrap;"><?= h($contra_voucher_row->ReceivedFrom->name) ?></td>
+            <td style="white-space: nowrap;">
+				<?php $name=""; if(empty($contra_voucher_row->ReceivedFrom->alias)){
+				 echo $contra_voucher_row->ReceivedFrom->name;
+				} else{
+					 echo $contra_voucher_row->ReceivedFrom->name.'('; echo $contra_voucher_row->ReceivedFrom->alias.')'; 
+				}?>
+			</td>
             <td style="white-space: nowrap;"><?= h($this->Number->format($contra_voucher_row->amount,[ 'places' => 2])) ?> <?= h($contra_voucher_row->cr_dr) ?></td>
             <td><?= h($contra_voucher_row->narration) ?></td>
         </tr>

@@ -83,7 +83,13 @@ margin-bottom: 0;
         <?php $total_cr=0; $total_dr=0; 
          foreach($pettycashvoucher->petty_cash_voucher_rows as $petty_cash_voucher_row): // pr($petty_cash_grn_data); ?>
         <tr>
-            <td style="white-space: nowrap;"><?= h($petty_cash_voucher_row->ReceivedFrom->name) ?></td>
+            <td style="white-space: nowrap;">
+					<?php $name=""; if(empty($petty_cash_voucher_row->ReceivedFrom->alias)){
+				 echo $petty_cash_voucher_row->ReceivedFrom->name;
+				} else{
+					 echo $petty_cash_voucher_row->ReceivedFrom->name.'('; echo $petty_cash_voucher_row->ReceivedFrom->alias.')'; 
+				}?>
+			</td>	
 			<?php if($aval==1){ ?>
 			<td style="white-space: nowrap;">
 			<?php  if(!empty($petty_cash_voucher_row->grn_ids)){ 

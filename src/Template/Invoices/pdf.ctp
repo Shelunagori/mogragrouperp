@@ -33,13 +33,28 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 1;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
+	}
+	.showdata p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;
+	}
+	.showdatas p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:7px;
+	}
+	.addressshw p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
+	}
+	.amountdata p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
 	}
 	table.table_rows tr.odd{
 		page-break-inside: avoid;
+	}
+	.odd td p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: -1px;
 	}
 	.table_rows, .table_rows th, .table_rows td {
 	    border: 1px solid  #000; border-collapse: collapse;padding:2px; 
@@ -80,20 +95,20 @@ $html = '
 				</td>
 			</tr>
 			<tr>
-				<td width="30%" valign="bottom">
+				<td width="30%" valign="top">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">INVOICE</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px;">
-				<span>'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" style="height:11px;margin-top:5px;"/> '. h($invoice->company->mobile_no).'</span> | 
-				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($invoice->company->email).'</span>
+				<span >'. $this->Text->autoParagraph(h($invoice->company->address)) .'</span>
+				<span><img style="margin-top:4px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px"/> '. h($invoice->company->mobile_no).'</span> | 
+				<span><img style="margin-top:3px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" /> '. h($invoice->company->email).'</span>
 				</td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td colspan="3" >
 					<div style="border:solid 2px #0685a8;margin-top: 5px; margin-top:15px;"></div>
 				</td>
-			</tr>
+			</tr>-->
 		</table>
   </div>
  
@@ -104,7 +119,7 @@ $html = '
 
  
 $html.='
-<table width="100%" class="table_rows itemrow">
+<table width="100%" class="table_rows itemrow" style="margin-top: -22px;">
 		<tr>
 			<td colspan=6 align="">';
 				$html.='
@@ -113,16 +128,16 @@ $html.='
 							<td width="50%" style="font-size:'. h(($invoice->pdf_font_size)) .';">
 								
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
-								<div style="height:5px;"></div>
-								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'
+								<div style="height:5px;" ></div><span class="addressshw">
+								'. $this->Text->autoParagraph(h($invoice->customer_address)) .'</span>
 								<span>TIN : '. h($invoice->customer->tin_no) .'</span><br/>
 								<span>PAN : '. h($invoice->customer->pan_no) .'</span>
 							</td>
 							<td width="50%" valign="top" align="right" >
 								<table width="100%">
 									<tr>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" width="55" valign="top" style="vertical-align: top;">Invoice No.</td>
-										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" width="25" valign="top">:</td>
+										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" width="25%" valign="top" style="vertical-align: top;">Invoice No.</td>
+										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" width="5%" valign="top">:</td>
 										<td style="font-size:'. h(($invoice->pdf_font_size)) .';" valign="top">'. h(($invoice->in1." / IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3." / ".$invoice->in4)) .'</td>
 									</tr>
 									<tr>
@@ -196,7 +211,7 @@ if($invoice->discount_type=='1'){ $discount_text='Discount @ '.$invoice->discoun
 
 if($invoice->exceise_duty>0){
 				$html.='<tr>
-				<td colspan="5" style="text-align:left;border-top: 1px solid #000;">'. $this->Text->autoParagraph(h($invoice->ed_description)) .'</td>
+				<td class="showdata" colspan="5" style="text-align:left;border-top: 1px solid #000;">'. $this->Text->autoParagraph(h($invoice->ed_description)) .'</td>
 				<td style="text-align:right;border-top: 1px solid #000;">'. $this->Number->format($invoice->exceise_duty,[ 'places' => 2]).'</td>
 </tr>';	}
 			
@@ -342,7 +357,7 @@ $html .= '<div id="footer" class="avoid_break">';
 					$html.='</table>';	
 					}
 			$html.='</td>
-					<td style="text-align:right;">'.$this->Text->autoParagraph(h($invoice->fright_text)).'</td>
+					<td style="text-align:right;" class="amountdata">'.$this->Text->autoParagraph(h($invoice->fright_text)).'</td>
 					<td style="text-align:right;">'. $this->Number->format($invoice->fright_amount,[ 'places' => 2]).'</td>
 				</tr>
 				<tr>
@@ -374,7 +389,7 @@ $html .= '<div id="footer" class="avoid_break">';
 					<tr>
 					<td valign="top" width="18%">Additional Note </td>
 					<td valign="top" width="1%">:</td>
-					<td  valign="top">'. $this->Text->autoParagraph($invoice->additional_note).' </td>
+					<td  valign="top" class="showdatas">'. $this->Text->autoParagraph($invoice->additional_note).' </td>
 					</tr>
 				</table>
 				</td>

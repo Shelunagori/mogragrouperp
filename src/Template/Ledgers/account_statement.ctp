@@ -90,7 +90,7 @@ $url_excel="/?".$url;
 		<div class="col-md-12">
 			<div class="col-md-8"></div>	
 			<div class="col-md-4 caption-subject " align="left" style="background-color:#E7E2CB; font-size: 16px;"><b>Opening Balance : 
-				<?php //pr($opening_balance_ar); exit;
+				<?php 
 						$opening_balance_data=0;;
 						if(!empty(@$opening_balance_ar)){
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
@@ -102,23 +102,24 @@ $url_excel="/?".$url;
 								echo $this->Number->format(@$opening_balance_data.'Cr',[ 'places' => 2]); echo " Cr";
 							}						
 						}
-						else { echo $this->Number->format('0',[ 'places' => 2]); }
+						else {   echo $this->Number->format('0',[ 'places' => 2]); }
 						$close_dr=0;
-						$close_cr=0; 
-						if(!empty(@$opening_balance_ar)){  //pr($opening_balance_data); exit;
+						$close_cr=0;
+						if((@$opening_balance_ar['debit'] > 0) || (@$opening_balance_ar['credit'] > 0)){   
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
 								$close_dr=@$opening_balance_data+@$opening_balance_total['debit'];
 								$close_cr=@$opening_balance_total['credit'];
 							}
-							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ //pr(@$opening_balance_total['credit']);
+							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){
 								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
 								$close_dr=@$opening_balance_total['debit'];
 							}
-						}elseif(empty($opening_balance_ar)){
+						}else if((@$opening_balance_ar['debit']== 0) && (@$opening_balance_ar['credit']== 0)){ 
 								$close_dr=@$opening_balance_total['debit'];
 								$close_cr=@$opening_balance_total['credit'];
 								
-							}					
+							}	
+						
 				?>  
 			</b>
 			
@@ -253,7 +254,7 @@ $url_excel="/?".$url;
 				</tr>
 				<?php } endforeach; ?>
 				<tr>
-					<td colspan="6" align="right">Total</td>
+					<td colspan="7" align="right">Total</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['debit'],2,'.',',') ;?> Dr</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['credit'],2,'.',',')?> Cr</td>
 					
@@ -265,7 +266,9 @@ $url_excel="/?".$url;
 			<div class="col-md-12">
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:  </b>
-				<?php $closing_balance=@$close_dr-@$close_cr;
+				<?php 
+				 
+				$closing_balance=@$close_dr-@$close_cr;
 					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
 						if($closing_balance>0){
