@@ -2451,4 +2451,11 @@ class InvoicesController extends AppController
 		$this->set(compact('invoices','SalesMans','SalesOrders'));
 	}
 	
+	public function itemSerialMismatch()
+    {
+		$invoiceRow=$this->Invoices->InvoiceRows->find();
+		pr($invoiceRow); exit;
+		exit;
+	}
+	
 }

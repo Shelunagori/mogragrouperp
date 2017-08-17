@@ -20,7 +20,7 @@
 										$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
 									echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
 								</td>
-								<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
+								<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 									</td>
 								</tr>
 							</tbody>
@@ -38,7 +38,7 @@
 	<div class="portlet-body">
 	 
 		<div class="table-scrollable">
-			<table class="table table-bordered table-striped" id="main_tble">
+			<table  style="font-size:11px;" class="table table-bordered table-striped" id="main_tble">
 				 <thead>
 					<tr>
 						<th>Sr. No.</th>
@@ -50,9 +50,9 @@
 						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?>Days</th>
 						<th style="text-align:center">Days > <?php echo $to_range_datas->range7?></th>
 						<th>On Account</th>
-						<th style="text-align: right;">Total Over-Due</th>
-						<th style="text-align: right;">No-Due</th>
-						<th style="text-align: right;">Close Bal</th>
+						<th style="text-align: center;">Total Over-Due</th>
+						<th style="text-align: center;">No-Due</th>
+						<th style="text-align: center;">Close Bal</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -192,7 +192,7 @@
 						<?php if((!empty($total_debit_6)) || (!empty($total_credit_6))){
 									$total6=@$total_debit_6[ $LedgerAccount->id] - @$total_credit_6[ $LedgerAccount->id];
 									if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
-									<td align="right" style="color: red;"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+									<td align="right" style=""><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
 						<?php } else { ?>
 									<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
 						<?php } } ?>
