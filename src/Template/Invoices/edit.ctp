@@ -804,6 +804,7 @@ $(document).ready(function() {
 				if(isNaN(sale_tax)) { var sale_tax = 0; }
 				$('input[name="sale_tax_per"]').val(sale_tax);
 				var sale_tax_description=$(this).find("td:nth-child(7) input[type=hidden]").eq(2).val();
+				//alert(sale_tax_description);
 				$('input[name="sale_tax_description"]').val(sale_tax_description);
 				var sale_tax_id=$(this).find("td:nth-child(7) input[type=hidden]").eq(3).val();
 				$('input[name="sale_tax_id"]').val(sale_tax_id);

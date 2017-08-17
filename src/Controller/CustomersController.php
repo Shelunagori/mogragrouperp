@@ -333,7 +333,7 @@ class CustomersController extends AppController
 		 
 		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
 
-		foreach($ReferenceDetails as $ReferenceDetail){
+		 foreach($ReferenceDetails as $ReferenceDetail){
 			 if($ReferenceDetail->invoice_id !=0){ 
 				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
 				$Customer =$this->Customers->get($Receipt->customer_id);
@@ -483,7 +483,7 @@ class CustomersController extends AppController
 			}
 		}
   
-	 
+	  
 		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
 		$total_debit_1=[];$total_credit_1=[];$due_1=[];
@@ -491,6 +491,7 @@ class CustomersController extends AppController
 		$total_debit_3=[];$total_credit_3=[];$due_3=[];
 		$total_debit_4=[];$total_credit_4=[];$due_4=[];	
 		$total_debit_5=[];$total_credit_5=[];$due_5=[];	
+		$total_debit_6=[];$total_credit_6=[];$due_6=[];	
 		$a=0;
 		$on_account_dr=[];
 		$on_account_cr=[];
@@ -558,6 +559,14 @@ class CustomersController extends AppController
 								$total_credit_5[$ReferenceBalance->ledger_account_id]=@$total_credit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
 							}
 						}
+				}else if($ReferenceBalance->due_date > $over_date1){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_6[$ReferenceBalance->ledger_account_id]=@$total_debit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_6[$ReferenceBalance->ledger_account_id]=@$total_credit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
 				}
 				$ref_amt = $this->Customers->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ReferenceBalance->ledger_account_id]);
 				$ref_amt->select([
@@ -583,7 +592,7 @@ class CustomersController extends AppController
 				
 			}
 			
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock'));
         $this->set('_serialize', ['customers']);
 
    

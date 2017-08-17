@@ -46,16 +46,16 @@
 				</thead>
 				<tbody>
 				<tbody>
-					<?php foreach ($itemDatas as $itemData){ 
+					<?php foreach ($itemDatas as $key=>$itemData){ 
 					
 					$row_count=count($itemData);
 					
 					?>
 					
-						<?php $flag=0; foreach($itemData as $itemData) { pr( );  ?>
+						<?php $flag=0; foreach($itemData as $itemData) {   ?>
 						<tr>
 						<?php if($flag==0){?>
-						<td rowspan="<?php echo $row_count; ?>"><?php echo date("d-m-Y",strtotime($itemData['processed_on'])); ?></td>
+						<td valign="top" rowspan="<?php echo $row_count; ?>"><?php echo date("d-m-Y",strtotime($itemData['processed_on'])); ?></td>
 						<td rowspan="<?php echo $row_count; ?>"><?php echo $itemData['source_model'];  echo $itemData['source_id'];?></td>
 						<?php $flag=1; }?>
 						<td><?php echo $itemData['item']['name']; ?></td>
@@ -69,11 +69,7 @@
 						<?php }else{ ?>
 						<td><?php echo "-"; ?></td>
 						<?php } ?>
-						<?php if($itemData['item']['item_companies'][0]['serial_number_enable']==1) {?>
-						
-						
-						<td><?php echo $itemData['item_id']; ?></td>
-						<?php } ?>
+					
 						</tr>
 						<?php } ?>
 						
