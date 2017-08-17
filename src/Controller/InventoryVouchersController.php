@@ -296,14 +296,11 @@ class InventoryVouchersController extends AppController
 		
         $s_employee_id=$this->viewVars['s_employee_id'];
 
-			   
 			   $st_year_id = $session->read('st_year_id');
-
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 			   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
 			   $tody1 = date("Y-m-d");
-
 			   $fromdate = strtotime($fromdate1);
 			   $todate = strtotime($todate1); 
 			   $tody = strtotime($tody1);
@@ -784,4 +781,52 @@ class InventoryVouchersController extends AppController
 		}
 		exit;	
 	}
+	
+	public function itemSerialMismatch()
+    {
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$InventoryVouchers=$this->InventoryVouchers->find()->contain(['InventoryVoucherRows'=>['Items'=>['ItemSerialNumbers','ItemCompanies'=>function($q) use($st_company_id){
+									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
+		}]]])->where(['InventoryVouchers.company_id' => $st_company_id]);
+		//pr($InventoryVouchers->toArray()); exit;
+		$ItemSerials=[];
+		foreach($InventoryVouchers as $InventoryVoucher){
+			foreach($InventoryVoucher->inventory_voucher_rows as $inventory_voucher_row){
+				if(!empty($inventory_voucher_row->item->item_companies[0]['serial_number_enable'])){
+					//pr(['invoice_id'=>$invoice->id,'item_id'=>$invoice_row->item_id]);
+					$ItemSerialNumbers=$this->InventoryVouchers->Items->ItemSerialNumbers->find()->where(['status' => 'Out','iv_invoice_id'=>$InventoryVoucher->invoice_id,'item_id'=>$inventory_voucher_row->item_id]);
+					$ct=$ItemSerialNumbers->count(); //pr($invoice->in2);
+					if($ct != $inventory_voucher_row->quantity){ 
+					$ItemSerials[$InventoryVoucher->iv_number]=$inventory_voucher_row->item->name;	
+					}
+				}
+			}
+		}?>
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<th>InventoryVoucher No</th>
+				<th>Item Name</th>
+				
+			</tr>
+			<?php $i=1; foreach($ItemSerials as $key=>$ItemSerial){
+				
+			?>
+			<tr>
+				<td><?php echo $i; ?></td>
+				<td><?php echo $key; ?></td>
+				<td><?php echo $ItemSerial; ?></td>
+				
+				
+			</tr>
+			<?php $i++; } ?>
+		</table>
+		
+		
+		
+		<?php exit;
+		
+	}
+	
 }

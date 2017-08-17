@@ -7,29 +7,29 @@
 		</div>
 	</div>
 	<form method="GET" >
-						<table width="100%">
-							<tbody>
-								<tr>
-								<td width="15%">
-										<label class="control-label">Stock</label>
-										<div id="item_sub_group_div">
-										<?php 
-											$options = [];
-											$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
-										echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
-									</td>
-								<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-									</td>
-									<td align="right" width="15%"><input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 100%;"></td>
-								</tr>
-							</tbody>
-						</table>
-					</form>
+		<table width="100%">
+			<tbody>
+				<tr>
+				<td width="15%">
+						<label class="control-label">Stock</label>
+						<div id="item_sub_group_div">
+						<?php 
+							$options = [];
+							$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
+						echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
+					</td>
+				<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
+					</td>
+					<td align="right" width="15%"><input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 100%;"></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
 	
 	<div class="portlet-body">
 	 
 		<div class="table-scrollable">
-			<table class="table table-bordered table-striped" id="main_tble">
+			<table style="font-size:11px;" class="table table-bordered table-striped" id="main_tble">
 				 <thead>
 					<tr>
 						<th>Sr. No.</th>
@@ -178,7 +178,7 @@
 						<?php if((!empty($total_debit_6)) || (!empty($total_credit_6))){
 									$total6=@$total_credit_6[ $LedgerAccount->id] - @$total_debit_6[ $LedgerAccount->id];
 									if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
-									<td align="right" style="color: red;"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+									<td align="right" style=""><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
 						<?php } else { ?>
 									<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
 						<?php } } ?>
