@@ -215,7 +215,7 @@ $html.='</table>';
 $html .= '	<table width="100%" class="table_rows table3">
   <tr>
     <td valign="top"  width="39%" rowspan="2" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>Material to be transported to :</b><br/>'. h(($purchaseOrder->material_to_be_transported)) .'</td>
-    <td valign="top" rowspan="2" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>Sale Tax :</b><br/>'. h(($purchaseOrder->sale_tax_description)) .'</td>
+    <td valign="top" rowspan="2" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>Sale Tax :</b><br/>'. h($purchaseOrder->sale_tax_per.'('.$purchaseOrder->sale_tax_description.')') .'</td>
     <td valign="top" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"> <p><b>Discount : </b><span style="padding-left:7px;">'. h($purchaseOrder->discount) .''. h(($purchaseOrder->discount_type)).'</span></p>
    
     </td>

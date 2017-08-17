@@ -113,7 +113,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 							<td>
 								
-								<?php echo $this->Form->input('sale_return_rows.'.$q.'.sale_tax_per', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01,'value'=>$saleReturn->sale_tax->tax_figure]); ?>
+								<?php echo $this->Form->input('sale_return_rows.'.$q.'.sale_tax_per', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01,'value'=>@$saleReturn->sale_tax->tax_figure.'('.@$saleReturn->sale_tax->invoice_description.')']); ?>
 							</td>
 						</tr>
 						

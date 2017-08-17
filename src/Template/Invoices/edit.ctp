@@ -216,7 +216,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								<?php echo $this->Form->input('q', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01,'value'=>$sales_order_row->amount]); ?>
 							</td>
 							<td>
-								<?php echo @$sales_order_row->sale_tax->tax_figure; ?>
+								<?php echo @$sales_order_row->sale_tax->tax_figure.'('.$sales_order_row->sale_tax->invoice_description.')'; ?>
 							</td>
 							<td>
 								<label><?php 

@@ -20,7 +20,12 @@
 			</thead>
 			<tbody>
 			<tr>
-					<td colspan="6" align="center"><?php echo $ledger_acc_name; ?></td>
+					<td colspan="6" align="center">Account Statment For
+					<?php $name=""; if(empty($ledger_acc_alias)){
+					 echo $ledger_acc_name;
+					} else{
+						 echo $ledger_acc_name.'('; echo $ledger_acc_alias.')'; 
+					}?>
 			</tr>
 				<tr>
 					<td colspan="5" align="right">Opening Balance</td>

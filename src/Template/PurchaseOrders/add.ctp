@@ -165,7 +165,8 @@ With reference to your price list we are pleased to place an order for the follo
 							$options=[];
 							foreach($sale_tax_ledger_accounts as $key=>$SaleTaxe){
 								$tax_figure=$sale_tax_ledger_accounts1[$key];
-								$options[]=['text' => (string)$tax_figure.'%', 'value' => $tax_figure, 'description' => $SaleTaxe];
+								$tax_description=$sale_tax_ledger_accounts[$key];
+								$options[]=['text' => (string)$tax_figure.'('.$tax_description.')', 'value' => $tax_figure, 'description' => $SaleTaxe];
 							}
 							echo $this->Form->input('sale_tax_per', ['empty'=>'--Select--','options'=>$options,'label' => false,'class' => 'form-control input-sm select2me','id'=>'saletax']);
 							?>

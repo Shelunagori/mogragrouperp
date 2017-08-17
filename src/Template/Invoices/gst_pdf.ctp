@@ -145,9 +145,12 @@ $html = '
 								{
 									$html.='</span><span>GST  : '. h($invoice->customer->gst_no).  '</span>';
 								}
-								$html.='<span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>
+								if(!empty($invoice->customer->pan_no))
+								{	
+									$html.='<span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>';
+								}
 								
-							</td>
+							'</td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
 									<tr>

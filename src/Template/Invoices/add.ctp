@@ -217,7 +217,7 @@ $('.closetin').on("click",function() {
 							<td><?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quantity','placeholder'=>'Quantity','value' => @$sales_order_rows->quantity-$sales_order_rows->processed_quantity,'readonly','min'=>'1','max'=>@$sales_order_rows->quantity-$sales_order_rows->processed_quantity]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Rate','value' => @$sales_order_rows->rate,'readonly','step'=>0.01]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$sales_order_rows->amount,'readonly','step'=>0.01]); ?></td>
-							<td><?php echo @$sales_order_rows->sale_tax->tax_figure; ?></td>
+							<td><?php echo @$sales_order_rows->sale_tax->tax_figure.'('.@$sales_order_rows->sale_tax->invoice_description.')'; ?></td>
 							<td>
 								<label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$sales_order_rows->id]); ?></label>
 								<?php echo $this->Form->input('q', ['label' => false,'type' => 'hidden','value' => @$sales_order_rows->sale_tax->tax_figure]); ?>
@@ -325,7 +325,7 @@ $('.closetin').on("click",function() {
 						<?php					
 							$options=[];
 							foreach($SaleTaxes as $SaleTaxe){
-								$options[]=['text' => (string)$SaleTaxe->tax_figure.'%', 'value' => $SaleTaxe->tax_figure, 'description' => $SaleTaxe->invoice_description];
+								$options[]=['text' => (string) $SaleTaxe->tax_figure.'('.$SaleTaxe->invoice_description.')', 'value' => $SaleTaxe->tax_figure, 'description' => $SaleTaxe->invoice_description];
 							}
 							echo $this->Form->input('sale_tax_per', ['options'=>$options,'label' => false,'class' => 'form-control input-sm']); 
 						} ?>

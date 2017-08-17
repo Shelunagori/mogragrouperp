@@ -334,7 +334,7 @@ class LedgerAccountsController extends AppController
 			->group(['ledger_account_id'])
 			->autoFields(true)->toArray();
 			$liablitie_groups=[];
-			foreach($Ledgers_Liablities as $Ledgers_Liablitie){
+			foreach($Ledgers_Liablities as $Ledgers_Liablitie){ 
 				$liablitie_groups[$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id]['group_id']
 					=$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id;
 				$liablitie_groups[$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id]['debit']
@@ -343,6 +343,8 @@ class LedgerAccountsController extends AppController
 					=@$liablitie_groups[$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id]['credit']+($Ledgers_Liablitie->total_credit);
 				$liablitie_groups[$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id]['name']
 					=$Ledgers_Liablitie->_matchingData['LedgerAccounts']->name;
+				$liablitie_groups[$Ledgers_Liablitie->_matchingData['LedgerAccounts']->id]['alias']
+					=$Ledgers_Liablitie->_matchingData['LedgerAccounts']->alias;	
 			}
 
 			$this->set(compact('liablitie_groups'));

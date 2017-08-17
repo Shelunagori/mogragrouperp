@@ -184,7 +184,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								<?php echo $this->Form->input('sale_return_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly','placeholder' => 'Amount','step'=>0.01]); ?>
 							</td>
 							<td>
-								<?php echo @$invoice->sale_tax->tax_figure; ?>
+								<?php echo @$invoice->sale_tax->tax_figure.'('.@$invoice->sale_tax->invoice_description.')'; ?>
 							</td>
 							<td>
 								<div class="checkbox-list" data-error-container="#form_2_services_error">

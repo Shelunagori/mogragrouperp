@@ -14,7 +14,7 @@
 				<div class="col-md-4">
 					<div class="form-group">
 						<label class="col-md-6 control-label">Ledger Accounts</label>
-						<?= h($ledger->ledger_account->name) ?>
+						<?= h($ledger->ledger_account->name.'('.$ledger->ledger_account->alias.')') ?>
 						</div>
 				</div>
 				<div class="col-md-2">

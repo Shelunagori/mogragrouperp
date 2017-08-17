@@ -250,9 +250,9 @@ if(!empty($copy))
 							<td>
 							<?php $options=[];
 							foreach($SaleTaxes as $SaleTaxe){ 
-								$options[]=['text' => (string) $SaleTaxe->tax_figure, 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
+								$options[]=['text' => (string) $SaleTaxe->tax_figure.'('.$SaleTaxe->invoice_description.')', 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
 							} 
-							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
+							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['empty'=>'---Select---','options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
 							//echo $this->Form->input('sales_order_rows.'.$q.'.
 							//', ['type'=>'text','label' => false]); ?>
 							</td>
@@ -301,9 +301,9 @@ if(!empty($copy))
 							<td>
 							<?php $options=[];
 							foreach($SaleTaxes as $SaleTaxe){ 
-								$options[]=['text' => (string) $SaleTaxe->tax_figure, 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
+								$options[]=['text' => (string) $SaleTaxe->tax_figure.'('.$SaleTaxe->invoice_description.')', 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
 							} 
-							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
+							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['empty'=>'---Select---','options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
 							?>
 							</td>
 							<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
@@ -536,9 +536,9 @@ if(!empty($copy))
 			<td width="100">
 			<?php $options=[];
 							foreach($SaleTaxes as $SaleTaxe){ 
-								$options[]=['text' => (string) $SaleTaxe->tax_figure, 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
+								$options[]=['text' => $SaleTaxe->tax_figure.'('.$SaleTaxe->invoice_description.')', 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
 							} 
-							echo $this->Form->input('sale_tax_id', ['options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
+							echo $this->Form->input('sale_tax_id', ['empty'=>'---Select---','options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
 			?>
 			</td>
 			<td width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
@@ -833,7 +833,7 @@ $(document).ready(function() {
 					});
 			$(this).find("td:nth-child(5) input").attr({name:"sales_order_rows["+i+"][amount]", id:"sales_order_rows-"+i+"-amount"}).rules("add", "required");
 			$(this).find("td:nth-child(6) select").attr("name","sales_order_rows["+i+"][excise_duty]");
-			$(this).find("td:nth-child(7) select").attr("name","sales_order_rows["+i+"][sale_tax_id]");
+			$(this).find("td:nth-child(7) select").select2().attr("name","sales_order_rows["+i+"][sale_tax_id]");
 			$(this).find("td:nth-child(7) input:eq( 0 )").attr("name","sales_order_rows["+i+"][sale_tax_description]");
 			var description=$(this).find("td:nth-child(7) select option:selected").attr("description");
 			$(this).find("td:nth-child(7) input:eq( 0 )").val(description);

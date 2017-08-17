@@ -135,7 +135,7 @@
 						<?php if($saleTax->freeze==1) { $saletax ="Yes"; } else 
 							{ $saletax ="No"; } ?>
 						<td><?= h($i) ?></td>
-						<td><?= $this->Number->format($saleTax->tax_figure,[ 'places' => 2]) ?></td>
+						<td><?php echo $saleTax->tax_figure.'('.$saleTax->invoice_description.')';?></td>
 						<td><?php echo $saletax; ?></td>
 						<td class="actions">
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $saleTax->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>

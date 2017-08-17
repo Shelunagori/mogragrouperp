@@ -2,7 +2,7 @@
 	<?php
 		$Total_Liablities_ajax=0;
 		
-		foreach($liablitie_groups as $liablitie_group) 
+		foreach($liablitie_groups as $liablitie_group) 	
 			{ $Total_Liablities_ajax = $liablitie_group['debit'] - $liablitie_group['credit']; ?>
 			  <tr>
 				 <td style='text-align:left;border-top: none;border-bottom: none;'>

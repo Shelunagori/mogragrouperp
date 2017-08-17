@@ -188,9 +188,10 @@ class LedgersController extends AppController
 		$ledger_acc = $this->Ledgers->find()->contain(['LedgerAccounts'])->where($where)->where(['voucher_source != '=>'Opening Balance'])->first();
 		
 		$ledger_acc_name=$ledger_acc->ledger_account->name;
+		$ledger_acc_alias=$ledger_acc->ledger_account->alias;
 		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
-        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name','url_link'));
+        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name','url_link','ledger_acc_alias'));
         $this->set('_serialize', ['ledgers']);
     }
 	 public function exportExcel()

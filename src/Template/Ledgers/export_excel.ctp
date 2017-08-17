@@ -79,7 +79,11 @@
 						<tr>
 						<td><?= h(++$i) ?></td>
 						<td><?php echo date("d-m-Y",strtotime($ledger->transaction_date)); ?></td>
-						<td><?= h($ledger->ledger_account->name); ?></td>
+						<td><?php $name=""; if(empty($ledger->ledger_account->alias)){
+							 echo $ledger->ledger_account->name;
+							} else{
+								 echo $ledger->ledger_account->name.'('; echo $ledger->ledger_account->alias.')'; 
+							}?></td>
 						<td><?= h($ledger->voucher_source); ?></td>
 						<td>
 						<?php echo @$voucher_no;?>
