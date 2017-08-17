@@ -301,7 +301,8 @@ class GrnsController extends AppController
 			}
 			$grn = $this->Grns->patchEntity($grn, $this->request->data);
 			$grn->date_created = date("Y-m-d"); 
-			//pr($grn->date_created); exit;
+			//pr($grn->transaction_date); exit;
+			$transaction_date=date("Y-m-d",strtotime($grn->transaction_date));
 			$grn->purchase_order_id=$purchase_order_id;
 			$grn->company_id=$st_company_id ;
 			$grn->created_by=$this->viewVars['s_employee_id'];
@@ -328,7 +329,7 @@ class GrnsController extends AppController
 							$itemLedger->source_model = 'Grns';
 							$itemLedger->source_id = $grn->id;
 							$itemLedger->in_out = 'In';
-							$itemLedger->processed_on = $grn->date_created;
+							$itemLedger->processed_on = $transaction_date;
 							$this->Grns->ItemLedgers->save($itemLedger);
 						} 
 					} 

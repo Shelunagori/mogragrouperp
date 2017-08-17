@@ -42,6 +42,8 @@
 						<th style="text-align:center"><?php echo $to_range_datas->range7?> ></th>
 						<th style="text-align: right;">On Account</th>
 						<th style="text-align: right;">Total Over-Due</th>
+						<th style="text-align: right;">No-Due</th>
+						<th style="text-align: right;">Close Bal</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -170,13 +172,21 @@
 						<?php $acc_color=""; if($on_acc > 0){ $acc_color="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color; ?>"><?php echo $this->Number->format($on_acc,['places'=>2]); ?></td>
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
-						<td align="right">
-						<?php 
-						if((@$total_debit_6[ $LedgerAccount->id]) > (@$total_credit_6[ $LedgerAccount->id])){
-						echo  $this->Number->format($total_data+((@$total_debit_6[$LedgerAccount->id])-(@$total_credit_6[ $LedgerAccount->id])),['places'=>2]);  
-						}else{
-							echo  $this->Number->format($total_data+((@$total_credit_6[$LedgerAccount->id])-(@$total_debit_6[ $LedgerAccount->id])),['places'=>2]);
-						}?></td>
+						<td align="right" style="color:<?php echo $acc_color2; ?>">
+						<?php echo sprintf ("%.2f", $total_data); ?></td>
+						
+						<?php if((!empty($total_debit_6)) || (!empty($total_credit_6))){
+									$total6=@$total_credit_6[ $LedgerAccount->id] - @$total_debit_6[ $LedgerAccount->id];
+									if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
+									<td align="right" style="color: red;"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php } } ?>
+						<?php $close_bal=0; if($total_data > 0){ $close_bal=$total6+$total_data; ?>
+						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
+						<?php } else { $close_bal=$total6+$total_data; ?>
+						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
+						<?php } ?>
 					</tr>
 					<?php }  ?>	
 				

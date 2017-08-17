@@ -303,7 +303,7 @@ class VendorsController extends AppController
 		}
 		pr($data); exit; */
 		
-		foreach($ReferenceDetails as $ReferenceDetail){
+		 foreach($ReferenceDetails as $ReferenceDetail){
 			if($ReferenceDetail->receipt_id !=0){ 
 				$Receipt =$this->Vendors->Receipts->get($ReferenceDetail->receipt_id);
 				
@@ -454,7 +454,7 @@ class VendorsController extends AppController
 				}
 			}
 		}   
-		
+		 
 		$ReferenceBalances =$this->Vendors->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
 		
 		$total_debit_1=[];$total_credit_1=[];$due_1=[];
@@ -534,6 +534,14 @@ class VendorsController extends AppController
 								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
 							}else{
 								$total_credit_5[$ReferenceBalance->ledger_account_id]=@$total_credit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+				}else if($ReferenceBalance->due_date >= $over_date1){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_6[$ReferenceBalance->ledger_account_id]=@$total_debit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_6[$ReferenceBalance->ledger_account_id]=@$total_credit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
 							}
 						}
 				}

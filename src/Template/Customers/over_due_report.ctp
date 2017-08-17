@@ -14,13 +14,12 @@
 							<tbody>
 								<tr>
 								<td width="15%">
-										
-										<div id="">
-										<?php 
-											$options = [];
-											$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
-										echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
-									</td>
+									<div id="">
+									<?php 
+										$options = [];
+										$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
+									echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
+								</td>
 								<td><button type="submit" style="margin-top: 24px;" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 									</td>
 								</tr>
@@ -52,6 +51,8 @@
 						<th style="text-align:center">Days > <?php echo $to_range_datas->range7?></th>
 						<th>On Account</th>
 						<th style="text-align: right;">Total Over-Due</th>
+						<th style="text-align: right;">No-Due</th>
+						<th style="text-align: right;">Close Bal</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -187,6 +188,19 @@
 						<?php $acc_color2=""; if($total_data > 0){ $acc_color2="red"; } ?>
 						<td align="right" style="color:<?php echo $acc_color2; ?>">
 						<?php echo sprintf ("%.2f", $total_data); ?></td>
+						
+						<?php if((!empty($total_debit_6)) || (!empty($total_credit_6))){
+									$total6=@$total_debit_6[ $LedgerAccount->id] - @$total_credit_6[ $LedgerAccount->id];
+									if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
+									<td align="right" style="color: red;"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php } else { ?>
+									<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php } } ?>
+						<?php $close_bal=0; if($total_data > 0){ $close_bal=$total6+$total_data; ?>
+						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
+						<?php } else { $close_bal=$total6+$total_data; ?>
+						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
+						<?php } ?>
 					</tr>
 						<?php } } ?>	
 				
@@ -194,7 +208,7 @@
 				<tfoot>
 				<tr>
 					<td colspan="9" align="right">Total : </td>
-					<td align="right"><?php echo $this->Number->format($total_over_due_amount,['places'=>2]);?></td>
+					<td colspan="3" align="left"><?php echo $this->Number->format($total_over_due_amount,['places'=>2]);?></td>
 				</tr>
 				</tfoot>
 			</table>
