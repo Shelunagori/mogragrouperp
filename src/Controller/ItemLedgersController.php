@@ -905,41 +905,39 @@ class ItemLedgersController extends AppController
 			
 		}
 		$serial_nos=[];
+		$voucher_no=[];
 		foreach($itemDatas as $key=>$itemData){
 			foreach($itemData as $itemDetail){
 				///query in item serial nos where source model && sourch id invoice_id
 				if($itemDetail['source_model']=='Invoices'){
 					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
-					$serial_nos[$itemDetail->item_id]=$serialnoarray;
-					//pr($serial_nos['670']);
-					
+					//pr($serialnoarray->toArray());
+					$serialnoarray=$this->ItemLedgers->Invoices->find()
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
 				}
-				//
+				if($itemDetail['source_model']=='Grns'){
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['grn_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					//pr($serialnoarray->toArray());
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+				}if($itemDetail['source_model']=='Inventory Vouchers'){
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					//pr($serialnoarray->toArray());
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+				}if($itemDetail['source_model']=='Inventory Transfer Voucher'){
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['inventory_transfer_voucher_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					//pr($serialnoarray->toArray());
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+				}
+				
 			}
 			
 		}
-	
-		
-		$this->set(compact('itemDatas'));
+	//pr($serial_nos);
+	//	exit;
+		$this->set(compact('itemDatas','serial_nos'));
 	}
 	
-	public function GetVoucherInfo($source_model=null,$source_id=null)
-    {
-		if($source_model=="Invoices"){
-			$Invoice=$this->ItemLedgers->Invoices->get($source_id, [
-            'contain' =>['InvoiceRows']]);
-			//pr($Invoice); exit;
-			return ['voucher_info'=>$Invoice];
-		}
-		if($source_model=="Grns"){
-			$Grns=$this->ItemLedgers->Grns->get($source_id, [
-            'contain' =>['GrnRows']]);
-			//pr($Invoice); exit;
-			return ['voucher_info'=>$Grns];
-		}
-		return $source_model.$source_id;
-		exit;
-	}
+
 	
 	
 	

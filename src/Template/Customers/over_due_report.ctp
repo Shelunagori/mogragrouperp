@@ -41,7 +41,7 @@
 			<table  style="font-size:11px;" class="table table-bordered table-striped" id="main_tble">
 				 <thead>
 					<tr>
-						<th>Sr. No.</th>
+						<th>SN.</th>
 						<th>Customer Name</th>
 						<th style="text-align:center">Payment Terms</th>
 						<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?> Days</th>

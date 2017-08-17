@@ -2451,6 +2451,50 @@ class InvoicesController extends AppController
 		$this->set(compact('invoices','SalesMans','SalesOrders'));
 	}
 	
-
+	public function itemSerialMismatch()
+    {
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$invoices=$this->Invoices->find()->contain(['InvoiceRows'=>['Items'=>['ItemSerialNumbers','ItemCompanies'=>function($q) use($st_company_id){
+									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
+		}]]])->where(['Invoices.company_id' => $st_company_id]);
+		$ItemSerials=[];
+		foreach($invoices as $invoice){
+			foreach($invoice->invoice_rows as $invoice_row){
+				if(!empty($invoice_row->item->item_companies[0]['serial_number_enable'])){
+					//pr(['invoice_id'=>$invoice->id,'item_id'=>$invoice_row->item_id]);
+					$ItemSerialNumbers=$this->Invoices->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$invoice->id,'item_id'=>$invoice_row->item_id]);
+					$ct=$ItemSerialNumbers->count(); //pr($invoice->in2);
+					if($ct != $invoice_row->quantity){ 
+					$ItemSerials[$invoice->in2]=$invoice_row->item->name;	
+					}
+				}
+			}
+		}?>
+		
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<th>Invoice No</th>
+				<th>Item Name</th>
+				
+			</tr>
+			<?php $i=1; foreach($ItemSerials as $key=>$ItemSerial){
+				
+			?>
+			<tr>
+				<td><?php echo $i; ?></td>
+				<td><?php echo $key; ?></td>
+				<td><?php echo $ItemSerial; ?></td>
+				
+				
+			</tr>
+			<?php $i++; } ?>
+		</table>
+		
+		
+		
+		<?php exit;
+	}
 	
 }

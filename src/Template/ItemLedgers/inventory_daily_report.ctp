@@ -69,7 +69,13 @@
 						<?php }else{ ?>
 						<td><?php echo "-"; ?></td>
 						<?php } ?>
-					
+						
+						<td width="30px">
+						<?php foreach($serial_nos[$key][$itemData['item_id']] as $sr){ 
+							echo $no=$sr['serial_no']; echo "</br>";
+							//$srn=implode(',', $no);
+						} //echo $srn; ?>
+						</td>
 						</tr>
 						<?php } ?>
 						
