@@ -607,15 +607,18 @@ $(document).ready(function() {
 			
 		});
 		$('input[name="total_amount"]').val(total_amount.toFixed(2));
-		$('input[name="total_discount"]').val(total_discount.toFixed(2));
-		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
-		$('input[name="total_ex"]').val(total_ex.toFixed(2));
+		$('input[name="total_discount"]').val(truncateToDecimals(total_discount));
+		$('input[name="total_pnf"]').val(truncateToDecimals(total_pnf));
+		$('input[name="total_ex"]').val(truncateToDecimals(total_ex));
 		$('input[name="total_saletax"]').val(total_cst.toFixed(2));
 		$('input[name="total_other_charges"]').val(total_other.toFixed(2));
 		$('input[name="total"]').val(total_row_amount.toFixed(2));
 	}
    
-  
+	  function truncateToDecimals(num, dec = 2) {
+		  const calcDec = Math.pow(10, dec);
+		  return Math.trunc(num * calcDec) / calcDec;
+	}
 	////////////////  Validation  ////////////////////////
 	
 	jQuery.validator.addMethod("noSpace", function(value, element) { 
