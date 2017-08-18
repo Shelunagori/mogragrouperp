@@ -16,10 +16,10 @@
 				<tbody>
 					<tr>
 						<td width="20%">
-							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
+							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo date('d-m-Y',strtotime(@$From)); ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
 						<td width="20%">
-							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
+							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo date('d-m-Y',strtotime(@$To)); ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
 						<td>
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
@@ -36,6 +36,7 @@
 			<table class="table table-bordered  ">
 				<thead>
 					<tr>
+						<th width="2%">SR</th>
 						<th width="10%">Transaction Date</th>
 						<th width="10%">Voucher</th>
 						<th width="10%">Item</th>
@@ -46,21 +47,22 @@
 				</thead>
 				<tbody>
 				<tbody>
-					<?php foreach ($itemDatas as $key=>$itemData){ 
+					<?php $srn=0; foreach ($itemDatas as $key=>$itemData){ 
 					$row_count=count($itemData);
 					?>
 					
 						<?php $flag=0; foreach($itemData as $itemData) {   ?>
 						<tr>
 						<?php if($flag==0){?>
+						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo ++$srn; ?> </td>
 						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo date("d-m-Y",strtotime($itemData['processed_on'])); ?></td>
 						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo  $voucher_no[$key][0];?></td>
 						<?php $flag=1; }?>
-						<td><?php echo $itemData['item']['name']; ?></td>
+						<td style="vertical-align: top !important;"><?php echo $itemData['item']['name']; ?></td>
 						<?php if($itemData['in_out']=="Out"){ ?>
-						<td><?php echo $itemData['quantity']; ?></td>
+						<td style="vertical-align: top !important;"><?php echo $itemData['quantity']; ?></td>
 						<?php }else{ ?>
-						<td><?php echo "-"; ?></td>
+						<td style="vertical-align: top !important;"><?php echo "-"; ?></td>
 						<?php } ?>
 						<?php if($itemData['in_out']=="In"){ ?>
 						<td><?php echo $itemData['quantity']; ?></td>
