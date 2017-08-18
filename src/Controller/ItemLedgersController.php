@@ -942,19 +942,28 @@ class ItemLedgersController extends AppController
 						}else {
 							$voucher_no[$key][]=('ITVO-'.str_pad($InventoryTransferVoucher->voucher_no, 4, '0', STR_PAD_LEFT)) ;
 						} 
-					
-					
-					
-					//pr($serialnoarray->toArray());
 					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+				}if($itemDetail['source_model']=='Purchase Return'){
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					$PurchaseReturn=$this->ItemLedgers->PurchaseReturns->find()->where(['PurchaseReturns.id'=>$itemDetail['source_id']])->first();
+					
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+					$voucher_no[$key][]=('#'.str_pad($PurchaseReturn->voucher_no, 4, '0', STR_PAD_LEFT));
+				}if($itemDetail['source_model']=='Sale Return'){
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					$SaleReturn=$this->ItemLedgers->SaleReturns->find()->where(['SaleReturns.id'=>$itemDetail['source_id']])->first();
+					
+					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+					$voucher_no[$key][]=($SaleReturn->sr1.'/SR-'.str_pad($SaleReturn->sr2, 3, '0', STR_PAD_LEFT).'/'.$SaleReturn->sr3.'/'.$SaleReturn->sr4);
 				}
+				
 				
 			}
 			
 		}
 	//pr($voucher_no);
 		//exit;
-		$this->set(compact('itemDatas','serial_nos','voucher_no'));
+		$this->set(compact('itemDatas','serial_nos','voucher_no','From','To'));
 	}
 	
 
