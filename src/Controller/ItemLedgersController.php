@@ -911,9 +911,12 @@ class ItemLedgersController extends AppController
 				///query in item serial nos where source model && sourch id invoice_id
 				if($itemDetail['source_model']=='Invoices'){
 					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
-					//pr($serialnoarray->toArray());
-					$serialnoarray=$this->ItemLedgers->Invoices->find()
+					//pr($itemDetail['source_id']);  exit;
+					$invoice=$this->ItemLedgers->Invoices->find()->where(['Invoices.id'=>$itemDetail['source_id']])->first();
+					
+					pr($invoice); exit;
 					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
+					$voucher_no[$key][$itemDetail->item_id]=($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4);
 				}
 				if($itemDetail['source_model']=='Grns'){
 					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['grn_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
