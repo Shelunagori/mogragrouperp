@@ -117,8 +117,10 @@
 		<?= $this->Form->end() ?>
 		</div>
 		<div class="col-md-6">
+		<?php $page_no=$this->Paginator->current('SaleTaxes'); $page_no=($page_no-1)*20; ?>
 			<div class="portlet-body">
 			<div class="table-scrollable">
+			
 			<table class="table table-hover">
 				 <thead>
 					<tr>
@@ -134,7 +136,7 @@
 					<tr>
 						<?php if($saleTax->freeze==1) { $saletax ="Yes"; } else 
 							{ $saletax ="No"; } ?>
-						<td><?= h($i) ?></td>
+						<td><?= h(++$page_no) ?></td>
 						<td><?php echo $saleTax->tax_figure.'('.$saleTax->invoice_description.')';?></td>
 						<td><?php echo $saletax; ?></td>
 						<td class="actions">
@@ -157,13 +159,13 @@
 			</table>
 			</div>
 			<div class="paginator">
-				<ul class="pagination">
-					<?= $this->Paginator->prev('<') ?>
-					<?= $this->Paginator->numbers() ?>
-					<?= $this->Paginator->next('>') ?>
-				</ul>
-				<p><?= $this->Paginator->counter() ?></p>
-			</div>
+					<ul class="pagination">
+						<?= $this->Paginator->prev('< ' . __('previous')) ?>
+						<?= $this->Paginator->numbers() ?>
+						<?= $this->Paginator->next(__('next') . ' >') ?>
+					</ul>
+					<p><?= $this->Paginator->counter() ?></p>
+				</div>
 			</div>
 		</div>
 		<!-- END FORM-->

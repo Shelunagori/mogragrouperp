@@ -38,14 +38,12 @@ $html = '
 		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: -1px;
 	}
 	.show td p{
-			margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
+			margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;
 	}
 	.topdata p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
 	}
-	.addressshw p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
-	}
+	
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
 	}
@@ -139,18 +137,21 @@ $html = '
 						<tr>
 							<td width="50%" valign="top" text-align="right" >
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
-								<div style="height:5px;"></div><span class="addressshw">
+								
 								'. $this->Text->autoParagraph(h($invoice->customer_address));
+								$html.='<span> State : '. h($invoice->customer->district->state->name) . '</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+								$html.='<span> State Code : '. h(str_pad($invoice->customer->district->state->state_code, 2, '0', STR_PAD_LEFT)) . '</span><br/>';
                                 if(!empty($invoice->customer->gst_no))
 								{
-									$html.='</span><span>GST  : '. h($invoice->customer->gst_no).  '</span>';
+									$html.='<span>GST  : '. h($invoice->customer->gst_no).  '</span>&nbsp;&nbsp;&nbsp;';
 								}
-								if(!empty($invoice->customer->pan_no))
-								{	
-									$html.='<span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>PAN : '. h($invoice->customer->pan_no) .'</span><br/>';
+								 if(!empty($invoice->customer->pan_no))
+								{
+									$html.='<span> PAN : '. h($invoice->customer->pan_no) . '</span><br/>';
 								}
 								
-							'</td>
+								
+							$html.=' </td>
 							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
 								<table width="100%">
 									<tr>

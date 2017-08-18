@@ -143,7 +143,7 @@ $html.='
 		<td align="right" valign="top" style="padding-top:10px;">'. $this->Number->format($salesOrderRows->rate,[ 'places' => 2]) .'</td>
 		<td align="right" valign="top"  style="padding-top:10px;">'. $this->Number->format($salesOrderRows->amount,[ 'places' => 2]) .'</td>
 		<td align="center" valign="top" style="padding-top:10px;">'. h($salesOrderRows->excise_duty) .'</td>
-		<td align="center" valign="top" style="padding-top:10px;">'. $this->Number->format($salesOrderRows->sale_tax->tax_figure,[ 'places' => 2]) .'</td>
+		<td align="center" valign="top" style="padding-top:10px;">'. $salesOrderRows->sale_tax->tax_figure.'('.$salesOrderRows->sale_tax->invoice_description.')' .'</td>
 	</tr>';
 	if(!empty($salesOrderRows->description)){
 		$html.='

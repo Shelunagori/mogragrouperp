@@ -251,7 +251,7 @@ class CustomersController extends AppController
 		$defaultAddress = $this->Customers->find()->contain(['Districts'])->where(['Customers.id' => $id]);
 		foreach($defaultAddress as $district)
 		{
-			if($district->district->state=='Rajasthan')
+			if($district->district->state_id=='8')
 			{
 				echo "Rajasthan";
 			}

@@ -182,7 +182,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			  $tr2_colspan=15;
 			  $tr3_colspan=10; 
 			  $tr4_colspan=7; ?>
-	<?php if($sales_order->customer->district->state!="Rajasthan"){
+	<?php if($sales_order->customer->district->state_id!="8"){
 		$gst_hide="display:none;" ;
 		$tr2_colspan=12;
 		 $tr3_colspan=8; 
@@ -741,7 +741,7 @@ $(document).ready(function() {
 		}
 		
 		
-	<?php if($sales_order->customer->district->state!="Rajasthan"){ ?>
+	<?php if($sales_order->customer->district->state_id!="8"){ ?>
 			$('.fright_amount').rules("add", "required");
 			$('.fright_igst_percent').rules("add", "required");
 			

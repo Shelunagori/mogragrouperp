@@ -18,7 +18,7 @@
 					<div class="col-md-9">
 						<div class="input-icon right">
 							<i class="fa"></i>
-							 <?php echo $this->Form->input('state', ['label' => false,'class' => 'form-control firstupercase']); ?>
+							 <?php echo $this->Form->input('state_id', ['empty'=>'---Select---','options'=>$states,'label' => false,'class' => 'form-control select2me']); ?>
 						</div>
 					</div>
 				</div>
@@ -66,10 +66,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php $i=0; foreach ($listdistricts as $district): $i++; ?>
+					<?php $i=0; foreach ($listdistricts as $district): $i++;?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>
-						<td><?= h($district->state) ?></td>
+						<td><?php echo ucwords($district->state->name) ?></td>
 						<td><?= h($district->district) ?></td>
 						<td class="actions">
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $district->id],array('escape'=>false,'class'=>'btn btn-xs blue')); ?>

@@ -1099,7 +1099,7 @@ $(document).ready(function() {
 		url=url+'/'+customer_id,
 		$.ajax({
 			url: url,
-		}).done(function(response) {
+		}).done(function(response) {alert(response);
 			if(response=="Rajasthan")
 			{ 
 				$('.igst_display').css("display", "none");

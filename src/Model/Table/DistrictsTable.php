@@ -34,6 +34,7 @@ class DistrictsTable extends Table
         $this->displayField('district');
         $this->primaryKey('id');
 		$this->belongsTo('Customers');
+		$this->belongsTo('States');
     }
 
     /**
@@ -49,8 +50,8 @@ class DistrictsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('state', 'create')
-            ->notEmpty('state');
+            ->requirePresence('state_id', 'create')
+            ->notEmpty('state_id');
 
         $validator
             ->requirePresence('district', 'create')

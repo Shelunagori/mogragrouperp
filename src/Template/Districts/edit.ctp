@@ -15,7 +15,7 @@
 					<div class="col-md-4">
 						<div class="input-icon right">
 							<i class="fa"></i>
-							 <?php echo $this->Form->input('state', ['label' => false,'class' => 'form-control']); ?>
+							 <?php echo $this->Form->input('state_id', ['empty'=>'---Select---','options'=>$states,'label' => false,'class' => 'form-control']); ?>
 						</div>
 					</div>
 				</div>

@@ -77,7 +77,7 @@ class DistrictsController extends AppController
 		$customer_district=$this->request->query('customer_district');
 		$this->set(compact('customer_state','customer_district'));
 		if(!empty($customer_state)){
-			$where['state LIKE']='%'.$customer_state.'%';
+			$where['States.name LIKE']='%'.$customer_state.'%';
 		}
 		if(!empty($customer_district)){
 			$where['district LIKE']='%'.$customer_district.'%';
@@ -91,9 +91,9 @@ class DistrictsController extends AppController
 				//]));
      //  }
 	   
-	    $listdistricts = $this->paginate($this->Districts->find()->where($where)->order(['Districts.state' => 'ASC']));
-		
-        $this->set(compact('alldistricts','listdistricts'));
+	    $listdistricts = $this->paginate($this->Districts->find()->contain(['States'])->where($where)->order(['States.name' => 'ASC']));
+		$states = $this->Districts->States->find('list');
+        $this->set(compact('alldistricts','listdistricts','states'));
         $this->set('_serialize', ['alldistricts']);
 		$this->set('_serialize', ['listdistricts']);
 		
@@ -123,7 +123,8 @@ class DistrictsController extends AppController
                 $this->Flash->error(__('The district could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('district'));
+		$states = $this->Districts->States->find('list');
+        $this->set(compact('district','states'));
         $this->set('_serialize', ['district']);
     }
 
