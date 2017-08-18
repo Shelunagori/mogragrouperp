@@ -546,7 +546,6 @@ $(document).ready(function() {
 			var amount_after_ex=amount_after_pnf*(100+ex)/100;
 			total_ex=total_ex+(amount_after_pnf*ex/100);
 			row_total=row_total+(amount_after_pnf*ex/100);
-			
 			var total_for_rate=amount_after_ex;
 			
 			var vat_cst=$('select[name="purchase_ledger_account"]').val();
@@ -591,7 +590,9 @@ $(document).ready(function() {
 			
 			var other=parseFloat($(this).find("td:nth-child(11) input").val());
 			if(!other){ other=0; }
+			
 			var amount_after_other=amount_after_cst+misc;
+			other=parseFloat(other.toFixed(2));
 			row_total=row_total+other;
 			total_for_rate=total_for_rate+other;
 			total_other=total_other+other;
@@ -599,7 +600,8 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(12) input").val(row_total.toFixed(2));
 			$(this).find("td:nth-child(13) input").val((total_for_rate/qty).toFixed(2));
 			
-			
+			row_total=parseFloat(row_total.toFixed(2));
+			//row_total=row_total.toFixed(2);
 			total_row_amount=total_row_amount+row_total;
 			
 			
