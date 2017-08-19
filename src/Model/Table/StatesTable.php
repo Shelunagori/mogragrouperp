@@ -33,6 +33,10 @@ class StatesTable extends Table
         $this->table('states');
         $this->displayField('name');
         $this->primaryKey('id');
+		
+		$this->hasMany('Districts', [
+            'foreignKey' => 'state_id'
+        ]);
     }
 
     /**

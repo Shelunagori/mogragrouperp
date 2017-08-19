@@ -33,8 +33,13 @@ class DistrictsTable extends Table
         $this->table('districts');
         $this->displayField('district');
         $this->primaryKey('id');
-		$this->belongsTo('Customers');
-		$this->belongsTo('States');
+		$this->hasMany('Customers', [
+            'foreignKey' => 'district_id'
+        ]);
+		$this->belongsTo('States', [
+            'foreignKey' => 'state_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
