@@ -2341,14 +2341,19 @@ class InvoicesController extends AppController
     {
 		$this->viewBuilder()->layout('');
 		
-        $invoice = $this->Invoices->get($id, [
-		'contain' => ['Customers'=>['Districts'=>['States']],
-					'Employees','Transporters','Creator'=>['Designations'],
-					'Companies'=> ['CompanyBanks'=> function ($q) {
-						return $q
-						->where(['CompanyBanks.default_bank' => 1]);}], 
-					'InvoiceRows' => ['Items'=>['Units']]]
-			]);
+		 $invoice = $this->Invoices->get($id, [
+			'contain' => ['Customers'=>['Districts'=>['States']],
+							'Employees',
+							'Transporters',
+							'Creator'=>['Designations'],
+							'Companies'=> ['CompanyBanks'=> function ($q) {
+								return $q
+								->where(['CompanyBanks.default_bank' => 1]);
+								}],
+							'InvoiceRows' => ['Items'=>['Units']]
+						]
+		]);
+		
 		
 		$cgst_per=[];
 		$sgst_per=[];
