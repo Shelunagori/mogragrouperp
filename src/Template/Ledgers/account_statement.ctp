@@ -1,4 +1,4 @@
-<?php 
+<?php //pr($Ledgers->toArray()); exit;
 $url_excel="/?".$url;
 
 	if(empty(@$transaction_from_date)){
@@ -137,6 +137,9 @@ $url_excel="/?".$url;
 						<th>Party</th>
 						<th>TIN</th>
 						<th>VAT</th>
+						<th>CGST</th>
+						<th>SGST</th>
+						<th>IGST</th>
 						<th>Total</th>
 						<th style="text-align:right;">Dr</th>
 						<th style="text-align:right;">Cr</th>
@@ -146,6 +149,9 @@ $url_excel="/?".$url;
 				<?php  $total_balance_acc=0; $total_debit=0; $total_credit=0;
 				foreach($Ledgers as $ledger): 
 				$url_path="";
+				$cgst_amt=0;
+				$sgst_amt=0;
+				$igst_amt=0;
 				if($ledger->voucher_source=="Journal Voucher"){
 					$Receipt=$url_link[$ledger->id];
 					//pr($Receipt->voucher_no); 
@@ -171,17 +177,47 @@ $url_excel="/?".$url;
 					$url_path="/receipts/view/".$ledger->voucher_id;
 				}else if($ledger->voucher_source=="Invoice"){ 
 					$invoice=$url_link[$ledger->id];
-					//pr($invoice->invoice_type); exit;
 					$voucher_no=h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4));
 					if($invoice->invoice_type=="GST"){
 					$url_path="/invoices/gst-confirm/".$ledger->voucher_id;	
 					}else{
 					$url_path="/invoices/confirm/".$ledger->voucher_id;
 					}
+					if($invoice->invoice_type=="GST"){
+						$cgst_amt=$invoice->total_cgst_amount;
+						$sgst_amt=$invoice->total_sgst_amount;
+						$igst_amt=$invoice->total_igst_amount;
+						
+					}else{
+						$cgst_amt="-";
+						$sgst_amt="-";
+						$igst_amt="-";
+					}
+					
+					
 				}else if($ledger->voucher_source=="Invoice Booking"){
-					$invoice=$url_link[$ledger->id];
-					$voucher_no=h(($invoice->ib1.'/IB-'.str_pad($invoice->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoice->ib3.'/'.$invoice->ib4));
+					$ibs=$url_link[$ledger->id];
+					//pr($ibs); exit;
+					$voucher_no=h(($ibs->ib1.'/IB-'.str_pad($ibs->ib2, 3, '0', STR_PAD_LEFT).'/'.$ibs->ib3.'/'.$ibs->ib4));
+					if($ibs->gst=="yes"){
+					$url_path="/invoice-bookings/gst-invoice-booking-view/".$ledger->voucher_id;	
+					}else{
 					$url_path="/invoice-bookings/view/".$ledger->voucher_id;
+					}
+					
+					//$url_path="/invoice-bookings/view/".$ledger->voucher_id;
+					if($ibs->gst=="yes"){ 
+						foreach($ibs->invoice_booking_rows as $ibr)
+						{ 
+							$cgst_amt=$cgst_amt+$ibr->cgst;
+							$sgst_amt=$sgst_amt+$ibr->sgst;
+							$igst_amt=$igst_amt+$ibr->igst;
+						}
+					}else{
+							$cgst_amt="-";
+							$sgst_amt="-";
+							$igst_amt="-";
+					}
 				}else if($ledger->voucher_source=="Non Print Payment Voucher"){
 					$Receipt=$url_link[$ledger->id];
 					$voucher_no=h(str_pad($Receipt->voucher_no,4,'0',STR_PAD_LEFT));
@@ -241,6 +277,9 @@ $url_excel="/?".$url;
 									}
 							 } ?>
 						</td>
+						<td align="right"><?= $this->Number->format($cgst_amt,[ 'places' => 2]); ?></td>
+						<td align="right"><?= $this->Number->format($sgst_amt,[ 'places' => 2]); ?></td>
+						<td align="right"><?= $this->Number->format($igst_amt,[ 'places' => 2]); ?></td>
 						<?php if($ledger->voucher_source=="Invoice Booking"){ ?>
 						<td align="right"><?= $this->Number->format($url_link[$ledger->id]->total,[ 'places' => 2]); ?></td>
 						 <?php }else{ ?>
@@ -254,7 +293,7 @@ $url_excel="/?".$url;
 				</tr>
 				<?php } endforeach; ?>
 				<tr>
-					<td colspan="7" align="right">Total</td>
+					<td colspan="10" align="right">Total</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['debit'],2,'.',',') ;?> Dr</td>
 					<td align="right" ><?= number_format(@$opening_balance_total['credit'],2,'.',',')?> Cr</td>
 					

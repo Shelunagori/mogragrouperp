@@ -31,9 +31,11 @@
 		<!-- BEGIN FORM-->
 		<div class="row ">
 		
-		<div class="col-md-12">
+		<div style="text-align:center" class="col-md-12">
+			<span  class="caption-subject font-blue-steel uppercase">Sales Invoice</span>
+		</div>
 		
-		 
+		<div class="col-md-12">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
@@ -123,7 +125,10 @@
 				</tbody>
 				</table>
 				
-				
+		<div style="text-align:center" class="col-md-12">
+			<span  class="caption-subject font-blue-steel uppercase">Sales Invoice</span>
+		</div>
+		
 		<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
@@ -141,7 +146,7 @@
 					</tr>
 				</thead>
 				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIgst12=0; $salesIgst18=0; $salesIgst28=0; 
-				foreach ($SalesOrders as $SalesOrder): pr($SalesOrder->sales_order_rows[0]); exit;  ?>
+				foreach ($SalesOrders as $SalesOrder):   ?>
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
