@@ -688,6 +688,9 @@ select
 									<li><?php $today =date('d-m-Y');
 										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 									</li>
+									<li><?php $today =date('d-m-Y');
+										echo $this->Html->link('GST Sales Man Report',array('controller'=>'Invoices','action'=>'salesManReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+									</li>
 							</ul>
 						</li>
 						

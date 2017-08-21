@@ -2421,6 +2421,10 @@ class InvoicesController extends AppController
     }
 	
 	public function gstSalesReport(){
+		exit;
+	}
+	
+	public function salesManReport(){
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
