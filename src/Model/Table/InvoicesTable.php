@@ -105,6 +105,7 @@ class InvoicesTable extends Table
 		$this->belongsTo('ReceiptVouchers');
 		$this->belongsTo('Ledgers');
 		$this->belongsTo('SaleReturns');
+		$this->belongsTo('InvoiceBookings');
 		
     }
 
