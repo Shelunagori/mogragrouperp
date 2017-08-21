@@ -31,13 +31,15 @@
 		<!-- BEGIN FORM-->
 		<div class="row ">
 		
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Sales Invoice</span>
-		</div>
 		
 		<div class="col-md-12">
-			<table class="table table-bordered table-striped table-hover">
+			<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Sales Invoice</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice No</th>
@@ -124,13 +126,14 @@
 				</tr>
 				</tbody>
 				</table>
-				
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Sales Invoice</span>
-		</div>
 		
-		<table class="table table-bordered table-striped table-hover">
+		<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Sales Order Booked</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Sales Order  No</th>
@@ -220,7 +223,138 @@
 				</tr>
 				</tbody>
 				</table>
+			<!--Opened Quaotation Report Start-->
+				
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<td colspan="8" align="center"  valign="top">
+								<h4 class="caption-subject font-black-steel uppercase">Open Quotations</h4>
+							</td>
+						</tr>
+						<tr>
+							<th>Sr.No.</th>
+							<th>Quotation  No</th>
+							<th>Date</th>
+							<th>Customer</th>
+							<th>Brand</th>
+							<th>Item</th>
+							<th style="text-align:right;">Value</th>
+							<th>Expected Finalisation Date</th>
+						</tr>
+					</thead>
+					<?php $i=1; $total=0;
+					foreach ($OpenQuotations as $openquotation):    ?>
+					<tbody>
+						<tr>
+							<td>
+								<?php echo $i; ?>
+							</td>
+							<td>
+								<?php echo $this->Html->link( $openquotation->qt1.'/QT-'.str_pad($openquotation->qt2, 3, '0', STR_PAD_LEFT).'/'.$openquotation->qt3.'/'.$openquotation->qt4,[
+								'controller'=>'Quotations','action' => 'Confirm',$openquotation->id],array('target'=>'_blank')); ?>
+							</td>
+							<td>
+								<?php echo date("d-m-Y",strtotime($openquotation->created_on)); ?>
+							</td>
+							<td>
+								<?php echo @$openquotation->customer->customer_name.'('.@$openquotation->customer->alias.')'?>
+							</td>
+							<td>
+								<?php  echo @$openquotation->quotation_rows[0]->item->item_category->name; ?>
+							</td>
+							<td>
+								<?php  echo @$openquotation->quotation_rows[0]->item->name; ?>
+							</td>
+							<td align="right">
+								<?php  echo $this->Number->format(@$openquotation->total,['places'=>2]);
+											$total=$total+($openquotation->total);	?>
+							</td>
+							<td><?php echo date("d-m-Y",strtotime(@$openquotation->finalisation_date)); ?></td>
+							
+						</tr>
+					<?php $i++; endforeach; ?>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td align="right"><b>Total</b></td>
+						<td align="right"><b><?php echo $this->Number->format($total,['places'=>2]); ?></b></td>
+						<td align="right"></td>
+					</tr>
+					</tbody>
+				</table>
 			
+			<!--Opened Quaotation Report End-->	
+				
+				
+			<!--Closed Quaotation Report Start-->
+						
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<td colspan="8" align="center"  valign="top">
+								<h4 class="caption-subject font-black-steel uppercase">Closed Quotations</h4>
+							</td>
+						</tr>	
+						<tr>
+							<th>Sr.No.</th>
+							<th>Quotation  No</th>
+							<th>Date</th>
+							<th>Customer</th>
+							<th>Brand</th>
+							<th>Item</th>
+							<th style="text-align:right;">Value</th>
+							<th>Closure reason</th>
+						</tr>
+					</thead>
+					<?php $i=1; $total=0;
+					foreach ($ClosedQuotations as $closedquotation):    ?>
+					<tbody>
+						<tr>
+							<td>
+								<?php echo $i; ?>
+							</td>
+							<td>
+								<?php echo $this->Html->link( $closedquotation->qt1.'/QT-'.str_pad($closedquotation->qt2, 3, '0', STR_PAD_LEFT).'/'.$closedquotation->qt3.'/'.$closedquotation->qt4,[
+								'controller'=>'Quotations','action' => 'Confirm',$closedquotation->id],array('target'=>'_blank')); ?>
+							</td>
+							<td>
+								<?php echo date("d-m-Y",strtotime($closedquotation->created_on)); ?>
+							</td>
+							<td>
+								<?php echo @$closedquotation->customer->customer_name.'('.@$closedquotation->customer->alias.')'?>
+							</td>
+							<td>
+								<?php  echo @$closedquotation->quotation_rows[0]->item->item_category->name; ?>
+							</td>
+							<td>
+								<?php  echo @$closedquotation->quotation_rows[0]->item->name; ?>
+							</td>
+							<td align="right">
+								<?php  echo $this->Number->format(@$closedquotation->total,['places'=>2]);
+											$total=$total+($closedquotation->total);	?>
+							</td>
+							<td><?php if(!empty($closedquotation->reason)){ echo @$closedquotation->reason; }else{ echo "-"; } ?></td>
+							
+						</tr>
+					<?php $i++; endforeach; ?>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td align="right"><b>Total</b></td>
+						<td align="right"><b><?php echo $this->Number->format($total,['places'=>2]); ?></b></td>
+						<td align="right"></td>
+					</tr>
+					</tbody>
+				</table>
+					
+			<!--Closed Quaotation Report End-->
 				
 				
 				

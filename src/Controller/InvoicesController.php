@@ -2456,8 +2456,19 @@ class InvoicesController extends AppController
 		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
 		
 		$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where(['SalesOrders.company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'gst'=>'yes']);
+		
+		//Opened Quotation code start here 
+			$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+								  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+								  ->order(['Quotations.id' => 'DESC'])
+								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,]);
+		//closed Quotation code start here 
+			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									->order(['Quotations.id' => 'DESC'])
+									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,]);
 		//pr($SalesOrders->toArray()); exit;
-		$this->set(compact('invoices','SalesMans','SalesOrders'));
+		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations'));
 	}
 	
 	public function itemSerialMismatch()

@@ -157,7 +157,7 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;" width="5%">Invoice No.</td>
 										<td  valign="top" width="4%">:</td>
-										<td valign="top" >'. h(($invoice->in1." / IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3." / ".$invoice->in4)) .'</td>
+										<td valign="top" >'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">Date</td>
