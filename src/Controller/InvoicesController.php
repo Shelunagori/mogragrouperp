@@ -2454,19 +2454,19 @@ class InvoicesController extends AppController
 		); 
 				//pr($SalesMans); exit;
 		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
-		
+		//pr($invoices->toArray());exit;
 		$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where(['SalesOrders.company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'gst'=>'yes']);
-		
+	//	pr($SalesOrders->toArray());exit;
 		//Opened Quotation code start here 
 			$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
 								  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
-								  ->order(['Quotations.id' => 'DESC'])
-								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,]);
+								  ->order(['Quotations.created_on' => 'DESC'])
+								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 		//closed Quotation code start here 
 			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
 									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
-									->order(['Quotations.id' => 'DESC'])
-									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,]);
+									->order(['Quotations.created_on' => 'DESC'])
+									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To]);
 		//pr($SalesOrders->toArray()); exit;
 		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations'));
 	}

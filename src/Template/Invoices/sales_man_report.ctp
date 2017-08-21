@@ -1,3 +1,4 @@
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -66,48 +67,48 @@
 						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==8 && $invoice->invoice_rows[0]['sgst_percentage']==11){
-										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
-										$salesGst12=$salesGst12+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
+										echo $invoice->grand_total;
+										$salesGst12=$salesGst12+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==9 && $invoice->invoice_rows[0]['sgst_percentage']==12){
-										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
-										$salesGst18=$salesGst18+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
+										echo $invoice->grand_total;
+										$salesGst18=$salesGst18+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==10 && $invoice->invoice_rows[0]['sgst_percentage']==13){
-										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
-										$salesGst28=$salesGst28+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
+										echo $invoice->grand_total;
+										$salesGst28=$salesGst28+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==14){
-										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
-										$salesIgst12=$salesIgst12+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+										echo $invoice->grand_total;
+										$salesIgst12=$salesIgst12+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==15){
-										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
-										$salesIgst18=$salesIgst18+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+										echo $invoice->grand_total;
+										$salesIgst18=$salesIgst18+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($invoice->invoice_rows[0]['igst_percentage']==16){
-										echo $invoice->total_igst_amount+$invoice->fright_igst_amount;
-										$salesIgst28=$salesIgst28+($invoice->total_igst_amount+$invoice->fright_igst_amount);
+										echo $invoice->grand_total;
+										$salesIgst28=$salesIgst28+($invoice->grand_total);
 								}else{
 									echo "-";
 								} ?>
@@ -161,48 +162,48 @@
 						<td><?php echo $SalesOrder->customer->customer_name.'('.$SalesOrder->customer->alias.')'?></td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==8 && $SalesOrder->sales_order_rows[0]['sgst_per']==11){
-										echo $SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value;
-										$salesGst12=$salesGst12+($SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value);
+										echo $SalesOrder->total;
+										$salesGst12=$salesGst12+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==9 && $SalesOrder->sales_order_rows[0]['sgst_per']==12){ 
-										echo $SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value;
-										$salesGst18=$salesGst18+($SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value);
+										echo $SalesOrder->total;
+										$salesGst18=$salesGst18+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==10 && $SalesOrder->sales_order_rows[0]['sgst_per']==13){
-										echo $SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value;
-										$salesGst28=$salesGst28+($SalesOrder->total_cgst_value+$SalesOrder->total_sgst_value);
+										echo $SalesOrder->total;
+										$salesGst28=$salesGst28+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==14){
-										echo $SalesOrder->total_igst_value;
-										$salesIgst12=$salesIgst12+($SalesOrder->total_igst_value);
+										echo $SalesOrder->total;
+										$salesIgst12=$salesIgst12+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==15){
-										echo $SalesOrder->total_igst_value;
-										$salesIgst18=$salesIgst18+($SalesOrder->total_igst_value);
+										echo $SalesOrder->total;
+										$salesIgst18=$salesIgst18+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
 							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==16){
-										echo $SalesOrder->total_igst_value;
-										$salesIgst28=$salesIgst28+($SalesOrder->total_igst_value);
+										echo $SalesOrder->total;
+										$salesIgst28=$salesIgst28+($SalesOrder->total);
 								}else{
 									echo "-";
 								} ?>
