@@ -515,9 +515,11 @@ $(document).ready(function() {
 			row_total=row_total+misc;
 			total_amount=total_amount+amount_after_misc;
 			
-			$(this).find("td:nth-child(6) input").val(floorFigure(amount_after_misc,2));
+			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
 		
 			var discount=parseFloat($(this).find("td:nth-child(7) input").val());
+			//var discount=(discount.toFixed(2));
+			
 			if(!discount){ discount=0; }
 			if($(this).find('td:nth-child(7) input[type="checkbox"]').is(':checked')==true){
 				var amount_after_discount=amount_after_misc*(100-discount)/100;
@@ -592,13 +594,13 @@ $(document).ready(function() {
 			if(!other){ other=0; }
 			
 			var amount_after_other=amount_after_cst+misc;
-			other=parseFloat(floorFigure(other,2));
+			other=parseFloat(other.toFixed(2));
 			row_total=row_total+other;
 			total_for_rate=total_for_rate+other;
 			total_other=total_other+other;
 			//alert(row_total);
-			$(this).find("td:nth-child(12) input").val(floorFigure(row_total,2));
-			$(this).find("td:nth-child(13) input").val(floorFigure((total_for_rate/qty),2));
+			$(this).find("td:nth-child(12) input").val(row_total.toFixed(2));
+			$(this).find("td:nth-child(13) input").val((total_for_rate/qty).toFixed(2));
 			
 			row_total=parseFloat(row_total.toFixed(2));
 			//row_total=row_total.toFixed(2);
@@ -607,14 +609,14 @@ $(document).ready(function() {
 			
 		});
 		//total_discount=parseFloat(total_discount.toFixed(2));
-		$('input[name="total_amount"]').val(floorFigure(total_amount,2));
-		$('input[name="total_discount"]').val(floorFigure(total_discount,2));
-		$('input[name="total_pnf"]').val(floorFigure(total_pnf,2));
-		$('input[name="total_ex"]').val(floorFigure(total_ex,2));
-		$('input[name="total_saletax"]').val(floorFigure(total_cst,2));
-		$('input[name="total_other_charges"]').val(floorFigure(total_other,2));
+		$('input[name="total_amount"]').val(total_amount.toFixed(2));
+		$('input[name="total_discount"]').val(total_discount.toFixed(2));
+		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
+		$('input[name="total_ex"]').val(total_ex.toFixed(2));
+		$('input[name="total_saletax"]').val(total_cst.toFixed(2));
+		$('input[name="total_other_charges"]').val(total_other.toFixed(2));
 		var total_data = total_amount-total_discount+total_pnf+total_ex+total_cst+total_other;
-		$('input[name="total"]').val(floorFigure(total_data,2));
+		$('input[name="total"]').val(total_row_amount.toFixed(2));
 	}
    
 	  function truncateToDecimals(num, dec = 2) {
