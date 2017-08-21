@@ -2421,7 +2421,45 @@ class InvoicesController extends AppController
     }
 	
 	public function gstSalesReport(){
-		exit;
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$salesman_id=$this->request->query('salesman_name');
+		
+		$where=[];
+		$where1=[];
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['Invoices.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['Invoices.date_created <=']=$To;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where1['InvoiceBookings.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where1['InvoiceBookings.created_on <=']=$To;
+		}
+		
+		$this->set(compact('From','To','salesman_id'));
+	
+		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+		
+		$interStateInvoice = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+		
+		$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
+											return $q->where(['InvoiceBookingRows.igst = '=>0]);
+		}])->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+		//pr($invoiceBooking->toArray()); exit;
+		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings'));
 	}
 	
 	public function salesManReport(){
