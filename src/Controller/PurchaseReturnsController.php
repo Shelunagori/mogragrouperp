@@ -404,7 +404,13 @@ class PurchaseReturnsController extends AppController
 				$this->PurchaseReturns->ItemLedgers->deleteAll(['source_id' => $purchaseReturn->id, 'source_model' => 'Purchase Return','company_id'=>$st_company_id]);
 			
 				foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
+					
+					pr(['item_id' => $purchase_return_row->item_id,'in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id]); exit;
+					
+					
+					
 					$results=$this->PurchaseReturns->ItemLedgers->find()->where(['ItemLedgers.item_id' => $purchase_return_row->item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id])->first();
+					
 					$itemLedger = $this->PurchaseReturns->ItemLedgers->newEntity();
 					$itemLedger->item_id = $purchase_return_row->item_id;
 					$itemLedger->quantity = $purchase_return_row->quantity;
