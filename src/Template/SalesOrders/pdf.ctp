@@ -27,19 +27,7 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
-	}
-	.showdata p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;
-	}
-	.showdatas p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:7px;
-	}
-	.addressshw p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
-	}
-	.amountdata p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 16px !important;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 1;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -79,8 +67,8 @@ $html = '
 				</td>
 				<td align="right" width="35%" style="font-size: 12px;">
 				<span>'. $this->Text->autoParagraph(h($salesOrder->company->address)) .'</span>
-				<span><img style="margin-top:4px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px"/> '. h($salesOrder->company->mobile_no).'</span> | 
-				<span><img style="margin-top:3px !important;" src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px"/> '. h($salesOrder->company->email).'</span>
+				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/telephone.gif height="11px" style="height:11px;margin-top:5px;"/> '. h($salesOrder->company->mobile_no).'</span> | 
+				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($salesOrder->company->email).'</span>
 				</td>
 			</tr>
 			<!--<tr>
@@ -90,39 +78,37 @@ $html = '
 			</tr>-->
 		</table>
   </div>
- 
+  <div id="footer">
+    <p class="page">Page : </p>
+  </div>
 
   <div id="content"> ';
   
 $html.='
-	<table width="100%" class="table_rows itemrow" style="margin-top: -22px;">
+	<table width="100%">
 		<tr>
-			<td colspan=6 align="">';
-				$html.='
-					<table  valign="center" width="100%" style="margin-top: 0px;" class="table2">
-						<tr>
-							<td width="50%" style="font-size:12px;">
-								<span><b>'. h(($salesOrder->customer->customer_name)) .'</b></span><br/>
-								<div style="height:5px;" ></div><span class="addressshw">
-								'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'<br/>
-								<span>Customer P.O. No. '. h($salesOrder->customer_po_no).' dated '. h(date("d-m-Y",strtotime($salesOrder->po_date))).'</span><br/><br/>
-							</td>
-							<td width="47%" valign="top" align="right">
-								<table width="100%">
-									<tr>
-										<td style="font-size:16px;" width="25%" valign="top" style="vertical-align: top;">Sales Order No</td>
-										<td style="font-size:16px;" width="5%" valign="top">:</td>
-										<td style="font-size:16px;" valign="top">'. h(($salesOrder->so1."/SO-".str_pad($salesOrder->so2, 3, "0", STR_PAD_LEFT)."/".$salesOrder->so3."/".$salesOrder->so4)) .'</td>
-									</tr>
-									<tr>
-										<td style="font-size:16px;" valign="top">Date</td>
-										<td style="font-size:16px;" valign="top">:</td>
-										<td style="font-size:16px;" valign="top">'. h(date("d-m-Y",strtotime($salesOrder->created_on))) .'</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>';
+			<td width="53%">
+				<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
+				'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'<br/>
+				<span>Customer P.O. No. '. h($salesOrder->customer_po_no).' dated '. h(date("d-m-Y",strtotime($salesOrder->po_date))).'</span><br/><br/>
+			</td>
+			<td width="47%" valign="top" align="right">
+				<table>
+					<tr>
+						<td style="width:110px;" >Sales Order No</td>
+						<td style="width:5px;">:</td>
+						<td>'. h(($salesOrder->so1."/SO-".str_pad($salesOrder->so2, 3, "0", STR_PAD_LEFT)."/".$salesOrder->so3."/".$salesOrder->so4)) .'</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td width="2" align="center">:</td>
+						<td>'. h(date("d-m-Y",strtotime($salesOrder->created_on))) .'</td>
+					</tr>
+					
+				</table>
+			</td>
+		</tr>
+	</table>';
  
 $html.='<br/>
 <table width="100%" class="table_rows">
