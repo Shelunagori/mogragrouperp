@@ -2427,9 +2427,14 @@ class InvoicesController extends AppController
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		$salesman_id=$this->request->query('salesman_name');
+		$item_name=$this->request->query('item_name');
+		$item_category=$this->request->query('item_category');
+		$item_group=$this->request->query('item_group_id');
+		$item_sub_group=$this->request->query('item_sub_group_id');
 		
 		$where=[];
 		$where1=[];
+		$where2=[];
 		
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
@@ -2449,17 +2454,91 @@ class InvoicesController extends AppController
 			$where1['InvoiceBookings.created_on <=']=$To;
 		}
 		
+		if(!empty($item_name)){ 
+			//$where2['Item_id']=$item_name;
+			//pr($item_name); exit;
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'])
+						->matching(
+							'InvoiceRows.Items', function ($q) use($item_name) { 
+								return $q->where(['InvoiceRows.item_id' => $item_name]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+				
+		}
+		else if(!empty($item_category) && empty($item_group)){  exit;
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'=>['Items']])
+						->matching(
+							'InvoiceRows.Items', function ($q) use($item_category) { 
+								return $q->where(['Items.item_category_id' => $item_category]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+				
+		}
+		else if(!empty($item_group) && empty($item_sub_group) && empty($item_category)){ 
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'=>['Items']])
+						->matching(
+							'InvoiceRows.Items', function ($q) use($item_group) { 
+								return $q->where(['Items.item_group_id' => $item_group]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+				
+		}
+		else if(!empty($item_sub_group && empty($item_group) && empty($item_category))){
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'=>['Items']])
+						->matching(
+							'InvoiceRows.Items', function ($q) use($item_category) { 
+								return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+		}else if($item_category >= 0 && $item_group >= 0 ){ exit;
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'=>['Items']])
+						->matching(
+							'InvoiceRows.Items', function ($q) use($item_category) { 
+								return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+		}
+		
 		$this->set(compact('From','To','salesman_id'));
-	
-		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+		//pr($invoices->toArray()); exit;
+		
 		
 		$interStateInvoice = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 		
 		$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst = '=>0]);
 		}])->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
-		//pr($invoiceBooking->toArray()); exit;
-		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings'));
+		
+		$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
+											return $q->where(['InvoiceBookingRows.igst != '=>0]);
+		}])->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+		
+		$ItemCategories = $this->Invoices->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
+		$ItemGroups = $this->Invoices->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
+		$ItemSubGroups = $this->Invoices->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
+		$Items = $this->Invoices->Items->find('list')->order(['Items.name' => 'ASC']);
+		//pr($invoiceBookingsInterState->toArray()); exit;
+		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings','invoiceBookingsInterState','Items','ItemGroups','ItemCategories','ItemSubGroups'));
 	}
 	
 	public function salesManReport(){
