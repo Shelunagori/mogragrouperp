@@ -216,13 +216,17 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<td><a class="btn btn-xs btn-default addrow" href="#" role="button"><i class="fa fa-plus"></i> Add row</a></td>
 				<td id="receipt_amount" style="font-size: 14px;font-weight: bold;"></td>
 				<td></td>
+				
 				<td>
 					<?php if($chkdate == 'Not Found'){  ?>
 						<label class="btn btn-danger"> You are not in Current Financial Year </label>
 					<?php } else { ?>
+					<?php if(date("d-m-Y",strtotime($payment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($payment->transaction_date)) <= $end_date) { ?>
 					<button type="submit" class="btn btn-primary">EDIT PAYMENT VOUCHER</button>
-					<?php } ?>	
+					
+					<?php } } ?>	
 				</td>
+				
 				<td></td>
 			</tfoot>
 		</table>
