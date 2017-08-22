@@ -107,6 +107,7 @@ class AppController extends Controller
 				{
 					$closed_month[]=$financial_months->month;
 				}
+				//pr($closed_month); exit;
 			}
 			$this->set(compact('closed_month'));
 			

@@ -98,10 +98,6 @@ class LoginsController extends AppController
         }
 		$employees = $this->Logins->Employees->find('list');
 		
-		//exit;
-		/* $Logins = $this->paginate($this->Logins->Employees->find()->contain(['Employees'=>['EmployeeCompanies'=> function ($q) use ($st_company_id) {
-				return $q->where(['EmployeeCompanies.freeze'=>0,'EmployeeCompanies.company_id'=>$st_company_id]);
-				}]])); */
 		$Logins = $this->paginate($this->Logins->find()->contain(['Employees'])->matching(
 					'Employees.EmployeeCompanies', function ($q) use($st_company_id) {
 						return $q->where(['EmployeeCompanies.freeze'=>0,'EmployeeCompanies.company_id'=>$st_company_id]);
@@ -122,6 +118,7 @@ class LoginsController extends AppController
 		
 		if(!empty($company_id)){ 
 			$this->request->allowMethod(['post', 'delete']);
+			
 			$this->request->session()->write('st_company_id',$company_id);
 			
 			return $this->redirect(['controller'=>'FinancialYears','action' => 'selectCompanyYear']);

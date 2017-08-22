@@ -156,8 +156,6 @@ class PaymentsController extends AppController
         $payment = $this->Payments->get($id, [
             'contain' => ['BankCashes', 'Companies', 'PaymentRows' => ['ReceivedFroms'], 'Creator']
         ]);
-		
-		
 		$petty_cash_voucher_row_data=[];
 		$petty_cash_grn_data=[];
 		$petty_cash_invoice_data=[];
@@ -206,11 +204,12 @@ class PaymentsController extends AppController
     public function add()
     {
 		$this->viewBuilder()->layout('index_layout');
-		
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$st_year_id = $session->read('st_year_id');
+		//$closed_month = $session->read('closed_month');
+		//pr($closed_month); exit;
 		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
 
 		 $SessionCheckDate = $this->FinancialYears->get($st_year_id);
