@@ -15,38 +15,29 @@
 				<tbody>
 					<tr>
 						<td width="12%">
-							<label class="control-label">From </label>
 							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @date('d-m-Y', strtotime($From));  ?>"  data-date-format="dd-mm-yyyy">
 						</td>	
 						<td width="12%">
-							<label class="control-label">To </label>
 							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @date('d-m-Y', strtotime($To));  ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
 						
 						<td width="15%">
-								<label class="control-label">Items </label>
-								<?php echo $this->Form->input('item_name', ['empty'=>'--Select--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
+								<?php echo $this->Form->input('item_name', ['empty'=>'---Items---','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
 						</td>
 						<td width="15%">
-								<label class="control-label">Category </label>
-								<?php echo $this->Form->input('item_category', ['empty'=>'--Select--','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
+								<?php echo $this->Form->input('item_category', ['empty'=>'---Category---','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
 						</td>
 						<td width="15%">
-							<label class="control-label">Group</label>
 							<div id="item_group_div">
-							<?php echo $this->Form->input('item_group_id', ['empty'=>'--Select--','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+							<?php echo $this->Form->input('item_group_id', ['empty'=>'---Group---','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
 						</td>
 						<td width="15%">
-							<label class="control-label">Sub-Group</label>
 							<div id="item_sub_group_div">
-							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'--Select--','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'---Sub-Group---','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
 						</td>
 					
 						<td width="10%">
-							<label class="control-label"></label>
-							<div>
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -55,13 +46,15 @@
 		<!-- BEGIN FORM-->
 		<div class="row ">
 		
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Sales Invoice</span>
-		</div>
 		
 		<div class="col-md-12">
-			<table class="table table-bordered table-striped table-hover">
+			<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Sales Invoice</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice No</th>
@@ -151,12 +144,15 @@
 				</tbody>
 				</table>
 				
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Sales Inter State</span>
-		</div>
+		
 			
-			<table class="table table-bordered table-striped table-hover">
+			<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Sales Inter State</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice No</th>
@@ -246,12 +242,14 @@
 				</tbody>
 				</table>
 		
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Purchase</span>
-		</div>
-			
-			<table class="table table-bordered table-striped table-hover">
+		
+			<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Purchase</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice Booking No</th>
@@ -353,12 +351,15 @@
 				
 				</table>
 				
-		<div style="text-align:center" class="col-md-12">
-			<span  class="caption-subject font-blue-steel uppercase">Purchase Inter State</span>
-		</div>
+		
 			
-			<table class="table table-bordered table-striped table-hover">
+			<table class="table table-bordered table-condensed">
 				<thead>
+					<tr>
+						<td colspan="11" align="center"  valign="top">
+							<h4 class="caption-subject font-black-steel uppercase">Purchase Inter State</h4>
+						</td>
+					</tr>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice Booking No</th>

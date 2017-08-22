@@ -22,21 +22,21 @@
 							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @date('d-m-Y', strtotime($To));  ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
 						<td width="10%">
-								<?php echo $this->Form->input('item_name', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
+								<?php echo $this->Form->input('item_name', ['empty'=>'---Items---','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
 						</td>
 						<td width="10%">
-								<?php echo $this->Form->input('item_category', ['empty'=>'--Category--','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
+								<?php echo $this->Form->input('item_category', ['empty'=>'---Category---','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
 						</td>
 						<td width="10%">
 							<div id="item_group_div">
-							<?php echo $this->Form->input('item_group_id', ['empty'=>'--Group--','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+							<?php echo $this->Form->input('item_group_id', ['empty'=>'---Group---','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
 						</td>
 						<td width="10%">
 							<div id="item_sub_group_div">
-							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'--Sub-Group--','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'---Sub-Group---','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
 						</td>
 						<td width="10%">
-							<?php echo $this->Form->input('salesman_name', ['empty'=>'--SalesMan--','options' => $SalesMans,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$salesman_id) ]); ?>
+							<?php echo $this->Form->input('salesman_name', ['empty'=>'---SalesMan---','options' => $SalesMans,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$salesman_id) ]); ?>
 						</td>
 						<td width="5%">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>

@@ -29,7 +29,19 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 1;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
+	}
+	.addressshw p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-top:3px;
+	}
+	.condtion p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;
+	}
+	.discount p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;
+	}
+	.pnf p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -81,7 +93,7 @@ $html = '
 				</td>
 			</tr>
 			<tr>
-				<td width="30%" valign="bottom">
+				<td width="30%" valign="top">
 				<div align="center" style="font-size: 20px;font-weight: bold;color: #0685a8;">PURCHASE ORDER</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px;">
@@ -90,11 +102,11 @@ $html = '
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($purchaseOrder->company->email).'</span>
 				</td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td colspan="3" >
 					<div style="border:solid 2px #0685a8;margin-top: 5px; margin-top:15px;"></div>
 				</td>
-			</tr>
+			</tr>-->
 		</table>
   </div>
  
@@ -109,13 +121,13 @@ $html.='
 					<table >
 						<tr>
 							<td style="border-left:none; border-right:none; border-top:none; border-bottom:none;" width="45%" style="font-size:13px";> 
-								<table class="table2" >
+								<table valign="center" width="100%" style="margin-top: 0px;" class="table2" >
 									<tr>
 										<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';">
 											<span><b>'. h($purchaseOrder->vendor->company_name) .'</b></span><br/>
-											<div style="height:5px;"></div>
+											<div style="height:5px;"></div><span class="addressshw">
 											'. $this->Text->autoParagraph(h($purchaseOrder->vendor->address)) .'
-											
+											</span>
 										</td>
 									</tr>
 								</table>
@@ -153,7 +165,7 @@ $html.='
 			</td>
 		</tr>
 		
-		<tr>
+		<tr class="condtion">
 			<td style="font-size:'. h(($purchaseOrder->pdf_font_size)) .';" colspan=6 style="border-top:1px solid #000;  text-align: justify;">
 			'. $this->Text->autoParagraph(h($purchaseOrder->descryption)) .'
 			</td>
@@ -216,12 +228,12 @@ $html .= '	<table width="100%" class="table_rows table3">
   <tr>
     <td valign="top"  width="39%" rowspan="2" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>Material to be transported to :</b><br/>'. h(($purchaseOrder->material_to_be_transported)) .'</td>
     <td valign="top" rowspan="2" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>Sale Tax :</b><br/>'. h($purchaseOrder->sale_tax_per.'('.$purchaseOrder->sale_tax_description.')') .'</td>
-    <td valign="top" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"> <p><b>Discount : </b><span style="padding-left:7px;">'. h($purchaseOrder->discount) .''. h(($purchaseOrder->discount_type)).'</span></p>
+    <td valign="top" class="discount" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"> <p><b>Discount : </b><span style="padding-left:7px;">'. h($purchaseOrder->discount) .''. h(($purchaseOrder->discount_type)).'</span></p>
    
     </td>
   </tr>
   <tr>
-  <td style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><p><b>P & F : </b><span style="padding-left:7px;">'. h($purchaseOrder->pnf) .'</span></p></td>
+  <td class="pnf" style="text-align:center; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><p><b>P & F : </b><span style="padding-left:7px;">'. h($purchaseOrder->pnf) .'</span></p></td>
   </tr>
   <tr>
     <td valign="top" style="text-align:center; padding-top:7px; padding-bottom:7px; font-size:'. h(($purchaseOrder->pdf_font_size)) .';"><b>LR to be prepared in favour of :<br/></b><span style="padding:17px;">'. h(($purchaseOrder->lr_to_be_prepared_in_favour_of)) .'</span></td>
