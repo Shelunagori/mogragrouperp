@@ -30,11 +30,18 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
     </div>
     <div class="portlet-body form">
     <?= $this->Form->create($pettycashvoucher,['id'=>'form_sample_3']) ?>
+	<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label>
-                    <?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y"),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
+                    <?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y"),'data-date-start-date' 
+					=>$start_date ,'data-date-end-date' => $end_date]); ?>
                 </div>
 			
 			<span style="color: red;">

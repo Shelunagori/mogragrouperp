@@ -1,4 +1,10 @@
-<?php //pr($pettyCashReceiptVouchers); exit; ?>
+<?php 	
+	$first="01";
+	$last="31";
+	$start_date=$first.'-'.$financial_month_first->month;
+	$end_date=$last.'-'.$financial_month_last->month;
+	///pr($end_date); exit;
+?>
 <?php $url_excel="/?".$url; ?>
 
 <div class="portlet light bordered">
@@ -54,7 +60,9 @@
                             <td align="right"><?= h($this->Number->format($nppayment->nppayment_rows[0]->total_dr-$nppayment->nppayment_rows[0]->total_cr,[ 'places' => 2])) ?></td>
                             <td class="actions">
                             <?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $nppayment->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
-                             <?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $nppayment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
+							<?php if(date("d-m-Y",strtotime($nppayment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($nppayment->transaction_date)) <= $end_date) {
+                              echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $nppayment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
+							} ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

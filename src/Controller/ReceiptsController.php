@@ -74,6 +74,10 @@ class ReceiptsController extends AppController
 		
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Receipts->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		
 		$where = [];
 		$vouch_no = $this->request->query('vouch_no');
@@ -123,7 +127,7 @@ class ReceiptsController extends AppController
 		}])->order(['transaction_date' => 'DESC']));
 		
 		
-        $this->set(compact('receipts','url'));
+        $this->set(compact('receipts','url','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['receipts']);
     }
 
@@ -224,6 +228,8 @@ class ReceiptsController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Receipts->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
@@ -433,7 +439,7 @@ class ReceiptsController extends AppController
 		}else{
 			$ReceivedFroms_selected='no';
 		}
-        $this->set(compact('receipt', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate'));
+        $this->set(compact('receipt', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['receipt']);
     }
 
@@ -451,8 +457,12 @@ class ReceiptsController extends AppController
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		
+		 
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Receipts->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Receipts->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		
         $receipt = $this->Receipts->get($id, [
             'contain' => ['ReceiptRows']
@@ -695,7 +705,7 @@ class ReceiptsController extends AppController
 			$ReceivedFroms_selected='no';
 		}
 		
-        $this->set(compact('receipt', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate'));
+        $this->set(compact('receipt', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['receipt']);
     }
 

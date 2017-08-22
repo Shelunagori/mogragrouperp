@@ -25,6 +25,11 @@ class NppaymentsController extends AppController
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
         
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Nppayments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
         $where = [];
         $vouch_no = $this->request->query('vouch_no');
         $From = $this->request->query('From');
@@ -75,7 +80,7 @@ class NppaymentsController extends AppController
         }])->order(['voucher_no'=>'DESC']));
         
 
-        $this->set(compact('nppayments','url'));
+        $this->set(compact('nppayments','url','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['nppayments']);
     }
 	
@@ -199,8 +204,10 @@ class NppaymentsController extends AppController
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
         $st_year_id = $session->read('st_year_id');
-        $financial_year = $this->Nppayments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
-        
+    
+		$financial_year = $this->Nppayments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
         $nppayment = $this->Nppayments->newEntity();
 
 		   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
@@ -461,7 +468,7 @@ class NppaymentsController extends AppController
         }else{
             $ReceivedFroms_selected='no';
         }
-        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate'));
+        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['nppayment']);
     }
 
@@ -479,8 +486,11 @@ class NppaymentsController extends AppController
         $s_employee_id=$this->viewVars['s_employee_id'];
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-        $st_year_id = $session->read('st_year_id');
-        $financial_year = $this->Nppayments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+        
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Nppayments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Nppayments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 
 		   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
@@ -787,7 +797,7 @@ class NppaymentsController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$grn=$this->Nppayments->Grns->find()->where(['company_id' => $st_company_id]);
 		$invoice=$this->Nppayments->Invoices->find()->where(['company_id' => $st_company_id]);
-        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
+        $this->set(compact('nppayment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['nppayment']);
     }
 
