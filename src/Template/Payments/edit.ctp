@@ -13,6 +13,17 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	font-size: 10px;
 }
 </style>
+<?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		$transaction_date=strtotime($payment->transaction_date);
+if($transaction_date <  $start_date ) {
+	echo "The Month has Close";
+} else {
+?>
+
 <?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
 <?php $cr_dr_options=['Dr'=>'Dr','Cr'=>'Cr']; ?>
 <div class="portlet light bordered">
@@ -216,13 +227,17 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<td><a class="btn btn-xs btn-default addrow" href="#" role="button"><i class="fa fa-plus"></i> Add row</a></td>
 				<td id="receipt_amount" style="font-size: 14px;font-weight: bold;"></td>
 				<td></td>
+				
 				<td>
 					<?php if($chkdate == 'Not Found'){  ?>
 						<label class="btn btn-danger"> You are not in Current Financial Year </label>
 					<?php } else { ?>
+					<?php if(date("d-m-Y",strtotime($payment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($payment->transaction_date)) <= $end_date) { ?>
 					<button type="submit" class="btn btn-primary">EDIT PAYMENT VOUCHER</button>
-					<?php } ?>	
+					
+					<?php } } ?>	
 				</td>
+				
 				<td></td>
 			</tfoot>
 		</table>
@@ -230,6 +245,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
     <?= $this->Form->end() ?>
 	</div>
 </div>
+<?php }  ?>
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 
 <script>
