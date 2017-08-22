@@ -276,9 +276,6 @@ class ItemLedgersController extends AppController
 			$from_date=$date;
 			$to_date=date('Y-m-d');
 		};
-		
-
-		
 		$where=[];
 		$where1=[];
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));

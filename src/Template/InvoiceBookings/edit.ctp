@@ -599,13 +599,14 @@ $(document).ready(function() {
 			total_for_rate=total_for_rate+other;
 			total_other=total_other+other;
 			//alert(row_total);
+			row_amount=total_for_rate/qty;
 			$(this).find("td:nth-child(12) input").val(row_total.toFixed(2));
-			$(this).find("td:nth-child(13) input").val((total_for_rate/qty).toFixed(2));
+			$(this).find("td:nth-child(13) input").val((row_amount).toFixed(2));
 			
 			row_total=parseFloat(row_total.toFixed(2));
 			//row_total=row_total.toFixed(2);
 			total_row_amount=total_row_amount+row_total;
-			
+			//alert(total_row_amount);
 			
 		});
 		//total_discount=parseFloat(total_discount.toFixed(2));
@@ -615,8 +616,18 @@ $(document).ready(function() {
 		$('input[name="total_ex"]').val(total_ex.toFixed(2));
 		$('input[name="total_saletax"]').val(total_cst.toFixed(2));
 		$('input[name="total_other_charges"]').val(total_other.toFixed(2));
+		
+		
+		total_discount=parseFloat(total_discount.toFixed(2));
+		total_amount=parseFloat(total_amount.toFixed(2));
+		total_pnf=parseFloat(total_pnf.toFixed(2));
+		total_ex=parseFloat(total_ex.toFixed(2));
+		total_cst=parseFloat(total_cst.toFixed(2));
+		total_other=parseFloat(total_other.toFixed(2));
+		
 		var total_data = total_amount-total_discount+total_pnf+total_ex+total_cst+total_other;
-		$('input[name="total"]').val(total_row_amount.toFixed(2));
+		//alert(total_data);
+		$('input[name="total"]').val(total_data.toFixed(2));
 	}
    
 	  function truncateToDecimals(num, dec = 2) {
@@ -721,10 +732,6 @@ $(document).ready(function() {
 			success3.show();
 			error3.hide();
 			form3[0].submit();
-				
-				
-			
-			// // submit the form
 		}
 
 	});
@@ -820,7 +827,10 @@ $(document).ready(function() {
 		var total_ref=0;
 		$("table.main_ref_table tbody tr").each(function(){
 			var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+			
+			//am=am.toFixed(2);
 			if(!am){ am=0; }
+			
 			total_ref=total_ref+am;
 		});
 		
