@@ -15,14 +15,30 @@
 			<table width="50%" class="table table-condensed">
 				<tbody>
 					<tr>
-						<td width="2%">
+						<td width="8%">
 							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @date('d-m-Y', strtotime($From));  ?>"  data-date-format="dd-mm-yyyy">
 						</td>	
-						<td width="2%">
+						<td width="8%">
 							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @date('d-m-Y', strtotime($To));  ?>"  data-date-format="dd-mm-yyyy" >
 						</td>
-					
-						<td width="10%">
+						<td width="8%">
+								<?php echo $this->Form->input('item_name', ['empty'=>'--Items--','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
+						</td>
+						<td width="8%">
+								<?php echo $this->Form->input('item_category', ['empty'=>'--Category--','options' => $ItemCategories,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_category) ]); ?>
+						</td>
+						<td width="8%">
+							<div id="item_group_div">
+							<?php echo $this->Form->input('item_group_id', ['empty'=>'--Group--','options' =>$ItemGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Group','value'=> h(@$item_group)]); ?></div>
+						</td>
+						<td width="8%">
+							<div id="item_sub_group_div">
+							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'--Sub-Group--','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
+						</td>
+						<td width="2%">
+							<?php echo $this->Form->input('salesman_name', ['empty'=>'--SalesMan--','options' => $SalesMans,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$salesman_id) ]); ?>
+						</td>
+						<td width="5%">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 						</td>
 					</tr>
@@ -363,3 +379,35 @@
 		</div>
 	</div>
 </div>
+
+<script>
+$(document).ready(function() {
+	$('select[name="item_category"]').on("change",function() {
+		$('#item_group_div').html('Loading...');
+		var itemCategoryId=$('select[name="item_category"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemGroups','action'=>'ItemGroupDropdown']); ?>";
+		url=url+'/'+itemCategoryId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_group_div').html(response);
+			$('select[name="item_group_id"]').select2();
+		});
+	});	
+	//////
+	$('select[name="item_group_id"]').die().live("change",function() {
+		$('#item_sub_group_div').html('Loading...');
+		var itemGroupId=$('select[name="item_group_id"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemSubGroups','action'=>'ItemSubGroupDropdown']); ?>";
+		url=url+'/'+itemGroupId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_sub_group_div').html(response);
+			$('select[name="item_sub_group_id"]').select2();
+		});
+	});
+});
+</script>

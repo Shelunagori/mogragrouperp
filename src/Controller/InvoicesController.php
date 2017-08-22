@@ -2470,6 +2470,9 @@ class InvoicesController extends AppController
 		$To=$this->request->query('To');
 		$salesman_id=$this->request->query('salesman_name');
 		
+		$item_name=$this->request->query('item_name');
+		$item_category=$this->request->query('item_category');
+		$item_group=$this->request->query('item_group_id');
 		$where=[];
 		
 		if(!empty($From)){
@@ -2480,9 +2483,42 @@ class InvoicesController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['Invoices.date_created <=']=$To;
 		}
+		if(!empty($salesman_id)){
+			$where['Invoices.employee_id']=$salesman_id;
+		}
+		if(!empty($item_name)){ 
+			$where['InvoiceRows.Item_id']=$item_name;
+			
+		}
+		if(!empty($item_category)){
+			$where['Items.item_category_id']=$item_category;
+		}
+		if(!empty($item_group)){
+			$where['Items.item_group_id ']=$item_group;
+		}
+		if(!empty($item_sub_group)){
+			$where['Items.item_sub_group_id ']=$item_sub_group;
+		}
 		
-		//pr($where); exit;
+		/* pr($where);exit; */
 		$this->set(compact('From','To','salesman_id'));
+		
+		
+		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
+		//pr($invoices->toArray());exit;
+		$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where(['SalesOrders.company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'gst'=>'yes','SalesOrders.employee_id'=>$salesman_id]);
+	//	pr($SalesOrders->toArray());exit;
+		//Opened Quotation code start here 
+			$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+								  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+								  ->order(['Quotations.created_on' => 'DESC'])
+								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id,'Quotations.employee_id'=>$salesman_id]);
+		//closed Quotation code start here 
+			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									->order(['Quotations.created_on' => 'DESC'])
+									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'Quotations.employee_id'=>$salesman_id]);
+		//pr($SalesOrders->toArray()); exit;
 		$SalesMans = $this->Invoices->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])
 			
 			->matching(
@@ -2490,23 +2526,11 @@ class InvoicesController extends AppController
 						return $q->where(['Departments.id' =>1]);
 					}
 		); 
-				//pr($SalesMans); exit;
-		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
-		//pr($invoices->toArray());exit;
-		$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where(['SalesOrders.company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'gst'=>'yes']);
-	//	pr($SalesOrders->toArray());exit;
-		//Opened Quotation code start here 
-			$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
-								  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
-								  ->order(['Quotations.created_on' => 'DESC'])
-								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
-		//closed Quotation code start here 
-			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
-									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
-									->order(['Quotations.created_on' => 'DESC'])
-									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To]);
-		//pr($SalesOrders->toArray()); exit;
-		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations'));
+		$ItemCategories = $this->Invoices->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
+		$ItemGroups = $this->Invoices->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
+		$ItemSubGroups = $this->Invoices->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
+		$Items = $this->Invoices->Items->find('list')->order(['Items.name' => 'ASC']);
+		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations','ItemCategories','ItemGroups','ItemSubGroups','Items'));
 	}
 	
 	public function itemSerialMismatch()
