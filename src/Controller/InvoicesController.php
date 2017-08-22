@@ -2577,7 +2577,7 @@ class InvoicesController extends AppController
 			$invoices = $this->Invoices->find()
 						->contain(['Customers','InvoiceRows'=>['Items']])
 						->matching(
-							'InvoiceRows.Items', function ($q) use($item_category) { 
+							'InvoiceRows.Items', function ($q) use($item_sub_group) { 
 								return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 								}
 						)
@@ -2743,51 +2743,300 @@ class InvoicesController extends AppController
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
+		$item_sub_group=$this->request->query('item_sub_group_id');
 		$where=[];
+		$where1=[];
+		$where2=[];
+		$where3=[];
 		
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
 			$where['Invoices.date_created >=']=$From;
+			$where1['SalesOrders.created_on >=']=$From;
+			$where3['Quotations.created_on >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['Invoices.date_created <=']=$To;
+			$where1['SalesOrders.created_on <=']=$To;
+			$where3['Quotations.created_on <=']=$To;
 		}
 		if(!empty($salesman_id)){
 			$where['Invoices.employee_id']=$salesman_id;
-		}
-		if(!empty($item_name)){ 
-			$where['InvoiceRows.Item_id']=$item_name;
-			
-		}
-		if(!empty($item_category)){
-			$where['Items.item_category_id']=$item_category;
-		}
-		if(!empty($item_group)){
-			$where['Items.item_group_id ']=$item_group;
-		}
-		if(!empty($item_sub_group)){
-			$where['Items.item_sub_group_id ']=$item_sub_group;
+			$where1['SalesOrders.employee_id']=$salesman_id;
+			$where2['Quotations.employee_id']=$salesman_id;
+			$where3['Quotations.employee_id']=$salesman_id;
 		}
 		
 		/* pr($where);exit; */
-		$this->set(compact('From','To','salesman_id'));
+		//$this->set(compact('From','To','salesman_id'));
 		
-		
-		$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id]);
-		//pr($invoices->toArray());exit;
-		$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where(['SalesOrders.company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'gst'=>'yes','SalesOrders.employee_id'=>$salesman_id]);
-	//	pr($SalesOrders->toArray());exit;
-		//Opened Quotation code start here 
+		if(!empty($item_name)){ 
+			$invoices = $this->Invoices->find()
+						->contain(['Customers','InvoiceRows'])
+						->matching('InvoiceRows.Items', function ($q) use($item_name) { 
+								return $q->where(['InvoiceRows.item_id' => $item_name]);
+								}
+						)
+						->order(['Invoices.id' => 'DESC'])
+						->where($where)
+						->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+			$SalesOrders = $this->Invoices->SalesOrders->find()
+								->contain(['Customers','SalesOrderRows'])
+								->matching('SalesOrderRows.Items', function ($q) use($item_name) { 
+									return $q->where(['SalesOrderRows.item_id' => $item_name]);
+									})		
+								->order(['SalesOrders.id' => 'DESC'])
+								->where($where1)
+								->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+			
+
 			$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
 								  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+								  ->matching('QuotationRows.Items', function ($q) use($item_name) { 
+									return $q->where(['QuotationRows.item_id' => $item_name]);
+									})
 								  ->order(['Quotations.created_on' => 'DESC'])
-								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id,'Quotations.employee_id'=>$salesman_id]);
-		//closed Quotation code start here 
+								  ->where($where2)
+								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+								  
 			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
 									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									 ->matching('QuotationRows.Items', function ($q) use($item_name) { 
+									return $q->where(['QuotationRows.item_id' => $item_name]);
+									})
 									->order(['Quotations.created_on' => 'DESC'])
-									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id,'created_on >='=> $From,'created_on <='=> $To,'Quotations.employee_id'=>$salesman_id]);
+									->where($where3)
+									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+		}else {
+			if(!empty($item_category) && empty($item_group) && empty($item_sub_group)){  
+				
+				$invoices = 	$this->Invoices->find()
+									->contain(['Customers','InvoiceRows'])
+									->matching(
+										'InvoiceRows.Items', function ($q) use($item_category) { 
+											return $q->where(['Items.item_category_id' => $item_category]);
+											}
+									)
+									->order(['Invoices.id' => 'DESC'])
+									->where($where)
+									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+				$SalesOrders = $this->Invoices->SalesOrders->find()
+									->contain(['Customers','SalesOrderRows'])
+									->matching('SalesOrderRows.Items', function ($q) use($item_category) { 
+										return $q->where(['Items.item_category_id' => $item_category]);
+										})		
+									->order(['SalesOrders.id' => 'DESC'])
+									->where($where1)
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+				
+
+				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									  ->matching('QuotationRows.Items', function ($q) use($item_category) { 
+										return $q->where(['Items.item_category_id' => $item_category]);
+										})
+									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->where($where2)
+									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									  
+				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										 ->matching('QuotationRows.Items', function ($q) use($item_category) { 
+										return $q->where(['Items.item_category_id' => $item_category]);
+										})
+										->order(['Quotations.created_on' => 'DESC'])
+										->where($where3)
+										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+			}
+		else if(!empty($item_group) && empty($item_sub_group) && empty($item_category)){ 
+				$invoices = 	$this->Invoices->find()
+									->contain(['Customers','InvoiceRows'])
+									->matching(
+										'InvoiceRows.Items', function ($q) use($item_group) { 
+											return $q->where(['Items.item_group_id' => $item_group]);
+											}
+									)
+									->order(['Invoices.id' => 'DESC'])
+									->where($where)
+									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+				$SalesOrders = $this->Invoices->SalesOrders->find()
+									->contain(['Customers','SalesOrderRows'])
+									->matching('SalesOrderRows.Items', function ($q) use($item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group]);
+										})		
+									->order(['SalesOrders.id' => 'DESC'])
+									->where($where1)
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+				
+
+				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									  ->matching('QuotationRows.Items', function ($q) use($item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group]);
+										})
+									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->where($where2)
+									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									  
+				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										 ->matching('QuotationRows.Items', function ($q) use($item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group]);
+										})
+										->order(['Quotations.created_on' => 'DESC'])
+										->where($where3)
+										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+		}
+		else if(!empty($item_sub_group && empty($item_group) && empty($item_category))){
+			
+				$invoices = 	$this->Invoices->find()
+									->contain(['Customers','InvoiceRows'])
+									->matching(
+										'InvoiceRows.Items', function ($q) use($item_sub_group) { 
+											return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
+											}
+									)
+									->order(['Invoices.id' => 'DESC'])
+									->where($where)
+									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+				$SalesOrders = $this->Invoices->SalesOrders->find()
+									->contain(['Customers','SalesOrderRows'])
+									->matching('SalesOrderRows.Items', function ($q) use($item_sub_group) { 
+										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
+										})		
+									->order(['SalesOrders.id' => 'DESC'])
+									->where($where1)
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+				
+
+				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									  ->matching('QuotationRows.Items', function ($q) use($item_sub_group) { 
+										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
+										})
+									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->where($where2)
+									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									  
+				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										 ->matching('QuotationRows.Items', function ($q) use($item_sub_group) { 
+										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
+										})
+										->order(['Quotations.created_on' => 'DESC'])
+										->where($where3)
+										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+			
+			
+		}else if(!empty($item_category) && !empty($item_group) && !empty($item_sub_group)){  
+				
+				$invoices = 	$this->Invoices->find()
+									->contain(['Customers','InvoiceRows'])
+									->matching(
+										'InvoiceRows.Items', function ($q) use($item_category,$item_sub_group,$item_group) { 
+											return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
+											}
+									)
+									->order(['Invoices.id' => 'DESC'])
+									->where($where)
+									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+				$SalesOrders = $this->Invoices->SalesOrders->find()
+									->contain(['Customers','SalesOrderRows'])
+									->matching('SalesOrderRows.Items', function ($q) use($item_category,$item_sub_group,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
+										})		
+									->order(['SalesOrders.id' => 'DESC'])
+									->where($where1)
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+				
+
+				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									  ->matching('QuotationRows.Items', function ($q) use($item_category,$item_sub_group,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
+										})
+									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->where($where2)
+									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									  
+				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										 ->matching('QuotationRows.Items', function ($q) use($item_category,$item_sub_group,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
+										})
+										->order(['Quotations.created_on' => 'DESC'])
+										->where($where3)
+										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+		
+			}else if(!empty($item_category) && !empty($item_group) && empty($item_sub_group)){  
+			
+				$invoices = 	$this->Invoices->find()
+									->contain(['Customers','InvoiceRows'])
+									->matching(
+										'InvoiceRows.Items', function ($q) use($item_category,$item_group) { 
+											return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
+											}
+									)
+									->order(['Invoices.id' => 'DESC'])
+									->where($where)
+									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+						
+				$SalesOrders = $this->Invoices->SalesOrders->find()
+									->contain(['Customers','SalesOrderRows'])
+									->matching('SalesOrderRows.Items', function ($q) use($item_category,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
+										})		
+									->order(['SalesOrders.id' => 'DESC'])
+									->where($where1)
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
+				
+
+				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+									  ->matching('QuotationRows.Items', function ($q) use($item_category,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
+										})
+									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->where($where2)
+									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									  
+				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										 ->matching('QuotationRows.Items', function ($q) use($item_category,$item_group) { 
+										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
+										})
+										->order(['Quotations.created_on' => 'DESC'])
+										->where($where3)
+										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+			}
+			else{
+			
+				$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+
+				$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where($where1)->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);
+
+				//Opened Quotation code start here 
+					$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
+										  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+										  ->order(['Quotations.created_on' => 'DESC'])
+										  ->where($where2)
+										  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+				//closed Quotation code start here 
+					$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
+											->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
+											->order(['Quotations.created_on' => 'DESC'])
+											->where($where3)
+											->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+				
+			}
+		}
+		$this->set(compact('From','To','salesman_id','item_category','item_group','item_sub_group','item_name'));
 		//pr($SalesOrders->toArray()); exit;
 		$SalesMans = $this->Invoices->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])
 			
