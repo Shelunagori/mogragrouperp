@@ -16,7 +16,6 @@ class QuotationsController extends AppController
 		$copy_request=$this->request->query('copy-request');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
-		
 		$this->viewBuilder()->layout('index_layout');
 		$where=[];
 		$company_id=$this->request->query('company_id');
@@ -116,11 +115,17 @@ class QuotationsController extends AppController
 		
 										
 		}
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Quotations->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Quotations->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Quotations->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
 		 
 		$companies = $this->Quotations->Companies->find('list');
 		$Items = $this->Quotations->QuotationRows->Items->find('list')->order(['Items.name' => 'ASC']);
 		$closeReasons = $this->Quotations->QuotationCloseReasons->find('all');
-        $this->set(compact('quotations','status','copy_request','companies','closeReasons','closed_month','close_status','Items'));
+        $this->set(compact('quotations','status','copy_request','companies','closeReasons','closed_month','close_status','Items','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['quotations']);
 		$this->set(compact('url'));
 	}
@@ -301,7 +306,6 @@ class QuotationsController extends AppController
 		$revision=$this->request->query('revision');
 		
 		$id=$this->request->query('copy');
-		
 		if(!empty($id)){
 			$quotation = $this->Quotations->get($id, [
 				'contain' => ['QuotationRows']
@@ -416,9 +420,14 @@ class QuotationsController extends AppController
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 					}
 				);
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Quotations->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Quotations->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Quotations->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$termsConditions = $this->Quotations->TermsConditions->find('all',['limit' => 200]);
 		
-        $this->set(compact('quotation', 'customers','companies','revision','employees','Filenames','ItemGroups','items','termsConditions','copy','Company','chkdate'));
+        $this->set(compact('quotation', 'customers','companies','revision','employees','Filenames','ItemGroups','items','termsConditions','copy','Company','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['quotation']);
     }
 

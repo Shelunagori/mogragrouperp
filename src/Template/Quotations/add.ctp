@@ -13,6 +13,11 @@ if(!empty($revision))
 	$quotation->finalisation_date=date("d-m-Y",strtotime($quotation->finalisation_date));
 }
 
+$first="01";
+$last="31";
+$start_date=$first.'-'.$financial_month_first->month;
+$end_date=$last.'-'.$financial_month_last->month;
+
 ?>
 
 
@@ -97,7 +102,7 @@ if(!empty($revision))
 					<div class="form-group">
 						<label class="col-md-4 control-label">Finalisation Date</label>
 						<div class="col-md-8">
-							<?php echo $this->Form->input('finalisation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => '+0d','data-date-end-date' => '+60d','placeholder' => 'Finalisation Date']); ?>
+							<?php echo $this->Form->input('finalisation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => $start_date,'data-date-end-date' => $end_date,'placeholder' => 'Finalisation Date']); ?>
 						</div>
 					</div>
 					<br/><br/>

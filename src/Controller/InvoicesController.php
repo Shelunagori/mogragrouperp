@@ -964,7 +964,11 @@ class InvoicesController extends AppController
 				
 				$qq=0; foreach($invoice->invoice_rows as $invoice_rows){
 					$salesorderrow=$this->Invoices->SalesOrderRows->find()->where(['sales_order_id'=>$invoice->sales_order_id,'item_id'=>$invoice_rows->item_id])->first();
+					
+					
 					$salesorderrow->processed_quantity=$salesorderrow->processed_quantity-@$invoice->getOriginal('invoice_rows')[$qq]->quantity+$invoice_rows->quantity;
+					
+					//pr($salesorderrow->processed_quantity); exit;
 					$this->Invoices->SalesOrderRows->save($salesorderrow);
 					$qq++; 
 				}
@@ -2504,33 +2508,42 @@ class InvoicesController extends AppController
 						)
 						->order(['Invoices.id' => 'DESC'])
 						->where($where)
+						->group('Invoices.id')
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+					
+					//$invoices=array_unique($invoices);
 			$interStateInvoice = $this->Invoices->find()->where($where)
 					->contain(['Customers','InvoiceRows'])
 					->matching('InvoiceRows.Items', function ($q) use($item_category) { 
 								return $q->where(['Items.item_category_id' => $item_category]);
 								}
 						)
-			->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
-			
+					->order(['Invoices.id' => 'DESC'])
+					->group('Invoices.id')
+					->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+					
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
-			->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
-					return $q->where(['InvoiceBookingRows.igst = '=>0]);
-			}])
-			->matching('InvoiceBookingRows.Items', function ($q) use($item_category) { 
-								return $q->where(['Items.item_category_id' => $item_category]);
-								}
-						)
-			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+						->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
+								return $q->where(['InvoiceBookingRows.igst = '=>0]);
+						}])
+						->matching('InvoiceBookingRows.Items', function ($q) use($item_category) { 
+											return $q->where(['Items.item_category_id' => $item_category]);
+											}
+									)
+						->order(['InvoiceBookings.id' => 'DESC'])
+						->group('InvoiceBookings.id')
+						->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
-			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
+			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->			contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst != '=>0]);
-			}])
-			->matching('InvoiceBookingRows.Items', function ($q) use($item_category) { 
-								return $q->where(['Items.item_category_id' => $item_category]);
-								}
-						)
-			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+					}])
+					->matching('InvoiceBookingRows.Items', function ($q) use($item_category) { 
+										return $q->where(['Items.item_category_id' => $item_category]);
+										}
+								)
+					->order(['InvoiceBookings.id' => 'DESC'])
+					->group('InvoiceBookings.id')
+					->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 				
 			}
 		else if(!empty($item_group) && empty($item_sub_group) && empty($item_category)){ 
@@ -2543,6 +2556,7 @@ class InvoicesController extends AppController
 						)
 						->order(['Invoices.id' => 'DESC'])
 						->where($where)
+						->group('Invoices.id')
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
 			
 			$interStateInvoice = $this->Invoices->find()->where($where)
@@ -2551,7 +2565,9 @@ class InvoicesController extends AppController
 								return $q->where(['Items.item_group_id' => $item_group]);
 								}
 						)
-			->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+					->order(['Invoices.id' => 'DESC'])
+					->group('Invoices.id')
+					->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 			
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 			->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2561,7 +2577,9 @@ class InvoicesController extends AppController
 								return $q->where(['Items.item_group_id' => $item_group]);
 								}
 						)
-			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			->order(['InvoiceBookings.id' => 'DESC'])
+			->group('InvoiceBookings.id')
+			->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst != '=>0]);
@@ -2570,7 +2588,9 @@ class InvoicesController extends AppController
 								return $q->where(['Items.item_group_id' => $item_group]);
 								}
 						)
-			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			->order(['InvoiceBookings.id' => 'DESC'])
+			->group('InvoiceBookings.id')
+			->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 				
 		}
 		else if(!empty($item_sub_group && empty($item_group) && empty($item_category))){
@@ -2582,6 +2602,7 @@ class InvoicesController extends AppController
 								}
 						)
 						->order(['Invoices.id' => 'DESC'])
+						->group('Invoices.id')
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
 						
@@ -2591,7 +2612,9 @@ class InvoicesController extends AppController
 											return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 											}
 									)
-								->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+								->order(['Invoices.id' => 'DESC'])
+								->group('Invoices.id')
+								->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 			
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2601,7 +2624,9 @@ class InvoicesController extends AppController
 											return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 											}
 								)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2611,7 +2636,9 @@ class InvoicesController extends AppController
 											return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 											}
 										)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 		}else if(!empty($item_category) && !empty($item_group) && !empty($item_sub_group)){  
 				$invoices = $this->Invoices->find()
 						->contain(['Customers','InvoiceRows'=>['Items']])
@@ -2621,6 +2648,7 @@ class InvoicesController extends AppController
 								}
 						)
 						->order(['Invoices.id' => 'DESC'])
+						->group('Invoices.id')
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
 				$interStateInvoice = $this->Invoices->find()->where($where)
@@ -2629,7 +2657,9 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 										}
 									)
-								->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+								->order(['Invoices.id' => 'DESC'])
+								->group('Invoices.id')
+								->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 			
 				$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2639,7 +2669,9 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 										}
 								)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2649,7 +2681,9 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 								}
 										)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			}else if(!empty($item_category) && !empty($item_group) && empty($item_sub_group)){  
 			
 				$invoices = $this->Invoices->find()
@@ -2660,6 +2694,7 @@ class InvoicesController extends AppController
 									}
 							)
 							->order(['Invoices.id' => 'DESC'])
+							->group('Invoices.id')
 							->where($where)
 							->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
 				$interStateInvoice = $this->Invoices->find()->where($where)
@@ -2668,7 +2703,9 @@ class InvoicesController extends AppController
 												return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 											}
 										)
-									->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
+									->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 			
 				$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2678,7 +2715,9 @@ class InvoicesController extends AppController
 									return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 									}
 								)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2688,7 +2727,9 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 									}
 										)
-							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							->order(['InvoiceBookings.id' => 'DESC'])
+							->group('InvoiceBookings.id')
+							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			}
 			else{
 				$invoices = $this->Invoices->find()
@@ -2821,6 +2862,7 @@ class InvoicesController extends AppController
 											}
 									)
 									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 					
@@ -2830,6 +2872,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_category_id' => $item_category]);
 										})		
 									->order(['SalesOrders.id' => 'DESC'])
+									->group('SalesOrders.id')
 									->where($where1)
 									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
 				
@@ -2840,6 +2883,7 @@ class InvoicesController extends AppController
 										return $q->where(['ItemCategories.id' => $item_category]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->group('Quotations.id')
 									  ->where($where2)
 									 ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 									 
@@ -2849,6 +2893,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_category_id' => $item_category]);
 										})
 										->order(['Quotations.created_on' => 'DESC'])
+										->group('Quotations.id')
 										->where($where3)
 										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 			}
@@ -2861,6 +2906,7 @@ class InvoicesController extends AppController
 											}
 									)
 									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 						
@@ -2870,6 +2916,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group]);
 										})		
 									->order(['SalesOrders.id' => 'DESC'])
+									->group('SalesOrders.id')
 									->where($where1)
 									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
 				
@@ -2880,6 +2927,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->group('Quotations.id')
 									  ->where($where2)
 									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 									  
@@ -2889,6 +2937,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group]);
 										})
 										->order(['Quotations.created_on' => 'DESC'])
+										->group('Quotations.id')
 										->where($where3)
 										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 		}
@@ -2902,6 +2951,7 @@ class InvoicesController extends AppController
 											}
 									)
 									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 						
@@ -2911,6 +2961,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 										})		
 									->order(['SalesOrders.id' => 'DESC'])
+									->group('SalesOrders.id')
 									->where($where1)
 									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
 				
@@ -2921,6 +2972,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->group('Quotations.id')
 									  ->where($where2)
 									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 									  
@@ -2930,6 +2982,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_sub_group_id' => $item_sub_group]);
 										})
 										->order(['Quotations.created_on' => 'DESC'])
+										->group('Quotations.id')
 										->where($where3)
 										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 			
@@ -2944,6 +2997,7 @@ class InvoicesController extends AppController
 											}
 									)
 									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 						
@@ -2953,6 +3007,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 										})		
 									->order(['SalesOrders.id' => 'DESC'])
+									->group('SalesOrders.id')
 									->where($where1)
 									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
 				
@@ -2963,6 +3018,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->group('Quotations.id')
 									  ->where($where2)
 									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 									  
@@ -2972,6 +3028,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category,'Items.item_sub_group_id' => $item_sub_group]);
 										})
 										->order(['Quotations.created_on' => 'DESC'])
+										->group('Quotations.id')
 										->where($where3)
 										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 		
@@ -2985,6 +3042,7 @@ class InvoicesController extends AppController
 											}
 									)
 									->order(['Invoices.id' => 'DESC'])
+									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 						
@@ -2994,6 +3052,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 										})		
 									->order(['SalesOrders.id' => 'DESC'])
+									->group('SalesOrders.id')
 									->where($where1)
 									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);			
 				
@@ -3004,6 +3063,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
+									  ->group('Quotations.id')
 									  ->where($where2)
 									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
 									  
@@ -3013,6 +3073,7 @@ class InvoicesController extends AppController
 										return $q->where(['Items.item_group_id' => $item_group,'Items.item_category_id' => $item_category]);
 										})
 										->order(['Quotations.created_on' => 'DESC'])
+										 ->group('Quotations.id')
 										->where($where3)
 										->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 			}

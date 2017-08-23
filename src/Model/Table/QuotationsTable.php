@@ -39,6 +39,7 @@ class QuotationsTable extends Table
 		
 		
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('FinancialMonths');
 
         $this->belongsTo('Customers', [
             'foreignKey' => 'customer_id',
