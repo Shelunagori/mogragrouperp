@@ -48,15 +48,26 @@
 				<tbody>
 				<tbody>
 					<?php $srn=0; foreach ($itemDatas as $key=>$itemData){ 
+					
 					$row_count=count($itemData);
 					?>
 					
-						<?php $flag=0; foreach($itemData as $itemData) {   ?>
+						<?php $flag=0; foreach($itemData as $itemData) {  ?>
 						<tr>
 						<?php if($flag==0){?>
 						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo ++$srn; ?> </td>
 						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo date("d-m-Y",strtotime($itemData['processed_on'])); ?></td>
-						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>"><?php echo  $voucher_no[$key][0];?></td>
+						
+						<td style="vertical-align: top !important;" rowspan="<?php echo $row_count; ?>">
+							<?php 
+							$location='/'.$link[$key]['controller'].'/'.$link[$key]['action'].'/'.$itemData->source_id;
+							//$location=$link[$key].'/'.$itemData->source_id;
+							//pr($location);
+							echo $this->Html->link($voucher_no[$key][0],$location,array('target'=>'_blank'));?>
+						</td>
+						
+						
+						
 						<?php $flag=1; }?>
 						<td style="vertical-align: top !important;"><?php echo $itemData['item']['name']; ?></td>
 						<?php if($itemData['in_out']=="Out"){ ?>

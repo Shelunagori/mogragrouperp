@@ -137,10 +137,10 @@ if(!empty($copy))
 						<div class="col-md-9">
 							<?php 
 							if($sales_id){
-								echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control','placeholder' => 'Address','value' => @$salesOrder->customer_address]);
+								echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control','placeholder' => 'Address','value' => @$salesOrder->customer_address,'required']);
 								
 							}else{
-							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control','placeholder' => 'Address','value' => @$quotation->customer_address]);
+							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control','placeholder' => 'Address','value' => @$quotation->customer_address,'required']);
 							} ?>
 							<a href="#" role="button" class="pull-right select_address" >
 							Select Address </a>
@@ -242,17 +242,17 @@ if(!empty($copy))
 								</div>
 							</td>
 							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','max'=>@$quotation_rows->quantity-$quotation_rows->proceed_qty,'placeholder'=>'Quantity','value' => @$quotation_rows->quantity-$quotation_rows->proceed_qty]); ?></td>
-							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q]); ?></td>
-							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$quotation_rows->amount]); ?></td>
+							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q,'required']); ?></td>
+							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$quotation_rows->amount,'required']); ?></td>
 							<td><?php 
 							$options=['Yes'=>'Yes','No'=>'No'];
-							echo $this->Form->input('sales_order_rows.'.$q.'.excise_duty', ['options'=>$options,'label' => false,'class' => 'form-control input-sm']); ?></td>
+							echo $this->Form->input('sales_order_rows.'.$q.'.excise_duty', ['options'=>$options,'label' => false,'class' => 'form-control input-sm','required']); ?></td>
 							<td>
 							<?php $options=[];
 							foreach($SaleTaxes as $SaleTaxe){ 
 								$options[]=['text' => (string) $SaleTaxe->tax_figure.'('.$SaleTaxe->invoice_description.')', 'value' => $SaleTaxe->id, 'description' => $SaleTaxe->quote_description];
 							} 
-							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['empty'=>'---Select---','options'=>$options,'label' => false,'class' => 'form-control input-sm change_des']);
+							echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['empty'=>'---Select---','options'=>$options,'label' => false,'class' => 'form-control input-sm change_des','required']);
 							//echo $this->Form->input('sales_order_rows.'.$q.'.
 							//', ['type'=>'text','label' => false]); ?>
 							</td>
@@ -441,10 +441,10 @@ if(!empty($copy))
 						<label class="control-label">Address  <span class="required" aria-required="true">*</span></label>
 						<?php 
 						if($sales_id){
-							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Email','value'=>$salesOrder->customer_address]); 
+							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Address','value'=>$salesOrder->customer_address]); 
 							
 						}else{
-							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Email']); 
+							echo $this->Form->input('customer_address', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Address']); 
 						}
 						
 					?>

@@ -37,6 +37,7 @@ class JournalVouchersTable extends Table
         $this->primaryKey('id');
 		$this->belongsTo('VouchersReferences');
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('FinancialMonths');
 		$this->belongsTo('Ledgers');
 		$this->belongsTo('ReferenceBalances');
         $this->belongsTo('ReferenceDetails');

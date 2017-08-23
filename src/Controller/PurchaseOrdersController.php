@@ -29,6 +29,12 @@ class PurchaseOrdersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->PurchaseOrders->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
+		
 		$where=[];
 		$purchase_no=$this->request->query('purchase_no');
 		$file=$this->request->query('file');
@@ -94,7 +100,7 @@ class PurchaseOrdersController extends AppController
 }
 		$PurchaseOrderRows = $this->PurchaseOrders->PurchaseOrderRows->find()->toArray();
 		$Items = $this->PurchaseOrders->PurchaseOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
-        $this->set(compact('purchaseOrders','pull_request','status','PurchaseOrderRows','PurchaseItems','Items'));
+        $this->set(compact('purchaseOrders','pull_request','status','PurchaseOrderRows','PurchaseItems','Items','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['purchaseOrders']);
 		$this->set(compact('url'));
     }
@@ -311,6 +317,11 @@ class PurchaseOrdersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->PurchaseOrders->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
         $purchaseOrder = $this->PurchaseOrders->get($id, [
             'contain' => ['PurchaseOrderRows'=>['Items']]
         ]);
@@ -489,7 +500,7 @@ class PurchaseOrdersController extends AppController
 		
 		$transporters = $this->PurchaseOrders->Transporters->find('list')->order(['Transporters.transporter_name' => 'ASC']);
        
-        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1'));
+        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['purchaseOrder']);
     }
 

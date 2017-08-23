@@ -39,6 +39,8 @@ class PurchaseOrdersTable extends Table
         $this->displayField('id');
         $this->primaryKey('id');
 		$this->belongsTo('Items');
+		$this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
 		$this->belongsTo('LedgerAccounts');
         $this->belongsTo('Companies', [
             'foreignKey' => 'company_id',

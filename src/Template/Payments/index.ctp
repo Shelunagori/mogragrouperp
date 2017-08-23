@@ -1,4 +1,10 @@
-<?php //pr($pettyCashReceiptVouchers); exit; ?>
+<?php 	
+	$first="01";
+	$last="31";
+	$start_date=$first.'-'.$financial_month_first->month;
+	$end_date=$last.'-'.$financial_month_last->month;
+	///pr($end_date); exit;
+?>
 <?php $url_excel="/?".$url; ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
@@ -36,9 +42,9 @@
 						<tr>
 							<th width="5%">Sr. No.</th>
 							<th width="15%">Transaction Date</th>
-							<th width="20%">Vocher No</th>
-							<th style="text-align:right;" width="20%"	>Amount</th>
-							<th width="10%" class="actions"><?= __('Actions') ?></th>
+							<th width="15%">Vocher No</th>
+							<th style="text-align:right;" width="15%"	>Amount</th>
+							<th width="20%" class="actions"><?= __('Actions') ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -52,7 +58,12 @@
 							<td align="right"><?= h($this->Number->format(@$payment->payment_rows[0]->total_dr-@$payment->payment_rows[0]->total_cr,[ 'places' => 2])) ?></td>
 							<td class="actions">
 							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $payment->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
-							 <?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $payment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
+							<?php if(date("d-m-Y",strtotime($payment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($payment->transaction_date)) <= $end_date) {
+							 echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $payment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));
+							}else{
+								echo "Financial Month has been Closed";
+							}							 ?>
+							
 							</td>
 						</tr>
 						<?php endforeach; ?>

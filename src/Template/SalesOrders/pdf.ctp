@@ -62,7 +62,7 @@ $html = '
 				</td>
 			</tr>
 			<tr>
-				<td width="30%" valign="bottom">
+				<td width="30%" valign="top">
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">SALES ORDER</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px;">
@@ -71,11 +71,11 @@ $html = '
 				<span><img src='.ROOT . DS  . 'webroot' . DS  .'img/email.png height="15px" style="height:15px;margin-top:4px;"/> '. h($salesOrder->company->email).'</span>
 				</td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td colspan="3" >
 					<div style="border:solid 2px #0685a8;margin-top: 5px; margin-top:15px;"></div>
 				</td>
-			</tr>
+			</tr>-->
 		</table>
   </div>
   <div id="footer">

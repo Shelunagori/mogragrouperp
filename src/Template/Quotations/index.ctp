@@ -5,6 +5,13 @@ if(!empty($status)){
 		$url_excel="/?".$url;
 	}	
 ?>
+<?php 	
+	$first="01";
+	$last="31";
+	$start_date=$first.'-'.$financial_month_first->month;
+	$end_date=$last.'-'.$financial_month_last->month;
+	///pr($end_date); exit;
+?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -165,7 +172,8 @@ if(!empty($status)){
 							<td class="actions">
 							<?php if(in_array(21,$allowed_pages)){ ?>
 								<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'confirm', $quotation->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
-							<?php } ?>	 
+							<?php } ?>	
+							<?php if(date("d-m-Y",strtotime($quotation->created_on)) >= $start_date && date("d-m-Y",strtotime($quotation->created_on)) <= $end_date) { ?>
 								<?php if($quotation->status=='Pending' and $gst_pull_request!="true" and in_array(2,$allowed_pages) and $pull_request!="true" && $copy_request!="copy"){ ?>
 								<?php
 								 if(!in_array(date("m-Y",strtotime($quotation->created_on)),$closed_month))
@@ -182,7 +190,7 @@ if(!empty($status)){
 										</li>
 									</ul>
 								</div>
-								 <?php } } ?>
+							<?php } } }?>
 								
 								<?php if($status == "close" && $pull_request=="true" && $close_status != "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
@@ -254,16 +262,21 @@ $(document).ready(function() {
 	$('#close_popup_btn').die().live("click",function() {
 		var quote_id=$(this).attr('quote_id');
 		var reason_id=$('.radio_text:checked').val();
-		var url="<?php echo $this->Url->build(['controller'=>'Quotations','action'=>'Close']); 
-		?>";
-		url=url+'/'+quote_id+'/'+reason_id,
 		
-		$.ajax({
-			url: url,
-		}).done(function(response) {
-			location.reload();
-		});		
-		
+		if((quote_id) && (reason_id)){
+			var url="<?php echo $this->Url->build(['controller'=>'Quotations','action'=>'Close']); 
+			?>";
+			url=url+'/'+quote_id+'/'+reason_id,
+			
+			$.ajax({
+				url: url,
+			}).done(function(response) {
+				location.reload();
+			});
+			
+		}else{
+			alert("Please Select Atleast one reason For Close Quotaion");		
+		}		
     });
 	
 	$('.close_btn').die().live("click",function() {

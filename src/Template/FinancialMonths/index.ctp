@@ -44,7 +44,7 @@
 						<td class="actions">
 						<?php if($financialMonth->status=='Open'){
 							if(($count>=$i) && (($l_year_status=='Closed')|| ($l_year_status==' '))){
-								echo $this->Form->postLink('<i class="fa fa-minus-circle"> Closed</i> ',['action' =>'closed', $financialMonth->id],['escape' => false,'class' => 'btn btn-xs red tooltips','data-original-title'=>'Closed','confirm' => __('Are you sure, you want to Closed ?', $financialMonth->id)]
+								echo $this->Form->postLink('<i class="fa fa-minus-circle"> Close</i> ',['action' =>'closed', $financialMonth->id],['escape' => false,'class' => 'btn btn-xs red tooltips','data-original-title'=>'Closed','confirm' => __('Are you sure, you want to Closed ?', $financialMonth->id)]
 								);
 							}
 						} ?>

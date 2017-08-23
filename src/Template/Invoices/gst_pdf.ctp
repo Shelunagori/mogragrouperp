@@ -100,7 +100,7 @@ $html = '
 				</td>
 			</tr>
 			<tr>
-				<td width="30%" valign="top">
+				<td width="30%" valign="top"> 
 				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">TAX INVOICE</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px; ">
@@ -152,32 +152,32 @@ $html = '
 								
 								
 							$html.=' </td>
-							<td style="white-space:nowrap"  width="40%" valign="top" text-align="right" >
+							<td style="white-space:nowrap"  width="30%" valign="top" text-align="right" >
 								<table width="100%">
 									<tr>
-										<td valign="top" style="vertical-align: top;">Invoice No.</td>
-										<td  valign="top">:</td>
-										<td valign="top">'. h(($invoice->in1." / IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3." / ".$invoice->in4)) .'</td>
+										<td valign="top" style="vertical-align: top;" width="5%">Invoice No.</td>
+										<td  valign="top" width="4%">:</td>
+										<td valign="top" >'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">Date</td>
 										<td valign="top">:</td>
-										<td valign="top">'. h(date("d-m-Y",strtotime($invoice->date_created))) .'</td>
+										<td valign="top" >'. h(date("d-m-Y",strtotime($invoice->date_created))) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">LR No.</td>
 										<td valign="top">:</td>
-										<td valign="top" style="vertical-align: top;">'. h($invoice->lr_no) .'</td>
+										<td valign="top" style="vertical-align: top;" >'. h($invoice->lr_no) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">Carrier</td>
 										<td valign="top">:</td>
-										<td valign="top" ><p>'. h($invoice->transporter->transporter_name) .'</p></td>
+										<td valign="top"><p>'. h($invoice->transporter->transporter_name) .'</p></td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
 										<td valign="top">:</td>
-										<td width="25%" valign="top">'. h($invoice->delivery_description) .'</td>
+										<td width="25%" valign="top" >'. h($invoice->delivery_description) .'</td>
 									</tr>
 								</table>
 							</td>

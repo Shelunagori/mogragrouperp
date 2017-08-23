@@ -58,7 +58,10 @@ class SalesOrdersTable extends Table
 			'foreignKey' => 'documents_courier_id',
 			'propertyName' => 'courier'
 		]);
-        $this->belongsTo('Quotations');
+        $this->belongsTo('Quotations', [
+            'foreignKey' => 'quotation_id',
+            'joinType' => 'INNER'
+        ]);
 		$this->belongsTo('TermsConditions');
 		$this->belongsTo('TaxDetails');
 		$this->belongsTo('Departments');

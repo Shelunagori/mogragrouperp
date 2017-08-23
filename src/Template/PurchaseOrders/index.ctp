@@ -1,4 +1,10 @@
-
+<?php 	
+	$first="01";
+	$last="31";
+	$start_date=$first.'-'.$financial_month_first->month;
+	$end_date=$last.'-'.$financial_month_last->month;
+	
+?>
 <?php 
 
 	if(!empty($status)){

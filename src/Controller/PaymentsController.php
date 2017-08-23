@@ -25,6 +25,10 @@ class PaymentsController extends AppController
 		
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		
 		$where = [];
 		$vouch_no = $this->request->query('vouch_no');
@@ -78,7 +82,7 @@ class PaymentsController extends AppController
 		}])->order(['voucher_no'=>'DESC']));
 		
 
-        $this->set(compact('payments','url'));
+        $this->set(compact('payments','url','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['payments']);
     }
 
@@ -156,8 +160,6 @@ class PaymentsController extends AppController
         $payment = $this->Payments->get($id, [
             'contain' => ['BankCashes', 'Companies', 'PaymentRows' => ['ReceivedFroms'], 'Creator']
         ]);
-		
-		
 		$petty_cash_voucher_row_data=[];
 		$petty_cash_grn_data=[];
 		$petty_cash_invoice_data=[];
@@ -206,12 +208,15 @@ class PaymentsController extends AppController
     public function add()
     {
 		$this->viewBuilder()->layout('index_layout');
-		
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		//pr($financial_month_first->month); 
+		//pr($financial_month_last->month); exit;
 
 		 $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
@@ -474,7 +479,7 @@ class PaymentsController extends AppController
 		}else{
 			$ReceivedFroms_selected='no';
 		}
-        $this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate'));
+        $this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['payment']);
     }
 
@@ -494,7 +499,12 @@ class PaymentsController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
-		   
+		 
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
 		   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 		   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
@@ -810,7 +820,7 @@ class PaymentsController extends AppController
 		$grn=$this->Payments->Grns->find()->where(['company_id' => $st_company_id]);
 		$invoice=$this->Payments->Invoices->find()->where(['company_id' => $st_company_id]);
 		
-		$this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice'));
+		$this->set(compact('payment', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','grn','invoice','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['payment']);
     }
 

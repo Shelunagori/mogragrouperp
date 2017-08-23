@@ -518,6 +518,8 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(6) input").val(amount_after_misc.toFixed(2));
 		
 			var discount=parseFloat($(this).find("td:nth-child(7) input").val());
+			//var discount=(discount.toFixed(2));
+			
 			if(!discount){ discount=0; }
 			if($(this).find('td:nth-child(7) input[type="checkbox"]').is(':checked')==true){
 				var amount_after_discount=amount_after_misc*(100-discount)/100;
@@ -596,29 +598,48 @@ $(document).ready(function() {
 			row_total=row_total+other;
 			total_for_rate=total_for_rate+other;
 			total_other=total_other+other;
-			
+			//alert(row_total);
+			row_amount=total_for_rate/qty;
 			$(this).find("td:nth-child(12) input").val(row_total.toFixed(2));
-			$(this).find("td:nth-child(13) input").val((total_for_rate/qty).toFixed(2));
+			$(this).find("td:nth-child(13) input").val((row_amount).toFixed(2));
 			
 			row_total=parseFloat(row_total.toFixed(2));
 			//row_total=row_total.toFixed(2);
 			total_row_amount=total_row_amount+row_total;
-			
+			//alert(total_row_amount);
 			
 		});
+		//total_discount=parseFloat(total_discount.toFixed(2));
 		$('input[name="total_amount"]').val(total_amount.toFixed(2));
-		$('input[name="total_discount"]').val(truncateToDecimals(total_discount));
-		$('input[name="total_pnf"]').val(truncateToDecimals(total_pnf));
-		$('input[name="total_ex"]').val(truncateToDecimals(total_ex));
+		$('input[name="total_discount"]').val(total_discount.toFixed(2));
+		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
+		$('input[name="total_ex"]').val(total_ex.toFixed(2));
 		$('input[name="total_saletax"]').val(total_cst.toFixed(2));
 		$('input[name="total_other_charges"]').val(total_other.toFixed(2));
-		$('input[name="total"]').val(total_row_amount.toFixed(2));
+		
+		
+		total_discount=parseFloat(total_discount.toFixed(2));
+		total_amount=parseFloat(total_amount.toFixed(2));
+		total_pnf=parseFloat(total_pnf.toFixed(2));
+		total_ex=parseFloat(total_ex.toFixed(2));
+		total_cst=parseFloat(total_cst.toFixed(2));
+		total_other=parseFloat(total_other.toFixed(2));
+		
+		var total_data = total_amount-total_discount+total_pnf+total_ex+total_cst+total_other;
+		//alert(total_data);
+		$('input[name="total"]').val(total_data.toFixed(2));
 	}
    
 	  function truncateToDecimals(num, dec = 2) {
 		  const calcDec = Math.pow(10, dec);
 		  return Math.trunc(num * calcDec) / calcDec;
 	}
+	
+	function floorFigure(figure, decimals){
+    if (!decimals) decimals = 2;
+    var d = Math.pow(10,decimals);
+    return (parseInt(figure*d)/d).toFixed(decimals);
+};
 	////////////////  Validation  ////////////////////////
 	
 	jQuery.validator.addMethod("noSpace", function(value, element) { 
@@ -657,20 +678,13 @@ $(document).ready(function() {
 		errorElement: 'span', //default input error message container
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
-		ignore: ":hidden,[readonly=readonly]",
+		
 		rules: {
-			advance: {
-				min:0,
-			},
-			cheque_no :{
-				required: true,
-			},
+			
 		
 		},
 		messages: {
-			'reference_no[]': {
-				remote: "Reference no. is alredy taken."
-			},
+		
 		},
 		errorPlacement: function (error, element) { // render error placement for each input type
 			if (element.parent(".input-group").size() > 0) {
@@ -712,16 +726,12 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 
-		submitHandler: function (form) {
+		submitHandler: function (form3) {
 			$('#add_submit').prop('disabled', true);
 			$('#add_submit').text('Submitting.....');
 			success3.show();
 			error3.hide();
-			form[0].submit();
-				
-				
-			
-			// // submit the form
+			form3[0].submit();
 		}
 
 	});
@@ -748,16 +758,11 @@ $(document).ready(function() {
 			}else if(is_input){
 				var url='<?php echo $this->Url->build(['controller'=>'InvoiceBookings','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/<?php echo $v_LedgerAccount->id; ?>/'+i;
+				
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
 							noSpace: true,
-							notEqualToGroup: ['.ref_number'],
-							remote: {
-								url: url,
-							},
-							messages: {
-								remote: "Not an unique."
-							}
+							
 						});
 			}
 			var is_ref_old_amount=$(this).find("td:nth-child(3) input:eq(0)").length;
@@ -771,7 +776,7 @@ $(document).ready(function() {
 		
 		var is_tot_input=$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").length;
 		if(is_tot_input){
-			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: "#grand-total" });
+			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: "#total" });
 		}
 	}
 	
@@ -822,9 +827,11 @@ $(document).ready(function() {
 		var total_ref=0;
 		$("table.main_ref_table tbody tr").each(function(){
 			var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+			
+			//am=am.toFixed(2);
 			if(!am){ am=0; }
+			
 			total_ref=total_ref+am;
-			 
 		});
 		
 		var on_acc=main_amount-total_ref; 

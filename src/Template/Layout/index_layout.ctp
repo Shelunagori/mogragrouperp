@@ -688,16 +688,20 @@ select
 									<li><?php $today =date('d-m-Y');
 										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 									</li>
+									<li><?php $today =date('d-m-Y');
+										echo $this->Html->link('GST Sales Man Report',array('controller'=>'Invoices','action'=>'salesManReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+									</li>
 							</ul>
 						</li>
 						
-						<li><?php $today =date('d-m-Y');
-						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
+					<li>
+						<?php $today =date('d-m-Y');
+						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Inventory Report',array('controller'=>'ItemLedgers','action'=>'inventoryDailyReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report',array('escape'=>false)); ?></li>	
-						<!--<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Item Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
-						<?php } ?> -->
+						
+						<?php } ?>
 						<?php if(in_array(37,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Balance Sheet','/ledger-Accounts/Balance-Sheet',array('escape'=>false)); ?></li>
 						<?php } ?>

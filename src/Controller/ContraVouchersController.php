@@ -24,6 +24,12 @@ class ContraVouchersController extends AppController
         
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->ContraVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
         $this->paginate = [
             'contain' => []
         ];
@@ -54,7 +60,7 @@ class ContraVouchersController extends AppController
         }])->order(['voucher_no'=>'DESC']));
         
 
-        $this->set(compact('contravouchers','url'));
+        $this->set(compact('contravouchers','url','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['contravouchers']);
     }
 	
@@ -137,7 +143,9 @@ class ContraVouchersController extends AppController
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
         $st_year_id = $session->read('st_year_id');
-        $financial_year = $this->ContraVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_year = $this->ContraVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
@@ -347,7 +355,7 @@ class ContraVouchersController extends AppController
         }else{
             $ReceivedFroms_selected='no';
         }
-        $this->set(compact('contravoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate'));
+        $this->set(compact('contravoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['contravoucher']);
 
     }
@@ -367,8 +375,12 @@ class ContraVouchersController extends AppController
         $s_employee_id=$this->viewVars['s_employee_id'];
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-        $st_year_id = $session->read('st_year_id');
-    $financial_year = $this->ContraVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+      
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->ContraVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->ContraVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
         
         $contravoucher = $this->ContraVouchers->get($id, [
             'contain' => ['ContraVoucherRows']
@@ -608,7 +620,7 @@ class ContraVouchersController extends AppController
             $ReceivedFroms_selected='no';
         }
         
-        $this->set(compact('contravoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate'));
+        $this->set(compact('contravoucher', 'bankCashes', 'receivedFroms', 'financial_year', 'BankCashes_selected', 'ReceivedFroms_selected', 'old_ref_rows','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['contravoucher']);
 
     }
