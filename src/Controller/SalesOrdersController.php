@@ -134,17 +134,7 @@ class SalesOrdersController extends AppController
     }
 	
 	
-	 public function report($status=null)
-    { 
-		$SalesOrderRows=$this->SalesOrders->SalesOrderRows->find();
-		$data=[];
-		foreach($SalesOrderRows as $SalesOrderRow){
-			if($SalesOrderRow->quantity < $SalesOrderRow->processed_quantity ){
-				$data[$SalesOrderRow->sales_order_id]=$SalesOrderRow->processed_quantity-$SalesOrderRow->quantity;
-			}
-		}
-		pr($data); exit;
-	}
+
 	public function exportExcel($status=null)
     {
 		$this->viewBuilder()->layout('');
@@ -211,7 +201,12 @@ class SalesOrdersController extends AppController
         $this->set('_serialize', ['salesOrders']);
     }
 	
-	
+	public function report(){
+		echo "hello"; 
+		//$this->viewBuilder()->layout('');
+		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.id' =>117]);
+		pr($Quotations);exit;
+	}
 	
 
     /**
@@ -1105,6 +1100,7 @@ class SalesOrdersController extends AppController
 		$this->set(compact('salesorder','id'));
     }
 	
+<<<<<<< HEAD
 	public function getClosedQuotations(){
 		
 		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.status' =>'Closed']);
@@ -1123,4 +1119,7 @@ class SalesOrdersController extends AppController
 		}
 		pr($data);exit;
 	}
+=======
+
+>>>>>>> 28e58fe9f1bb624948a25f1756466d48e3a6d6d7
 }

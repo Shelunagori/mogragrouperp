@@ -4,7 +4,7 @@
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Ledger Account</span>
+			<span class="caption-subject font-blue-steel uppercase">Inventory Daily Report</span>
 		</div>
 		
 
@@ -70,12 +70,12 @@
 						
 						<?php $flag=1; }?>
 						<td style="vertical-align: top !important;"><?php echo $itemData['item']['name']; ?></td>
-						<?php if($itemData['in_out']=="Out"){ ?>
+						<?php if($itemData['in_out']=="In"){ ?>
 						<td style="vertical-align: top !important;"><?php echo $itemData['quantity']; ?></td>
 						<?php }else{ ?>
 						<td style="vertical-align: top !important;"><?php echo "-"; ?></td>
 						<?php } ?>
-						<?php if($itemData['in_out']=="In"){ ?>
+						<?php if($itemData['in_out']=="Out"){ ?>
 						<td><?php echo $itemData['quantity']; ?></td>
 						<?php }else{ ?>
 						<td><?php echo "-"; ?></td>
