@@ -980,6 +980,8 @@ class ItemLedgersController extends AppController
 					
 					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
 					$voucher_no[$key][]=($SaleReturn->sr1.'/SR-'.str_pad($SaleReturn->sr2, 3, '0', STR_PAD_LEFT).'/'.$SaleReturn->sr3.'/'.$SaleReturn->sr4);
+					$link1 = ['controller'=>'SaleReturns','action' => 'View'];
+					$link[$key]=$link1;
 				}
 				
 				

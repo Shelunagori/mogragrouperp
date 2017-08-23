@@ -1736,7 +1736,7 @@ class InvoicesController extends AppController
 								]);
 								$query->execute();
 								
-							}else{echo"dfdF";exit;
+							}else{
 								$ReferenceBalance=$this->Invoices->ReferenceBalances->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'reference_no'=>$ref_row->ref_no])->first();
 								$ReferenceBalance=$this->Invoices->ReferenceBalances->get($ReferenceBalance->id);
 								$ReferenceBalance->debit=$ReferenceBalance->debit+$ref_row->ref_amount;

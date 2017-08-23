@@ -134,17 +134,7 @@ class SalesOrdersController extends AppController
     }
 	
 	
-	 public function report($status=null)
-    { 
-		$SalesOrderRows=$this->SalesOrders->SalesOrderRows->find();
-		$data=[];
-		foreach($SalesOrderRows as $SalesOrderRow){
-			if($SalesOrderRow->quantity < $SalesOrderRow->processed_quantity ){
-				$data[$SalesOrderRow->sales_order_id]=$SalesOrderRow->processed_quantity-$SalesOrderRow->quantity;
-			}
-		}
-		pr($data); exit;
-	}
+
 	public function exportExcel($status=null)
     {
 		$this->viewBuilder()->layout('');
@@ -211,7 +201,12 @@ class SalesOrdersController extends AppController
         $this->set('_serialize', ['salesOrders']);
     }
 	
-	
+	public function report(){
+		echo "hello"; 
+		//$this->viewBuilder()->layout('');
+		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.id' =>117]);
+		pr($Quotations);exit;
+	}
 	
 
     /**
@@ -1105,22 +1100,5 @@ class SalesOrdersController extends AppController
 		$this->set(compact('salesorder','id'));
     }
 	
-	public function getClosedQuotations(){
-		
-		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.status' =>'Closed']);
-		//pr(count($Quotations));exit;
-		$data=[];$i=1;
-		foreach($Quotations as $quotation){
-			
-			$SalesOrdersData = $this->SalesOrders->exists(['quotation_id' => $quotation->id]);
-			
-			if($SalesOrdersData){
-				$Quotation = $this->SalesOrders->Quotations->get(['id' => $quotation->id]);
-				$data[] = $Quotation->id ;
-			}
-			
-			pr($data);
-		}
-		exit;
-	}
+
 }

@@ -47,7 +47,7 @@ class PurchaseReturnsController extends AppController
         $this->paginate = [
             'contain' => ['InvoiceBookings', 'Companies']
         ];
-        $purchaseReturns = $this->paginate($this->PurchaseReturns->find()->where($where)->order(['PurchaseReturns.id' => 'DESC']));
+        $purchaseReturns = $this->paginate($this->PurchaseReturns->find()->where($where)->where(['PurchaseReturns.company_id'=>$st_company_id])->order(['PurchaseReturns.id' => 'DESC']));
 
         $this->set(compact('purchaseReturns'));
         $this->set('_serialize', ['purchaseReturns']);
