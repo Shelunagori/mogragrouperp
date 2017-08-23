@@ -61,7 +61,7 @@
 							<?php if(date("d-m-Y",strtotime($payment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($payment->transaction_date)) <= $end_date) {
 							 echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $payment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));
 							}else{
-								echo "The Month has Close";
+								echo "Financial Month has been Closed";
 							}							 ?>
 							
 							</td>

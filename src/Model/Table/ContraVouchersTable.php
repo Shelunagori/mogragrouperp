@@ -41,6 +41,7 @@ class ContraVouchersTable extends Table
 
         $this->belongsTo('VouchersReferences');
         $this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
         $this->belongsTo('ReferenceBalances');
         $this->belongsTo('ReferenceDetails');
         $this->belongsTo('Ledgers');

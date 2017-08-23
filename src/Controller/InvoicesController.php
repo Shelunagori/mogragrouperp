@@ -2811,7 +2811,7 @@ class InvoicesController extends AppController
 									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
 		}else {
 			if(!empty($item_category) && empty($item_group) && empty($item_sub_group)){  
-				
+			
 				$invoices = 	$this->Invoices->find()
 									->contain(['Customers','InvoiceRows'])
 									->matching(
@@ -2822,7 +2822,7 @@ class InvoicesController extends AppController
 									->order(['Invoices.id' => 'DESC'])
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
-						
+					
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
 									->matching('SalesOrderRows.Items', function ($q) use($item_category) { 
@@ -2836,12 +2836,12 @@ class InvoicesController extends AppController
 				$OpenQuotations =$this->Invoices->SalesOrders->Quotations->find()
 									  ->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
 									  ->matching('QuotationRows.Items', function ($q) use($item_category) { 
-										return $q->where(['Items.item_category_id' => $item_category]);
+										return $q->where(['ItemCategories.id' => $item_category]);
 										})
 									  ->order(['Quotations.created_on' => 'DESC'])
 									  ->where($where2)
-									  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
-									  
+									 ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+									 
 				$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
 										->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
 										 ->matching('QuotationRows.Items', function ($q) use($item_category) { 

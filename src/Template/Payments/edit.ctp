@@ -20,7 +20,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
 		$transaction_date=strtotime($payment->transaction_date);
 if($transaction_date <  $start_date ) {
-	echo "The Month has Close";
+	echo "Financial Month has been Closed";
 } else {
 ?>
 

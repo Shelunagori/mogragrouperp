@@ -26,7 +26,10 @@ class JournalVouchersController extends AppController
         ];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
-		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->JournalVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$where = [];
 		
 		$vouch_no = $this->request->query('vouch_no');
@@ -51,7 +54,7 @@ class JournalVouchersController extends AppController
        $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
 
         $this->set('journalVoucher');
-		$this->set(compact('journalVouchers','url'));
+		$this->set(compact('journalVouchers','url','financial_month_first','financial_month_last'));
 		$this->set('_serialize', ['journalVouchers']);
     }
 	
@@ -130,8 +133,11 @@ class JournalVouchersController extends AppController
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
-        $st_year_id = $session->read('st_year_id');
+		
+		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->JournalVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		
 		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
@@ -359,7 +365,7 @@ class JournalVouchersController extends AppController
 		}else{
 			$ReceivedFroms_selected='no';
 		}
-        $this->set(compact('journalVoucher', 'ledgers','companies','Errorledgers','financial_year','JournalVoucherLedger','receivedFroms','ReceivedFroms_selected','chkdate'));
+        $this->set(compact('journalVoucher', 'ledgers','companies','Errorledgers','financial_year','JournalVoucherLedger','receivedFroms','ReceivedFroms_selected','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['journalVoucher']);
     }
 
@@ -376,8 +382,11 @@ class JournalVouchersController extends AppController
 		$s_employee_id=$this->viewVars['s_employee_id'];
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
-        $st_year_id = $session->read('st_year_id');
+        
+		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->JournalVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->JournalVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
     
         $journalVoucher = $this->JournalVouchers->get($id, [
             'contain' => ['Companies','JournalVoucherRows'=>['ReceivedFroms'],'Companies','Creator']
@@ -661,7 +670,7 @@ class JournalVouchersController extends AppController
 		$invoice=$this->JournalVouchers->Invoices->find()->where(['company_id' => $st_company_id]);
 		
         $companies = $this->JournalVouchers->Companies->find('all');
-        $this->set(compact('journalVoucher','receivedFroms','ReceivedFroms_selected', 'companies','ledgers','financial_year','financial_year_data','old_ref_rows','chkdate','grn','invoice'));
+        $this->set(compact('journalVoucher','receivedFroms','ReceivedFroms_selected', 'companies','ledgers','financial_year','financial_year_data','old_ref_rows','chkdate','grn','invoice','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['journalVoucher']);
     }
 

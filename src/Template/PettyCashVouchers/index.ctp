@@ -49,7 +49,9 @@
                             <?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $pettycashvoucher->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
 							<?php if(date("d-m-Y",strtotime($pettycashvoucher->transaction_date)) >= $start_date && date("d-m-Y",strtotime($pettycashvoucher->transaction_date)) <= $end_date) {
 							  echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $pettycashvoucher->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
-							} ?>
+							}else{
+								echo "Financial Month has been Closed";
+							}							 ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

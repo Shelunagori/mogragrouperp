@@ -11,8 +11,17 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 }
 .help-block-error{
     font-size: 10px;
-}u
+}
 </style>
+<?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		$transaction_date=strtotime($pettycashvoucher->transaction_date);
+if($transaction_date <  $start_date ) {
+	echo "Financial Month has been Closed";
+} else { ?>
 <?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
 <?php  $cr_dr_options=['Dr'=>'Dr','Cr'=>'Cr']; ?>
 <div class="portlet light bordered">
@@ -226,6 +235,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
     <?= $this->Form->end() ?>
     </div>
 </div>
+<?php }  ?>
 <?php  echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 
 <script>
