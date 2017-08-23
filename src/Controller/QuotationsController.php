@@ -587,4 +587,11 @@ class QuotationsController extends AppController
 	   return $this->response;
 	}
 	
+	public function getClosedQuotations(){
+		
+		$Quotations =$this->Quotations->find()->where(['Quotations.status' =>'Closed']);
+		foreach($Quotations as $quotation){
+			$SalesOrdersData=$this->Quotations->SalesOrders->exists(['invoice_id'=>$invoice_id,'left_item_id'=>$q_item_id]);
+		}
+	}
 }

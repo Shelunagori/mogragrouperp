@@ -3,7 +3,7 @@
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Sales Report</span>
+			<span class="caption-subject font-blue-steel uppercase">GST Sales Man Report</span>
 		</div>
 		<div class="actions">
 			

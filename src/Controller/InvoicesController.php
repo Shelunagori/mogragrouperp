@@ -2696,6 +2696,7 @@ class InvoicesController extends AppController
 						->order(['Invoices.id' => 'DESC'])
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+						
 				$interStateInvoice = $this->Invoices->find()->where($where)
 									->contain(['Customers','InvoiceRows'])
 									->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
@@ -2799,7 +2800,7 @@ class InvoicesController extends AppController
 									})
 								  ->order(['Quotations.created_on' => 'DESC'])
 								  ->where($where2)
-								  ->where(['Quotations.status'=>'Pending','company_id'=>$st_company_id]);
+								  ->where(['Quotations.status IN'=>'Pending','company_id'=>$st_company_id]);
 								  
 			$ClosedQuotations =$this->Invoices->SalesOrders->Quotations->find()
 									->contain(['Customers','QuotationRows'=>['Items'=>['ItemCategories']]])
@@ -2808,7 +2809,7 @@ class InvoicesController extends AppController
 									})
 									->order(['Quotations.created_on' => 'DESC'])
 									->where($where3)
-									->where(['Quotations.status'=>'Closed','company_id'=>$st_company_id]);
+									->where(['Quotations.status IN'=>'Closed','company_id'=>$st_company_id]);
 		}else {
 			if(!empty($item_category) && empty($item_group) && empty($item_sub_group)){  
 			

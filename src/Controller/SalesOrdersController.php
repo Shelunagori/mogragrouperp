@@ -429,7 +429,7 @@ class SalesOrdersController extends AppController
 				if(!empty($status_close)){
 				$query = $this->SalesOrders->Quotations->query();
 					$query->update()
-						->set(['status' => 'Closed'])
+						->set(['status' => 'Converted Into Sales Order'])
 						->where(['id' => $quotation_id])
 						->execute();
 				} else{
@@ -1104,4 +1104,23 @@ class SalesOrdersController extends AppController
 		
 		$this->set(compact('salesorder','id'));
     }
+	
+	public function getClosedQuotations(){
+		
+		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.status' =>'Closed']);
+		//pr(count($Quotations));exit;
+		$data=[];$i=1;
+		foreach($Quotations as $quotation){
+			
+			$SalesOrdersData = $this->SalesOrders->exists(['quotation_id' => $quotation->id]);
+			
+			if($SalesOrdersData){
+				$Quotation = $this->SalesOrders->Quotations->get(['id' => $quotation->id]);
+				$data[] = $Quotation->id ;
+			}
+			
+			pr($data);
+		}
+		exit;
+	}
 }

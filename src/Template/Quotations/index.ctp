@@ -254,16 +254,21 @@ $(document).ready(function() {
 	$('#close_popup_btn').die().live("click",function() {
 		var quote_id=$(this).attr('quote_id');
 		var reason_id=$('.radio_text:checked').val();
-		var url="<?php echo $this->Url->build(['controller'=>'Quotations','action'=>'Close']); 
-		?>";
-		url=url+'/'+quote_id+'/'+reason_id,
 		
-		$.ajax({
-			url: url,
-		}).done(function(response) {
-			location.reload();
-		});		
-		
+		if((quote_id) && (reason_id)){
+			var url="<?php echo $this->Url->build(['controller'=>'Quotations','action'=>'Close']); 
+			?>";
+			url=url+'/'+quote_id+'/'+reason_id,
+			
+			$.ajax({
+				url: url,
+			}).done(function(response) {
+				location.reload();
+			});
+			
+		}else{
+			alert("Please Select Atleast one reason For Close Quotaion");		
+		}		
     });
 	
 	$('.close_btn').die().live("click",function() {
