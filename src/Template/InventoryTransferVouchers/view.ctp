@@ -191,17 +191,19 @@ margin-bottom: 0;
 		
 	</tbody>
 </table>
-</br>
+</div>
+<?php } ?>
+<div style="border:solid 1px ;"></div>
 <table width="96%">
 	<tr>
-	    <td align="left" valign="top">
-		   <table >
+	    <td align="left" >
+		   <table class="divFooter" >
 			     <tr>
-					<td valign="top" align="left"><b>Narration</b></td>
+					<td valign="top" align="left" width="10%"><b>Narration</b></td>
 					<td width="20" align="center">:</td>
-					<td valign="top"><?= h($inventoryTransferVoucher->narration) ?></td>
+					<td ><?= h($inventoryTransferVoucher->narration) ?></td>
 				</tr>
-			</table >
+			</table ></br></br></br>
 		</td>
 		<td align="right">
 		<table >
@@ -221,16 +223,7 @@ margin-bottom: 0;
 	</tr>
 </table>
 </div>
-<?php } ?>
-	<div style="border:solid 1px ;"></div>
-<table width="100%" class="divFooter">
-	<tr>
-		<td align="right">
-	
-		</td>
-	</tr>
-</table>	
-</div>
+
 
  
  

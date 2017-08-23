@@ -1119,8 +1119,8 @@ class SalesOrdersController extends AppController
 				$data[] = $Quotation->id ;
 			}
 			
-			pr($data);
+			
 		}
-		exit;
+		pr($data);exit;
 	}
 }

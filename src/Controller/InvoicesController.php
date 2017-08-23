@@ -3099,4 +3099,40 @@ class InvoicesController extends AppController
 		<?php exit;
 	}
 	
+	public function getInvoiceData(){
+		
+		$salesOrders =$this->Invoices->SalesOrders->find()->contain(['SalesOrderRows' =>function($q){
+			return $q->where(['SalesOrderRows.quantity > SalesOrderRows.processed_quantity']);
+		}]);
+		
+		$datas=[];
+		foreach($salesOrders as $salesOrder){
+			//pr(sizeof($salesOrder->sales_order_rows));
+			if(sizeof($salesOrder->sales_order_rows) > 0){
+				$datas[]=$salesOrder->id;
+				//$data[]
+			}
+		}
+		$data1=[];
+		foreach($datas as $key=>$data){
+			$AccountGroupsexists = $this->Invoices->exists(['sales_order_id' => $data]);
+			if($AccountGroupsexists){
+			$data1[]=$data;
+				
+			}
+		}
+		
+		
+		/* $salesOrders = $this->Invoices->SalesOrders->find()
+				->leftJoinWith('SalesOrderRows', function ($q) {
+					return $q->where(['SalesOrderRows.quantity > SalesOrderRows.processed_quantity']);
+				})
+				->group(['SalesOrders.id'])
+				->autoFields(true)
+				; */
+	//pr($salesOrders->toArray());
+	pr($data1);
+	exit;
+	
+	}
 }

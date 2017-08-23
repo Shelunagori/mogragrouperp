@@ -61,7 +61,14 @@ margin-bottom: 0;
 					 <tr>
 						<td><b>Created On</b></td>
 						<td width="20" align="center">:</td>
-						<td><?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->created_on))) ?></td>
+						<td>
+						<?php  if(date("d-m-Y",strtotime($inventoryTransferVoucher->created_on))=="01-01-1970"){
+							echo "-";
+						}else{ ?>
+							<?= h(date("d-m-Y",strtotime($inventoryTransferVoucher->created_on))) ?> 
+						<?php } ?>
+						
+						</td>
 					</tr> 
 				</table>
 			</td>

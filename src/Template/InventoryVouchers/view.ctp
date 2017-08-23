@@ -44,14 +44,14 @@ margin-bottom: 0;
 			<table>
 				<tr>
 					<td><b>Inventory Voucher No</b></td>
-					<td width="20" align="center">:</td>
+					<td width="20%" align="center">:</td>
 					<td>
 					<?= h('IV/'.str_pad($inventoryVoucher->iv_number, 4, '0', STR_PAD_LEFT)) ?>
 					</td>
 				</tr>
 				<tr>
 					<td><b>Invoice No</b></td>
-						<td width="20" align="center">:</td>
+						<td width="20%" align="center">:</td>
 						<td><?= h($inventoryVoucher->invoice->in1.'/IN'.str_pad($inventoryVoucher->invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$inventoryVoucher->invoice->in3.'/'.$inventoryVoucher->invoice->in4) ?>
 					</td>
 				</tr>
@@ -62,24 +62,27 @@ margin-bottom: 0;
 				<table>
 					<tr>
 						<td><b>Transaction Date</b></td>
-						<td width="20" align="center">:</td>
+						<td width="20%" align="center">:</td>
 						<td><?php  if(!empty($inventoryVoucher->transaction_date)){ echo date("d-m-Y",strtotime($inventoryVoucher->transaction_date));}else{echo '-';} ?></td>
 					</tr>
 					<tr>
 						<td><b>Created On</b></td>
-						<td width="20" align="center">:</td>
+						<td width="20%" align="center">:</td>
 						<td><?php  if(!empty($inventoryVoucher->created_on)){ echo date("d-m-Y",strtotime($inventoryVoucher->created_on));}else{echo '-';} ?></td>
 					</tr>
 				</table>
 			</td>
 	</tr>
-	<tr>
-		<td align="left" >
-			<table>
+	
+</table>
+<table>
+<tr>
+		<td width="50%" valign="top" align="left" >
+			<table width="100%">
 				<tr>
-					<td width="32%"><b>Customer Name</b></td>
-					<td  width="20" align="center">:</td>
-					<td ><?php echo $inventoryVoucher->invoice->customer->customer_name ."(". $inventoryVoucher->invoice->customer->alias.")"; ?></td>
+					<td width="20%"><b>Customer Name</b></td>
+					<td width="5%">:</td>
+					<td width="72%"><?php echo $inventoryVoucher->invoice->customer->customer_name ."(". $inventoryVoucher->invoice->customer->alias.")"; ?></td>
 				</tr>
 			</table>
 	   </td>
@@ -166,10 +169,10 @@ margin-bottom: 0;
 <table width="96%">
 	<tr>
 	    <td align="left">
-			<table width="100%" class="divFooter" style="margin-top: -26px;">
+			<table  class="divFooter" >
 				<tr>
-					<td align="left" width="10%"><label style="font-size: 14px;font-weight: bold;">Narration</label></td>
-					<td  width="2%">:</td>
+					<td valign="top" align="left" width="10%"><b>Narration</b></td>
+					<td  width="2%" align="center">:</td>
 					<td>
 					<?= h($inventoryVoucher->narration) ?>
 					</td>
