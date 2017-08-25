@@ -398,7 +398,7 @@ class PurchaseReturnsController extends AppController
 			$purchaseReturn->transaction_date = date("Y-m-d",strtotime($this->request->data['transaction_date']));
 			$purchaseReturn->edited_on = date("Y-m-d"); 
 			$purchaseReturn->edited_by=$this->viewVars['s_employee_id'];
-			pr($purchaseReturn); exit;
+			//pr($purchaseReturn); exit;
 			
             if ($this->PurchaseReturns->save($purchaseReturn)) {
 				$this->PurchaseReturns->Ledgers->deleteAll(['voucher_id' => $purchaseReturn->id, 'voucher_source' => 'Purchase Return']);

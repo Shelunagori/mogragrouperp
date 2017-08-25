@@ -198,7 +198,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	}?>
 			
 	<div style="overflow: auto;">
-		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value="1"/>
+		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value=""/>
 			<table  class="table tableitm" id="main_tb" border="1">
 				<thead>
 						<tr >
@@ -557,6 +557,10 @@ $(document).ready(function() {
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
+			checked_row_length: {
+				required: true,
+				min : 1,
+			},
 			company_id:{
 				required: true
 			},
@@ -586,24 +590,14 @@ $(document).ready(function() {
 			},
 			employee_id: {
 				  required: true
-			},
-			customer_tin: {
-				  required: true
-			},
-			checked_row_length: {
-				  required: true
-			},
-			
+			}
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
 			checked_row_length: {
-				required : "Please select atleast one row."
-			},
-			customer_tin: {
-				required: "Can't generate Invoice,Customer has not TIN"
+				required : "Please select atleast one row.",
+				min : "Please select atleast one row."
 			}
-			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -749,12 +743,13 @@ $(document).ready(function() {
 	
 	function rename_rows(){
 		var list = new Array();
-		var p=0;
+		var p=0;var i=0;
 		$("#main_tb tbody tr.tr1").each(function(){  
 			var row_no=$(this).attr('row_no');
 			
 			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
 			if(val){ 
+				i++;
 				$(this).find('td:nth-child(2) input').attr("name","invoice_rows["+val+"][item_id]").attr("id","invoice_rows-"+val+"-item_id").rules("add", "required");
 				$(this).find('td:nth-child(3) input').removeAttr("readonly").attr("name","invoice_rows["+val+"][quantity]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-quantity").rules("add", "required");
 				$(this).find('td:nth-child(4) input').attr("name","invoice_rows["+val+"][rate]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-rate").rules("add", "required");
@@ -823,12 +818,12 @@ $(document).ready(function() {
 				//$('#main_tb tbody tr.tr2').attr({ name:"q", readonly:"readonly"}).rules( "remove", "required" );
 				$(uncheck).css('background-color','#FFF');
 				var serial_l=$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').length;
-				if(serial_l>0){
-				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
-				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
+					if(serial_l>0){
+						$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
+						$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
+					}
 				}
-				
-				}
+				$('input[name="checked_row_length"]').val(i);
 			});
 		}
 		
@@ -881,7 +876,13 @@ $(document).ready(function() {
 				$('input[name="fright_igst_amount"]').val(fright_igst_amount.toFixed(2));
 			}
 			var total_fright=fright_amount+fright_cgst_amount+fright_igst_amount+fright_sgst_amount;
-			$('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+			if(isNaN(total_fright)){
+				 var total_fright = 0; 
+				 $('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+			}else{
+				$('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+
+			}
 	}
 	
 	calculate_total();	

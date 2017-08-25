@@ -177,7 +177,7 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
 										<td valign="top">:</td>
-										<td width="25%" valign="top" >'. h($invoice->delivery_description) .'</td>
+										<td width="95%" valign="top" >'. h($invoice->delivery_description) .'</td>
 									</tr>
 								</table>
 							</td>
@@ -361,6 +361,7 @@ if(sizeof($grand_total)==2)
 }else{ $paisa_text=""; }
 
 $basic_value=$invoice->fright_amount+$total_taxable_value;
+
 $html.='
 <table width="100%" class="table_rows" >
 	<tbody>
@@ -482,7 +483,7 @@ $html.='
 </body>
 </html>';
 
-//echo $html; exit; 
+	//echo $html; exit; 
 
 $name='Invoice-'.h(($invoice->in1.'_IN'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'_'.$invoice->in3.'_'.$invoice->in4));
 $dompdf->loadHtml($html);
