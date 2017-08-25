@@ -242,11 +242,14 @@ $html.='
 		<tbody>
 ';
 
-$sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++; 
+$sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++;
+// pr($invoiceRows);
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top"><span>'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></span></td>
+		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top">
+		<span> HSN Code : '.$invoiceRows->item->hsn_code .'<div style="height:'.$invoiceRows->height.'"></div></span>
+		<span>'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></span></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';

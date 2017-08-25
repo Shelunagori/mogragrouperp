@@ -509,8 +509,9 @@ class InventoryVouchersController extends AppController
 				])
 				->execute();
 
-
-			} //pr($toupdate_rate); exit;
+			} 
+				$this->Flash->success(__('The inventory voucher has been Saved.'));
+				
 			$total_rate_out=$total_rate/$q_item_qty;
 			$query= $this->InventoryVouchers->ItemLedgers->query();
 					$query->insert(['item_id', 'quantity', 'source_model', 'source_id','in_out','rate','company_id','left_item_id','processed_on','rate_updated'])
