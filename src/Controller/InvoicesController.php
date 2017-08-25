@@ -2089,7 +2089,7 @@ class InvoicesController extends AppController
 					$this->Invoices->Ledgers->save($ledger); 
 				}
 				
-								if($invoice->fright_cgst_amount > 0){
+					if($invoice->fright_cgst_amount > 0){
 					$cg_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'SaleTaxes','source_id'=>$invoice->fright_cgst_percent])->first();
 					$ledger = $this->Invoices->Ledgers->newEntity();
 					$ledger->ledger_account_id = $cg_LedgerAccount->id;
