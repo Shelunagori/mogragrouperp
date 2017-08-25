@@ -591,8 +591,17 @@ $(document).ready(function() {
 			
 			var other=parseFloat($(this).find("td:nth-child(18) input").val());
 			if(!other){ other=0; }
-			row_total=row_total+other;
+			//row_total=row_total+other;
 			total_other=total_other+other;
+			
+			var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+			taxable_value=parseFloat(taxable_value.toFixed(2));
+			cgst_amount=parseFloat(cgst_amount.toFixed(2));
+			sgst_amount=parseFloat(sgst_amount.toFixed(2));
+			igst_amount=parseFloat(igst_amount.toFixed(2));
+			other=parseFloat(other.toFixed(2));
+			row_total=taxable_value+cgst_amount+sgst_amount+igst_amount+other;
+			
 			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
 			var taxable_amount=parseFloat($(this).find("td:nth-child(11) input").val());
 			$(this).find("td:nth-child(20) input").val((taxable_amount/qty).toFixed(5));

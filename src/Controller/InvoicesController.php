@@ -1849,7 +1849,9 @@ class InvoicesController extends AppController
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees']
         ]);
-		// pr($invoice->edited_by); exit;
+		
+		$invoice_old_data = $this->Invoices->get($id, ['contain' => ['InvoiceRows']]);
+		// pr($invoice_old_data); exit;
 		 $edited_by=$invoice->edited_by;
 		 $edited_on=$invoice->edited_on;
 		$closed_month=$this->viewVars['closed_month'];
@@ -1871,7 +1873,6 @@ class InvoicesController extends AppController
 			@$ItemSerialNumber_In[$invoice_row->item_id]= explode(",",$invoice_row->item_serial_number);
 			$ItemSerialNumber[$invoice_row->item_id]=$this->Invoices->ItemSerialNumbers->find()->where(['item_id'=>$invoice_row->item_id,'status'=>'In','company_id'=>$st_company_id])->orWhere(['ItemSerialNumbers.invoice_id'=>$invoice->id,'item_id'=>$invoice_row->item_id,'status'=>'Out','company_id'=>$st_company_id])->toArray();
 			}
-				
 		}
 		
 		 $Em = new FinancialYearsController;
@@ -1928,6 +1929,17 @@ class InvoicesController extends AppController
 					$invoice_row->item_serial_number=$item_serial_no;
 				}
 			}
+			
+			
+			foreach($invoice_old_data->invoice_rows as $invoice_row){
+				//pr($invoice_row->quantity);
+				$salesorderrowupdate=$this->Invoices->SalesOrderRows->find()->where(['sales_order_id'=>$invoice->sales_order_id,'item_id'=>$invoice_row->item_id])->first();
+				$salesorderrowupdate->processed_quantity=$salesorderrowupdate->processed_quantity-$invoice_row->quantity;
+				$this->Invoices->SalesOrderRows->save($salesorderrowupdate);
+				//pr($salesorderrowupdate->processed_quantity); exit;
+			} 
+			//exit;
+			
 			if ($this->Invoices->save($invoice)) {
 				
 				$flag=0;
@@ -2119,7 +2131,7 @@ class InvoicesController extends AppController
 				
 				$qq=0; foreach($invoice->invoice_rows as $invoice_rows){
 					$salesorderrow=$this->Invoices->SalesOrderRows->find()->where(['sales_order_id'=>$invoice->sales_order_id,'item_id'=>$invoice_rows->item_id])->first();
-					$salesorderrow->processed_quantity=$salesorderrow->processed_quantity-@$invoice->getOriginal('invoice_rows')[$qq]->quantity+$invoice_rows->quantity;
+					$salesorderrow->processed_quantity=$salesorderrow->processed_quantity+$invoice_rows->quantity;
 					$this->Invoices->SalesOrderRows->save($salesorderrow);
 					$qq++; 
 				}

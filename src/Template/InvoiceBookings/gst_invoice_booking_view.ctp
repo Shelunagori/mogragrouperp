@@ -24,7 +24,7 @@ margin-bottom: 0;
 <style type="text/css" media="print">
 @page {
     size: auto;   /* auto is the initial value */
-    margin: 0 5px 0 20px;  /* this affects the margin in the printer settings */
+    margin: 0 5px 0 5px;  /* this affects the margin in the printer settings */
 }
 </style>
 <a class="btn  blue hidden-print margin-bottom-5 pull-right" onclick="javascript:window.print();">Print <i class="fa fa-print"></i></a>
@@ -139,6 +139,7 @@ margin-bottom: 0;
 				<?php }else { ?>
 				<th style="text-align: center;" colspan="2" >IGST</th> 
 				<?php } ?>
+				<th style="text-align: center;" rowspan="2" >Others</th>
 				<th style="text-align: center;" rowspan="2" >Total</th>
 			</tr>
 			<tr> 
@@ -158,26 +159,45 @@ margin-bottom: 0;
 			</tr>
 		</thead>
 	<tbody>
-	<?php $Total=0; $total_sale_tax=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
+	<?php $Total=0; $total_sale_tax=0; $total_cgst=0; $total_sgst=0; $total_igst=0; $total_taxable=0; 
+	
+	foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 		<tr>
 			<td>&nbsp;<?= h(++$page_no) ?></td>
 			<td ><?= $invoice_booking_row->item->name; ?></td>
 			<td align="center" width="6%"><?= $invoice_booking_row->quantity; ?></td>
-			<td align="right"><?=  number_format($invoice_booking_row->rate, 2, '.', '');?></td>
-			<td align="right"><?= number_format($invoice_booking_row->quantity*$invoice_booking_row->rate, 2, '.', '');?></td>
-			<td align="right"><?= $invoice_booking_row->gst_discount_per."%"; ?></td>
-			<td align="right"><?= $invoice_booking_row->discount; ?></td>
-			<td align="right"><?= $invoice_booking_row->gst_pnf_per.'%'; ?></td>
-			<td align="right"><?= $invoice_booking_row->pnf; ?></td>
-			<td align="right"><?= $invoice_booking_row->taxable_value; ?></td>
+			<td align="right"><?=  number_format($invoice_booking_row->unit_rate_from_po, 2, '.', '');?></td>
+			<td align="right"><?= number_format($invoice_booking_row->quantity*$invoice_booking_row->unit_rate_from_po, 2, '.', '');?></td>
+			<?php if($invoice_booking_row->gst_discount_per==0){ ?>
+			<td align="right"></td>
+			<td align="right"></td>
+			<?php }else{ ?>
+			<td align="right"><?=number_format($invoice_booking_row->gst_discount_per, 2, '.', '');?></td>
+			<td align="right"><?=number_format($invoice_booking_row->discount, 2, '.', '');?></td>
+			<?php } ?>
+			<?php if($invoice_booking_row->gst_pnf_per==0){ ?>
+			<td align="right"></td>
+			<td align="right"></td>
+			<?php }else{ ?>
+			<td align="right"><?= number_format($invoice_booking_row->gst_pnf_per, 2, '.', ''); ?></td>
+			<td align="right"><?= number_format($invoice_booking_row->pnf, 2, '.', ''); ?></td>
+			<?php } ?>
+			
+			<td align="right"><?= $invoice_booking_row->taxable_value; $total_taxable=$total_taxable+$invoice_booking_row->taxable_value; ?></td>
 			<?php if($purchase_acc->name=='Purchase GST'){ ?>
 			<td align="right"><?php if(!empty($cgst_per[$invoice_booking_row->id]['tax_figure'])){echo $cgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
-			<td align="right"><?= $invoice_booking_row->cgst; ?></td>
+			<td align="right"><?= $invoice_booking_row->cgst; 
+								$total_cgst= $total_cgst+$invoice_booking_row->cgst;  ?></td>
 			<td align="right"><?php if(!empty($sgst_per[$invoice_booking_row->id]['tax_figure'])){ echo $sgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
-			<td align="right"><?= $invoice_booking_row->sgst; ?></td>
+			<td align="right"><?= $invoice_booking_row->sgst; $total_sgst= $total_sgst+$invoice_booking_row->sgst;   ?></td>
 			<?php }else{ ?>
 			<td align="right"><?php if(!empty($igst_per[$invoice_booking_row->id]['tax_figure'])){ echo $igst_per[$invoice_booking_row->id]['tax_figure'].'%'; } ?></td>
-			<td align="right"><?= $invoice_booking_row->igst; ?></td>
+			<td align="right"><?= $invoice_booking_row->igst; $total_igst= $total_igst+$invoice_booking_row->igst;   ?></td>
+			<?php } ?>
+			<?php if($invoice_booking_row->other_charges==0){ ?>
+			<td align="right"></td>
+			<?php }else{ ?>
+			<td align="right"><?= $invoice_booking_row->other_charges; ?></td>
 			<?php } ?>
 			<td align="right"><?= $invoice_booking_row->total; ?></td>
 		</tr>
@@ -207,15 +227,46 @@ margin-bottom: 0;
 		endforeach; ?>
 	</tbody>
 	<tfoot>
-
+		
 		<tr>
-			
-			<?php $col_span=12; if($purchase_acc->name=='Purchase GST'){ $col_span=14;} ?>
+			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total Taxable</td>
+			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
+			number_format($total_taxable, 2, '.', '');
+			 ?></td>
+		</tr>
+		<?php if($purchase_acc->name=='Purchase GST'){ ?>
+		<tr>
+			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total CGST</td>
+			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
+			number_format($total_cgst, 2, '.', '');
+			 ?></td>
+		</tr>
+		<tr>
+			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total SGST</td>
+			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
+			number_format($total_sgst, 2, '.', '');
+			 ?></td>
+		</tr>
+		<?php }else { ?>
+		<tr>
+			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total IGST</td>
+			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
+			number_format($total_igst, 2, '.', '');
+			 ?></td>
+		</tr>
+		<?php } ?>
+		<tr>
+			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
 			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total</td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');
 			 ?></td>
 		</tr>
+		
 	</tfoot>
 </table>
 <div style="border:solid 0px ;"></div>

@@ -341,7 +341,7 @@ class InvoiceBookingsController extends AppController
 					$ledger->transaction_date = $invoiceBooking->supplier_date;
 					$this->InvoiceBookings->Ledgers->save($ledger);
 					
-					//ledger posting for PURCHASE ACCOUNT
+					//ledger posting for VAT ACCOUNT
 					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
 					$ledger->ledger_account_id = $invoiceBooking->ledger_account_for_vat;
 					$ledger->debit = $invoiceBooking->total_saletax;
@@ -1009,7 +1009,6 @@ class InvoiceBookingsController extends AppController
 					$this->InvoiceBookings->Grns->save($grn);
 				}
 				$accountReferences = $this->InvoiceBookings->AccountReferences->get(2);
-				if($invoiceBooking->purchase_ledger_account==$cst_purchase){
 					//ledger posting for PURCHASE ACCOUNT
 					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
 					$ledger->ledger_account_id = $invoiceBooking->purchase_ledger_account;
@@ -1020,29 +1019,26 @@ class InvoiceBookingsController extends AppController
 					$ledger->voucher_source = 'Invoice Booking';
 					$ledger->transaction_date = $invoiceBooking->supplier_date;
 					$this->InvoiceBookings->Ledgers->save($ledger);
-				}else{
-					//ledger posting for PURCHASE ACCOUNT
-					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
-					$ledger->ledger_account_id = $invoiceBooking->purchase_ledger_account;
-					$ledger->debit = $invoiceBooking->taxable_value-$invoiceBooking->total_saletax;
-					$ledger->credit = 0;
-					$ledger->voucher_id = $invoiceBooking->id;
-					$ledger->company_id = $invoiceBooking->company_id;
-					$ledger->voucher_source = 'Invoice Booking';
-					$ledger->transaction_date = $invoiceBooking->supplier_date;
-					$this->InvoiceBookings->Ledgers->save($ledger);
 					
-					//ledger posting for PURCHASE ACCOUNT
+					$ledger_account_for_discount=$this->InvoiceBookings->LedgerAccounts->find()->where(['invoice_booking_other_charge_post'=>1,'name'=>'Discount','company_id'=>$st_company_id])->first();
 					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
-					$ledger->ledger_account_id = $invoiceBooking->ledger_account_for_vat;
-					$ledger->debit = $invoiceBooking->total_saletax;
-					$ledger->credit = 0;
+					$ledger->ledger_account_id = $ledger_account_for_discount['id'];
+					
+					if($invoiceBooking->total_other_charge < 0){
+						$ledger->credit = abs($invoiceBooking->total_other_charge);
+						$ledger->debit = 0;
+					}else if($invoiceBooking->total_other_charge > 0){ 
+						$ledger->debit = $invoiceBooking->total_other_charge;
+						$ledger->credit = 0;	
+					}
 					$ledger->voucher_id = $invoiceBooking->id;
 					$ledger->company_id = $invoiceBooking->company_id;
 					$ledger->voucher_source = 'Invoice Booking';
 					$ledger->transaction_date = $invoiceBooking->supplier_date;
+					if($invoiceBooking->total_other_charge != 0){
+						
 					$this->InvoiceBookings->Ledgers->save($ledger);
-				}
+					}
 				
 				
 				//Ledger posting for SUPPLIER
@@ -1201,17 +1197,10 @@ class InvoiceBookingsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $invoiceBooking = $this->InvoiceBookings->patchEntity($invoiceBooking, $this->request->data);
 			$invoiceBooking->supplier_date=date("Y-m-d",strtotime($invoiceBooking->supplier_date)); 
-			$cst_purchase=0;
-					if($st_company_id=='25'){
-						$cst_purchase=35;
-					}else if($st_company_id=='26'){
-						$cst_purchase=161;
-					}else if($st_company_id=='27'){
-						$cst_purchase=309;
-					}
+			
 			$invoiceBooking->edited_on = date("Y-m-d"); 
 			$invoiceBooking->edited_by=$this->viewVars['s_employee_id'];
-			
+			//pr($invoiceBooking); exit;
             if ($this->InvoiceBookings->save($invoiceBooking)) { 
 				$ref_rows=@$this->request->data['ref_rows'];
 				$invoiceBookingId=$invoiceBooking->id;
@@ -1292,7 +1281,7 @@ class InvoiceBookingsController extends AppController
 				}
 				$accountReferences = $this->InvoiceBookings->AccountReferences->get(2);
 				
-				if($invoiceBooking->purchase_ledger_account==$cst_purchase){ 
+				
 					//ledger posting for PURCHASE ACCOUNT
 					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
 					$ledger->ledger_account_id = $invoiceBooking->purchase_ledger_account;
@@ -1304,30 +1293,26 @@ class InvoiceBookingsController extends AppController
 					$ledger->transaction_date = $invoiceBooking->supplier_date;
 					$this->InvoiceBookings->Ledgers->save($ledger);
 					
-				}else{
-					//ledger posting for PURCHASE ACCOUNT
+					$ledger_account_for_discount=$this->InvoiceBookings->LedgerAccounts->find()->where(['invoice_booking_other_charge_post'=>1,'name'=>'Discount','company_id'=>$st_company_id])->first();
 					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
-					$ledger->ledger_account_id = $invoiceBooking->purchase_ledger_account;
-					$ledger->debit = $invoiceBooking->taxable_value-$invoiceBooking->total_saletax;
-					$ledger->credit = 0;
+					$ledger->ledger_account_id = $ledger_account_for_discount['id'];
+					
+					if($invoiceBooking->total_other_charge < 0){
+						$ledger->credit = abs($invoiceBooking->total_other_charge);
+						$ledger->debit = 0;
+					}else if($invoiceBooking->total_other_charge > 0){ 
+						$ledger->debit = $invoiceBooking->total_other_charge;
+						$ledger->credit = 0;	
+					}
 					$ledger->voucher_id = $invoiceBooking->id;
 					$ledger->company_id = $invoiceBooking->company_id;
 					$ledger->voucher_source = 'Invoice Booking';
 					$ledger->transaction_date = $invoiceBooking->supplier_date;
+					if($invoiceBooking->total_other_charge != 0){
+						
 					$this->InvoiceBookings->Ledgers->save($ledger);
-					
-					
-					//ledger posting for PURCHASE ACCOUNT
-					$ledger = $this->InvoiceBookings->Ledgers->newEntity();
-					$ledger->ledger_account_id = $invoiceBooking->ledger_account_for_vat;
-					$ledger->debit = $invoiceBooking->total_saletax;
-					$ledger->credit = 0;
-					$ledger->voucher_id = $invoiceBooking->id;
-					$ledger->company_id = $invoiceBooking->company_id;
-					$ledger->voucher_source = 'Invoice Booking';
-					$ledger->transaction_date = $invoiceBooking->supplier_date;
-					$this->InvoiceBookings->Ledgers->save($ledger);
-				}
+					}
+				
 				
 				
 				//Ledger posting for SUPPLIER

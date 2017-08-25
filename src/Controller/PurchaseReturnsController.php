@@ -210,7 +210,7 @@ class PurchaseReturnsController extends AppController
 							->set(['purchase_return_quantity'=>$purchase_return_row->quantity])
 							->where(['invoice_booking_id' => $invoiceBooking->id,'item_id'=>$purchase_return_row->item_id])
 							->execute();
-				}
+					}
 						
 						$query = $this->PurchaseReturns->InvoiceBookings->query();
 						$query->update()
@@ -398,15 +398,13 @@ class PurchaseReturnsController extends AppController
 			$purchaseReturn->transaction_date = date("Y-m-d",strtotime($this->request->data['transaction_date']));
 			$purchaseReturn->edited_on = date("Y-m-d"); 
 			$purchaseReturn->edited_by=$this->viewVars['s_employee_id'];
+			pr($purchaseReturn); exit;
 			
             if ($this->PurchaseReturns->save($purchaseReturn)) {
 				$this->PurchaseReturns->Ledgers->deleteAll(['voucher_id' => $purchaseReturn->id, 'voucher_source' => 'Purchase Return']);
 				$this->PurchaseReturns->ItemLedgers->deleteAll(['source_id' => $purchaseReturn->id, 'source_model' => 'Purchase Return','company_id'=>$st_company_id]);
 			
 				foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
-					
-					pr(['item_id' => $purchase_return_row->item_id,'in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id]); exit;
-					
 					
 					
 					$results=$this->PurchaseReturns->ItemLedgers->find()->where(['ItemLedgers.item_id' => $purchase_return_row->item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id])->first();

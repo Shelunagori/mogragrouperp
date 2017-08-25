@@ -68,8 +68,26 @@
 						<th style="text-align:right;">GST @ 28 % </th>
 					</tr>
 				</thead>
-				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesTotal12=0; $salesTotal18=0; $salesTotal28=0; 
-				foreach ($invoices as $invoice):  ?>
+				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesTotal12=0; $salesTotal18=0; $salesTotal28=0; $salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0;
+				foreach ($invoices as $invoice):  
+					foreach($invoice->invoice_rows as $invoice_row){
+						if($invoice_row['cgst_percentage']==8 && $invoice_row['sgst_percentage']==11){
+								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
+								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->row_total;
+								 $salesTotal12=$salesTotal12+$invoice->grand_total;
+						}elseif($invoice_row['cgst_percentage']==9 && $invoice_row['sgst_percentage']==12){
+								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
+								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->row_total;
+								 $salesTotal12=$salesTotal12+$invoice->grand_total;
+						}
+						
+						}	 
+				
+				
+				?>
+				
+				
+				
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
@@ -90,6 +108,7 @@
 						<td>
 							<?php  if($invoice->invoice_rows[0]['cgst_percentage']==8 && $invoice->invoice_rows[0]['sgst_percentage']==11){
 										echo $invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount;
+										
 										$salesGst12=$salesGst12+($invoice->total_cgst_amount+$invoice->total_sgst_amount+ $invoice->fright_cgst_amount+ $invoice->fright_sgst_amount);
 								}else{
 									echo "-";
@@ -327,7 +346,7 @@
 						</td>
 						<td>
 							<?php  if($invoiceBooking->invoice_booking_rows[0]['cgst_per']==21 && $invoiceBooking->invoice_booking_rows[0]['sgst_per']==22){
-										echo $cgstAmt;
+										echo $cgstAmt+$sgstAmt;
 										$salesGst28=$salesGst28+($cgstAmt+$sgstAmt);
 								}else{
 									echo "-";

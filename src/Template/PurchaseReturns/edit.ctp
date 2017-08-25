@@ -126,6 +126,11 @@ $this->Form->templates([
 				</thead>
 				<tbody>
 					<?php
+					foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
+						//pr($purchase_return_row);
+					}
+					
+					
 					$q=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 						<tr class="tr1" row_no='<?php echo @$invoice_booking_row->id; ?>'>
 							<td ><?php echo ++$q; ?></td>

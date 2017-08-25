@@ -43,7 +43,7 @@ class InventoryTransferVouchersController extends AppController
 			$where['InventoryTransferVouchers.transaction_date <=']=$To;
 		}
 		
-		$inventory_transfer_vouchs = $this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']);
+		$inventory_transfer_vouchs = $this->paginate($this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']));
 		//pr($inventory_transfer_vouchs->toArray());exit;
 		
 		
