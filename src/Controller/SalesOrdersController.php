@@ -1100,7 +1100,7 @@ class SalesOrdersController extends AppController
 		$this->set(compact('salesorder','id'));
     }
 	
-<<<<<<< HEAD
+
 	public function getClosedQuotations(){
 		
 		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.status' =>'Closed']);
@@ -1119,7 +1119,5 @@ class SalesOrdersController extends AppController
 		}
 		pr($data);exit;
 	}
-=======
 
->>>>>>> 28e58fe9f1bb624948a25f1756466d48e3a6d6d7
 }
