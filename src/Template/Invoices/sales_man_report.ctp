@@ -195,8 +195,38 @@
 						<th style="text-align:right;">Expected Delivery Date</th>
 					</tr>
 				</thead>
-				<?php $i=1; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIgst12=0; $salesIgst18=0; $salesIgst28=0; 
-				foreach ($SalesOrders as $SalesOrder):   ?>
+				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
+							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; 
+							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; 
+				foreach ($SalesOrders as $SalesOrder):  //pr($SalesOrder->sales_order_rows); 
+					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0;
+					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; 
+					foreach($SalesOrder->sales_order_rows as $invoice_row){
+						if($invoice_row['cgst_per']==8 && $invoice_row['sgst_per']==11){ 
+								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
+								//pr($salesGst12); exit;
+								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->total;
+						}else if($invoice_row['cgst_per']==9 && $invoice_row['sgst_per']==12){
+								$salesGst18=$salesGst18+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
+								 $salesGstRowTotal18=$salesGstRowTotal18+$invoice_row->total;
+							}
+						else if($invoice_row['cgst_per']==10 && $invoice_row['sgst_per']==13){
+								$salesGst28=$salesGst28+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
+								 $salesGstRowTotal28=$salesGstRowTotal28+$invoice_row->total;
+							}
+						else if($invoice_row['igst_per']==14){
+								$salesIGst12=$salesIGst12+($invoice_row->igst_amount);
+								 $salesIGstRowTotal12=$salesIGstRowTotal12+$invoice_row->total;
+						}else if($invoice_row['igst_per']==15){
+								$salesIGst18=$salesIGst18+($invoice_row->igst_amount);
+								 $salesIGstRowTotal18=$salesIGstRowTotal18+$invoice_row->total;
+							}
+						else if($invoice_row['igst_per']==16){
+								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
+								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->total;
+							}
+						}
+						?>
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
@@ -204,52 +234,53 @@
 							<?php echo $this->Html->link( $SalesOrder->so1.'/SO-'.str_pad($SalesOrder->so2, 3, '0', STR_PAD_LEFT).'/'.$SalesOrder->so3.'/'.$SalesOrder->so4,[
 							'controller'=>'SalesOrders','action' => 'gstConfirm',$SalesOrder->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($SalesOrder->created_on)); ?></td>
-						<td><?php echo $SalesOrder->customer->customer_name.'('.$SalesOrder->customer->alias.')'?></td>
+						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
+						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
 						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==8 && $SalesOrder->sales_order_rows[0]['sgst_per']==11){
-										echo $SalesOrder->total;
-										$salesGst12=$salesGst12+($SalesOrder->total);
+							<?php  if($salesGstRowTotal12 > 0){
+										echo $salesGstRowTotal12;
+										$salesTotal12=$salesTotal12+$salesGstRowTotal12;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==9 && $SalesOrder->sales_order_rows[0]['sgst_per']==12){ 
-										echo $SalesOrder->total;
-										$salesGst18=$salesGst18+($SalesOrder->total);
+							<?php  if($salesGstRowTotal18 > 0){
+										echo $salesGstRowTotal18;
+										$salesTotal18=$salesTotal18+$salesGstRowTotal18;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['cgst_per']==10 && $SalesOrder->sales_order_rows[0]['sgst_per']==13){
-										echo $SalesOrder->total;
-										$salesGst28=$salesGst28+($SalesOrder->total);
+							<?php  if($salesGstRowTotal28 > 0){
+										echo $salesGstRowTotal28;
+										$salesTotal28=$salesTotal28+$salesGstRowTotal28;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==14){
-										echo $SalesOrder->total;
-										$salesIgst12=$salesIgst12+($SalesOrder->total);
+							<?php  if($salesIGstRowTotal12 > 0){
+										echo $salesIGstRowTotal12;
+										$salesTotalIGST12=$salesTotalIGST12+$salesIGstRowTotal12;
+								}else{
+									echo "-";
+								} ?>
+						</td>
+						
+						<td>
+							<?php  if($salesIGstRowTotal18 > 0){
+										echo $salesIGstRowTotal18;
+										$salesTotalIGST18=$salesTotalIGST18+$salesIGstRowTotal18;
 								}else{
 									echo "-";
 								} ?>
 						</td>
 						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==15){
-										echo $SalesOrder->total;
-										$salesIgst18=$salesIgst18+($SalesOrder->total);
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td>
-							<?php  if($SalesOrder->sales_order_rows[0]['igst_per']==16){
-										echo $SalesOrder->total;
-										$salesIgst28=$salesIgst28+($SalesOrder->total);
+							<?php  if($salesIGstRowTotal28 > 0){
+										echo $salesIGstRowTotal28;
+										$salesTotalIGST28=$salesTotalIGST28+$salesIGstRowTotal28;
 								}else{
 									echo "-";
 								} ?>
@@ -260,13 +291,12 @@
 				<?php $i++; endforeach; ?>
 				<tr>
 					<td colspan="4"></td>
-					<td align="right"><?php echo $this->Number->format($salesGst12,['places'=>2]); ?></td>
-					<td align="right"><?php echo $this->Number->format($salesGst18,['places'=>2]); ?></td>
-					<td align="right"><?php echo $this->Number->format($salesGst28,['places'=>2]); ?></td>
-					<td align="right"><?php echo $this->Number->format($salesIgst12,['places'=>2]); ?></td>
-					<td align="right"><?php echo $this->Number->format($salesIgst18,['places'=>2]); ?></td>
-					<td align="right"><?php echo $this->Number->format($salesIgst28,['places'=>2]); ?></td>
-					<td align="right"></td>
+					<td align="right"><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></td>
+					<td align="right"><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></td>
 				</tr>
 				</tbody>
 				</table>
