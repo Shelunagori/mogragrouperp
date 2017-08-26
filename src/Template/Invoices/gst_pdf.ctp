@@ -135,7 +135,7 @@ $html = '
 				$html.='
 					<table  valign="center" width="100%"  class="table2">
 						<tr>
-							<td width="50%" valign="top" text-align="right" >
+							<td width="50%" valign="top" text-align="right">
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								
 								'. $this->Text->autoParagraph(h($invoice->customer_address));
@@ -211,7 +211,7 @@ $gst_hide="style:display:;padding-top:8px;padding-bottom:5px;";
 	}
 //echo $igst_hide;
 $html.='
-<table width="100%" class="table_rows ">
+<table width="100%" class="table_rows">
 		<thead>
 			<tr>
 				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>

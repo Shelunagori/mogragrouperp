@@ -280,14 +280,14 @@ margin-bottom: 0;
 			</table>
 			<table width="100%">
 			    <tr>
-					<td colspan="2"><b>Reference Number:</b></td>
+					<td colspan="2"><b>Reference Numbers:</b></td>
 				</tr>
 				<?php foreach($ReferenceDetails as $ReferenceDetail){ ?>
 				<tr>
 				    <td width="22%"></td>
-				    <td width="18%"><?php echo $ReferenceDetail->reference_no; ?></td>
+				    <td width="18%">Ref No - <?php echo $ReferenceDetail->reference_no; ?></td>
 				    <td width="5%"align="left">:</td>
-					<td align="left" style="padding-left:10px;"><?php echo $ReferenceDetail->credit; ?></td>
+					<td align="left" style="padding-left:10px;"><?php echo $ReferenceDetail->credit; ?> Cr</td>
 				</tr>
 				<?php } ?>
 			</table>
