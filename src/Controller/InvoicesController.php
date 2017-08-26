@@ -143,6 +143,35 @@ class InvoicesController extends AppController
 		$this->set(compact('url'));
 	}
 	
+	public function gstSalesReturn($status=null){
+		$this->viewBuilder()->layout('index_layout');
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$sales_return=$this->request->query('sales_return');
+		$status=$this->request->query('status');
+		@$invoice_no=$this->request->query('invoice_no');	
+		$where=[];
+		$status = 0 ;
+			if(!empty($invoice_no)){
+			$invoice_no=$this->request->query('invoice_no');	
+			if(!empty($invoice_no)){
+				$where['Invoices.in2 LIKE']=$invoice_no;
+			}
+		
+			$invoices = $this->Invoices->find()->contain(['Customers','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+			$status=1;
+			
+		}
+		$this->set(compact('invoices','status','sales_return','InvoiceRows','invoice_no'));
+        $this->set('_serialize', ['invoices']);
+		$this->set(compact('url'));
+	}
+	
+	
+	
+	
 	public function DueInvoices($customer_id=null)
     {
 		$this->viewBuilder()->layout('index_layout');
@@ -393,8 +422,7 @@ class InvoicesController extends AppController
 		}
 
 		$session = $this->request->session();
-		$st_year_id = $session->read('st_year_id');
-		
+				$st_year_id = $session->read('st_year_id');
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 			   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
@@ -1423,15 +1451,8 @@ class InvoicesController extends AppController
 			]);
 			//pr($sales_order->customer->district->state); exit;
 			$c_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$sales_order->customer->id])->first();
-			
-			
 			$process_status='Pulled From Sales-Order';
-			
-			/* $sale_tax_ledger_accounts=[];
-			foreach($sales_order->sales_order_rows as $sales_order_row){
-				$st_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['source_id'=>$sales_order_row->sale_tax->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id])->first();
-				$sale_tax_ledger_accounts[$sales_order_row->sale_tax->id]=$st_LedgerAccount->id;
-			} */
+		
 		}
 
 		$session = $this->request->session();
@@ -2399,7 +2420,7 @@ class InvoicesController extends AppController
 				}
 			$fright_ledger_account=$this->Invoices->LedgerAccounts->get(@$invoice->fright_ledger_account);
 		}
-	//pr($fright_ledger_cgst); exit;
+	//pr($invoice); exit;
         //$this->set('invoice', $invoice);
 		$this->set(compact('invoice','cgst_per','sgst_per','igst_per','fright_ledger_cgst','fright_ledger_sgst','fright_ledger_igst','fright_ledger_account'));
        // $this->set('_serialize', ['invoice','cgst_per','sgst_per','igst_per']);

@@ -136,15 +136,43 @@ class FinancialMonthsController extends AppController
 	
 	public function closed($id = null)
     {
-        $financialMonth = $this->FinancialMonths->get($id);
-		$financialMonth->status='Closed';
-		 if ($this->FinancialMonths->save($financialMonth)) {
-            $this->Flash->success(__('The Financial Month has been Closed.'));
-        } else {
-            $this->Flash->error(__('The Financial Month could not be Closed. Please, try again.'));
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+        $financialMonth = $this->FinancialMonths->get($id); 
+		$first="01";
+		$last="31";
+		$start_date=date("Y-m-d",strtotime($first.'-'.$financialMonth->month));
+		$end_date=date("Y-m-d",strtotime($last.'-'.$financialMonth->month));
+		
+		$grns = $this->FinancialMonths->Grns->find()
+		->where(['status'=>'Pending','company_id'=>$st_company_id])
+		->where(function($exp) use($start_date,$end_date){
+					return $exp->between('date_created', $start_date, $end_date, 'date');
+		})->toArray();
+		
+		$Invoices = $this->FinancialMonths->Invoices->find()
+		->where(['inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'Yes','company_id'=>$st_company_id])
+		->where(function($exp) use($start_date,$end_date){
+					return $exp->between('date_created', $start_date, $end_date, 'date');
+		})->toArray();
+	 
+		//pr($Invoices); exit;
+		
+		if(sizeof($grns) == 0 && $sizeof($Invoices) == 0 ){ 
+			$financialMonth->status='Closed';
+			$this->FinancialMonths->save($financialMonth);
+				$this->Flash->success(__('The Financial Month has been Closed.'));
+				return $this->redirect(['action' => 'index']);
+        }else{ 
+			if(sizeof($grns) > 0 ){
+				$this->Flash->error(__('The Financial Month could not be Closed. Grn Are open.'));
+			}
+			if(sizeof($Invoices) > 0 ){
+				$this->Flash->error(__('The Financial Month could not be Closed. Invoice Are open.'));
+			}
+				return $this->redirect(['action' => 'index']);
         }
-		return $this->redirect(['action' => 'index']);
-    }
+	}
 	
 	public function open($id = null)
     {

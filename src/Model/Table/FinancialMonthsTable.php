@@ -39,6 +39,14 @@ class FinancialMonthsTable extends Table
         $this->belongsTo('FinancialYears', [
             'foreignKey' => 'financial_year_id',
             'joinType' => 'INNER'
+        ]); 
+		$this->belongsTo('Grns', [
+            'foreignKey' => 'grn_id',
+            'joinType' => 'INNER'
+        ]);
+		$this->belongsTo('Invoices', [
+            'foreignKey' => 'invoice_id',
+            'joinType' => 'INNER'
         ]);
     }
 

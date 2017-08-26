@@ -739,7 +739,8 @@ select
 					<ul class="sub-menu">
 						<?php 
 						 if(in_array(133,$allowed_pages)){
-						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/Invoices/SalesReturnIndex?sales_return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Non-Gst','/Invoices/SalesReturnIndex?sales_return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Gst','/Invoices/gstSalesReturn?sales_return=true',array('escape'=>false)).'</li>';
 						 }
 						 ?>
 						<?php 
