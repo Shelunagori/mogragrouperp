@@ -774,6 +774,20 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php 
+						 if(in_array(129,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="fa fa-recycle"></i> Non-Gst','/InvoiceBookings/PurchaseReturnIndex?purchase-return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="fa fa-qrcode"></i> Gst','/InvoiceBookings/gstPurchaseReturn?purchase-return=true',array('escape'=>false)).'</li>';
+						 }
+						 ?>
+						<?php 
+						if(in_array(131,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="fa fa-file-text"></i> View','/PurchaseReturns/',array('escape'=>false)).'</li>';
+						}
+						?>
+					</ul>
+					
+					<!--<ul class="sub-menu">
+						<?php 
 						if(in_array(129,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/InvoiceBookings/PurchaseReturnIndex?purchase-return=true',array('escape'=>false)).'</li>';
 						}?>
@@ -781,7 +795,7 @@ select
 						if(in_array(131,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/PurchaseReturns/',['escape'=>false]).'</li>';
 						}?>
-					</ul>
+					</ul>-->
 				</li>
 				<?php } ?>
 				<?php if(in_array(17,$allowed_pages) || in_array(18,$allowed_pages) || in_array(123,$allowed_pages)){ ?>

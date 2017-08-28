@@ -17,6 +17,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	</div>
 	<div class="portlet-body form">
 		<?= $this->Form->create($saleReturn,['id'=>'form_sample_3']) ?>
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 		
 		<div class="form-body">
 			<div class="row">
@@ -36,7 +42,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-6 control-label">Transaction Date</label>
 						<div class="col-md-6">
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required']); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required','data-date-start-date' 
+					=>$start_date ,'data-date-end-date' => $end_date]); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year

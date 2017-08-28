@@ -28,9 +28,20 @@
 	</div>
 	<div class="portlet-body form">
 	<?= $this->Form->create($inventoryTransferVoucher,['id'=>'form_sample_3']) ?>
+	<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 	<div class="row">
 		<div class="col-md-3">
-		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" value="<?php echo  date('d-m-Y')?>">
+		<label>Transaction Date</label>
+		<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','data-date-start-date' 
+										=>$start_date ,'data-date-end-date' => $end_date,'value'=>date('d-m-Y')]); ?>
+		
+		
+		
 		</div>
 		<div class="col-md-6">
 			<label>Narration</label>

@@ -91,6 +91,13 @@ class InventoryVouchersController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$invoice_id=@(int)$this->request->query('invoice');
 		$item_id=@(int)$this->request->query('item_id');
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->InventoryVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+		
+		$financial_month_first = $this->InventoryVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->InventoryVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$invoice_data=$this->InventoryVouchers->Invoices->get($invoice_id,[
 			'contain'=>['InvoiceRows'=>['Items']]
 		]);
@@ -273,7 +280,7 @@ class InventoryVouchersController extends AppController
 					}
 				);
         //$invoiceRows = $this->InventoryVouchers->InvoiceRows->find('list', ['limit' => 200]);
-        $this->set(compact('inventoryVoucher', 'Invoice','items','last_iv_no','job_card_data','invoice_data'));
+        $this->set(compact('inventoryVoucher', 'Invoice','items','last_iv_no','job_card_data','invoice_data','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['inventoryVoucher']);
     }
 
@@ -296,7 +303,13 @@ class InventoryVouchersController extends AppController
 		
         $s_employee_id=$this->viewVars['s_employee_id'];
 
-			   $st_year_id = $session->read('st_year_id');
+			   	$st_year_id = $session->read('st_year_id');
+				$financial_year = $this->InventoryVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+				 
+				
+				$financial_month_first = $this->InventoryVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+				$financial_month_last = $this->InventoryVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+				
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 			   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
@@ -687,7 +700,7 @@ class InventoryVouchersController extends AppController
 		//pr($Items->toArray()); exit;	
 		//pr($q_qty); exit;	
         $InventoryVoucher_detail=$this->InventoryVouchers->find()->where(['invoice_id'=>$invoice_id])->toArray();	
-		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status','InventoryVoucher_detail','display_quantity'));
+		$this->set(compact('display_items','invoice_id','q_item_id','InventoryVoucherRows','Items','InventoryVoucher','selected_seials','q_qty','q_sno','is_in_made','q_ItemSerialNumbers','JobCardRowsData','chkdate','job_card_qty','status','InventoryVoucher_detail','display_quantity','financial_month_first','financial_month_last'));
     }
 
     /**

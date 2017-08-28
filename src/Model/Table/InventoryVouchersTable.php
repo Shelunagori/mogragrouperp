@@ -74,7 +74,8 @@ class InventoryVouchersTable extends Table
 		$this->belongsTo('InvoiceRows');
 		$this->belongsTo('ItemSerialNumbers');
 		$this->belongsTo('Customers');
-		
+		$this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
     }
 
     /**

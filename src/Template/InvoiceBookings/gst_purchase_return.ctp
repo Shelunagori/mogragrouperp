@@ -3,7 +3,7 @@
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Invoice Book</span>
-			<?php if($purchase_return=="true"){ echo " :Select Invoice Booking for Purchase Return"; } ?>
+			<?php if($purchase_return=="true"){ echo " :Select GST Invoice Booking for Purchase Return"; } ?>
 		</div>
 	<div class="portlet-body">
 		<div class="row">
@@ -14,7 +14,7 @@
 							<tr>
 								<td width="18%">
 									<div class="input-group" style="" id="pnf_text">
-									<span class="input-group-addon">IB-No</span><input type="text" name="book_no" class="form-control input-sm" placeholder="Invoice Booking No" value="<?php echo @$book_no; ?>">
+									<span class="input-group-addon">IB-No</span><input type="text" name="book_no" class="form-control input-sm" placeholder="GST Invoice Booking No" value="<?php echo @$book_no; ?>">
 									</div>
 								</td>
 								<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
@@ -28,7 +28,7 @@
 					<table class="table table-condensed">
 						<tbody>
 							<tr>
-								<td width="18%">
+								<td width="20%">
 									<input type='hidden' name='status' value='1' />
 									<div class="input-group" style="" id="pnf_text">
 									<span class="input-group-addon">IB-No</span><input type="text" name="book_no" class="form-control input-sm" placeholder="Invoice Booking No" value="<?php echo @$book_no; ?>">
@@ -43,7 +43,7 @@
 					<thead>
 						<tr>
 							<th width="5%">Sr. No.</th>
-							<th width="15%">Invoice Booking No.</th>
+							<th width="15%">GST Invoice Booking No.</th>
 							<th width="15%">GRN No.</th>
 							<th width="10%">Invoice No.</th>
 							<th width="10%">Supplier Name</th>
@@ -68,7 +68,7 @@
 							<td class="actions">
 								
 								<?php
-								echo $this->Html->link('<i class="fa fa-repeat"></i>Create  Purchase Return','/PurchaseReturns/Add?invoiceBooking='.$invoiceBooking->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+								echo $this->Html->link('<i class="fa fa-repeat"></i> Create  GST Purchase Return','/PurchaseReturns/GstAdd?invoiceBooking='.$invoiceBooking->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								 ?> 
 								</td>
 							</tr>

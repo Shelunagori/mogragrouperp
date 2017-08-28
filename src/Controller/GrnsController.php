@@ -235,8 +235,11 @@ class GrnsController extends AppController
 		
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Grns->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->Grns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Grns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$purchase_order=array();
 		
 		if(!empty($purchase_order_id)){
@@ -346,7 +349,7 @@ class GrnsController extends AppController
         $purchaseOrders = $this->Grns->PurchaseOrders->find('all');
 		
         
-        $this->set(compact('grn', 'purchaseOrders', 'companies','customers','chkdate','financial_year'));
+        $this->set(compact('grn', 'purchaseOrders', 'companies','customers','chkdate','financial_year','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['grn']);
     }
     /**
@@ -367,6 +370,10 @@ class GrnsController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Grns->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+		
+		$financial_month_first = $this->Grns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->Grns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$this->viewBuilder()->layout('index_layout');
 		
 		$grn = $this->Grns->get($id, [
@@ -453,7 +460,7 @@ class GrnsController extends AppController
 			}
         $purchaseOrders = $this->Grns->PurchaseOrders->find('list', ['limit' => 200]);
         $companies = $this->Grns->Companies->find('list', ['limit' => 200]);
-        $this->set(compact('grn', 'purchaseOrders', 'companies','chkdate','financial_year'));
+        $this->set(compact('grn', 'purchaseOrders', 'companies','chkdate','financial_year','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['grn']);
     }
     /**

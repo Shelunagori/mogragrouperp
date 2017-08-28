@@ -156,9 +156,9 @@ class FinancialMonthsController extends AppController
 					return $exp->between('date_created', $start_date, $end_date, 'date');
 		})->toArray();
 	 
-		//pr($Invoices); exit;
+		pr($grns);
 		
-		if(sizeof($grns) == 0 && $sizeof($Invoices) == 0 ){ 
+		if(sizeof($grns) == 0 && sizeof($Invoices) == 0 ){  
 			$financialMonth->status='Closed';
 			$this->FinancialMonths->save($financialMonth);
 				$this->Flash->success(__('The Financial Month has been Closed.'));

@@ -130,7 +130,12 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
 		
+		$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 			
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
 					'ItemCompanies'=> function ($q) use($st_company_id) {
@@ -284,7 +289,7 @@ class InventoryTransferVouchersController extends AppController
             } 
        
         $companies = $this->InventoryTransferVouchers->Companies->find('list', ['limit' => 200]);
-        $this->set(compact('inventoryTransferVoucher', 'companies','display_items','options'));
+        $this->set(compact('inventoryTransferVoucher', 'companies','display_items','options','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['inventoryTransferVoucher']);
     }
 
@@ -326,6 +331,13 @@ class InventoryTransferVouchersController extends AppController
 		$st_company_id = $session->read('st_company_id');
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain(['ItemSerialNumbers'])->toArray();
 	
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+		
+		$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
         $inventoryTransferVouchersout = $this->InventoryTransferVouchers->get($id, [
             'contain' => ['InventoryTransferVoucherRows'=>
 						function($q) use($st_company_id,$id){
@@ -505,7 +517,7 @@ class InventoryTransferVouchersController extends AppController
             }
         }
         $companies = $this->InventoryTransferVouchers->Companies->find('list', ['limit' => 200]);
-        $this->set(compact('inventoryTransferVoucher', 'companies','inventoryTransferVouchersout','inventoryTransferVouchersins','id','display_items'));
+        $this->set(compact('inventoryTransferVoucher', 'companies','inventoryTransferVouchersout','inventoryTransferVouchersins','id','display_items','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['inventoryTransferVoucher']);
     }
 
@@ -632,6 +644,14 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+
+		$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+				
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
 					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
@@ -700,7 +720,7 @@ class InventoryTransferVouchersController extends AppController
 			
 		}
 		
-		$this->set(compact('display_items','inventoryTransferVoucher'));
+		$this->set(compact('display_items','inventoryTransferVoucher','financial_month_first','financial_month_last'));
 	}
 	
 	public function InventoryOut()
@@ -709,6 +729,12 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+
+		$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
 					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
@@ -801,7 +827,7 @@ class InventoryTransferVouchersController extends AppController
 				}
 		
 		}
-		$this->set(compact('display_items','inventoryTransferVoucher'));
+		$this->set(compact('display_items','inventoryTransferVoucher','financial_month_first','financial_month_last'));
 	}
 	
  public function editInventoryOut($id = null)
@@ -810,6 +836,12 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
+			$st_year_id = $session->read('st_year_id');
+				$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+				 
+				
+				$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+				$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
 					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
@@ -922,7 +954,7 @@ class InventoryTransferVouchersController extends AppController
 		
 		
 		
-		$this->set(compact('display_items','inventoryTransferVoucher','inventoryTransferVouchersout','display_items','id'));
+		$this->set(compact('display_items','inventoryTransferVoucher','inventoryTransferVouchersout','display_items','id','financial_month_first','financial_month_last'));
 	}
 	
 		public function editInventoryIn($id=null)
@@ -931,6 +963,12 @@ class InventoryTransferVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
+		$st_year_id = $session->read('st_year_id');
+				$financial_year = $this->InventoryTransferVouchers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+				 
+				
+				$financial_month_first = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+				$financial_month_last = $this->InventoryTransferVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		$display_items = $this->InventoryTransferVouchers->Items->find()->contain([
 					'ItemCompanies'=> function ($q) use($st_company_id) {
 						return $q->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
@@ -1001,7 +1039,7 @@ class InventoryTransferVouchersController extends AppController
 		}
 		
 		
-		$this->set(compact('display_items','inventoryTransferVoucher','inventoryTransferVouchers','display_items','id'));
+		$this->set(compact('display_items','inventoryTransferVoucher','inventoryTransferVouchers','display_items','id','financial_month_first','financial_month_last'));
 		//pr($inventoryTransferVouchersin); exit;
 	}
 	

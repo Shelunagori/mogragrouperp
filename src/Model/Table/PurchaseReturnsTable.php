@@ -43,6 +43,8 @@ class PurchaseReturnsTable extends Table
             'joinType' => 'INNER'
         ]);
 		$this->belongsTo('LedgerAccounts');
+		$this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
 		$this->belongsTo('Vendors');
         $this->belongsTo('Companies', [
             'foreignKey' => 'company_id',

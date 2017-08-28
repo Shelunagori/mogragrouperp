@@ -18,6 +18,12 @@
 	<?php if(!empty($purchase_order)) { ?>
 	<div class="portlet-body form">
 		<?= $this->Form->create($grn,['id'=>'form_sample_3']) ?>
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 		<div class="form-body">
 			<div class="form-body">
 				<div class="row">
@@ -51,7 +57,8 @@
 						<div class="form-group">
 							<label class="control-label">Transaction Date</label>
 							<br/>
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y"),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y"),'data-date-start-date' 
+					=>$start_date ,'data-date-end-date' => $end_date]); ?>
 						</div>
 						<span style="color: red;"><?php if($chkdate == 'Not Found'){  ?>
 					You are not in Current Financial Year

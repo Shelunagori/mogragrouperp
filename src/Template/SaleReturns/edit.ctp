@@ -8,6 +8,15 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	font-size: 10px;
 }
 </style>
+<?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		$transaction_date=strtotime($saleReturn->transaction_date);
+if($transaction_date <  $start_date ) {
+	echo "Financial Month has been Closed";
+} else { ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -17,7 +26,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	</div>
 	<div class="portlet-body form">
 		<?= $this->Form->create($saleReturn,['id'=>'form_sample_3']) ?>
-		
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 		<div class="form-body">
 			<div class="row">
 				<div class="col-md-6">
@@ -35,7 +49,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-6 control-label">Transaction Date</label>
 						<div class="col-md-6">
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required','value'=>date("d-m-Y",strtotime($saleReturn->transaction_date))]); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required','value'=>date("d-m-Y",strtotime($saleReturn->transaction_date)),'data-date-start-date' => $start_date,'data-date-end-date' => $end_date]); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -292,7 +306,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 }
 </style>
 
-
+<?php } ?>
 
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>

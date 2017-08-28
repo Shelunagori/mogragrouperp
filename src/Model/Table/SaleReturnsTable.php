@@ -67,6 +67,7 @@ class SaleReturnsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
         $this->belongsTo('Invoices');
 		$this->belongsTo('LedgerAccounts');
 		$this->belongsTo('AccountReferences');

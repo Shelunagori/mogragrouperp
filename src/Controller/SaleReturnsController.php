@@ -90,6 +90,11 @@ class SaleReturnsController extends AppController
         $saleReturn = $this->SaleReturns->newEntity();
 		$invoice_id=@(int)$this->request->query('invoice');
 		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->SaleReturns->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+		
+		$financial_month_first = $this->SaleReturns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->SaleReturns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 			   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
@@ -417,7 +422,7 @@ class SaleReturnsController extends AppController
         $salesOrders = $this->SaleReturns->SalesOrders->find('list', ['limit' => 200]);
         $employees = $this->SaleReturns->Employees->find('list', ['limit' => 200]);
         $transporters = $this->SaleReturns->Transporters->find('list', ['limit' => 200]);
-        $this->set(compact('saleReturn', 'customers', 'saleTaxes', 'companies', 'salesOrders', 'employees', 'transporters','invoice','Transporter','financial_year_data','ledger_account_details','ledger_account_details_for_fright','c_LedgerAccount','chkdate'));
+        $this->set(compact('saleReturn', 'customers', 'saleTaxes', 'companies', 'salesOrders', 'employees', 'transporters','invoice','Transporter','financial_year_data','ledger_account_details','ledger_account_details_for_fright','c_LedgerAccount','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['saleReturn']);
     }
 
@@ -516,6 +521,11 @@ class SaleReturnsController extends AppController
 		$invoice_id=@(int)$this->request->query('invoice');
 		
 				$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->SaleReturns->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		 
+		
+		$financial_month_first = $this->SaleReturns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->SaleReturns->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 			   $SessionCheckDate = $this->FinancialYears->get($st_year_id);
 			   $fromdate1 = date("Y-m-d",strtotime($SessionCheckDate->date_from));   
 			   $todate1 = date("Y-m-d",strtotime($SessionCheckDate->date_to)); 
@@ -851,7 +861,7 @@ class SaleReturnsController extends AppController
         $employees = $this->SaleReturns->Employees->find('list', ['limit' => 200]);
         $transporters = $this->SaleReturns->Transporters->find('list', ['limit' => 200]);
         //$stLedgerAccounts = $this->SaleReturns->StLedgerAccounts->find('list', ['limit' => 200]);
-        $this->set(compact('saleReturn','ledger_account_details','ledger_account_details_for_fright','Transporter', 'financial_year_data','customers', 'saleTaxes', 'companies', 'salesOrders', 'employees', 'transporters', 'stLedgerAccounts','invoice','ItemSerialNumber','ReferenceDetails','c_LedgerAccount','chkdate'));
+        $this->set(compact('saleReturn','ledger_account_details','ledger_account_details_for_fright','Transporter', 'financial_year_data','customers', 'saleTaxes', 'companies', 'salesOrders', 'employees', 'transporters', 'stLedgerAccounts','invoice','ItemSerialNumber','ReferenceDetails','c_LedgerAccount','chkdate','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['saleReturn']);
     }
 
