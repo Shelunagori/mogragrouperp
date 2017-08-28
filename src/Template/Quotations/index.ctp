@@ -19,17 +19,21 @@ if(!empty($status)){
 			<span class="caption-subject font-blue-steel uppercase">Quotations</span> 
 			<?php if($pull_request=="true"){ ?>
 			: Select a Quotation to convert into sales-order
-			<?php }  elseif($copy_request=="copy"){?>
+			<?php } elseif($gst_pull_request=="true"){ ?>
+			: Select a Quotation to convert into GST Sales-Order	
+			<?php } elseif($copy_request=="copy"){?>
 			: Select a Quotation to Copy
 			<?php } ?>
 		</div>
 		<div class="actions">
 			<?php
+			
+			
 			if($status==null or $status=='Pending'){ $class1='btn btn-primary'; }else{ $class1='btn btn-default'; }
 			if($status=='Converted Into Sales Order'){ $class2='btn btn-primary'; }else{ $class2='btn btn-default'; }
 			if($status=='Closed'){ $class3='btn btn-primary'; }else{ $class3='btn btn-default'; }
 			?>
-			<?php if($pull_request!="true" and $copy_request!="copy"){ ?>
+			<?php if($pull_request!="true" and $gst_pull_request!="true" and $copy_request!="copy"){ ?>
 				<?= $this->Html->link(
 					'Pending',
 					'/Quotations/index/Pending',
@@ -192,22 +196,22 @@ if(!empty($status)){
 								</div>
 							<?php } } }?>
 								
-								<?php if($status == "close" && $pull_request=="true" && $close_status != "close"){
+								<?php if($status == "Closed" && $pull_request=="true" && $close_status != "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								}elseif($close_status == "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								}elseif($gst_pull_request == "true"){
-									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								}elseif($pull_request == "true"){
-									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/gstSalesOrderAdd?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								} ?>
 								
 								<?php 
 								if(in_array(30,$allowed_pages)){
-								if($quotation->status=='Pending' && $copy_request!="copy" && $pull_request!="true"){
+								if($quotation->status=='Pending' && $copy_request!="copy" && $pull_request!="true" && $gst_pull_request!="true"){
 								echo $this->Html->link('<i class="fa fa-minus-circle"></i> ',['action' => '#'],array('escape'=>false,'class'=>'btn btn-xs red tooltips close_btn','data-original-title'=>'Close','role'=>'button','quote_id'=>$quotation->id));
 								} }?>
 								<?php if($copy_request=="copy"){

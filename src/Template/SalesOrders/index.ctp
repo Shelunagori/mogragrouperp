@@ -113,7 +113,7 @@
 							<td>
 							<?php echo $this->Html->link( $salesOrder->quotation->qt1.'/QT-'.str_pad($salesOrder->quotation->qt2, 3, '0', STR_PAD_LEFT).'/'.$salesOrder->quotation->qt3.'/'.$salesOrder->quotation->qt4,[
 							'controller'=>'Quotations','action' => 'confirm', $salesOrder->quotation->id],array('target'=>'_blank')); ?>
-							</td><?php }else{ ?><td></td><?php } ?>
+							</td><?php }else{ ?><td>-</td><?php } ?>
 							<td><?php echo $salesOrder->customer->customer_name.'('.$salesOrder->customer->alias.')' ?></td>
 							<td><?= h($salesOrder->customer_po_no); ?></td>
 							<td>

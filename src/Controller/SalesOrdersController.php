@@ -443,6 +443,12 @@ class SalesOrdersController extends AppController
 						->set(['Quotations.status' => 'Pending'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
+					}else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
 					}
 				}
 				
@@ -832,7 +838,7 @@ class SalesOrdersController extends AppController
 				if(!empty($status_close)){
 				$query = $this->SalesOrders->Quotations->query();
 					$query->update()
-						->set(['status' => 'Closed'])
+						->set(['status' => 'Converted Into Sales Order'])
 						->where(['id' => $quotation_id])
 						->execute();
 				} else{
@@ -849,6 +855,13 @@ class SalesOrdersController extends AppController
 						$query_pending = $this->SalesOrders->Quotations->query();
 						$query_pending->update()
 						->set(['Quotations.status' => 'Pending'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
+					else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}
