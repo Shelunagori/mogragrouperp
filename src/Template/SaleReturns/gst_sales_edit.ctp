@@ -276,7 +276,15 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$invoice_row->igst_percentage]); ?></td>
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$invoice_row->igst_amount]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$invoice_row->total]); ?></td>
-							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_row->id]); ?></label>
+								<?php 
+									if($invoice_row->sale_return_quantity > 0){ 
+											$checked2="Checked";
+									} 
+									else{	
+											$checked2="";
+									} 
+								?>
+							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_row->id,'Checked'=>$checked2]); ?></label>
 							</td>
 						</tr>
 						<tr class="tr2  secondtr" row_no='<?php echo @$invoice_row->id; ?>'>
@@ -400,9 +408,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 			</div><br/>
 		</div>
 		
-					<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
-				
-				<div class="row">
+			<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
+			<div class="row">
 					<div class="col-md-8">
 					<table width="100%" class="main_ref_table">
 						<thead>
@@ -414,12 +421,32 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
-								<td class="ref_no"></td>
-								<td><?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount']); ?></td>
-								<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button"><i class="fa fa-times"></i></a></td>
-							</tr>
+							<?php foreach($ReferenceDetails as $old_ref_row){ 
+								$val = $this->Number->format($old_ref_row->credit,['places'=>2]);
+								$val = str_replace(",",".",$val);
+								$val1 = preg_replace('/\.(?=.*\.)/', '', $val);
+							
+							
+							?>
+								<tr>
+									<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
+									<td class="ref_no">
+									<?php if($old_ref_row->reference_type=="Against Reference"){
+										echo $this->requestAction('SaleReturns/fetchRefNumbersEdit/'.$c_LedgerAccount->id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->credit);
+									}else{
+										echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
+									}?>
+									</td>
+									<td>
+									<?php 
+										echo $this->Form->input('old_amount', ['label' => false,'class' => 'ref_old_amount','type'=>'hidden','value'=>$val1]);
+										echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount','value'=>$val1]);
+																
+									?>
+									</td>
+									<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button" old_ref="<?php echo $old_ref_row->reference_no; ?>" old_ref_type="<?php echo $old_ref_row->reference_type; ?>"><i class="fa fa-times"></i></a></td>
+								</tr>
+							<?php } ?>
 						</tbody>
 						<tfoot>
 							<tr>
