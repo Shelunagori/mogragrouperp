@@ -206,7 +206,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								foreach($invoice_row->item->item_serial_numbers as $item_serial_number){
 									$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
 								} 
-						?>
+							?>
 							<td></td>
 							<td colspan="6">
 							<?php echo $this->Form->input('item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>

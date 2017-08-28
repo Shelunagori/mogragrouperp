@@ -258,7 +258,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								<?php echo $invoice_row->item->name; ?>
 							</td>
 							<td>
-								<?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quantity row_textbox','placeholder'=>'Quantity','value' => @$invoice_row->quantity]); ?>
+								<?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quantity row_textbox','placeholder'=>'Quantity','value' => @$invoice_row->quantity,'max'=>@$invoice_row->quantity]); ?>
 							</td>
 							<td>
 								<?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Rate','value' => @$invoice_row->rate,'readonly','step'=>0.01]); ?>
@@ -276,15 +276,14 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$invoice_row->igst_percentage]); ?></td>
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$invoice_row->igst_amount]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$invoice_row->total]); ?></td>
-								<?php 
-									if($invoice_row->sale_return_quantity > 0){ 
-											$checked2="Checked";
+								<?php $checked2="";
+									if($invoice_row->sale_return_quantity == 0){ 
+											$check='';
 									} 
-									else{	
-											$checked2="";
+									else{	$check='checked';
 									} 
 								?>
-							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_row->id,'Checked'=>$checked2]); ?></label>
+							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check',$check]); ?></label>
 							</td>
 						</tr>
 						<tr class="tr2  secondtr" row_no='<?php echo @$invoice_row->id; ?>'>
@@ -296,16 +295,36 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						</tr>
 						<?php 
 						
-							$options1=[]; 
+							/* $options1=[]; 
 							foreach($invoice_row->item->item_serial_numbers as $item_serial_number){
 								$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
-							} 
+							}  */
+							
+							 $options1=[]; $choosen=[];
+							if(sizeof(@$invoice_row->item->item_serial_numbers)>0){
+								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers){
+								
+								if($item_serial_numbers->invoice_id ==$invoice->id){
+									$options1[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
+									//pr($item_serial_numbers->serial_no);
+								}
+								
+								if($item_serial_numbers->sale_return_id ==$saleReturn->id){
+									$choosen[]=$item_serial_numbers->id;
+									//pr($item_serial_numbers->serial_no);
+								}
+							}
+							}		//$item_serial_no=$invoice_row->item_serial_number;
+									//$choosen=explode(",",$item_serial_no);
+							
+							pr($options1);
+							pr($choosen);
 							if($invoice_row->item->item_companies[0]->serial_number_enable==1) { ?>
 							<tr class="tr3" row_no='<?php echo @$invoice_row->id; ?>'>
 							<td></td>
 							<td colspan="<?php echo $tr2_colspan; ?>">
 							<label class="control-label">Item Serial Number <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%']);  ?></td>
+							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen]);  ?></td>
 							<td></td>
 							</tr><?php } ?>
 						<?php $q++; endforeach; }?>
@@ -597,10 +616,8 @@ $(document).ready(function() {
 		},
 
 		invalidHandler: function (event, validator) { //display error alert on form submit   
-			put_code_description();
 			success3.hide();
 			error3.show();
-			$("#add_submit").removeAttr("disabled");
 			//Metronic.scrollTo(error3, -200);
 		},
 
@@ -619,14 +636,11 @@ $(document).ready(function() {
 				.closest('.form-group').removeClass('has-error'); // set success class to the control group
 		},
 	
-		submitHandler: function (form) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
-		
+		submitHandler: function (form3) {
 			put_code_description();
 			success3.show();
 			error3.hide();
-			form[0].submit();
+			form3[0].submit();
 		}
 
 	});
@@ -639,7 +653,7 @@ $(document).ready(function() {
 		rename_rows(); calculate_total();
     });
 	
-	$('#add_submit').on("mouseover", function () { //alert()
+	$('#add_submit').on("mouseover", function () { 
 		put_code_description();
     });
 	
@@ -688,6 +702,7 @@ $(document).ready(function() {
     });
 	
 	rename_rows();
+	calculate_total();
 	function rename_rows(){
 		var list = new Array();
 		var p=0;
@@ -972,8 +987,12 @@ $(document).ready(function() {
 			if(is_select){
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
 			}else if(is_input){ 
-				var url='<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'checkRefNumberUnique']); ?>';
-				url=url+'/<?php echo $c_LedgerAccount->id; ?>/'+i;
+
+				var is_old=$(this).find("td:nth-child(2) input").attr('is_old');				
+				var url='<?php echo $this->Url->build(['controller'=>'SaleReturns','action'=>'checkRefNumberUniqueEdit']); ?>';
+				
+				url=url+'/<?php echo $c_LedgerAccount->id; ?>/'+i+'/'+is_old;
+				
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
 							noSpace: true,
@@ -985,9 +1004,15 @@ $(document).ready(function() {
 								remote: "Not an unique."
 							}
 						});
-			}
+				}
 			
-			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules( "add", "required" );
+			var is_ref_old_amount=$(this).find("td:nth-child(3) input.ref_old_amount").length;
+				if(is_ref_old_amount){
+					$(this).find("td:nth-child(3) input:eq(0)").attr({name:"ref_rows["+i+"][ref_old_amount]", id:"ref_rows-"+i+"-ref_old_amount"});
+					$(this).find("td:nth-child(3) input:eq(1)").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+				}else{
+				$(this).find("td:nth-child(3) input:eq(0)").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+				}
 			i++;
 		});
 		
@@ -1000,6 +1025,8 @@ $(document).ready(function() {
 	$('.deleterefrow').live("click",function() {
 		$(this).closest("tr").remove();
 		do_ref_total();
+		var sel=$(this);
+		delete_one_ref_no(sel);
 	});
 	
 	$('.ref_type').live("change",function() {
@@ -1031,19 +1058,28 @@ $(document).ready(function() {
 		do_ref_total();
 	});
 	
+	do_ref_total();
 	$('.ref_amount_textbox').live("keyup",function() {
 		do_ref_total();
 	});
 	
+do_ref_total();
 	function do_ref_total(){
-		var main_amount=parseFloat($('input[name="grand_total"]').val());
+		var main_amount=parseFloat($('input[name="grand_total"]').val()); 
+		
 		if(!main_amount){ main_amount=0; }
 		
 		var total_ref=0;
 		$("table.main_ref_table tbody tr").each(function(){
-			var am=parseFloat($(this).find('td:nth-child(3) input').val());
+			var is_ref_old_amount=$(this).find("td:nth-child(3) input.ref_old_amount").length;
+				if(is_ref_old_amount){
+					var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+				}else{
+				var am=parseFloat($(this).find('td:nth-child(3) input:eq(0)').val());
+				}
 			if(!am){ am=0; }
 			total_ref=total_ref+am;
+			 
 		});
 		
 		var on_acc=main_amount-total_ref; 
@@ -1054,6 +1090,25 @@ $(document).ready(function() {
 			$("table.main_ref_table tfoot tr:nth-child(1) td:nth-child(3) input").val(0);
 		}
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));
+	}
+	
+	
+	
+	
+	function delete_one_ref_no(sel){ 
+		var old_received_from_id='<?php echo $c_LedgerAccount->id; ?>';
+		
+		var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');
+		var old_ref_type=sel.closest('tr').find('a.deleterefrow').attr('old_ref_type');
+		var url="<?php echo $this->Url->build(['controller'=>'SaleReturns','action'=>'deleteOneRefNumbers']); ?>";
+		url=url+'?old_received_from_id='+old_received_from_id+'&sale_return_id=<?php echo $saleReturn->id; ?>&old_ref='+old_ref+'&old_ref_type='+old_ref_type;
+		
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			//alert(response);
+		});
 	}
 	
 	
