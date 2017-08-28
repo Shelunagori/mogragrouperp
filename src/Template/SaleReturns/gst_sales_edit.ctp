@@ -302,13 +302,16 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							
 							 $options1=[]; $choosen=[];
 							if(sizeof(@$invoice_row->item->item_serial_numbers)>0){
-								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers)
+								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers) pr($item_serial_numbers);
+								
 								if($item_serial_numbers->invoice_id ==$invoice->id){
-								pr($item_serial_numbers);
 									$options1[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
 								}
+								if($item_serial_numbers->sale_return_id ==$saleReturn->id){
+									$choosen[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
+								}
 							}
-							$item_serial_no=$invoice_row->item_serial_number;
+									$item_serial_no=$invoice_row->item_serial_number;
 									$choosen=explode(",",$item_serial_no);
 							
 							
@@ -317,7 +320,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td></td>
 							<td colspan="<?php echo $tr2_colspan; ?>">
 							<label class="control-label">Item Serial Number <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%']);  ?></td>
+							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen]);  ?></td>
 							<td></td>
 							</tr><?php } ?>
 						<?php $q++; endforeach; }?>

@@ -1310,10 +1310,10 @@ class SaleReturnsController extends AppController
 		$saleReturn = $this->SaleReturns->get($id, [
 				'contain' => ['Customers']]);
 		$invoice = $this->SaleReturns->Invoices->get($saleReturn->invoice_id, [
-				'contain' => ['InvoiceRows.Items' => function ($q) use($st_company_id) {
+				'contain' => ['InvoiceRows.Items' => function ($q) use($st_company_id,$invoice_id) {
 						   return $q
-								->contain(['ItemSerialNumbers'=>function($q) use($st_company_id){
-									return $q->where(['ItemSerialNumbers.company_id' => $st_company_id]); 
+								->contain(['ItemSerialNumbers'=>function($q) use($st_company_id,$invoice_id){
+									return $q->where(['ItemSerialNumbers.status' => 'Out','ItemSerialNumbers.company_id' => $st_company_id,'ItemSerialNumbers.invoice_id'=>$invoice_id]); 
 								},
 								'ItemCompanies'=>function($q) use($st_company_id){
 									return $q->where(['ItemCompanies.company_id' => $st_company_id]);
@@ -1321,7 +1321,7 @@ class SaleReturnsController extends AppController
 						},'Companies','Customers'=>['Districts'],'Employees'
 					]
 			]);
-			
+		pr($invoice); exit;	
 		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
 		
 		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$id]);
