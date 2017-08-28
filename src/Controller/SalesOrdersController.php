@@ -632,6 +632,12 @@ class SalesOrdersController extends AppController
 						->set(['Quotations.status' => 'Pending'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
+					}else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
 					}
 					
 					$salesOrder->job_card_status='Pending';
@@ -1038,6 +1044,13 @@ class SalesOrdersController extends AppController
 						$query_pending = $this->SalesOrders->Quotations->query();
 						$query_pending->update()
 						->set(['Quotations.status' => 'Pending'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
+					else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}
