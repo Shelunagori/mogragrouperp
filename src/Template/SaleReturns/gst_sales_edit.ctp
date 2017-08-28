@@ -302,19 +302,23 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							
 							 $options1=[]; $choosen=[];
 							if(sizeof(@$invoice_row->item->item_serial_numbers)>0){
-								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers) pr($item_serial_numbers);
+								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers){
 								
 								if($item_serial_numbers->invoice_id ==$invoice->id){
 									$options1[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
+									//pr($item_serial_numbers->serial_no);
 								}
+								
 								if($item_serial_numbers->sale_return_id ==$saleReturn->id){
-									$choosen[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
+									$choosen[]=$item_serial_numbers->id;
+									//pr($item_serial_numbers->serial_no);
 								}
 							}
-									$item_serial_no=$invoice_row->item_serial_number;
-									$choosen=explode(",",$item_serial_no);
+							}		//$item_serial_no=$invoice_row->item_serial_number;
+									//$choosen=explode(",",$item_serial_no);
 							
-							
+							pr($options1);
+							pr($choosen);
 							if($invoice_row->item->item_companies[0]->serial_number_enable==1) { ?>
 							<tr class="tr3" row_no='<?php echo @$invoice_row->id; ?>'>
 							<td></td>
