@@ -345,7 +345,7 @@ class PurchaseReturnsController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$s_employee_id=$this->viewVars['s_employee_id'];
-        $purchaseReturn = $this->PurchaseReturns->newEntity();
+       
 		$invoice_booking_id=@(int)$this->request->query('invoiceBooking');
 		$invoiceBooking = $this->PurchaseReturns->InvoiceBookings->get($invoice_booking_id, [
             'contain' => ['InvoiceBookingRows' => ['Items'],'Grns'=>['Companies','Vendors','GrnRows'=>['Items'],'PurchaseOrders'=>['PurchaseOrderRows']]]
@@ -378,7 +378,16 @@ class PurchaseReturnsController extends AppController
 				{
 					$chkdate = 'Not Found';	
 				}
-				
+			///save GST Purchase Return Start	
+			 $purchaseReturn = $this->PurchaseReturns->newEntity();
+				if ($this->request->is('post')) {
+					$purchaseReturn = $this->PurchaseReturns->patchEntity($purchaseReturn, $this->request->data);
+					//pr($purchaseReturn);exit;
+					//last woking on 29Aug ( due only data posting and discuss table fields for Purchase return GST) 
+				}
+			///save GST Purchase Return End	
+
+			
 			
 			$ledger_account_details = $this->PurchaseReturns->LedgerAccounts->get($invoiceBooking->purchase_ledger_account);
 			//pr($ledger_account_details);exit;

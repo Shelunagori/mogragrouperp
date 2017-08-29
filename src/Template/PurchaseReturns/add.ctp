@@ -360,9 +360,11 @@ $(document).ready(function() {
 			
 		});
 	}
+	
 	$('.quantity').die().live("keyup",function() {
 			calculate_total(); 
     });
+	
 	calculate_total();
 	function calculate_total(){
 		var grand_total=0;
