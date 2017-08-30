@@ -111,14 +111,14 @@
 				</tr>
 				<?php endforeach; ?>
 				<tr>
-					<td colspan="4" align="right">Total</td>
-					<td align="right"><?php echo number_format($sales5,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($vat5,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($sales14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($vat14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($sales2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($vat2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($sales0,2,'.',','); ?></td>
+					<td colspan="4" align="right"><b>Total</b></td>
+					<td align="right"><b><?php echo number_format($sales5,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($vat5,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($sales14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($vat14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($sales2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($vat2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($sales0,2,'.',','); ?></b></td>
 				</tr>
 				</tbody>
 			</table>

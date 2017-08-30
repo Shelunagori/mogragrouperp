@@ -26,6 +26,7 @@
 					} else{
 						 echo $ledger_acc_name.'('; echo $ledger_acc_alias.')'; 
 					}?>
+					<?php if(!empty($From) || !empty($To)){ echo date('d-m-Y',strtotime($From)); ?> TO <?php echo date('d-m-Y',strtotime($To));} ?>
 			</tr>
 				<tr>
 					<td colspan="5" align="right">Opening Balance</td>

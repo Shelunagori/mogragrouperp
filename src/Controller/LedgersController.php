@@ -191,7 +191,7 @@ class LedgersController extends AppController
 		$ledger_acc_alias=$ledger_acc->ledger_account->alias;
 		
         $ledgerAccounts = $this->Ledgers->LedgerAccounts->find('list');
-        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name','url_link','ledger_acc_alias'));
+        $this->set(compact('ledgers','ledgerAccounts','opening_balance_ar','ledger_acc_name','url_link','ledger_acc_alias','From','To'));
         $this->set('_serialize', ['ledgers']);
     }
 	 public function exportExcel()

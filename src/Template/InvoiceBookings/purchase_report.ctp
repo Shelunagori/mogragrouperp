@@ -181,13 +181,13 @@
 						
 				<?php endforeach; ?>
 				<tr>
-					<td colspan="4" align="right">Total</td>
-					<td align="right"><?php echo number_format($total_purchase2-$totalvat2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($total_purchase14-$totalvat14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($total_purchase5-$totalvat5,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat5,2,'.',','); ?></td>
+					<td colspan="4" align="right"><b>Total</b></td>
+					<td align="right"><b><?php echo number_format($total_purchase2-$totalvat2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($total_purchase14-$totalvat14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($total_purchase5-$totalvat5,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat5,2,'.',','); ?></b></td>
 				</tr>
 				</tbody>
 			</table>
