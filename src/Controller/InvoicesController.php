@@ -4,7 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\View\Helper\NumberHelper;
 use Cake\View\Helper\HtmlHelper;
-
+use Cake\Utility\Text;
 /**
  * Invoices Controller
  *

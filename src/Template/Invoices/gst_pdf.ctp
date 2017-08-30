@@ -10,7 +10,8 @@ $dompdf = new Dompdf($options);
 $dompdf = new Dompdf();
 
 
-
+//$description =  wordwrap($invoice->delivery_description,25,'<br/>');
+//pr($description);exit;
 $html = '
 <html>
 <head>
@@ -31,6 +32,10 @@ $html = '
 		font-family: Lato;
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
+	p.test {
+		width: 11px; 
+    word-wrap: break-word;
+}
 	p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
 	}
@@ -43,7 +48,9 @@ $html = '
 	.topdata p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
 	}
-	
+	.des p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;width:291px;
+	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
 	}
@@ -152,12 +159,12 @@ $html = '
 								
 								
 							$html.=' </td>
-							<td style="white-space:nowrap"  width="30%" valign="top" text-align="right" >
+							<td style="white-space:nowrap;"  width="25%" valign="top">
 								<table width="100%">
 									<tr>
-										<td valign="top" style="vertical-align: top;" width="5%">Invoice No.</td>
-										<td  valign="top" width="4%">:</td>
-										<td valign="top" >'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
+										<td valign="top" style="vertical-align: top;" >Invoice No.</td>
+										<td  valign="top">:</td>
+										<td  valign="top" width="20%">'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">Date</td>
@@ -172,12 +179,12 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;">Carrier</td>
 										<td valign="top">:</td>
-										<td valign="top"><p>'. h($invoice->transporter->transporter_name) .'</p></td>
+										<td valign="top">'. h($invoice->transporter->transporter_name) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
 										<td valign="top">:</td>
-										<td width="95%" valign="top" >'. h($invoice->delivery_description) .'</td>
+										<td valign="top"><p class="test">'.wordwrap(h($invoice->delivery_description),25,'<br/>') .'</p></td>
 									</tr>
 								</table>
 							</td>

@@ -13,7 +13,8 @@
 			<span class="caption-subject font-blue-steel uppercase">Sales Order</span>
 			<?php if($pull_request=="true"){ ?>
 			: Select a Sales-Order to convert into Invoice
-		
+			<?php }elseif($gst=="true"){ ?>
+			: Select a Sales-Order to convert into GST Invoice
 			<?php }  elseif($copy_request=="copy"){?>
 			: Select a Sales-Order to Copy <?php }
 			  elseif($gst_copy_request=="copy"){ ?>
@@ -29,7 +30,7 @@
 			if($status==null or $status=='Pending'){ $class1='btn btn-primary'; }else{ $class1='btn btn-default'; }
 			if($status=='Converted Into Invoice'){ $class2='btn btn-primary'; }else{ $class2='btn btn-default'; }
 			?>
-			<?php if($pull_request!="true" and $copy_request!="copy" and $job_card!="true"){ ?>
+			<?php if($pull_request!="true" and $gst!="true" and $copy_request!="copy" and $job_card!="true"){ ?>
 				<?= $this->Html->link(
 					'Pending',
 					'/Sales-Orders/index/Pending',
@@ -148,7 +149,7 @@
 								<?php if($job_card=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat "></i>  Create Job Card','/JobCards/Add?Sales-Order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
-								<?php if($status!='Converted Into Invoice' and in_array(4,$allowed_pages) and $pull_request!="true" && $copy_request!="copy" && $job_card!="true"){ 
+								<?php if($status!='Converted Into Invoice' and in_array(4,$allowed_pages) and $pull_request!="true" && $copy_request!="copy" && $job_card!="true" && $gst!="true"){ 
 								
 								 if(!in_array(date("m-Y",strtotime($salesOrder->created_on)),$closed_month))
 								 { 

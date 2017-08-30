@@ -114,6 +114,62 @@ class SalesOrdersController extends AppController
 			);
 			
 		}	
+		if(!empty($gst)){
+			if(!empty($items)){
+				$salesOrders=	$this->paginate($this->SalesOrders->find()
+									->contain(['Quotations','SalesOrderRows'=>['Items']])
+									->leftJoinWith('SalesOrderRows', function ($q) {
+											return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);})
+									->matching(
+										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+											return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
+										})
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']));
+			}else{
+				$salesOrders=	$this->paginate(
+								$this->SalesOrders->find()
+								->contain(['Quotations','SalesOrderRows'=>['Items']])
+								->select(['total_rows' => 
+								  $this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+								->leftJoinWith('SalesOrderRows', function ($q) {
+									return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+									})
+								->group(['SalesOrders.id'])
+								->autoFields(true)
+								->having($having)
+								->where($where)
+								->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes'])
+								->order(['SalesOrders.so2' => 'DESC']));
+				}
+		}
+		if(!empty($pull_request)){
+			if(!empty($items)){
+				$salesOrders=	$this->paginate($this->SalesOrders->find()
+									 ->contain(['Quotations','SalesOrderRows'=>['Items']])
+									->leftJoinWith('SalesOrderRows', function ($q) {
+										return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+											})
+									->matching(
+										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+										return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
+										})
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'no']));
+			}else{
+				$salesOrders=$this->paginate(
+				$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
+					$this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+						->leftJoinWith('SalesOrderRows', function ($q) {
+							return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+						})
+						->group(['SalesOrders.id'])
+						->autoFields(true)
+						->having($having)
+						->where($where)
+						->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'no'])
+						->order(['SalesOrders.so2' => 'DESC'])
+				);
+			}
+		}
 		if(!empty($job_card)){
 			$salesOrders=$this->paginate(
 				$this->SalesOrders->find()->contain(['SalesOrderRows'])
