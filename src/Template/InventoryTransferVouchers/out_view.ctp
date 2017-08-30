@@ -93,6 +93,7 @@ margin-bottom: 0;
 		<?php } ?>
 		<th style="text-align:center">Quantity</th>
 		<th style="text-align:center">Rate</th>
+		<th style="text-align:center">Narration</th>
 	</thead>
 	<tbody>
 		<?php  $i=1; foreach($inventoryTransferVoucher->inventory_transfer_voucher_rows as $out_item){ ?>
@@ -103,15 +104,16 @@ margin-bottom: 0;
 				if($status==1) {  
 				if(!empty($out_item->item->item_companies[0]->serial_number_enable)){
 				if($out_item->item->item_companies[0]->serial_number_enable == 1) { ?>
-				<td><table>
-				<?php foreach ($out_item->item->item_serial_numbers as  $item_serial_number){ 
-				if($item_serial_number->inventory_transfer_voucher_id == $out_item->inventory_transfer_voucher_id){ ?>
-				<tr>
-						<td><?php echo $item_serial_number->serial_no ?></td>
-				</tr>
-				<?php }} ?>
-			</table>
-		</td>
+				<td>
+					<table>
+					<?php foreach ($out_item->item->item_serial_numbers as  $item_serial_number){ 
+					if($item_serial_number->inventory_transfer_voucher_id == $out_item->inventory_transfer_voucher_id){ ?>
+						<tr>
+								<td><?php echo $item_serial_number->serial_no ?></td>
+						</tr>
+					<?php }} ?>
+					</table>
+				</td>
 				<?php }}else{  ?>
 							<td><table>
 							<?php foreach ($out_item->item->item_serial_numbers as  $item_serial_number){ 
@@ -125,6 +127,7 @@ margin-bottom: 0;
 							<?php }} ?> 
 				<td align="center" valign="top"><?php echo $out_item->quantity ?></td>
 				<td align="right"><?= h($this->Number->format($out_item->amount,['places'=>2])) ?></td>
+				<td align="center" valign="top" width="30%"><?php echo $out_item->narration; ?></td>
 			</tr>
 		<?php $i++; } ?>
 		
