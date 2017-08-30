@@ -12,24 +12,14 @@
 				<table class="table table-condensed">
 					<tbody>
 						<tr>
-							<td>
-								<input type="text" name="vouch_no" class="form-control input-sm" placeholder="Voucher No" value="<?php echo @$vouch_no; ?>">
-							</td>
-							<td>
+							
+							<td width="20%">  
 								<div class="input-group" style="" id="pnf_text">
 									<span class="input-group-addon">SR-</span>
-									<input type="text" name="in_no" class="form-control input-sm" placeholder="Invoice No" value="<?php echo @$in_no; ?>">
+									<input type="text" name="vouch_no" class="form-control input-sm" placeholder="Sales Return No" value="<?php echo @$vouch_no; ?>">
 								</div>	
 							</td>
-							<td>
-								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Date From" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
-							</td>
-							<td>
-								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Date To" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
-							</td>
-							<td>
-								<input type="text" name="total" class="form-control input-sm" placeholder="Total" value="<?php echo @$total; ?>">
-							</td>
+							
 							<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
 						</tr>
 					</tbody>
@@ -60,10 +50,11 @@
 						<td><?php echo date("d-m-Y",strtotime($saleReturn->date_created)); ?></td>
 						<td align="right"><?= h($this->Number->format($saleReturn->total_after_pnf,[ 'places' => 2])) ?></td>
 						<td class="actions">
-							<?php if($saleReturn->sale_return_type=="Non-GST"){
-								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit/'.$saleReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));
-							}else{
+							<?php if($saleReturn->sale_return_type=="GST"){
 								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'gstSalesEdit/'.$saleReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));
+							}else{
+								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit/'.$saleReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit'));
+								
 							}
 							 ?>
 							
