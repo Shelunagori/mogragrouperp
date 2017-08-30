@@ -671,6 +671,7 @@ $(document).ready(function() {
 		$("#main_tb tbody tr.tr1").each(function(){  
 			var row_no=$(this).attr('row_no');
 			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
+		
 			if(val){ 
 				i++;
 				$(this).find('td:nth-child(2) input').attr("name","sale_return_rows["+val+"][item_id]").attr("id","sale_return_rows-"+val+"-item_id").rules("add", "required");

@@ -1,9 +1,9 @@
 <!-- <?php  
 $item_po_info=[];
-foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
+foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_row){
 	$item_po_info[$purchase_order_row->item_id]=$purchase_order_row;
 } 
-?> -->
+?>--> 
 <style>
 .row_textbox{
 	width: 100px;
@@ -29,17 +29,22 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 		</div>
 	</div>
 	
-	<?php if(!empty($grn)) { ?>
+	<?php if(!empty($invoiceBooking)) { ?>
 	<div class="portlet-body form">
-		<?= $this->Form->create($invoiceBooking,['id'=> 'form_sample_3']) ?>
-		
+		<?= $this->Form->create($purchaseReturn,['id'=> 'form_sample_3']) ?>
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 			<div class="form-body">
 				<div class="row">
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">GRN No.</label>
 							<br/>
-							<?= h(($grn->grn1.'/GRN-'.str_pad($grn->grn2, 3, '0', STR_PAD_LEFT).'/'.$grn->grn3.'/'.$grn->grn4)) ?>
+							<?= h(($invoiceBooking->grn->grn1.'/GRN-'.str_pad($invoiceBooking->grn->grn2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->grn->grn3.'/'.$invoiceBooking->grn->grn4)) ?>
 						</div>
 					</div>
 					<div class="col-md-3">
@@ -48,18 +53,25 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							<br/>
 							<?php echo $this->Form->input('vendor_ledger_id', ['label' => false,'class' => 'form-control input-sm','type' =>'hidden','value'=>@$vendor_ledger_acc_id]); ?>
 						<?php echo $this->Form->input('gst', ['label' => false,'type' =>'hidden','value'=>'yes']); ?>
-							<?php echo @$grn->vendor->company_name; ?>
+							<?php echo @$invoiceBooking->grn->vendor->company_name; ?>
 						</div>
 					</div>
 					<div class="col-md-3" >
 						<div class="form-group">
 							<label class="control-label">Invoice Booking No</label></br>
-							<?php echo $grn->grn1.'/IB-'.str_pad($last_ib_no->ib2, 3, '0', STR_PAD_LEFT).'/'.$grn->grn3.'/'.$grn->grn4; ?>
+							<?php echo @$invoiceBooking->ib1.'/IB-'.str_pad($invoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->ib3.'/'.$invoiceBooking->ib4; ?>
 							<br/>
 							<? ?>
 						</div>
 					</div>
-					
+					<div class="col-md-3">
+						<div class="form-group">
+							<label class="control-label">Purchase Account </label><br/>
+							<?php  //pr($ledger_account_details->toArray()); 
+							echo $ledger_account_details['name']; ?>
+							
+						</div>
+					</div>
 				</div><br/>
 				
 				<div class="row" style="display:none;">
@@ -67,18 +79,18 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							<label class="control-label">Invoice Booking No. <span class="required" aria-required="true">*</span></label>
 							<div class="row">
 								<div class="col-md-3">
-									<?php echo $this->Form->input('ib1', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>@$grn->company->alias]); ?>
+									<?php echo $this->Form->input('ib1', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>@$invoiceBooking->company->alias]); ?>
 								</div>
 								<div class="col-md-3">
-									<?php echo $this->Form->input('ib2', ['label' => false,'class' => 'form-control input-sm', 'value'=>@$last_ib_no->ib2, 'readonly']); ?>
+									<?php echo $this->Form->input('ib2', ['label' => false,'class' => 'form-control input-sm', 'value'=>@$invoiceBooking->ib2, 'readonly']); ?>
 								</div>
 								<div class="col-md-3">
-									<?php echo $this->Form->input('ib3', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'File', 'value'=>@$grn->grn3,'readonly']); ?>
+									<?php echo $this->Form->input('ib3', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'File', 'value'=>@$invoiceBooking->ib3,'readonly']); ?>
 								</div>
 								<div class="col-md-3">
-									<?php echo $this->Form->input('ib4', ['label' => false,'value'=>substr($s_year_from, -2).'-'.substr($s_year_to, -2),'class' => 'form-control input-sm','readonly']); ?>
+									<?php echo $this->Form->input('ib4', ['label' => false,'value'=>@$invoiceBooking->ib4,'class' => 'form-control input-sm','readonly']); ?>
 								</div>
-								<?php echo $this->Form->input('vendor_id', ['label' => false,'class' => 'form-control input-sm','type' =>'hidden','value'=>@$grn->vendor_id]); ?>
+								<?php echo $this->Form->input('vendor_id', ['label' => false,'class' => 'form-control input-sm','type' =>'hidden','value'=>@$invoiceBooking->vendor_id]); ?>
 							</div>
 						</div>
 				</div>
@@ -86,48 +98,25 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Supplier Invoice Date. <span class="required" aria-required="true">*</span></label>
-								<?php echo $this->Form->input('supplier_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Supplier Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($fromdate1)),'data-date-end-date' => date("d-m-Y",strtotime($tody1))]); ?>
+								<?php echo $this->Form->input('supplier_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Supplier Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
+										=>$start_date ,'data-date-end-date' => $end_date,'value' => date("d-m-Y",strtotime($invoiceBooking->supplier_date)),'readonly']); ?>
 							
 						</div>
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Invoice No. <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('invoice_no', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Invoice NO']); ?>
+							<?php echo $this->Form->input('invoice_no', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Invoice NO','readonly']); ?>
 							<br/>
 							<? ?>
 						</div>
 					</div>
-					<div class="col-md-3">
-						<div class="form-group">
-							<label class="control-label">Purchase Account <span class="required" aria-required="true">*</span></label>
-							<?php  //pr($ledger_account_details->toArray()); 
-							$option =[];
-							foreach($ledger_account_details as $key => $ledger_account_detail)
-							{ 
-								if(($key!= 35 && $key!= 538 && $st_company_id==25))
-								{
-									$option[$key] = $ledger_account_detail;
-								}
-								elseif(($key!= 161 && $key!= 160 && $st_company_id==26))
-								{
-									$option[$key] = $ledger_account_detail;
-								}
-								elseif(($key!= 309 && $key!= 308 && $st_company_id==27))
-								{
-									$option[$key] = $ledger_account_detail;
-								}
-							}
-							echo $this->Form->input('purchase_ledger_account', ['options' => $option,'label' => false,'empty'=>'Select','class' => 'form-control input-sm gst_type']); ?>
-							<?php echo $this->Form->input('cst_vat', ['label' => false,'type' => 'hidden']); ?>
-							<br/>
-							<? ?>
-						</div>
-					</div>
+					
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('transaction_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Transaction Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($fromdate1)),'data-date-end-date' => date("d-m-Y",strtotime($tody1)),'required']); ?>
+							<?php echo $this->Form->input('transaction_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Transaction Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
+										=>$start_date ,'data-date-end-date' => $end_date,'required']); ?>
 						</div>
 						<span style="color: red;"><?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -152,6 +141,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 			?>
 			
 			<div style="overflow: auto;">
+			<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value="" />
 			<table class="table tableitm" id="main_tb" border="1" >
 				<thead>
 					<tr>
@@ -170,6 +160,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						<th width="100" rowspan="2"><b>Others</b></th>
 						<th width="100" rowspan="2"><b>Total</b></th>
 						<th width="100" rowspan="2"><b>rate to be posted</b></th>
+						<th rowspan="2" width="100px"></th>
 					</tr>
 					<tr>
 						<th align="right">%</th>
@@ -185,7 +176,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 					</tr>
 				</thead>
 				<tbody>
-					<?php 
+					<?php
 							$cgst_options=array();
 							$sgst_options=array();
 							$igst_options=array();
@@ -203,105 +194,86 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 								
 							}
 							
-					$total=0; $sum=0;
-					$q=0; foreach ($grn->grn_rows as $grn_rows): ?>
-						<tr class="tr1" row_no='<?php echo @$grn_rows->id; ?>'>
+					$q=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
+						<tr class="tr1" row_no='<?php echo @$invoice_booking_row->id; ?>'>
 							<td rowspan="2"><?php echo ++$q; --$q; ?></td>
-							<?php
 							
-							$dis=($discount*$grn->purchase_order->purchase_order_rows[$q]->amount)/$grn->purchase_order->total;
-							;
-							$item_discount=$dis/$grn->purchase_order->purchase_order_rows[$q]->quantity;
-							
-							$item_rate=$grn->purchase_order->purchase_order_rows[$q]->amount-$dis;
-							$total_sale=($tot_sale_tax*$item_rate)/$item_total_rate;
-							$item_sale=$total_sale/$grn->purchase_order->purchase_order_rows[$q]->quantity;
-							
-						
-							$excise_duty_discount=($excise_duty*$item_rate)/$item_total_rate;
-							$total_exicese_duty=$excise_duty_discount/$grn->purchase_order->purchase_order_rows[$q]->quantity;
-							
-							?>
-							<td style="white-space: nowrap;"><?php echo $grn_rows->item->name; ?>
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm cal','type'=>'hidden','value' => @$grn_rows->item->id,'popup_id'=>$q]); ?>
+							<td style="white-space: nowrap;"><?php echo @$invoice_booking_row->item->name; ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm cal','type'=>'hidden','value' => @$invoice_booking_row->item->id,'popup_id'=>$q]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.unit_rate_from_po',['value'=>$item_po_info[$grn_rows->item->id]->rate,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.unit_rate_from_po',['value'=>$invoice_booking_row->unit_rate_from_po,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.quantity',['label' => false,'class' => 'form-control input-sm cal', 'value'=>$grn_rows->quantity,'readonly','type'=>'text','style'=>'width:50px;']); ?></td>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.quantity',['label' => false,'class' => 'form-control input-sm cal', 'value'=>@$invoice_booking_row->quantity,'readonly','type'=>'text','style'=>'width:50px;']); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.misc',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=>0]); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.misc',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly','value'=>0,'value'=>$invoice_booking_row->misc]); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.amount',['label' => false,'class' => 'form-control input-sm row_textbox cal','value'=>$grn->purchase_order->purchase_order_rows[$q]->rate*$grn_rows->quantity,'type'=>'text','readonly']); ?></td>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.amount',['label' => false,'class' => 'form-control input-sm row_textbox cal','value'=>$invoice_booking_row->amount,'type'=>'text','readonly']); ?></td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_amt cal']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.gst_discount_per',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=>$invoice_booking_row->gst_discount_per,'readonly']); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.discount',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_per']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.discount',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox dis_per','value'=>$invoice_booking_row->discount,'readonly']); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.gst_pnf_per',['label' => false,'class' => 'form-control input-sm required row_textbox cal','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0]); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.gst_pnf_per',['label' => false,'class' => 'form-control input-sm required row_textbox cal','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=> $invoice_booking_row->gst_pnf_per,'readonly']); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox dis_per','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0]); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.pnf',['label' => false,'class' => 'form-control input-sm required row_textbox dis_per','id'=>'update_pnf','type'=>'text','placeholder' => 'pnf','value'=>0,'value'=> $invoice_booking_row->pnf,'readonly']); ?>
 							</td>
 							
 							<td align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.taxable_value',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.taxable_value',['value'=>0,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=> $invoice_booking_row->taxable_value,'readonly']); ?>
 							</td>
 							
 							<td class="cgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->cgst_per,'readonly']); ?>
 							</td>
 							
 							<td class="cgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->cgst,'readonly']); ?>
 							</td>
 							
-							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<td class="sgst_display"><?php echo $this->Form->input('purchase_return_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->sgst_per,'readonly']); ?>
 							</td>
 							
 							<td class="sgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->sgst,'readonly']); ?>
 							</td>
 							
-							<td class="igst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+							<td class="igst_display" align="center"><?php echo $this->Form->input('purchase_return_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->igst_per,'readonly']); ?></td>
 							
 							<td class="igst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->igst_per,'readonly']); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.other_charges',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value'=>0]); ?>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.other_charges',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value' => $invoice_booking_row->other_charges,'readonly']); ?>
 							</td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.total',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.total',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
 							
-							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.rate',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?>
+							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.rate',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly','value'=>$this->Number->format($invoice_booking_row->rate)]); ?>
 							
 							</td>
-							
+							<td><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_booking_row->id]); ?>
+							</td>
 						</tr>
-						<tr class="tr2" row_no='<?php echo @$grn_rows->id; ?>'>
-							<td colspan="11">
-							<?php echo $this->Text->autoParagraph($grn->purchase_order->purchase_order_rows[$q]->description); ?>
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$grn->purchase_order->purchase_order_rows[$q]->description]); ?>
+						<tr class="tr2" row_no='<?php echo @$invoice_booking_row->id; ?>'>
+							<td colspan="15">
+							<?php echo $this->Text->autoParagraph($invoice_booking_row->description); ?>
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$invoice_booking_row->description]); ?>
 							</td>
 							<td></td>
 						</tr>
-						<tr>
-							 
-						
-						
-						</tr>
 
-					<?php $q++; $total=$total+$sum; endforeach; ?>
-
+					<?php $q++;  endforeach; ?>
+				
 				</tbody>
 				<tfoot>
 					<tr>
@@ -318,19 +290,16 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						<td class="igst_display" ></td>
 						<td class="igst_display" ><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_other_charge', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
-						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
+						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly','id'=>'total']); ?></td>
 						<td><?php echo $this->Form->input('total_rate_to_post', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'rate to be post','readonly']); ?></td>
+						<td></td>
 					</tr>
 				</tfoot>
 			</table>
 			</div>
-		</div>
 		
-		
-		
-					<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
-				
-				<div class="row">
+		<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
+			<div class="row">
 					<div class="col-md-8">
 					<table width="100%" class="main_ref_table">
 						<thead>
@@ -342,12 +311,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
-								<td class="ref_no"></td>
-								<td><?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount']); ?></td>
-								<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button"><i class="fa fa-times"></i></a></td>
-							</tr>
+							
 						</tbody>
 						<tfoot>
 							<tr>
@@ -364,29 +328,22 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						</tfoot>
 					</table>
 					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label">Narration </label>
-								<?php echo $this->Form->input('narration', ['label' => false,'class' => 'form-control input-sm','placeholder'=>'Narration','rows'=>'2']); ?>							
-						</div>
-					</div>
-				</div>
-		<div class="form-actions">
-						<div class="row">
-							<div class="col-md-3">
-									<?php if($chkdate == 'Not Found'){  ?>
-					<label class="btn btn-danger"> You are not in Current Financial Year </label>
-				<?php } else { ?>
-					<?= $this->Form->button(__('BOOK INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
-				<?php } ?>	
-				
-						</div>
 				</div>
 		</div>
+		<div class="form-actions">
+			<div class="row">
+				<div class="col-md-3">
+
+				<?php if($chkdate == 'Not Found'){  ?>
+					<label class="btn btn-danger"> You are not in Current Financial Year </label>
+				<?php } else { ?>
+					<?= $this->Form->button(__('UPDATE BOOK INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+				<?php } ?>					
+				</div>
+			</div>
+		</div>
 	</div>	
-	
-	<?php } ?> <?= $this->Form->end() ?>
-			
+	<?= $this->Form->end(); } ?>
 </div>	
 <style>
 .table thead tr th {
@@ -623,7 +580,91 @@ $(document).ready(function() {
 	
 
 	
+	var purchase_ledger_account=$('select[name="purchase_ledger_account"]').val();
+	var gst_ledger_id=$('select[name="purchase_ledger_account"] option:selected').val();
+		if(gst_ledger_id=="799" || gst_ledger_id=="800" )
+		{  
+				$('.igst_display').css("display", "none");
+				$('.cgst_display').css("display", "");
+				$('.sgst_display').css("display", "");
+				$('.igst_percent option:selected').prop('selected', false);
+				calculate_total();
+				
+		}else{
+				$('.igst_display').css("display", "");
+				$('.cgst_display').css("display", "none");
+				$('.sgst_display').css("display", "none");
+				$('.cgst_percent option:selected').prop('selected', false);
+				$('.sgst_percent option:selected').prop('selected', false);
+				calculate_total();
+				
 	
+		}
+	/////////
+	$('.rename_check').die().live("click",function() { 
+		rename_rows();   calculate_total();
+    });
+	////////
+	rename_rows();
+	function rename_rows(){
+		var i=0;
+		$("#main_tb tbody tr.tr1").each(function(){  
+			var row_no=$(this).attr('row_no');
+			var val=$(this).find('td:nth-child(21) input[type="checkbox"]:checked').val();
+			
+			if(val){
+				i++;
+				$(this).find('td:nth-child(2) input').attr("name","purchase_return_rows["+row_no+"][item_id]").attr("id","purchase_return_rows-"+row_no+"-item_id").rules("add", "required");
+				$(this).find('td:nth-child(3) input').attr("name","purchase_return_rows["+row_no+"][unit_rate_from_po]").attr("id","purchase_return_rows-"+row_no+"-unit_rate_from_po").removeAttr("readonly").rules("add", "required");
+				$(this).find('td:nth-child(4) input').attr("name","purchase_return_rows["+row_no+"][quantity]").attr("id","purchase_return_rows-"+row_no+"-quantity").removeAttr("readonly").rules("add", "required");
+				
+				$(this).find('td:nth-child(5) input').attr("name","purchase_return_rows["+row_no+"][misc]").attr("id","purchase_return_rows-"+row_no+"-misc").removeAttr("readonly").rules("add", "required");
+				$(this).find('td:nth-child(6) input').attr("name","purchase_return_rows["+row_no+"][amount]").attr("id","purchase_return_rows-"+row_no+"-amount").rules("add", "required");
+				$(this).find('td:nth-child(7) input').attr("name","purchase_return_rows["+row_no+"][gst_discount_per]").attr("id","purchase_return_rows-"+row_no+"-gst_discount_per").rules("add", "required");
+				$(this).find('td:nth-child(8) input').attr("name","purchase_return_rows["+row_no+"][discount]").attr("id","purchase_return_rows-"+row_no+"-discount").rules("add", "required");
+				$(this).find('td:nth-child(9) input').attr("name","purchase_return_rows["+row_no+"][gst_pnf_per]").attr("id","purchase_return_rows-"+row_no+"-gst_pnf_per").rules("add", "required");
+				$(this).find('td:nth-child(10) input').attr("name","purchase_return_rows["+row_no+"][pnf]").attr("id","purchase_return_rows-"+row_no+"-pnf").rules("add", "required");
+				$(this).find('td:nth-child(11) input').attr("name","purchase_return_rows["+row_no+"][taxable_value]").attr("id","purchase_return_rows-"+row_no+"-taxable_value").rules("add", "required");
+				$(this).find('td:nth-child(12) select').attr("name","purchase_return_rows["+row_no+"][cgst_per]").attr("id","purchase_return_rows-"+row_no+"-cgst_per").rules("add", "required");
+				$(this).find('td:nth-child(13) input').attr("name","purchase_return_rows["+row_no+"][cgst]").attr("id","purchase_return_rows-"+row_no+"-cgst").rules("add", "required");
+				$(this).find('td:nth-child(14) select').attr("name","purchase_return_rows["+row_no+"][sgst_per]").attr("id","purchase_return_rows-"+row_no+"-sgst_per").rules("add", "required");
+				$(this).find('td:nth-child(15) input').attr("name","purchase_return_rows["+row_no+"][sgst]").attr("id","purchase_return_rows-"+row_no+"-sgst").rules("add", "required");
+				$(this).find('td:nth-child(16) select').attr("name","purchase_return_rows["+row_no+"][igst_per]").attr("id","purchase_return_rows-"+row_no+"-igst_per").rules("add", "required");
+				$(this).find('td:nth-child(17) input').attr("name","purchase_return_rows["+row_no+"][igst]").attr("id","purchase_return_rows-"+row_no+"-igst").rules("add", "required");
+				$(this).find('td:nth-child(18) input').attr("name","purchase_return_rows["+row_no+"][other_charges]").attr("id","purchase_return_rows-"+row_no+"-other_charges").rules("add", "required");
+				$(this).find('td:nth-child(19) input').attr("name","purchase_return_rows["+row_no+"][total]").attr("id","purchase_return_rows-"+row_no+"-total").rules("add", "required");
+				$(this).find('td:nth-child(20) input').attr("name","purchase_return_rows["+row_no+"][rate]").attr("id","purchase_return_rows-"+row_no+"-rate").rules("add", "required");
+				$(this).css('background-color','#fffcda');
+				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#fffcda');
+			}else{
+				$(this).find('td:nth-child(2) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(3) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(4) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(5) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(6) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(7) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(8) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(9) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(10) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(11) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(12) select').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(13) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(14) select').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(15) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(16) select').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(17) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(18) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(19) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).find('td:nth-child(20) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
+				$(this).css('background-color','#FFF');
+				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#FFF');
+				
+			} 
+			
+			$('input[name="checked_row_length"]').val(i);
+		
+		});	
+	}
 	
 	////////////////  Validation  ////////////////////////
 	
@@ -664,8 +705,12 @@ $(document).ready(function() {
 		errorElement: 'span', //default input error message container
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
-		ignore: ":hidden",
+		
 		rules: {
+			checked_row_length: {
+				required: true,
+				min : 1,
+			},
 			advance: {
 				min:0,
 			},
@@ -679,6 +724,13 @@ $(document).ready(function() {
 				required: true,
 			},
 			
+		},
+
+		messages: { // custom messages for radio buttons and checkboxes
+			checked_row_length: {
+				required : "Please select atleast one row.",
+				min : "Please select atleast one row."
+			}
 		},
 		
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -732,7 +784,7 @@ $(document).ready(function() {
 
 	
 	//ref no //
-	
+	add_ref_row();
 	$('.addrefrow').live("click",function() {
 		add_ref_row();
 	});
@@ -753,7 +805,7 @@ $(document).ready(function() {
 			if(is_select){
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
 			}else if(is_input){
-				var url='<?php echo $this->Url->build(['controller'=>'InvoiceBookings','action'=>'checkRefNumberUnique']); ?>';
+				var url='<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'checkRefNumberUnique']); ?>';
 				url=url+'/<?php echo $v_LedgerAccount->id; ?>/'+i;
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
@@ -788,7 +840,7 @@ $(document).ready(function() {
 		
 		var ref_type=$(this).find('option:selected').val();
 		if(ref_type=="Against Reference"){
-			var url="<?php echo $this->Url->build(['controller'=>'InvoiceBookings','action'=>'fetchRefNumbers']); ?>";
+			var url="<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'fetchRefNumbers']); ?>";
 			url=url,
 			$.ajax({
 				url: url+'/<?php echo $v_LedgerAccount->id; ?>',

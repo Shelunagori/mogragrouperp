@@ -1124,7 +1124,7 @@ class InvoiceBookingsController extends AppController
 			   $this->Flash->success(__('The invoice booking has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
-            } else { pr($invoiceBooking); exit;
+            } else { 
                 $this->Flash->error(__('The invoice booking could not be saved. Please, try again.'));
             }
         }
