@@ -45,7 +45,10 @@ class ItemSerialNumbersTable extends Table
             'foreignKey' => 'grn_id',
             'joinType' => 'INNER'
         ]);
-		$this->belongsTo('Invoices');
+		 $this->belongsTo('Invoices', [
+            'foreignKey' => 'invoice_id',
+            'joinType' => 'INNER'
+        ]);
 		$this->belongsTo('InventoryVouchers');
 		$this->belongsTo('InventoryTransferVouchers');
 		$this->belongsTo('PurchaseReturns');

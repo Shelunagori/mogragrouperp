@@ -74,13 +74,16 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						<div class="form-group">
 							<label class="control-label">Invoice No</label>
 							<div class="row">
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<?php echo $this->Form->input('in1', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>$invoice->in1]); ?>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
+									<?php echo $this->Form->input('in3', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>$invoice->in2]); ?>
+								</div>
+								<div class="col-md-3">
 									<?php echo $this->Form->input('in3', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>$invoice->in3]); ?>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<?php echo $this->Form->input('in4', ['label' => false,'value'=>substr($s_year_from, -2).'-'.substr($s_year_to, -2),'class' => 'form-control input-sm','readonly']); ?>
 								</div>
 							</div>
@@ -672,7 +675,7 @@ $(document).ready(function() {
 			if(val){ 
 				i++;
 				$(this).find('td:nth-child(2) input').attr("name","sale_return_rows["+val+"][item_id]").attr("id","sale_return_rows-"+val+"-item_id").rules("add", "required");
-				$(this).find('td:nth-child(3) input').attr("name","sale_return_rows["+val+"][quantity]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-quantity").rules("add", "required");
+				$(this).find('td:nth-child(3) input').attr("name","sale_return_rows["+val+"][quantity]").removeAttr("readonly").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-quantity").rules("add", "required");
 				$(this).find('td:nth-child(4) input').attr("name","sale_return_rows["+val+"][rate]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-rate").rules("add", "required");
 				$(this).find('td:nth-child(5) input').attr("name","sale_return_rows["+val+"][amount]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-amount").rules("add", "required");
 				$(this).find('td:nth-child(6) input').attr("name","sale_return_rows["+val+"][discount_percentage]").attr("id","q"+val).attr("id","	sale_return_rows-"+val+"-discount_percentage");
