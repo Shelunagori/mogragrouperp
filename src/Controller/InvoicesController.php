@@ -133,7 +133,7 @@ class InvoicesController extends AppController
 			}])->where($where)->where(['Invoices.company_id'=>$st_company_id])->first();
 			
 			
-				$invoices = $this->Invoices->find()->contain(['Customers','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id]);
+				$invoices = $this->Invoices->find()->contain(['Customers','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id,'invoice_type !='=>'GST']);
 				$status=1;
 			
 		}
