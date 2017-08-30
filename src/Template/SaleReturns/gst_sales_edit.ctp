@@ -21,7 +21,14 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 #main_tb thead th {
 	font-size:10px;
 }
-</style>
+</style> 
+<?php 
+
+	$first="01";
+	$last="31";
+	$start_date=$first.'-'.$financial_month_first->month;
+	$end_date=$last.'-'.$financial_month_last->month;
+?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -52,7 +59,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="col-md-2">
 						<div class="form-group">
 							<label class="control-label">Transaction Date</label>
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => date("d-m-Y")]); ?>					
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y",strtotime($saleReturn->transaction_date)),'data-date-start-date' 
+							=>$start_date ,'data-date-end-date' => $end_date]); ?>					
 						</div>
 					</div>
 				</div>
@@ -258,7 +266,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 								<?php echo $invoice_row->item->name; ?>
 							</td>
 							<td>
-								<?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quantity row_textbox','placeholder'=>'Quantity','value' => @$invoice_row->quantity,'max'=>@$invoice_row->quantity]); ?>
+								<?php echo $this->Form->input('q', ['label' => false,'type' => 'text','class' => 'form-control input-sm quantity row_textbox','placeholder'=>'Quantity','value' => @$invoice_row->sale_return_quantity,'max'=>@$invoice_row->quantity]); ?>
 							</td>
 							<td>
 								<?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Rate','value' => @$invoice_row->rate,'readonly','step'=>0.01]); ?>
@@ -283,7 +291,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 									else{	$check='checked';
 									} 
 								?>
-							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check',$check]); ?></label>
+							<td><label><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check',$check,'value' => @$invoice_row->id]); ?></label>
 							</td>
 						</tr>
 						<tr class="tr2  secondtr" row_no='<?php echo @$invoice_row->id; ?>'>
@@ -317,8 +325,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							}		//$item_serial_no=$invoice_row->item_serial_number;
 									//$choosen=explode(",",$item_serial_no);
 							
-							pr($options1);
-							pr($choosen);
+							
 							if($invoice_row->item->item_companies[0]->serial_number_enable==1) { ?>
 							<tr class="tr3" row_no='<?php echo @$invoice_row->id; ?>'>
 							<td></td>
@@ -742,7 +749,7 @@ $(document).ready(function() {
 				var serial_l=$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').length;
 				
 				if(serial_l>0){
-					$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+val+"][item_serial_numbers][]").attr("id","sale_return_rows-"+val+"-item_serial_no").attr('maxlength',qty).select2().rules('add', {
+					$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+val+"][item_serial_numbers][]").attr("id","sale_return_rows-"+val+"-item_serial_no").attr('maxlength',qty).rules('add', {
 						    required: true,
 							minlength: qty,
 							maxlength: qty,

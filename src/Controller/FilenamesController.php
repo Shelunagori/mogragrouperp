@@ -61,6 +61,19 @@ class FilenamesController extends AppController
         ];
 		
 		$BEfilenames = $this->paginate($this->Filenames->find()->where(['file1' => 'BE'])->order(['file2' => 'DESC'])->where($where));
+		
+		//pr($BEfilenames->count()); exit;
+		/* $befiles=[];
+		foreach($BEfilenames as $BEfilename){
+			$merge=$BEfilename->file1.'-'.$BEfilename->file2;
+			$in=$this->Filenames->Invoices->find()->where(['Invoices.in3' => $merge])->contain(['InvoiceRows']);
+			pr($in->toArray());
+			
+		} exit; */
+		
+		
+		
+		
         $this->set(compact('BEfilenames'));
         $this->set('_serialize', ['filenames']);
     }

@@ -1597,17 +1597,18 @@ class InvoicesController extends AppController
 				//Ledger posting for Account Reference
 				//$ledger_pnf=$invoice->total_after_pnf;
 				//$accountReferences=$this->Invoices->AccountReferences->get(1);
+				$ledger_fright=@(int)$invoice->fright_amount;
 				$ledger = $this->Invoices->Ledgers->newEntity();
 				$ledger->ledger_account_id = $invoice->sales_ledger_account;
 				$ledger->debit = 0;
-				$ledger->credit = $invoice->total;
+				$ledger->credit = $invoice->total+$ledger_fright;
 				$ledger->voucher_id = $invoice->id;
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
 				$ledger->voucher_source = 'Invoice';
 				$this->Invoices->Ledgers->save($ledger); 
 				
-				$ledger_fright=@(int)$invoice->fright_amount;
+				/* $ledger_fright=@(int)$invoice->fright_amount;
 				$ledger = $this->Invoices->Ledgers->newEntity();
 				$ledger->ledger_account_id = $invoice->fright_ledger_account;
 				$ledger->debit = 0;
@@ -1619,7 +1620,7 @@ class InvoicesController extends AppController
 				if($ledger_fright > 0)
 				{
 					$this->Invoices->Ledgers->save($ledger); 
-				}
+				} */
 				
 				$discount=$invoice->discount;
 				 $pf=$invoice->pnf;
@@ -2042,10 +2043,11 @@ class InvoicesController extends AppController
 				
 				//pr($invoice->taxable_value); exit;
 				//Ledger posting for Account Reference
+				$ledger_fright=@(int)$invoice->fright_amount;
 				$ledger = $this->Invoices->Ledgers->newEntity();
 				$ledger->ledger_account_id = $invoice->sales_ledger_account;
 				$ledger->debit = 0;
-				$ledger->credit = $invoice->total;
+				$ledger->credit = $invoice->total+$ledger_fright;
 				$ledger->voucher_id = $invoice->id;
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
@@ -2094,23 +2096,7 @@ class InvoicesController extends AppController
 				}
 				 
 				
-				
-				//Ledger posting for Fright Amount
-				$ledger_fright=@(int)$invoice->fright_amount;
-				$ledger = $this->Invoices->Ledgers->newEntity();
-				$ledger->ledger_account_id = $invoice->fright_ledger_account;
-				$ledger->debit = 0;
-				$ledger->credit = $invoice->fright_amount;
-				$ledger->voucher_id = $invoice->id;
-				$ledger->company_id = $invoice->company_id;
-				$ledger->transaction_date = $invoice->date_created;
-				$ledger->voucher_source = 'Invoice';
-				if($ledger_fright > 0)
-				{
-					$this->Invoices->Ledgers->save($ledger); 
-				}
-				
-					if($invoice->fright_cgst_amount > 0){
+				if($invoice->fright_cgst_amount > 0){
 					$cg_LedgerAccount=$this->Invoices->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'SaleTaxes','source_id'=>$invoice->fright_cgst_percent])->first();
 					$ledger = $this->Invoices->Ledgers->newEntity();
 					$ledger->ledger_account_id = $cg_LedgerAccount->id;
@@ -2408,7 +2394,7 @@ class InvoicesController extends AppController
 		}
 		
 		
-		if($invoice->fright_ledger_account > 0){
+		if($invoice->fright_amount > 0){
 			if($invoice->fright_cgst_percent > 0){
 					$fright_ledger_cgst=$this->Invoices->SaleTaxes->get(@$invoice->fright_cgst_percent);
 				}
@@ -2418,8 +2404,9 @@ class InvoicesController extends AppController
 				if($invoice->fright_igst_percent > 0){
 					$fright_ledger_igst=$this->Invoices->SaleTaxes->get(@$invoice->fright_igst_percent);
 				}
-			$fright_ledger_account=$this->Invoices->LedgerAccounts->get(@$invoice->fright_ledger_account);
+			
 		}
+		//pr($fright_ledger_igst); exit;
 	//pr($invoice); exit;
         //$this->set('invoice', $invoice);
 		$this->set(compact('invoice','cgst_per','sgst_per','igst_per','fright_ledger_cgst','fright_ledger_sgst','fright_ledger_igst','fright_ledger_account'));
@@ -2791,13 +2778,6 @@ class InvoicesController extends AppController
 		}
 		$this->set(compact('From','To','salesman_id','item_category','item_group','item_sub_group','item_name'));
 		//pr($invoices->toArray()); exit;
-		
-		
-		
-		
-		
-		
-		
 		
 		$ItemCategories = $this->Invoices->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->Invoices->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
@@ -3193,6 +3173,32 @@ class InvoicesController extends AppController
 		<?php exit;
 	}
 	
+	public function Fileitems($file_id=null){  
+	
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$Filename=$this->Invoices->Filenames->find()->where(['id' =>$file_id])->first();
+		
+		$merge=$Filename->file1.'-'.$Filename->file2;
+		$Invoices=$this->Invoices->find()->where(['Invoices.in3' => $merge])
+						->contain(['InvoiceRows.Items'=>function($p){
+									return $p->group('item_id');
+					}])->toArray();
+		$showitem=[];		
+		foreach($Invoices as $invoice){
+			foreach($invoice->invoice_rows as $invoice_row){
+			$showitem[]=$invoice_row->item['name'];
+			}
+		}
+		$showitem=array_unique($showitem); 
+		//pr($showitem); exit;
+		
+		//pr($showitem);exit;
+		$this->set(compact('Invoice','showitem','merge'));
+		
+		
+	}
 	public function getInvoiceData(){
 		
 		$salesOrders =$this->Invoices->SalesOrders->find()->contain(['SalesOrderRows' =>function($q){

@@ -11,7 +11,11 @@
 		
 		$transaction_date=strtotime(date("Y-m-d",strtotime(@$InventoryVoucher_detail[0]->transaction_date)));
 		
-if($transaction_date <  $start_date ) {
+		//pr($start_date);
+		//pr(@$InventoryVoucher_detail);
+		//pr($transaction_date); exit;
+
+if($transaction_date <  $start_date && !empty(@$InventoryVoucher_detail[0]->transaction_date)) {
 	echo "Financial Month has been Closed";
 } else { ?>
 

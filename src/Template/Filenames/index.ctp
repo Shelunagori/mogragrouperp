@@ -117,6 +117,7 @@
 						<th>Sr. No.</th>
 						<th width="30%">File</th>
 						<th>Customer</th>	
+						<th>Items</th>	
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -127,6 +128,11 @@
 						<td><?= h($filename->file1) ?>-<?= h($filename->file2) ?></td>
 						<td>
 						<?php echo $filename->customer->customer_name.'('; echo $filename->customer->alias.')'; ?></td>
+						<td>
+						
+						 <a href="#" role="button" file_id="<?php echo $filename->id?>" class="itemlist btn btn-xs btn-primary">Show Item </a> 
+						
+						</td>
 						<td class="actions">
 							<?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $filename->id], ['confirm' => __('Are you sure you want to delete # {0}?', $filename->id)]) ?>
 						</td>
@@ -144,9 +150,40 @@
 				<p><?= $this->Paginator->counter() ?></p>
 			</div>
 		</div>
+		<div class="col-md-6 file_item_data" id="file_item_data">
+				
+		
+		</div>
 		
 		
 		<!-- END FORM-->
 	</div>
 </div>
 </div>
+
+
+
+<?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
+<script>
+$(document).ready(function() {
+	
+	$('.itemlist').on("click",function() { 
+	var sel=$(this);
+		open_item(sel);
+    });
+	
+	function open_item(sel){
+		var file_id=sel.attr('file_id');
+		var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'fileitems']); ?>";
+		url=url+'/'+file_id,
+		$.ajax({
+			url: url,
+		}).done(function(response) {
+			$("#file_item_data").html(response);
+		}); 
+	}
+	
+;
+
+});
+</script>

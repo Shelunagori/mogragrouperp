@@ -17,12 +17,13 @@
 	</thead>
 	<tbody>
 
-		<?php $page_no=0;
+		<?php $page_no=0; 
 		 foreach ($itemLedgers as $itemLedger): 
 		$rate = $itemLedger->rate;
 		$in_out_type=$itemLedger->in_out;
 		$party=$itemLedger->party_type;
 		$url_path="";
+		$data="";
 		$source_model=$itemLedger->source_model;
 		//pr($source_model);exit;
 		if($source_model=='Challan')
@@ -36,7 +37,7 @@
 		}
 		
 		else if($party=='Customer')
-		{
+		{ 
 			$party_name=$itemLedger->party_info->customer_name;
 			$voucher_no=$itemLedger->voucher_info->in1.'/IN-'.str_pad($itemLedger->voucher_info->in2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->in3.'/'.$itemLedger->voucher_info->in4;
 			if($itemLedger->voucher_info->invoice_type=='GST'){
