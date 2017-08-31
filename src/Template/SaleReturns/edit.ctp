@@ -482,9 +482,14 @@ $('.quantity').die().live("keyup",function() {
 	}
 	
 	
-		$('.rename_check').die().live("click",function() {
+	$('.rename_check').die().live("click",function() {
 		rename_rows(); calculate_total();
     });
+	
+	$('.quantity').die().live("keyup",function() {
+			rename_rows(); 
+			calculate_total();
+    });	
 	
 
 	rename_rows();
@@ -501,7 +506,7 @@ $('.quantity').die().live("keyup",function() {
 				var qty=$(this).find('td:nth-child(3) input[type="text"]').val();
 				var serial_l=$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').length;
 				if(serial_l>0){ 	
-					$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+row_no+"][item_serial_numbers][]").attr("id","sale_return_rows-"+row_no+"-item_serial_no").attr('maxlength',qty).rules('add', {
+					$('#main_tb tbody tr.tr2[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+row_no+"][itm_serial_number][]").attr("id","sale_return_rows-"+row_no+"-item_serial_no").attr('maxlength',qty).rules('add', {
 						    required: true,
 							minlength: qty,
 							maxlength: qty,

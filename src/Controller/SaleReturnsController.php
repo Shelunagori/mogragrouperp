@@ -562,8 +562,9 @@ class SaleReturnsController extends AppController
             $saleReturn = $this->SaleReturns->patchEntity($saleReturn, $this->request->data);
 			$ref_rows=@$this->request->data['ref_rows'];
             $saleReturn = $this->SaleReturns->patchEntity($saleReturn, $this->request->data);
-			foreach($saleReturn->sale_return_rows as $sale_return_row){   
-				if($sale_return_row->item_serial_numbers){
+			foreach($saleReturn->sale_return_rows as $sale_return_row){  
+		
+				if($sale_return_row->itm_serial_number){
 					$item_serial_no=implode(",",$sale_return_row->itm_serial_number );
 					$sale_return_row->itm_serial_number=$item_serial_no;
 				}
@@ -679,9 +680,10 @@ class SaleReturnsController extends AppController
 				//pr(sizeof($sale_return_row->itm_serial_number)); exit; 
 					if(sizeof($sale_return_row->itm_serial_number) > 0){ 
 						$item_serial_no=$sale_return_row->itm_serial_number;
-						
-						//$serial_no=explode(",",$item_serial_no);
-						foreach($item_serial_no as $item_serial_number){
+						if($item_serial_no){
+						$serial_no=explode(",",$item_serial_no);
+						//pr($serial_no); exit;
+						foreach($serial_no as $item_serial_number){
 						//pr($saleReturn->id);	exit;
 							$query = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->query();
 							$query->update()
@@ -698,6 +700,7 @@ class SaleReturnsController extends AppController
 							$ItemSerialNumbers->company_id=$st_company_id;
 							$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->save($ItemSerialNumbers);
 						}
+					}
 					}
 				}
 				
