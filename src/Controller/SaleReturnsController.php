@@ -255,6 +255,13 @@ class SaleReturnsController extends AppController
 					if($item_serial_no){
 					$serial_no=explode(",",$item_serial_no);
 					foreach($serial_no as $serial){
+						
+						$query = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->query();
+						$query->update()
+							->set(['sale_return_id'=>$saleReturn->id])
+							->where(['id' => $serial])
+							->execute();
+						
 					$ItemSerialNumber_data=$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->get($serial);
 					$ItemSerialNumbers = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->newEntity();
 					$ItemSerialNumbers->status='In';
@@ -520,7 +527,7 @@ class SaleReturnsController extends AppController
         //$saleReturn = $this->SaleReturns->newEntity();
 		$invoice_id=@(int)$this->request->query('invoice');
 		
-				$st_year_id = $session->read('st_year_id');
+		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->SaleReturns->FinancialYears->find()->where(['id'=>$st_year_id])->first();
 		 
 		
@@ -559,15 +566,29 @@ class SaleReturnsController extends AppController
 						return $q
 						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes']
         ]); */
-		$invoice = $this->SaleReturns->get($id);
+		 $invoice = $this->SaleReturns->get($id);
 		//pr($invoice->st_ledger_account_id); exit;
-		$saleReturn = $this->SaleReturns->get($id, [
+		/* $saleReturn = $this->SaleReturns->get($id, [
             'contain' => ['Customers','SaleTaxes','Employees','SaleReturnRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($id,$invoice){
 							return $q->where(['ItemSerialNumbers.Status' => 'Out','invoice_id'=>$invoice->id]);
 							},'ItemCompanies'=>function($q) use($st_company_id){
 							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
 							}]]]
-        ]); 
+        ]);   */
+		
+		$invoice_id=$invoice->invoice_id;
+		 $saleReturn = $this->SaleReturns->Invoices->get($invoice_id, [
+				'contain' => ['InvoiceRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($invoice_id){
+							return $q->where(['ItemSerialNumbers.Status' => 'Out','ItemSerialNumbers.invoice_id'=>$invoice_id]);
+							},'ItemCompanies'=>function($q) use($st_company_id){
+							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
+							}]],'SaleTaxes','Companies','Customers'=>['CustomerAddress'=> function ($q) {
+						return $q
+						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes'
+					]
+			]); 
+		
+		//pr($saleReturn->toArray()); exit;
 		$transaction_date=$saleReturn->transaction_date;
 		$date_created=$saleReturn->date_created;
 		

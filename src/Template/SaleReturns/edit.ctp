@@ -14,7 +14,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 		$end_date=$last.'-'.$financial_month_last->month;
 		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
 		$transaction_date=strtotime($saleReturn->transaction_date);
-if($transaction_date <  $start_date ) {
+if($transaction_date <  $start_date && !empty(@$InventoryVoucher_detail[0]->transaction_date)) {
 	echo "Financial Month has been Closed";
 } else { ?>
 <div class="portlet light bordered">
@@ -104,7 +104,7 @@ if($transaction_date <  $start_date ) {
 				<tbody id='main_tbody'>
 					<?php 
 					$q=0; $p=1; 
-					foreach ($saleReturn->sale_return_rows as $invoice_row){ ?>
+					foreach ($saleReturn->invoice_rows as $invoice_row){ ?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
 							<td ><?php echo $p++; ?></td>
 							<td>
@@ -131,17 +131,21 @@ if($transaction_date <  $start_date ) {
 							</td>
 						</tr>
 						
-						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){ 
-						//pr($invoice_row->item->item_serial_numbers);
+						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){
 						?>
+						
 						<tr class="tr2" row_no="<?= h($q) ?>">
 						<?php $options1=[]; $choosen=[];
-							if(sizeof(@$invoice_row->item->item_serial_numbers)>0){
-								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers)
+							 
+								foreach($invoice_row->item->item_serial_numbers as $item_serial_numbers){
 									$options1[]=['text' =>$item_serial_numbers->serial_no, 'value' => $item_serial_numbers->id];
-							}
-							$item_serial_no=$invoice_row->item_serial_number;
-									$choosen=explode(",",$item_serial_no);
+									
+									if($item_serial_numbers->sale_return_id==$invoice->id){
+										$item_serial_no=$invoice_row->item_serial_number;
+										$choosen[]=$item_serial_no;
+									}
+										
+								}
 						?>
 							<td></td>
 							<td colspan="6">
