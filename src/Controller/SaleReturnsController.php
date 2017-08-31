@@ -286,9 +286,7 @@ class SaleReturnsController extends AppController
 					}
 				 $saleReturn->check=array_filter($saleReturn->check);
 					$i=0; 
-					
 					foreach($saleReturn->check as $sale_return_row){
-				
 						$item_id=$sale_return_row;
 						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$item_id,'in_out'=>'In','processed_on <='=>$saleReturn->transaction_date,'rate >'=>0,'quantity >'=>0]);
 						//pr($item_details->toArray()); exit;
@@ -321,22 +319,6 @@ class SaleReturnsController extends AppController
 										])
 					    ->execute();
 						$i++;
-						/* pr($ledger_data); exit;
-						$itemLedger = $this->SaleReturns->ItemLedgers->newEntity();
-						$itemLedger->item_id = $item_id;
-						$itemLedger->quantity = $saleReturn->sale_return_rows[$i]['quantity'];
-						$itemLedger->source_model = 'Sale Return';
-						$itemLedger->source_id = $saleReturn->id;
-						$itemLedger->in_out = 'In';
-						if(!$item_detail){
-							$itemLedger->rate = 0;
-						}else{
-							$itemLedger->rate = $item_detail->rate;
-						}
-						$itemLedger->company_id = $invoice->company_id;
-						$itemLedger->processed_on = $saleReturn->transaction_date;
-						$this->SaleReturns->ItemLedgers->save($itemLedger);
-						$i++; */
 					}
 					
 					$query = $this->SaleReturns->Invoices->query();
@@ -555,29 +537,9 @@ class SaleReturnsController extends AppController
 					$chkdate = 'Not Found';	
 				}
 
-
-
-		/* $invoice = $this->SaleReturns->Invoices->get($invoice_id, [
-            'contain' => ['SaleReturns'=> ['SaleReturnRows'],'InvoiceRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($invoice_id){
-							return $q->where(['ItemSerialNumbers.Status' => 'Out','ItemSerialNumbers.invoice_id'=>$invoice_id]);
-							},'ItemCompanies'=>function($q) use($st_company_id){
-							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
-							}]],'SaleTaxes','Companies','Customers'=>['CustomerAddress'=> function ($q) {
-						return $q
-						->where(['CustomerAddress.default_address' => 1]);}],'Employees','SaleTaxes']
-        ]); */
-		 $invoice = $this->SaleReturns->get($id);
-		//pr($invoice->st_ledger_account_id); exit;
-		/* $saleReturn = $this->SaleReturns->get($id, [
-            'contain' => ['Customers','SaleTaxes','Employees','SaleReturnRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($id,$invoice){
-							return $q->where(['ItemSerialNumbers.Status' => 'Out','invoice_id'=>$invoice->id]);
-							},'ItemCompanies'=>function($q) use($st_company_id){
-							return $q->where(['ItemCompanies.company_id' => $st_company_id]);
-							}]]]
-        ]);   */
-		
-		$invoice_id=$invoice->invoice_id;
-		 $saleReturn = $this->SaleReturns->Invoices->get($invoice_id, [
+		 $saleReturn = $this->SaleReturns->get($id);
+		 $invoice_id=$saleReturn->invoice_id;
+		$invoice= $this->SaleReturns->Invoices->get($invoice_id, [
 				'contain' => ['InvoiceRows' => ['Items'=>['ItemSerialNumbers'=>function($q) use($invoice_id){
 							return $q->where(['ItemSerialNumbers.Status' => 'Out','ItemSerialNumbers.invoice_id'=>$invoice_id]);
 							},'ItemCompanies'=>function($q) use($st_company_id){
@@ -588,15 +550,12 @@ class SaleReturnsController extends AppController
 					]
 			]); 
 		
-		//pr($saleReturn->toArray()); exit;
-		$transaction_date=$saleReturn->transaction_date;
-		$date_created=$saleReturn->date_created;
-		
-		$invoice_data = $this->SaleReturns->Invoices->get($invoice->invoice_id);
-		
-		
-		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
-		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$id]);
+		//pr($invoice->toArray()); exit;
+		$transaction_date=$invoice->transaction_date;
+		$date_created=$invoice->date_created;
+		$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$invoice->customer->id])->first();
+		//pr($c_LedgerAccount); exit;
+		$ReferenceDetails=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'sale_return_id'=>$saleReturn->id]);
 		 
         
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -605,24 +564,36 @@ class SaleReturnsController extends AppController
             $saleReturn = $this->SaleReturns->patchEntity($saleReturn, $this->request->data);
 			foreach($saleReturn->sale_return_rows as $sale_return_row){   
 				if($sale_return_row->item_serial_numbers){
-					$item_serial_no=implode(",",$sale_return_row->item_serial_numbers );
-					$sale_return_row->item_serial_number=$item_serial_no;
+					$item_serial_no=implode(",",$sale_return_row->itm_serial_number );
+					$sale_return_row->itm_serial_number=$item_serial_no;
 				}
 					
 			}
+			//pr($sale_return_row->itm_serial_number); exit;
 			$saleReturn->date_created=$date_created;
-			$saleReturn->invoice_id=$saleReturn->invoice_id;
+			$saleReturn->invoice_id=$invoice_id;
 			$saleReturn->sale_tax_id=$saleReturn->sale_tax_id;
 			$saleReturn->edited_on = date("Y-m-d"); 
 			$saleReturn->edited_by=$this->viewVars['s_employee_id'];
 			$saleReturn->transaction_date=date("Y-m-d",strtotime($saleReturn->transaction_date));   
-			
+			//pr($saleReturn); exit;
         if ($this->SaleReturns->save($saleReturn)) {
 				$this->SaleReturns->Ledgers->deleteAll(['voucher_id' => $saleReturn->id, 'voucher_source' => 'Sale Return','company_id'=>$st_company_id]);
-				$this->SaleReturns->ItemSerialNumbers->deleteAll(['sale_return_id' => $saleReturn->id,'company_id'=>$st_company_id]);
+				$this->SaleReturns->ItemSerialNumbers->deleteAll(['ItemSerialNumbers.sale_return_id' => $saleReturn->id,'ItemSerialNumbers.company_id'=>$st_company_id,'ItemSerialNumbers.invoice_id'=> 0]);
 				$this->SaleReturns->ItemLedgers->deleteAll(['source_id' => $saleReturn->id, 'source_model' => 'Sale Return','company_id'=>$st_company_id]);
 				
-				$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$saleReturn->customer->id])->first();
+				$query = $this->SaleReturns->Invoices->InvoiceRows->query();
+						$query->update()
+							->set(['sale_return_quantity'=>0])
+							->where(['invoice_id' => $invoice_id])
+							->execute();
+				$query1 = $this->SaleReturns->ItemSerialNumbers->query();
+						$query1->update()
+							->set(['sale_return_id'=>0])
+							->where(['invoice_id' => $invoice_id])
+							->execute();
+				
+				$c_LedgerAccount=$this->SaleReturns->LedgerAccounts->find()->where(['company_id'=>$st_company_id,'source_model'=>'Customers','source_id'=>$invoice->customer->id])->first();
 				$ledger_grand=$saleReturn->grand_total;
 				$ledger = $this->SaleReturns->Ledgers->newEntity();
 				$ledger->ledger_account_id = $c_LedgerAccount->id;
@@ -693,7 +664,7 @@ class SaleReturnsController extends AppController
 				$total_amt=0;
 				
 				
-				foreach($saleReturn->sale_return_rows as $sale_return_row){
+				/* foreach($saleReturn->sale_return_rows as $sale_return_row){
 					$ItemSerialNumbers=$this->SaleReturns->ItemSerialNumbers->find()->where(['sale_return_id'=>$saleReturn->id]);
 					foreach($ItemSerialNumbers as $ItemSerialNumber){   
 						$query = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->query();
@@ -703,13 +674,21 @@ class SaleReturnsController extends AppController
 									->execute();
 					
 					}
-				}
+				} */
 				foreach($saleReturn->sale_return_rows as $sale_return_row){ 
-				//pr(sizeof($sale_return_row->item_serial_number)); exit; 
-					if(sizeof($sale_return_row->item_serial_number) > 0){ 
-						$item_serial_no=$sale_return_row->item_serial_number;
-						$serial_no=explode(",",$item_serial_no);
-						foreach($serial_no as $item_serial_number){
+				//pr(sizeof($sale_return_row->itm_serial_number)); exit; 
+					if(sizeof($sale_return_row->itm_serial_number) > 0){ 
+						$item_serial_no=$sale_return_row->itm_serial_number;
+						
+						//$serial_no=explode(",",$item_serial_no);
+						foreach($item_serial_no as $item_serial_number){
+						//pr($saleReturn->id);	exit;
+							$query = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->query();
+							$query->update()
+							->set(['sale_return_id'=>$saleReturn->id])
+							->where(['id' => $item_serial_number])
+							->execute();
+							
 						$item_serial_number_data=$this->SaleReturns->SaleReturnRows->ItemSerialNumbers->get($item_serial_number);
 						$ItemSerialNumbers = $this->SaleReturns->SaleReturnRows->ItemSerialNumbers->newEntity();
 							$ItemSerialNumbers->status='In';
@@ -733,11 +712,12 @@ class SaleReturnsController extends AppController
 					}
 				
 					$i=0; 
-				//	pr($invoice); exit;
+					$processed_on = date("Y-m-d",strtotime($invoice->date_created));
 					foreach($saleReturn->sale_return_rows as $sale_return_row){
+						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'in_out'=>'In','processed_on <='=>$processed_on,'rate >'=>0,'quantity >'=>0]);
 						
-						$item_details=$this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$sale_return_row->item_id,'in_out'=>'In','processed_on <='=>$invoice_data->date_created,'rate >'=>0,'quantity >'=>0]);
-						
+						//pr($processed_on); exit;
+						//pr($item_details->toArray()); exit;
 						$ledger_data=$item_details->count();
 						$Itemledger_qty=0;
 						$Itemledger_rate=0;
@@ -800,7 +780,6 @@ class SaleReturnsController extends AppController
 					if(sizeof(@$ref_rows)>0){
 						foreach($ref_rows as $ref_row){
 							$ref_row=(object)$ref_row;
-
 							$ReferenceDetail=$this->SaleReturns->ReferenceDetails->find()->where(['ledger_account_id'=>$c_LedgerAccount->id,'reference_no'=>$ref_row->ref_no,'sale_return_id'=>$saleReturn->id])->first();
 							
 							if($ReferenceDetail){ //pr($ref_row->ref_old_amount); exit;
@@ -1403,8 +1382,8 @@ class SaleReturnsController extends AppController
 			
 			foreach($saleReturn->sale_return_rows as $sale_return_row){
 				if($sale_return_row->item_serial_numbers){
-					$item_serial_no=implode(",",$sale_return_row->item_serial_numbers );
-					$sale_return_row->item_serial_number=$item_serial_no;
+					$item_serial_no=implode(",",$sale_return_row->itm_serial_numbers );
+					$sale_return_row->itm_serial_numbers=$item_serial_no;
 					
 				}
 			} 		
