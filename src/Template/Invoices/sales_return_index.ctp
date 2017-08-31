@@ -63,12 +63,21 @@
 							<td><?= h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4)) ?></td>
 							<?php if($invoice->sales_order_id != 0){ ?>
 							<td>
-							<?php echo $this->Html->link( $invoice->sales_order->so1.'/SO-'.str_pad($invoice->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sales_order->so3.'/'.$invoice->sales_order->so4,[
-							'controller'=>'SalesOrders','action' => 'confirm',$invoice->sales_order->id],array('target'=>'_blank')); ?>
+								<?php 
+									if($invoice->sales_order->gst == 'yes'){
+										echo $this->Html->link( $invoice->sales_order->so1.'/SO-'.str_pad($invoice->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sales_order->so3.'/'.$invoice->sales_order->so4,[
+									'controller'=>'SalesOrders','action' => 'gstConfirm',$invoice->sales_order->id],array('target'=>'_blank')); 
+									}else{
+										echo $this->Html->link( $invoice->sales_order->so1.'/SO-'.str_pad($invoice->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sales_order->so3.'/'.$invoice->sales_order->so4,[
+									'controller'=>'SalesOrders','action' => 'confirm',$invoice->sales_order->id],array('target'=>'_blank')); 
+									}?>
+							
 							</td>
 							<?php }else{?>
 							<td></td><?php } ?>
-							<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')' ?></td>
+							<td><?php if(!empty($invoice->customer->alias)){ echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')' ; }else{
+								echo $invoice->customer->customer_name;
+							} ?></td>
 							<td>
 								<div class="btn-group">
 									<button id="btnGroupVerticalDrop5" type="button" class="btn  btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Items <i class="fa fa-angle-down"></i></button>

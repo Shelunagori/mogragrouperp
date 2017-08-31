@@ -437,8 +437,8 @@ $(document).ready(function() {
 		},
 
 		submitHandler: function (form3) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
+			//$('#add_submit').prop('disabled', true);
+			//$('#add_submit').text('Submitting.....');
 			success3.show();
 			error3.hide();
 			form3[0].submit();

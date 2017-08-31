@@ -299,6 +299,8 @@ select
 					<ul class="sub-menu">
 						<?php if(in_array(3,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create', '/Sales-Orders/add' ).'</li>';
+						} ?>
+						<?php if(in_array(149,$allowed_pages)){
 						echo '<li>'.$this->Html->link( 'Create Gst Sales Order', '/Sales-Orders/gstSalesOrderAdd' ).'</li>';
 						} ?>
 						<?php if(in_array(22,$allowed_pages) || in_array(4,$allowed_pages)){
@@ -647,12 +649,33 @@ select
 						</li>
 						<?php } ?>
 						<?php if(in_array(128,$allowed_pages)){?>
-						<li><?php $today =date('d-m-Y');
-						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
+						
+						<li>
+							<a href="javascript:;">
+							<i class="fa fa-file-code-o"></i>
+							<span class="title">Sales Report</span>
+							<span class="arrow "></span>
+							</a>
+							<ul class="sub-menu">
+									<li><?php $today =date('d-m-Y');
+										echo $this->Html->link('Non GST Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+									</li>
+									<li><?php $today =date('d-m-Y');
+										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+									</li>
+									<li><?php $today =date('d-m-Y');
+										echo $this->Html->link('GST Sales Man Report',array('controller'=>'Invoices','action'=>'salesManReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+									</li>
+							</ul>
+						</li>
+						
+					<li>
+						<?php $today =date('d-m-Y');
+						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Inventory Daily Report',array('controller'=>'ItemLedgers','action'=>'inventoryDailyReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report',array('escape'=>false)); ?></li>	
-						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Item Ledger','/Item-Ledgers/Stock_ledger',array('escape'=>false)); ?></li>
+						
 						<?php } ?>
 						<?php if(in_array(37,$allowed_pages)){?>
 						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Balance Sheet','/ledger-Accounts/Balance-Sheet',array('escape'=>false)); ?></li>
@@ -691,7 +714,8 @@ select
 					<ul class="sub-menu">
 						<?php 
 						 if(in_array(133,$allowed_pages)){
-						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/Invoices/SalesReturnIndex?sales_return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Non-Gst','/Invoices/SalesReturnIndex?sales_return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Gst','/Invoices/gstSalesReturn?sales_return=true',array('escape'=>false)).'</li>';
 						 }
 						 ?>
 						<?php 
@@ -703,19 +727,19 @@ select
 				</li>
 				<?php } ?>
 				
-					<li>
+					<!--<li>
 					<a href="javascript:;">
 					<i class="fa fa-puzzle-piece"></i>
 					<span class="title">Reverse Inventory Voucher</span>
 					<span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
+					<ul class="sub-menu">sss
 						
 						<?php 
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/Rivs/',array('escape'=>false)).'</li>';
 						 ?>
 					</ul>
-				</li>
+				</li> -->
 				<?php if(in_array(129,$allowed_pages)||in_array(130,$allowed_pages)|| in_array(131,$allowed_pages) ||in_array(132,$allowed_pages)){ ?>
 				<li>
 					<a href="javascript:;">
@@ -725,6 +749,20 @@ select
 					</a>
 					<ul class="sub-menu">
 						<?php 
+						 if(in_array(129,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="fa fa-recycle"></i> Non-Gst','/InvoiceBookings/PurchaseReturnIndex?purchase-return=true',array('escape'=>false)).'</li>';
+						echo '<li>'.$this->Html->link('<i class="fa fa-qrcode"></i> Gst','/InvoiceBookings/gstPurchaseReturn?purchase-return=true',array('escape'=>false)).'</li>';
+						 }
+						 ?>
+						<?php 
+						if(in_array(131,$allowed_pages)){
+						echo '<li>'.$this->Html->link('<i class="fa fa-file-text"></i> View','/PurchaseReturns/',array('escape'=>false)).'</li>';
+						}
+						?>
+					</ul>
+					
+					<!--<ul class="sub-menu">
+						<?php 
 						if(in_array(129,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> Create','/InvoiceBookings/PurchaseReturnIndex?purchase-return=true',array('escape'=>false)).'</li>';
 						}?>
@@ -732,7 +770,7 @@ select
 						if(in_array(131,$allowed_pages)){
 						echo '<li>'.$this->Html->link('<i class="icon-home"></i> View','/PurchaseReturns/',['escape'=>false]).'</li>';
 						}?>
-					</ul>
+					</ul>-->
 				</li>
 				<?php } ?>
 				<?php if(in_array(17,$allowed_pages) || in_array(18,$allowed_pages) || in_array(123,$allowed_pages)){ ?>

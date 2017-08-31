@@ -93,7 +93,7 @@
 							<td class="actions">
 								<?php 
 								
-								echo $this->Html->link('<i class="fa fa-repeat"></i>  Sale Return','/SaleReturns/GstSalesAdd?invoice='.$invoice->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+								echo $this->Html->link('<i class="fa fa-repeat"></i> Gst Sale Return','/SaleReturns/GstSalesAdd?invoice='.$invoice->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								 ?>
 								
 							</td>
