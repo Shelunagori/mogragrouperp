@@ -145,6 +145,7 @@
 						<?php } } ?>
 						
 						<?php if((!empty($total_debit_3)) || (!empty($total_credit_3))){
+									
 									$total3=@$total_credit_3[ $LedgerAccount->id] - @$total_debit_3[ $LedgerAccount->id];
 									if(@$total_debit_3[ $LedgerAccount->id] < @$total_credit_3[ $LedgerAccount->id]){ ?>
 									<td align="right" style="color: red;"><?php echo $this->Number->format($total3,['places'=>2]); ?></td>

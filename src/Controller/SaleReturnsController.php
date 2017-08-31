@@ -955,7 +955,7 @@ class SaleReturnsController extends AppController
 		$this->set(compact('From','To'));
 		$where=[];
 		$this->viewBuilder()->layout('index_layout');
-		$SaleReturns = $this->SaleReturns->find()->contain(['SaleReturnRows','Customers'])->order(['SaleReturns.id' => 'DESC'])->where(['SaleReturns.company_id'=>$st_company_id]);
+		$SaleReturns = $this->SaleReturns->find()->contain(['SaleReturnRows','Customers'])->order(['SaleReturns.id' => 'DESC'])->where(['SaleReturns.company_id'=>$st_company_id,'sale_return_type'=>'Non-GST']);
 		//pr($invoices->toArray()); exit;
 		$this->set(compact('SaleReturns'));
 	}
