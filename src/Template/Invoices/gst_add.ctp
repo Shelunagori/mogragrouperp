@@ -414,7 +414,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						</thead>
 						<tbody>
 							<tr>
-								<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
+								<td><?php echo $this->Form->input('ref_types', ['empty'=>'---Select---','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
 								<td class="ref_no"></td>
 								<td><?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount']); ?></td>
 								<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button"><i class="fa fa-times"></i></a></td>

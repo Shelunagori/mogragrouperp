@@ -36,7 +36,9 @@ margin-bottom: 0;
 			<td align="right" width="30%" style="font-size: 12px;">
 			<span style="font-size: 14px;"><?= h($invoiceBooking->company->name) ?></span>
 			<span><?= $this->Text->autoParagraph(h($invoiceBooking->company->address)) ?>
-			<?= h($invoiceBooking->company->mobile_no) ?></span>
+			</span>
+			<span> <i class="fa fa-phone" aria-hidden="true"></i> <?= h($invoiceBooking->company->landline_no) ?></span> |
+			<?= h($invoiceBooking->company->mobile_no) ?>
 			</td>
 		</tr>
 		<tr>
@@ -269,7 +271,7 @@ margin-bottom: 0;
 		
 	</tfoot>
 </table>
-<div style="border:solid 0px ;"></div>
+<div style="border:solid 1px ;margin-top: 12px;"></div>
 <table width="100%" class="divFooter">
 	<tr>
 		<td style="vertical-align: top !important;">

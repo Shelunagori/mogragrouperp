@@ -257,21 +257,21 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							</td>
 							
 							<td class="cgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?>
 							</td>
 							
 							<td class="cgst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
 							</td>
 							
-							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01]); ?>
+							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?>
 							</td>
 							
 							<td class="sgst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
 							</td>
 							
-							<td class="igst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
+							<td class="igst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
 							
 							<td class="igst_display" align="center">
 							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly']); ?>
@@ -288,11 +288,11 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 							
 						</tr>
 						<tr class="tr2" row_no='<?php echo @$grn_rows->id; ?>'>
-							<td colspan="11">
-							<?php echo $this->Text->autoParagraph($grn->purchase_order->purchase_order_rows[$q]->description); ?>
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$grn->purchase_order->purchase_order_rows[$q]->description]); ?>
+							<td colspan="19">
+								<?php echo $this->Text->autoParagraph($grn->purchase_order->purchase_order_rows[$q]->description); ?>
+								<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$grn->purchase_order->purchase_order_rows[$q]->description]); ?>
 							</td>
-							<td></td>
+							
 						</tr>
 						<tr>
 							 
@@ -343,7 +343,7 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						</thead>
 						<tbody>
 							<tr>
-								<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
+								<td><?php echo $this->Form->input('ref_types', ['empty'=>'---Select---','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type']); ?></td>
 								<td class="ref_no"></td>
 								<td><?php echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount']); ?></td>
 								<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button"><i class="fa fa-times"></i></a></td>
@@ -371,18 +371,17 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						</div>
 					</div>
 				</div>
-		<div class="form-actions">
+					<div class="form-actions">
 						<div class="row">
 							<div class="col-md-3">
-									<?php if($chkdate == 'Not Found'){  ?>
-					<label class="btn btn-danger"> You are not in Current Financial Year </label>
-				<?php } else { ?>
-					<?= $this->Form->button(__('BOOK INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
-				<?php } ?>	
-				
+								<?php if($chkdate == 'Not Found'){  ?>
+								<label class="btn btn-danger"> You are not in Current Financial Year </label>
+								<?php } else { ?>
+								<?= $this->Form->button(__('BOOK INVOICE'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+								<?php } ?>	
+							</div>
 						</div>
-				</div>
-		</div>
+					</div>
 	</div>	
 	
 	<?php } ?> <?= $this->Form->end() ?>

@@ -75,7 +75,8 @@ $url_excel="/?".$url;
 			<div class="col-md-12">
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
-					<div class="col-md-12 " style="text-align:center; font-size: 20px;"><?php echo $Ledger_Account_data->name.'('.$Ledger_Account_data->alias.')'; ?></div>
+					<div class="col-md-12 " style="text-align:center; font-size: 20px;"><?php if(!empty(@$Ledger_Account_data->alias)){ echo @$Ledger_Account_data->name.'('.@$Ledger_Account_data->alias.')';
+					}else{ echo @$Ledger_Account_data->name; }?></div>
 					<div class="col-md-12" style="text-align:left; font-size: 15px;"> <?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->account_group->account_category->name; ?>->
 					<?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->account_group->name; ?>->
 					<?php echo $Ledger_Account_data->account_second_subgroup->account_first_subgroup->name; ?>->

@@ -17,6 +17,11 @@
 <table border="1">
 	<thead>
 		<tr>
+			<td colspan="4" align="center">
+				 PettyCash Vouchers Report 
+			</td>
+		</tr>
+		<tr>
 			<th>Sr. No.</th>
 			<th>Transaction Date</th>
 			<th>Vocher No</th>

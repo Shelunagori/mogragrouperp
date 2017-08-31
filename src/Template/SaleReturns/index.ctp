@@ -39,7 +39,7 @@
 				</thead>
 				<tbody>
 						<?php foreach ($saleReturns as $saleReturn): 
-						//pr($saleReturn->invoice); 
+						
 						?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>

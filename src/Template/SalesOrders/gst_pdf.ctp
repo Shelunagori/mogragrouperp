@@ -373,14 +373,15 @@ $html.='
 						<td valign="top"> : <td>
 						<td valign="top">'. h($salesOrder->dispatch_name).'</td>
 						<td width="10%"></td>
-						<td valign="top">Address</td>
-						<td valign="top"> : <td>
-						<td valign="top" width="60%" >'. h($salesOrder->dispatch_address).'</td>
-					</tr>
-					<tr>
 						<td valign="top">Mobile</td>
 						<td valign="top"> : <td>
 						<td valign="top">'. h($salesOrder->dispatch_mobile).'</td>
+						
+					</tr>
+					<tr>
+						<td valign="top">Address</td>
+						<td valign="top"> : <td>
+						<td valign="top" width="60%" >'. h($salesOrder->dispatch_address).'</td>
 						<td></td>
 						<td valign="top">Email</td>
 						<td valign="top"> : <td>
