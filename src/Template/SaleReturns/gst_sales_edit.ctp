@@ -284,7 +284,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$invoice_row->igst_percentage]); ?></td>
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$invoice_row->igst_amount]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$invoice_row->total]); ?></td>
-								<?php $checked2="";
+							<?php $checked2="";
 									if($invoice_row->sale_return_quantity == 0){ 
 											$check='';
 									} 
