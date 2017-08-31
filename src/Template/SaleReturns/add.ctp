@@ -168,7 +168,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tbody>
 					<?php 
 					$q=0; 
-					foreach ($invoice->invoice_rows as $invoice_row){ 
+					foreach (@$invoice->invoice_rows as $invoice_row){ 
 					if($invoice_row->quantity > $invoice_row->sale_return_quantity ){
 					?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
@@ -176,7 +176,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td>
 								<?php 
 								echo $this->Form->input('sale_return_rows.'.$q.'.item_id', ['type'=>'hidden','value'=>$invoice_row->item_id]);
-								echo $invoice_row->item->name;
+								echo @$invoice_row->item->name;
 								?>
 							</td>
 							<td>
@@ -200,16 +200,16 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 						</tr>
 						
-						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){ ?>
+						<?php if(@$invoice_row->item->item_companies[0]->serial_number_enable==1){ ?>
 						<tr class="tr2" row_no="<?= h($q) ?>">
 							<?php $options1=[];
-								foreach($invoice_row->item->item_serial_numbers as $item_serial_number){
-									$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
+								foreach(@$invoice_row->item->item_serial_numbers as  $item_serial_number){
+									$options1[]=['text' =>@$item_serial_number->serial_no, 'value' => $item_serial_number->id];
 								} 
 							?>
 							<td></td>
 							<td colspan="6">
-							<?php echo $this->Form->input('item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
+							<?php echo $this->Form->input('itm_serial_number', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
 						</tr>
 					<?php }  ?>
 					<?php $q++; } }  ?>
