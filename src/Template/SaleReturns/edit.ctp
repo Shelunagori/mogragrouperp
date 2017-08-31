@@ -145,7 +145,7 @@ if($transaction_date <  $start_date ) {
 						?>
 							<td></td>
 							<td colspan="6">
-							<?php echo $this->Form->input('sale_return_rows.'.$q.'.item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
+							<?php echo $this->Form->input('sale_return_rows.'.$q.'.itm_serial_number', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
 						</tr>
 					<?php  } 
 					$q++; 

@@ -415,7 +415,7 @@ class SaleReturnsController extends AppController
 		$Transporter = $this->SaleReturns->Transporters->get($invoice->transporter_id);
 		$Em = new FinancialYearsController;
 		$financial_year_data = $Em->checkFinancialYear($invoice->date_created);
-		
+		//pr($invoice); exit;
         $customers = $this->SaleReturns->Customers->find('list', ['limit' => 200]);
         $saleTaxes = $this->SaleReturns->SaleTaxes->find('list', ['limit' => 200]);
         $companies = $this->SaleReturns->Companies->find('list', ['limit' => 200]);
@@ -1013,8 +1013,8 @@ class SaleReturnsController extends AppController
 			
 			foreach($saleReturn->sale_return_rows as $sale_return_row){
 				if($sale_return_row->item_serial_numbers){
-					$item_serial_no=implode(",",$sale_return_row->item_serial_numbers );
-					$sale_return_row->item_serial_number=$item_serial_no;
+					$item_serial_no=implode(",",$sale_return_row->itm_serial_number );
+					$sale_return_row->itm_serial_number=$item_serial_no;
 					
 				}
 			} 
@@ -1118,7 +1118,8 @@ class SaleReturnsController extends AppController
 				foreach($saleReturn->sale_return_rows as $sale_return_row){
 					$amt=$sale_return_row->amount;
 					//$total_amt=$total_amt+$amt;
-					$item_serial_no=$sale_return_row->item_serial_number;
+					$item_serial_no=$sale_return_row->itm_serial_number;
+					if(sizeof($item_serial_no) > 0 ){
 					$serial_no=explode(",",$item_serial_no);
 					foreach($serial_no as $serial){
 						
@@ -1139,7 +1140,7 @@ class SaleReturnsController extends AppController
 						
 					}
 				}
-				
+			}
 			$Invoice_data = $this->SaleReturns->Invoices->get($invoice->id);
 			$Invoice_data->sale_return_id=$saleReturn->id;
 			$this->SaleReturns->Invoices->save($Invoice_data);

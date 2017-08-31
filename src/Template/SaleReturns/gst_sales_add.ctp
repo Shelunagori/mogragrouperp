@@ -704,7 +704,7 @@ $(document).ready(function() {
 				var serial_l=$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').length;
 				
 				if(serial_l>0){
-					$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+val+"][item_serial_numbers][]").attr("id","sale_return_rows-"+val+"-item_serial_no").attr('maxlength',qty).select2().rules('add', {
+					$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').removeAttr("readonly").attr("name","sale_return_rows["+val+"][itm_serial_number][]").attr("id","sale_return_rows-"+val+"-itm_serial_number").attr('maxlength',qty).select2().rules('add', {
 						    required: true,
 							minlength: qty,
 							maxlength: qty,
