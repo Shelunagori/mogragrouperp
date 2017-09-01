@@ -16,10 +16,8 @@
 }
 </style>
 <?php 
-$this->Form->templates([
-				'inputContainer' => '{{content}}'
-			]);
-			?>
+$this->Form->templates(['inputContainer' => '{{content}}']); ?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">

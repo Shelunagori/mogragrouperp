@@ -1,9 +1,3 @@
-<!-- <?php  
-$item_po_info=[];
-foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_row){
-	$item_po_info[$purchase_order_row->item_id]=$purchase_order_row;
-} 
-?>--> 
 <style>
 .row_textbox{
 	width: 100px;
@@ -21,6 +15,7 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 	font-size:10px;
 }
 </style>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -29,14 +24,13 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 		</div>
 	</div>
 	
-	<?php if(!empty($invoiceBooking)) { ?>
 	<div class="portlet-body form">
 		<?= $this->Form->create($purchaseReturn,['id'=> 'form_sample_3']) ?>
-		<?php 	$first="01";
+		<?php 	
+				$first="01";
 				$last="31";
 				$start_date=$first.'-'.$financial_month_first->month;
 				$end_date=$last.'-'.$financial_month_last->month;
-				//pr($start_date); exit;
 		?>
 			<div class="form-body">
 				<div class="row">
@@ -51,8 +45,8 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 						<div class="form-group">
 							<label class="control-label">Supplier</label>
 							<br/>
-							<?php echo $this->Form->input('vendor_ledger_id', ['label' => false,'class' => 'form-control input-sm','type' =>'hidden','value'=>@$vendor_ledger_acc_id]); ?>
-						<?php echo $this->Form->input('gst', ['label' => false,'type' =>'hidden','value'=>'yes']); ?>
+							<?php echo $this->Form->input('vendor_id', ['label' => false,'class' => 'form-control input-sm','type' =>'hidden','value'=>@$vendor_ledger_acc_id]); ?>
+							<?php echo $this->Form->input('gst_type', ['label' => false,'type' =>'hidden','value'=>'Gst']); ?>
 							<?php echo @$invoiceBooking->grn->vendor->company_name; ?>
 						</div>
 					</div>
@@ -67,9 +61,8 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 					<div class="col-md-3">
 						<div class="form-group">
 							<label class="control-label">Purchase Account </label><br/>
-							<?php  //pr($ledger_account_details->toArray()); 
-							echo $ledger_account_details['name']; ?>
-							
+							<?php echo $ledger_account_details['name']; ?>
+							<?php echo $this->Form->input('purchase_ledger_account', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>$ledger_account_details['id']]); ?>
 						</div>
 					</div>
 				</div><br/>
@@ -97,16 +90,18 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 				<div class="row">
 					<div class="col-md-3">
 						<div class="form-group">
-							<label class="control-label">Supplier Invoice Date. <span class="required" aria-required="true">*</span></label>
-								<?php echo $this->Form->input('supplier_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Supplier Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
+							<label class="control-label">Supplier Invoice Date. <span class="required" aria-required="true">*</span></label><br/>
+							<?php echo @date("d-m-Y",strtotime($invoiceBooking->supplier_date)); ?>
+								<?php echo $this->Form->input('supplier_date', ['type'=>'hidden','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Supplier Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
 										=>$start_date ,'data-date-end-date' => $end_date,'value' => date("d-m-Y",strtotime($invoiceBooking->supplier_date)),'readonly']); ?>
 							
 						</div>
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
-							<label class="control-label">Invoice No. <span class="required" aria-required="true">*</span></label>
-							<?php echo $this->Form->input('invoice_no', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Invoice NO','readonly']); ?>
+							<label class="control-label">Invoice No. <span class="required" aria-required="true">*</span></label><br/>
+							<?php echo @$invoiceBooking->invoice_no; ?>
+							<?php echo $this->Form->input('invoice_no', ['type' => 'hidden','label' => false,'class' => 'form-control input-sm','placeholder' => 'Invoice NO','readonly','value'=>$invoiceBooking->invoice_no]); ?>
 							<br/>
 							<? ?>
 						</div>
@@ -114,7 +109,7 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 					
 					<div class="col-md-3">
 						<div class="form-group">
-							<label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label>
+							<label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label><br/>
 							<?php echo $this->Form->input('transaction_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Transaction Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
 										=>$start_date ,'data-date-end-date' => $end_date,'required']); ?>
 						</div>
@@ -343,7 +338,7 @@ foreach($invoiceBooking->purchase_order->purchase_order_rows as $purchase_order_
 			</div>
 		</div>
 	</div>	
-	<?= $this->Form->end(); } ?>
+	<?= $this->Form->end(); ?>
 </div>	
 <style>
 .table thead tr th {
@@ -580,8 +575,8 @@ $(document).ready(function() {
 	
 
 	
-	var purchase_ledger_account=$('select[name="purchase_ledger_account"]').val();
-	var gst_ledger_id=$('select[name="purchase_ledger_account"] option:selected').val();
+	var purchase_ledger_account=$('input[name="purchase_ledger_account"]').val();
+	var gst_ledger_id=$('input[name="purchase_ledger_account"]').val();
 		if(gst_ledger_id=="799" || gst_ledger_id=="800" )
 		{  
 				$('.igst_display').css("display", "none");
