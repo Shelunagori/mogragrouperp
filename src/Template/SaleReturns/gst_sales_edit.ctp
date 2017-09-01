@@ -206,7 +206,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value="" />
 			<table  class="table tableitm" id="main_tb" border="1">
 				<thead>
-						<tr >
+						<tr>
 							<th rowspan="2" style="text-align: bottom;" width="50px">Sr.No. </th>
 							<th rowspan="2" style="white-space: nowrap; width:50%;">Items</th>
 							<th rowspan="2"  style="width:20%;">Quantity</th>
@@ -284,7 +284,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm ','class' => 'form-control input-sm row_textbox igst_percentage','placeholder'=>'%','step'=>0.01,'value' => @$invoice_row->igst_percentage]); ?></td>
 							<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value' => @$invoice_row->igst_amount]); ?></td>
 							<td><?php echo $this->Form->input('q', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value' => @$invoice_row->total]); ?></td>
-								<?php $checked2="";
+							<?php $checked2="";
 									if($invoice_row->sale_return_quantity == 0){ 
 											$check='';
 									} 
@@ -355,16 +355,16 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							}
 						?>
 					<tr>
-						<td align="right" colspan="<?php echo $tr3_colspan; ?>">Fright Ledger Account</td>
-						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me']); ?></td>
-						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','readonly','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm  row_textbox fright_cgst_percent','readonly','placeholder'=>'%','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage  fright_sgst_percent','readonly','placeholder'=>'%','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent','readonly','placeholder'=>'%','step'=>0.01]); ?></td>
-						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td><?php echo $this->Form->input('total_fright_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01]); ?></td>
+						<td align="right" colspan="<?php echo $tr3_colspan+1; ?>">Fright Ledger Account</td>
+						
+						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','readonly','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$invoice->fright_amount]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm  row_textbox fright_cgst_percent','readonly','placeholder'=>'%','step'=>0.01,'value'=>@$invoice->fright_cgst_percent]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value'=>@$invoice->fright_cgst_amount]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage  fright_sgst_percent','readonly','placeholder'=>'%','step'=>0.01,'value'=>@$invoice->fright_sgst_percent]); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value'=>@$invoice->fright_sgst_amount]); ?></td>
+						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent','readonly','placeholder'=>'%','step'=>0.01,'value'=>@$invoice->fright_igst_percent]); ?></td>
+						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01,'value'=>@$invoice->fright_igst_amount]); ?></td>
+						<td><?php echo $this->Form->input('total_fright_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Total','readonly','step'=>0.01,'value'=>@$invoice->fright_amount+$invoice->fright_cgst_amount+$invoice->fright_sgst_amount+$invoice->fright_igst_amount]); ?></td>
 						<td></td>
 						
 					</tr>
@@ -720,12 +720,12 @@ $(document).ready(function() {
 			if(val){ 
 				i++;
 				$(this).find('td:nth-child(2) input').attr("name","sale_return_rows["+val+"][item_id]").attr("id","sale_return_rows-"+val+"-item_id").rules("add", "required");
-				$(this).find('td:nth-child(3) input').attr("name","sale_return_rows["+val+"][quantity]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-quantity").rules("add", "required");
+				$(this).find('td:nth-child(3) input').attr("name","sale_return_rows["+val+"][quantity]").attr("id","q"+val).removeAttr("readonly").attr("id","sale_return_rows-"+val+"-quantity").rules("add", "required");
 				$(this).find('td:nth-child(4) input').attr("name","sale_return_rows["+val+"][rate]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-rate").rules("add", "required");
 				$(this).find('td:nth-child(5) input').attr("name","sale_return_rows["+val+"][amount]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-amount").rules("add", "required");
-				$(this).find('td:nth-child(6) input').attr("name","sale_return_rows["+val+"][discount_percentage]").attr("id","q"+val).attr("id","	sale_return_rows-"+val+"-discount_percentage");
+				$(this).find('td:nth-child(6) input').attr("name","sale_return_rows["+val+"][discount_percentage]").attr("id","q"+val).attr({readonly:"readonly"}).attr("id","sale_return_rows-"+val+"-discount_percentage");
 				$(this).find('td:nth-child(7) input').attr("name","sale_return_rows["+val+"][discount_amount]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-discount_amount").rules("add", "required");
-				$(this).find('td:nth-child(8) input').attr("name","sale_return_rows["+val+"][pnf_percentage]").attr("id","q"+val).attr("id","	sale_return_rows-"+val+"-pnf_percentage");
+				$(this).find('td:nth-child(8) input').attr("name","sale_return_rows["+val+"][pnf_percentage]").attr("id","q"+val).attr({readonly:"readonly"}).attr("id","sale_return_rows-"+val+"-pnf_percentage");
 				$(this).find('td:nth-child(9) input').attr("name","sale_return_rows["+val+"][pnf_amount]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-pnf_amount").rules("add", "required");
 				$(this).find('td:nth-child(10) input').attr("name","sale_return_rows["+val+"][taxable_value]").attr("id","q"+val).attr("id","sale_return_rows-"+val+"-taxable_value").rules("add", "required");
 				$(this).find('td:nth-child(11) select').attr("name","sale_return_rows["+val+"][cgst_percentage]").attr("id","q"+val).attr({readonly:"readonly"}).attr("id","sale_return_rows-"+val+"-cgst_percentage").rules("add", "required");
@@ -781,13 +781,16 @@ $(document).ready(function() {
 				$(this).find('td:nth-child(14) input').attr({ name:"q", readonly:"readonly"});
 				$(this).find('td:nth-child(15) select').attr({ name:"q", readonly:"readonly"});
 				$(this).find('td:nth-child(16) input').attr({ name:"q", readonly:"readonly"});
+				$(this).find('td:nth-child(17) input').attr({ name:"q", readonly:"readonly"});
 				$(this).css('background-color','#FFF');
-				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#FFF');
-				//$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
+
+				var uncheck=$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]');
+				$(uncheck).find('td:nth-child(1) textarea').attr({ name:"q", readonly:"readonly"});
+				$(uncheck).css('background-color','#FFF');
 				
 				var serial_l=$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').length;
 				if(serial_l>0){
-				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
+				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).rules( "remove", "required" );
 				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
 				}
 				}

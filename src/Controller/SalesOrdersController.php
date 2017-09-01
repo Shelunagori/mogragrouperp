@@ -124,7 +124,7 @@ class SalesOrdersController extends AppController
 										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
 											return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
 										})
-									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']));
+									->where(['SalesOrders.company_id'=>$st_company_id]));
 			}else{
 				$salesOrders=	$this->paginate(
 								$this->SalesOrders->find()
@@ -138,7 +138,7 @@ class SalesOrdersController extends AppController
 								->autoFields(true)
 								->having($having)
 								->where($where)
-								->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes'])
+								->where(['SalesOrders.company_id'=>$st_company_id])
 								->order(['SalesOrders.so2' => 'DESC']));
 				}
 		}
