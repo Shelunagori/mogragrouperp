@@ -13,11 +13,6 @@ use Cake\Utility\Text;
 class InvoicesController extends AppController
 {
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Network\Response|null
-     */
     public function index($status=null)
     {
 		$url=$this->request->here();
@@ -1551,7 +1546,6 @@ class InvoicesController extends AppController
 				$ledger->voucher_source = 'Invoice';
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
-				
 				$this->Invoices->Ledgers->save($ledger); 
 				
 				
