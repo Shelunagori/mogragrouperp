@@ -387,6 +387,7 @@ class PurchaseReturnsController extends AppController
 					$purchaseReturn = $this->PurchaseReturns->patchEntity($purchaseReturn, $this->request->data);
 					
 					$purchaseReturn->company_id=$st_company_id;
+					$purchaseReturn->invoice_booking_id=$invoice_booking_id;
 					$purchaseReturn->created_on= date("Y-m-d");
 					$purchaseReturn->created_by=$s_employee_id;
 					$purchaseReturn->transaction_date = date("Y-m-d",strtotime($purchaseReturn->transaction_date));
@@ -398,12 +399,17 @@ class PurchaseReturnsController extends AppController
 					}else{
 						$purchaseReturn->voucher_no=1;
 					}
-					
+					//pr($purchaseReturn); exit;
 					if ($this->PurchaseReturns->save($purchaseReturn)) {
-						
+						//pr($purchaseReturn); exit;
+						$check_row=[]; $i=0;
+						$purchaseReturn->check=array_filter($purchaseReturn->check);
+						foreach($purchaseReturn->check as $purchase_return_id){
+							$check_row[$i]=$purchase_return_id;
+							$i++;
+						}
+						$i=0;
 							foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
-								
-								/////ItemLedger
 								$ItemLedgersRate=$this->PurchaseReturns->ItemLedgers->find()->where(['ItemLedgers.item_id' => $purchase_return_row->item_id,'ItemLedgers.in_out' => 'In','rate_updated' => 'Yes','company_id' => $st_company_id,'source_model'=>'Grns','source_id'=>$invoiceBooking->grn_id])->first();
 								
 								$itemLedger = $this->PurchaseReturns->ItemLedgers->newEntity();
@@ -536,6 +542,11 @@ class PurchaseReturnsController extends AppController
 									$query->execute();
 								}
 							} 
+							$this->Flash->success(__('The Purchase Return has been saved.'));
+
+								return $this->redirect(['action' => 'index']);
+						}else{
+							pr($purchaseReturn); exit;
 						}
 					}
 				//}

@@ -24,7 +24,6 @@ $this->Form->templates(['inputContainer' => '{{content}}']); ?>
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Add Purchase Return</span>
 		</div>
-		
 	</div>
 	
 	

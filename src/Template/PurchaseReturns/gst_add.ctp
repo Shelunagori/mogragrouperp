@@ -630,6 +630,9 @@ $(document).ready(function() {
 				$(this).find('td:nth-child(19) input').attr("name","purchase_return_rows["+row_no+"][total]").attr("id","purchase_return_rows-"+row_no+"-total").rules("add", "required");
 				$(this).find('td:nth-child(20) input').attr("name","purchase_return_rows["+row_no+"][rate]").attr("id","purchase_return_rows-"+row_no+"-rate").rules("add", "required");
 				$(this).css('background-color','#fffcda');
+				
+				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').find('td:nth-child(1) input').attr("name","purchase_return_rows["+row_no+"][description]").attr("id","purchase_return_rows-"+row_no+"-description").rules("add", "required");
+				
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#fffcda');
 			}else{
 				$(this).find('td:nth-child(2) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
@@ -652,6 +655,9 @@ $(document).ready(function() {
 				$(this).find('td:nth-child(19) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
 				$(this).find('td:nth-child(20) input').attr({ name:"q" , readonly:"readonly"}).removeAttr("required" );
 				$(this).css('background-color','#FFF');
+				var uncheck=$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]');
+				$(uncheck).find('td:nth-child(1) input').attr({ name:"q", readonly:"readonly"});
+				$(uncheck).css('background-color','#FFF');
 				$('#main_tb tbody tr.tr2[row_no="'+row_no+'"]').css('background-color','#FFF');
 				
 			} 
