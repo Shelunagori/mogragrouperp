@@ -62,7 +62,7 @@
 						<div class="form-group">
 							<label class="control-label">Purchase Account </label><br/>
 							<?php echo $ledger_account_details['name']; ?>
-							<?php echo $this->Form->input('purchase_ledger_account', ['label' => false,'class' => 'form-control input-sm','readonly','value'=>$ledger_account_details['id']]); ?>
+							<?php echo $this->Form->input('purchase_ledger_account', ['label' => false,'type'=>'hidden','class' => 'form-control input-sm','readonly','value'=>$ledger_account_details['id']]); ?>
 						</div>
 					</div>
 				</div><br/>
