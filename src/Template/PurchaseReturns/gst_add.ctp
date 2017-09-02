@@ -279,11 +279,11 @@
 						<td><?php echo $this->Form->input('total_pnf', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('taxable_value', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td class="cgst_display" ></td>
-						<td class="cgst_display" ><?php echo $this->Form->input('total_cgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="cgst_display" ><?php echo $this->Form->input('total_cgst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td class="sgst_display" ></td>
-						<td class="sgst_display" ><?php echo $this->Form->input('total_sgst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="sgst_display" ><?php echo $this->Form->input('total_sgst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td class="igst_display" ></td>
-						<td class="igst_display" ><?php echo $this->Form->input('total_igst', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
+						<td class="igst_display" ><?php echo $this->Form->input('total_igst_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total_other_charge', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly']); ?></td>
 						<td><?php echo $this->Form->input('total', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Total','readonly','id'=>'total']); ?></td>
 						<td><?php echo $this->Form->input('total_rate_to_post', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'rate to be post','readonly']); ?></td>
@@ -443,9 +443,9 @@ $(document).ready(function() {
 		$('input[name="total_discount"]').val(total_discount.toFixed(2));
 		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
 		$('input[name="taxable_value"]').val(total_taxable_value.toFixed(2));
-		$('input[name="total_cgst"]').val(total_cgst.toFixed(2));
-		$('input[name="total_sgst"]').val(total_sgst.toFixed(2));
-		$('input[name="total_igst"]').val(total_igst.toFixed(2));
+		$('input[name="total_cgst_amount"]').val(total_cgst.toFixed(2));
+		$('input[name="total_sgst_amount"]').val(total_sgst.toFixed(2));
+		$('input[name="total_igst_amount"]').val(total_igst.toFixed(2));
 		$('input[name="total_other_charge"]').val(total_other.toFixed(2));
 		$('input[name="total"]').val(total_row_amount.toFixed(2));
 		$('input[name="total_rate_to_post"]').val(total_rate_to_post);
@@ -565,9 +565,9 @@ $(document).ready(function() {
 		$('input[name="total_discount"]').val(total_discount.toFixed(2));
 		$('input[name="total_pnf"]').val(total_pnf.toFixed(2));
 		$('input[name="taxable_value"]').val(total_taxable_value.toFixed(2));
-		$('input[name="total_cgst"]').val(total_cgst.toFixed(2));
-		$('input[name="total_sgst"]').val(total_sgst.toFixed(2));
-		$('input[name="total_igst"]').val(total_igst.toFixed(2));
+		$('input[name="total_cgst_amount"]').val(total_cgst.toFixed(2));
+		$('input[name="total_sgst_amount"]').val(total_sgst.toFixed(2));
+		$('input[name="total_igst_amount"]').val(total_igst.toFixed(2));
 		$('input[name="total_other_charge"]').val(total_other.toFixed(2));
 		$('input[name="total"]').val(total_row_amount.toFixed(2));
 		$('input[name="total_rate_to_post"]').val(total_rate_to_post);
