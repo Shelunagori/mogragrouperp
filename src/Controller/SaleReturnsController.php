@@ -1165,8 +1165,6 @@ class SaleReturnsController extends AppController
 						$qty=$sale_return_row['quantity'];
 						$rate=$sale_return_row['rate'];
 						$amount=$sale_return_row['amount'];
-						
-						
 						$itemLedgers = $this->SaleReturns->ItemLedgers->find()->where(['item_id'=>$item_id,'in_out'=>'In','company_id' => $st_company_id,'processed_on <=' =>$saleReturn->transaction_date,'rate > '=>0,'quantity > '=>0]);
 				
 						$rate=0; $count=0;
@@ -1176,7 +1174,6 @@ class SaleReturnsController extends AppController
 								$rate=$rate+($itemLedger->rate*$itemLedger->quantity);
 							}
 						}
-						
 						if($count > 0){ 
 						$toupdate_rate=$rate/$count;
 						}else{
