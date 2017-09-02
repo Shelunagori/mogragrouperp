@@ -111,7 +111,7 @@
 						<div class="form-group">
 							<label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label><br/>
 							<?php echo $this->Form->input('transaction_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'Transaction Date','data-date-format'=>'dd-mm-yyyy','data-date-start-date' 
-										=>$start_date ,'data-date-end-date' => $end_date,'required']); ?>
+							=>$start_date ,'data-date-end-date' => $end_date,'required','value'=>date("d-m-Y",strtotime($purchaseReturn->transaction_date))]); ?>
 						</div>
 						<span style="color: red;"><?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -193,8 +193,10 @@
 						<tr class="tr1" row_no='<?php echo @$invoice_booking_row->id; ?>'>
 							<td rowspan="2"><?php echo ++$q; --$q; ?></td>
 							
-							<td style="white-space: nowrap;"><?php echo @$invoice_booking_row->item->name; ?>
-							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm cal','type'=>'hidden','value' => @$invoice_booking_row->item->id,'popup_id'=>$q]); ?>
+							<td style="white-space: nowrap;">
+							<?php echo $this->Form->input('purchase_return_rows.'.$q.'.item_id', ['label' => false,'class' => 'form-control input-sm cal','type'=>'hidden','value' => @$invoice_booking_row->item->id]);
+							 echo @$invoice_booking_row->item->name; ?>
+							
 							</td>
 							
 							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.unit_rate_from_po',['value'=>$invoice_booking_row->unit_rate_from_po,'type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','readonly']); ?></td>
@@ -256,7 +258,15 @@
 							<td><?php echo $this->Form->input('purchase_return_rows.'.$q.'.rate',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox','readonly','value'=>$this->Number->format($invoice_booking_row->rate)]); ?>
 							
 							</td>
-							<td><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check','value' => @$invoice_booking_row->id]); ?>
+							
+							<?php $checked2="";
+									if($invoice_booking_row->purchase_return_quantity == 0){ 
+											$check='';
+									} 
+									else{	$check='checked';
+									} 
+								?>
+							<td><?php echo $this->Form->input('check.'.$q, ['label' => false,'type'=>'checkbox','class'=>'rename_check',$check,'value' => @$invoice_booking_row->id]); ?>
 							</td>
 						</tr>
 						<tr class="tr2" row_no='<?php echo @$invoice_booking_row->id; ?>'>
@@ -293,7 +303,7 @@
 			</table>
 			</div>
 		
-		<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
+			<?php $ref_types=['New Reference'=>'New Ref','Against Reference'=>'Agst Ref','Advance Reference'=>'Advance']; ?>
 			<div class="row">
 					<div class="col-md-8">
 					<table width="100%" class="main_ref_table">
@@ -306,7 +316,32 @@
 							</tr>
 						</thead>
 						<tbody>
+							<?php foreach($ReferenceDetails as $old_ref_row){ 
+								$val = $this->Number->format($old_ref_row->debit,['places'=>2]);
+								$val = str_replace(",",".",$val);
+								$val1 = preg_replace('/\.(?=.*\.)/', '', $val);
 							
+							
+							?>
+								<tr>
+									<td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
+									<td class="ref_no">
+									<?php if($old_ref_row->reference_type=="Against Reference"){
+										echo $this->requestAction('PurchaseReturns/fetchRefNumbersEdit/'.$v_LedgerAccount->id.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit);
+									}else{
+										echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
+									}?>
+									</td>
+									<td>
+									<?php 
+										echo $this->Form->input('old_amount', ['label' => false,'class' => 'ref_old_amount','type'=>'hidden','value'=>$val1]);
+										echo $this->Form->input('amount', ['label' => false,'class' => 'form-control input-sm ref_amount_textbox','placeholder'=>'Amount','value'=>$val1]);
+																
+									?>
+									</td>
+									<td><a class="btn btn-xs btn-default deleterefrow" href="#" role="button" old_ref="<?php echo $old_ref_row->reference_no; ?>" old_ref_type="<?php echo $old_ref_row->reference_type; ?>"><i class="fa fa-times"></i></a></td>
+								</tr>
+							<?php } ?>
 						</tbody>
 						<tfoot>
 							<tr>
@@ -332,7 +367,7 @@
 				<?php if($chkdate == 'Not Found'){  ?>
 					<label class="btn btn-danger"> You are not in Current Financial Year </label>
 				<?php } else { ?>
-					<?= $this->Form->button(__('ADD PURCHASE  RETURN'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
+					<?= $this->Form->button(__('UPDATE PURCHASE  RETURN'),['class'=>'btn btn-primary','id'=>'add_submit','type'=>'Submit']) ?>
 				<?php } ?>					
 				</div>
 			</div>
@@ -353,10 +388,120 @@
 
 <script>
 $(document).ready(function() {
+	
+	
+		////////////////  Validation  ////////////////////////
+	
+	jQuery.validator.addMethod("noSpace", function(value, element) { 
+	  return value.indexOf(" ") < 0 && value != ""; 
+	}, "No space please and don't leave it empty");
+	
+	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
+    // get all the elements passed here with the same class
+    var elems = $(element).parents('form').find(options[0]);
+    // the value of the current element
+    var valueToCompare = value;
+    // count
+    var matchesFound = 0;
+    // loop each element and compare its value with the current value
+    // and increase the count every time we find one
+    jQuery.each(elems, function () {
+        thisVal = $(this).val();
+        if (thisVal == valueToCompare) {
+            matchesFound++;
+        }
+    });
+    // count should be either 0 or 1 max
+    if (this.optional(element) || matchesFound <= 1) {
+        //elems.removeClass('error');
+        return true;
+    } else {
+        //elems.addClass('error');
+    }
+}, jQuery.format("Please enter a Unique Value."));
+
+
+	//--------- FORM VALIDATION
+	var form3 = $('#form_sample_3');	
+	var error3 = $('.alert-danger', form3); 
+	var success3 = $('.alert-success', form3); 
+	form3.validate({  
+		errorElement: 'span', //default input error message container
+		errorClass: 'help-block help-block-error', // default input error message class
+		focusInvalid: true, // do not focus the last invalid input
+		
+		rules: {
+			checked_row_length: {
+				required: true,
+				min : 1,
+			},
+			
+			purchase_ledger_account :{
+				required: true,
+			},
+			
+		},
+
+		messages: { // custom messages for radio buttons and checkboxes
+			checked_row_length: {
+				required : "Please select atleast one row.",
+				min : "Please select atleast one row."
+			}
+		},
+		
+		errorPlacement: function (error, element) { // render error placement for each input type
+			if (element.parent(".input-group").size() > 0) {
+				error.insertAfter(element.parent(".input-group"));
+			} else if (element.attr("data-error-container")) { 
+				error.appendTo(element.attr("data-error-container"));
+			} else if (element.parents('.radio-list').size() > 0) { 
+				error.appendTo(element.parents('.radio-list').attr("data-error-container"));
+			} else if (element.parents('.radio-inline').size() > 0) { 
+				error.appendTo(element.parents('.radio-inline').attr("data-error-container"));
+			} else if (element.parents('.checkbox-list').size() > 0) {
+				error.appendTo(element.parents('.checkbox-list').attr("data-error-container"));
+			} else if (element.parents('.checkbox-inline').size() > 0) { 
+				error.appendTo(element.parents('.checkbox-inline').attr("data-error-container"));
+			} else {
+				error.insertAfter(element); // for other inputs, just perform default behavior
+			}
+		},
+
+		invalidHandler: function (event, validator) { //display error alert on form submit   
+			success3.hide(); alert();
+			error3.show();
+			//$("#add_submit").removeAttr("disabled");
+			//Metronic.scrollTo(error3, -200);
+		},
+
+		highlight: function (element) { // hightlight error inputs
+		   $(element)
+				.closest('.form-group').addClass('has-error'); // set error class to the control group
+		},
+
+		unhighlight: function (element) { // revert the change done by hightlight
+			$(element)
+				.closest('.form-group').removeClass('has-error'); // set error class to the control group
+		},
+
+		success: function (label) {
+			label
+				.closest('.form-group').removeClass('has-error'); // set success class to the control group
+		},
+		
+
+		submitHandler: function (form) { 
+			success3.show();
+			error3.hide();
+			form[0].submit();
+		}
+
+	});
 
 	$('.dis_per').die().live("blur",function() {
 		calculate_pnf_discount(); 
 	});
+	
 	function calculate_pnf_discount()
 	{ 
 		var total_amount=0; var total_misc=0; var total_discount=0; 
@@ -607,11 +752,12 @@ $(document).ready(function() {
 			var row_no=$(this).attr('row_no');
 			var val=$(this).find('td:nth-child(21) input[type="checkbox"]:checked').val();
 			
-			if(val){
-				i++;
-				$(this).find('td:nth-child(2) input').attr("name","purchase_return_rows["+row_no+"][item_id]").attr("id","purchase_return_rows-"+row_no+"-item_id").rules("add", "required");
-				$(this).find('td:nth-child(3) input').attr("name","purchase_return_rows["+row_no+"][unit_rate_from_po]").attr("id","purchase_return_rows-"+row_no+"-unit_rate_from_po").removeAttr("readonly").rules("add", "required");
-				$(this).find('td:nth-child(4) input').attr("name","purchase_return_rows["+row_no+"][quantity]").attr("id","purchase_return_rows-"+row_no+"-quantity").removeAttr("readonly").rules("add", "required");
+			if(val){ 
+				i++; 
+				$(this).find('td:nth-child(2) input').attr("name","purchase_return_rows["+row_no+"][item_id]").attr("id","purchase_return_rows-"+row_no+"-item_id").rules("add", "required");  
+				
+				$(this).find('td:nth-child(3) input').attr("name","purchase_return_rows["+row_no+"][unit_rate_from_po]").attr("id","purchase_return_rows-"+row_no+"-unit_rate_from_po").removeAttr("readonly").rules("add", "required"); 
+				$(this).find('td:nth-child(4) input').attr("name","purchase_return_rows["+row_no+"][quantity]").attr("id","purchase_return_rows-"+row_no+"-quantity").removeAttr("readonly").rules("add", "required"); 
 				
 				$(this).find('td:nth-child(5) input').attr("name","purchase_return_rows["+row_no+"][misc]").attr("id","purchase_return_rows-"+row_no+"-misc").removeAttr("readonly").rules("add", "required");
 				$(this).find('td:nth-child(6) input').attr("name","purchase_return_rows["+row_no+"][amount]").attr("id","purchase_return_rows-"+row_no+"-amount").rules("add", "required");
@@ -667,125 +813,11 @@ $(document).ready(function() {
 		});	
 	}
 	
-	////////////////  Validation  ////////////////////////
-	
-	jQuery.validator.addMethod("noSpace", function(value, element) { 
-	  return value.indexOf(" ") < 0 && value != ""; 
-	}, "No space please and don't leave it empty");
-	
-	jQuery.validator.addMethod("notEqualToGroup", function (value, element, options) {
-    // get all the elements passed here with the same class
-    var elems = $(element).parents('form').find(options[0]);
-    // the value of the current element
-    var valueToCompare = value;
-    // count
-    var matchesFound = 0;
-    // loop each element and compare its value with the current value
-    // and increase the count every time we find one
-    jQuery.each(elems, function () {
-        thisVal = $(this).val();
-        if (thisVal == valueToCompare) {
-            matchesFound++;
-        }
-    });
-    // count should be either 0 or 1 max
-    if (this.optional(element) || matchesFound <= 1) {
-        //elems.removeClass('error');
-        return true;
-    } else {
-        //elems.addClass('error');
-    }
-}, jQuery.format("Please enter a Unique Value."));
 
-
-	//--------- FORM VALIDATION
-	var form3 = $('#form_sample_3');	
-	var error3 = $('.alert-danger', form3); 
-	var success3 = $('.alert-success', form3); 
-	form3.validate({  
-		errorElement: 'span', //default input error message container
-		errorClass: 'help-block help-block-error', // default input error message class
-		focusInvalid: true, // do not focus the last invalid input
-		
-		rules: {
-			checked_row_length: {
-				required: true,
-				min : 1,
-			},
-			advance: {
-				min:0,
-			},
-			pnf: {
-				required: true,
-			},
-			cheque_no :{
-				required: true,
-			},
-			purchase_ledger_account :{
-				required: true,
-			},
-			
-		},
-
-		messages: { // custom messages for radio buttons and checkboxes
-			checked_row_length: {
-				required : "Please select atleast one row.",
-				min : "Please select atleast one row."
-			}
-		},
-		
-		errorPlacement: function (error, element) { // render error placement for each input type
-			if (element.parent(".input-group").size() > 0) {
-				error.insertAfter(element.parent(".input-group"));
-			} else if (element.attr("data-error-container")) { 
-				error.appendTo(element.attr("data-error-container"));
-			} else if (element.parents('.radio-list').size() > 0) { 
-				error.appendTo(element.parents('.radio-list').attr("data-error-container"));
-			} else if (element.parents('.radio-inline').size() > 0) { 
-				error.appendTo(element.parents('.radio-inline').attr("data-error-container"));
-			} else if (element.parents('.checkbox-list').size() > 0) {
-				error.appendTo(element.parents('.checkbox-list').attr("data-error-container"));
-			} else if (element.parents('.checkbox-inline').size() > 0) { 
-				error.appendTo(element.parents('.checkbox-inline').attr("data-error-container"));
-			} else {
-				error.insertAfter(element); // for other inputs, just perform default behavior
-			}
-		},
-
-		invalidHandler: function (event, validator) { //display error alert on form submit   
-			success3.hide();
-			error3.show();
-			$("#add_submit").removeAttr("disabled");
-			//Metronic.scrollTo(error3, -200);
-		},
-
-		highlight: function (element) { // hightlight error inputs
-		   $(element)
-				.closest('.form-group').addClass('has-error'); // set error class to the control group
-		},
-
-		unhighlight: function (element) { // revert the change done by hightlight
-			$(element)
-				.closest('.form-group').removeClass('has-error'); // set error class to the control group
-		},
-
-		success: function (label) {
-			label
-				.closest('.form-group').removeClass('has-error'); // set success class to the control group
-		},
-		
-
-		submitHandler: function (form) {
-			success3.show();
-			error3.hide();
-			form[0].submit();
-		}
-
-	});
 
 	
 	//ref no //
-	add_ref_row();
+	//add_ref_row();
 	$('.addrefrow').live("click",function() {
 		add_ref_row();
 	});
@@ -806,8 +838,10 @@ $(document).ready(function() {
 			if(is_select){
 				$(this).find("td:nth-child(2) select").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no"}).rules("add", "required");
 			}else if(is_input){
-				var url='<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'checkRefNumberUnique']); ?>';
-				url=url+'/<?php echo $v_LedgerAccount->id; ?>/'+i;
+				var is_old=$(this).find("td:nth-child(2) input").attr('is_old');		
+				var url='<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'checkRefNumberUniqueEdit']); ?>';
+				url=url+'/<?php echo $v_LedgerAccount->id; ?>/'+i+'/'+is_old;
+				
 				$(this).find("td:nth-child(2) input").attr({name:"ref_rows["+i+"][ref_no]", id:"ref_rows-"+i+"-ref_no", class:"form-control input-sm ref_number"}).rules('add', {
 							required: true,
 							noSpace: true,
@@ -821,27 +855,35 @@ $(document).ready(function() {
 						});
 			}
 			
-			$(this).find("td:nth-child(3) input").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+			var is_ref_old_amount=$(this).find("td:nth-child(3) input.ref_old_amount").length;
+				if(is_ref_old_amount){
+					$(this).find("td:nth-child(3) input:eq(0)").attr({name:"ref_rows["+i+"][ref_old_amount]", id:"ref_rows-"+i+"-ref_old_amount"});
+					$(this).find("td:nth-child(3) input:eq(1)").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+				}else{
+				$(this).find("td:nth-child(3) input:eq(0)").attr({name:"ref_rows["+i+"][ref_amount]", id:"ref_rows-"+i+"-ref_amount"}).rules("add", "required");
+				}
 			i++;
 		});
+		
 		var is_tot_input=$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").length;
 		if(is_tot_input){
 			$("table.main_ref_table tfoot tr:eq(1) td:eq(1) input").attr({name:"ref_rows_total", id:"ref_rows_total"}).rules('add', { equalTo: "#total" });
 		}
 		
 	}
+	
 	$('.deleterefrow').live("click",function() {
 		$(this).closest("tr").remove();
 		do_ref_total();
+		var sel=$(this);
+		delete_one_ref_no(sel);
 	});
 	
 	$('.ref_type').live("change",function() {
 		var current_obj=$(this);
-		//alert('<?php echo $v_LedgerAccount->id; ?>');
-		
 		var ref_type=$(this).find('option:selected').val();
 		if(ref_type=="Against Reference"){
-			var url="<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'fetchRefNumbers']); ?>";
+			var url="<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'fetchRefNumbersEdit']); ?>";
 			url=url,
 			$.ajax({
 				url: url+'/<?php echo $v_LedgerAccount->id; ?>',
@@ -865,21 +907,28 @@ $(document).ready(function() {
 		do_ref_total();
 	});
 	
-	$('.ref_amount_textbox').live("keyup",function() {
+	do_ref_total();
+	$('.ref_amount_textbox').live("keyup",function() { 
 		do_ref_total();
 	});
 	
 	function do_ref_total(){
-		var main_amount=parseFloat($('input[name="total"]').val());
+			var main_amount=parseFloat($('input[name="total"]').val());
+		//alert(main_amount);
 		if(!main_amount){ main_amount=0; }
+		
 		var total_ref=0;
 		$("table.main_ref_table tbody tr").each(function(){
-			var am=parseFloat($(this).find('td:nth-child(3) input').val());
-			 
+			var is_ref_old_amount=$(this).find("td:nth-child(3) input.ref_old_amount").length;
+				if(is_ref_old_amount){
+					var am=parseFloat($(this).find('td:nth-child(3) input:eq(1)').val());
+				}else{
+				var am=parseFloat($(this).find('td:nth-child(3) input:eq(0)').val());
+				}
 			if(!am){ am=0; }
 			total_ref=total_ref+am;
+			 
 		});
-		
 		var on_acc=main_amount-total_ref; 
 		if(on_acc>=0){
 			$("table.main_ref_table tfoot tr:nth-child(1) td:nth-child(3) input").val(on_acc.toFixed(2));
@@ -889,37 +938,22 @@ $(document).ready(function() {
 		}
 		$("table.main_ref_table tfoot tr:nth-child(2) td:nth-child(2) input").val(total_ref.toFixed(2));
 	}
-	
-	
-	$('select[name="purchase_ledger_account"]').on("change",function() { 
-	var gst_ledger_id=$('select[name="purchase_ledger_account"] option:selected').val();
-	
-		if(gst_ledger_id=="799" || gst_ledger_id=="800" )
-		{  
-			//$('.ledger_account_for_gst').val(gst_ledger_id);
-				$('.igst_display').css("display", "none");
-				$('.cgst_display').css("display", "");
-				$('.sgst_display').css("display", "");
-				$('.igst_percent option:selected').prop('selected', false);
-				calculate_total();
-				//$('.igst_percent :selected').attr('selected', '');
-				//$('.igst_percent').removeAttr("selected");
-				
-		}else{
-			//$('.ledger_account_for_gst').val(gst_ledger_id);
-				$('.igst_display').css("display", "");
-				$('.cgst_display').css("display", "none");
-				$('.sgst_display').css("display", "none");
-				$('.cgst_percent option:selected').prop('selected', false);
-				$('.sgst_percent option:selected').prop('selected', false);
-				 calculate_total();
-				//$('.cgst_percent :selected').attr('selected', '');
-				//$('.sgst_percent :selected').attr('selected', '');
-				
-	
-		}
-	});
-
+	 
+	function delete_one_ref_no(sel){  
+		var old_received_from_id='<?php echo $v_LedgerAccount->id; ?>';
+		
+		var old_ref=sel.closest('tr').find('a.deleterefrow').attr('old_ref');
+		var old_ref_type=sel.closest('tr').find('a.deleterefrow').attr('old_ref_type');
+		var url="<?php echo $this->Url->build(['controller'=>'PurchaseReturns','action'=>'deleteOneRefNumbers']); ?>";
+		url=url+'?old_received_from_id='+old_received_from_id+'&purchase_return_id=<?php echo $purchaseReturn->id; ?>&old_ref='+old_ref+'&old_ref_type='+old_ref_type;
+		//alert(url);
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			//alert(response);
+		});
+	}
 
 });
 
