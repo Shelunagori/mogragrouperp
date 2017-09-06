@@ -253,13 +253,14 @@ class ItemLedgersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function stockReport(){
+    public function stockReport($stockstatus=null){
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
 		
 		$this->viewBuilder()->layout('index_layout');
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
+		$stockstatus=$this->request->query('stockstatus');
 		$item_name=$this->request->query('item_name');
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
@@ -278,6 +279,7 @@ class ItemLedgersController extends AppController
 		};
 		$where=[];
 		$where1=[];
+		
 		$this->set(compact('item_category','item_group','item_sub_group','stock','item_name'));
 		if(!empty($item_name)){ 
 			$where['Item_id']=$item_name;
@@ -355,6 +357,15 @@ class ItemLedgersController extends AppController
 					//pr($item_stocks);
 				}
 			}
+		}elseif($stockstatus == "Positive"){
+			foreach($results as $result){
+				if($result->total_in - $result->total_out > 0){
+					$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
+					$items_names[$result->item_id] = $result->item->name;
+					$items_unit_names[$result->item_id] = $result->item->unit->name;
+					
+				}
+			}
 		}else{
 			foreach($results as $result){
 				
@@ -416,7 +427,7 @@ class ItemLedgersController extends AppController
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
-        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','from_date','to_date','ItemDatas','items_unit_names','ItemUnits','url'));
+        $this->set(compact('itemLedgers', 'item_name','item_stocks','items_names','ItemCategories','ItemGroups','ItemSubGroups','item_rate','in_qty','Items','from_date','to_date','ItemDatas','items_unit_names','ItemUnits','url','stockstatus'));
 		$this->set('_serialize', ['itemLedgers']); 
     }
 	

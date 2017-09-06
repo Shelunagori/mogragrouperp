@@ -10,7 +10,7 @@ if(!empty($status)){
 	$last="31";
 	$start_date=$first.'-'.$financial_month_first->month;
 	$end_date=$last.'-'.$financial_month_last->month;
-	///pr($end_date); exit;
+	//pr($end_date);
 ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
@@ -136,7 +136,7 @@ if(!empty($status)){
 						</tr>
 					</thead>
 					<tbody>
-						<?php $i=0; foreach ($quotations as $quotation): $i++;
+						<?php $i=0; foreach ($quotations as $quotation):  $i++;
 						if($quotation->status=='Converted Into Sales Order'){ $tr_color='#f4f4f4'; }
 						if($quotation->status=='Pending'){ $tr_color='#FFF'; }
 						if($quotation->status=='Closed'){ $tr_color='#FFF'; }
@@ -177,7 +177,7 @@ if(!empty($status)){
 							<?php if(in_array(21,$allowed_pages)){ ?>
 								<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'confirm', $quotation->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View as PDF')); ?>
 							<?php } ?>	
-							<?php if(date("d-m-Y",strtotime($quotation->created_on)) >= $start_date && date("d-m-Y",strtotime($quotation->created_on)) <= $end_date) { ?>
+							<?php if(date("d-m-Y",strtotime($quotation->created_on)) >= $start_date && date("d-m-Y",strtotime($quotation->created_on)) <= $end_date)  { ?>
 								<?php if($quotation->status=='Pending' and $gst_pull_request!="true" and in_array(2,$allowed_pages) and $pull_request!="true" && $copy_request!="copy"){ ?>
 								<?php
 								 if(!in_array(date("m-Y",strtotime($quotation->created_on)),$closed_month))
