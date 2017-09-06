@@ -1057,7 +1057,7 @@ class InvoiceBookingsController extends AppController
 						$ledger->credit = abs($invoiceBooking->total_other_charge);
 						$ledger->debit = 0;
 					}else if($invoiceBooking->total_other_charge > 0){ 
-						$ledger->debit = $invoiceBooking->total_other_charge;
+						$ledger->debit =abs($invoiceBooking->total_other_charge);
 						$ledger->credit = 0;	
 					}
 					$ledger->voucher_id = $invoiceBooking->id;
@@ -1330,7 +1330,7 @@ class InvoiceBookingsController extends AppController
 						$ledger->credit = abs($invoiceBooking->total_other_charge);
 						$ledger->debit = 0;
 					}else if($invoiceBooking->total_other_charge > 0){ 
-						$ledger->debit = $invoiceBooking->total_other_charge;
+						$ledger->debit = abs($invoiceBooking->total_other_charge);
 						$ledger->credit = 0;	
 					}
 					$ledger->voucher_id = $invoiceBooking->id;
