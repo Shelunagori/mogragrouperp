@@ -234,8 +234,8 @@
 							<?php echo $this->Html->link( $SalesOrder->so1.'/SO-'.str_pad($SalesOrder->so2, 3, '0', STR_PAD_LEFT).'/'.$SalesOrder->so3.'/'.$SalesOrder->so4,[
 							'controller'=>'SalesOrders','action' => 'gstConfirm',$SalesOrder->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
-						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
+						<td><?php echo date("d-m-Y",strtotime($SalesOrder->created_on)); ?></td>
+						<td><?php echo $SalesOrder->customer->customer_name.'('.$SalesOrder->customer->alias.')'?></td>
 						<td align="right">
 							<?php  if($salesGstRowTotal12 > 0){
 										echo $salesGstRowTotal12;

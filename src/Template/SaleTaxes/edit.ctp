@@ -94,15 +94,56 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
-								<label class="control-label col-md-4"> <span class="required" aria-required="true">
-					</span>
-					</label>
-							<?php echo $this->Form->input('freeze'); ?>
-				</div>
 				
-				
-					
+				<div class="row">
+					<div class="col-md-12">
+						
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label col-md-4"> <span class="required" aria-required="true"></span></label>
+								<?php echo $this->Form->input('freeze'); ?>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class=" col-md-3">CGST 
+								</label>
+								<div class="form-group col-md-3">
+									<?php if($saleTax->cgst == 'Yes'){ ?>
+										<?php echo $this->Form->input('cgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ','checked']); 
+									}else{
+										echo $this->Form->input('cgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']);
+									}
+									?>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="col-md-4">SGST 
+								</label>
+								<?php if($saleTax->sgst == 'Yes'){ ?>
+									<?php echo $this->Form->input('sgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ','checked']); 
+								}else{
+									echo $this->Form->input('sgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']); 
+								}	
+								?>
+								
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="col-md-3">IGST 
+								</label>
+							<?php if($saleTax->igst == 'Yes'){ ?>
+									<?php echo $this->Form->input('igst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ','checked']); 
+								}else{	
+									 echo $this->Form->input('igst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']); 
+									} ?>
+						</div>		
+							</div>
+					</div>	
+				</div>	
 				<div class="row">
 					<div class="col-md-offset-4 col-md-8">
 						<button type="submit" class="btn btn-primary">Edit Sale Tax</button>

@@ -161,7 +161,7 @@ margin-bottom: 0;
 			</tr>
 		</thead>
 	<tbody>
-	<?php $Total=0; $total_sale_tax=0; $total_cgst=0; $total_sgst=0; $total_igst=0; $total_taxable=0; 
+	<?php $Total=0; $total_sale_tax=0; $total_cgst=0; $total_sgst=0; $total_igst=0; $total_taxable=0; $total_amount=0;$other_charges=0;
 	
 	foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 		<tr>
@@ -186,6 +186,7 @@ margin-bottom: 0;
 			<?php } ?>
 			
 			<td align="right"><?= $invoice_booking_row->taxable_value; $total_taxable=$total_taxable+$invoice_booking_row->taxable_value; ?></td>
+			<?php  $invoice_booking_row->amount; $total_amount=$total_amount+$invoice_booking_row->amount; ?>
 			<?php if($purchase_acc->name=='Purchase GST'){ ?>
 			<td align="right"><?php if(!empty($cgst_per[$invoice_booking_row->id]['tax_figure'])){echo $cgst_per[$invoice_booking_row->id]['tax_figure'].'%';} ?></td>
 			<td align="right"><?= $invoice_booking_row->cgst; 
@@ -199,10 +200,11 @@ margin-bottom: 0;
 			<?php if($invoice_booking_row->other_charges==0){ ?>
 			<td align="right"></td>
 			<?php }else{ ?>
-			<td align="right"><?= $invoice_booking_row->other_charges; ?></td>
+			<td align="right"><?= $invoice_booking_row->other_charges; $other_charges= $other_charges+$invoice_booking_row->other_charges; ?></td>
 			<?php } ?>
 			<td align="right"><?= $invoice_booking_row->total; ?></td>
 		</tr>
+		
 		<?php 
 		$amount_after_misc=($invoice_booking_row->quantity*$invoice_booking_row->unit_rate_from_po)+$invoice_booking_row->misc;
 		if($invoice_booking_row->discount_per){
@@ -227,47 +229,48 @@ margin-bottom: 0;
 		$total_sale_tax=$total_sale_tax+@$vat; 
 		$Total= $Total+$invoice_booking_row->total;
 		endforeach; ?>
-	</tbody>
-	<tfoot>
 		
+	</tbody>
+	
+	<tfoot>
 		<tr>
 			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total Taxable</td>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="4"> Total</td>
+			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
+			number_format($total_amount, 2, '.', '');
+			 ?></td>
+			 <?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="4"> </td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($total_taxable, 2, '.', '');
 			 ?></td>
-		</tr>
-		<?php if($purchase_acc->name=='Purchase GST'){ ?>
-		<tr>
+			 <?php if($purchase_acc->name=='Purchase GST'){ ?>
 			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total CGST</td>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="1"> </td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($total_cgst, 2, '.', '');
 			 ?></td>
-		</tr>
-		<tr>
 			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total SGST</td>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="1"> </td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($total_sgst, 2, '.', '');
 			 ?></td>
-		</tr>
 		<?php }else { ?>
-		<tr>
 			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total IGST</td>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="1"> </td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($total_igst, 2, '.', '');
 			 ?></td>
-		</tr>
 		<?php } ?>
-		<tr>
-			<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
-			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="<?php echo $col_span; ?>"> Total</td>
+		<?php $col_span=13; if($purchase_acc->name=='Purchase GST'){ $col_span=15;} ?>
+			<td style="font-size:14px; font-weight:bold;"  align="right" colspan="1"> <?= 
+			number_format($other_charges, 2, '.', '');
+			 ?></td>
 			<td style="font-size:14px; font-weight:bold; "  align="right"><?= 
 			number_format($invoiceBooking->total, 2, '.', '');
 			 ?></td>
 		</tr>
+		
 		
 	</tfoot>
 </table>

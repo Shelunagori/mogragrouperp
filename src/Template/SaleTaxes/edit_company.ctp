@@ -16,12 +16,16 @@
 						<th width="20%">Company Name</th>
 						<th width="10%">Action</th>
 						<th width="10%">Freeze</th>
-
 						
 					</tr>
 				</thead>
 				<tbody>
-				<?php $i=0; foreach ($Company_array as $key=>$Company_array){ $i++;
+				<?php $i=0; $cgstTax=[];$sgstTax=[];$igstTax=[];
+						foreach ($Company_array as $key=>$Company_array){ 
+								
+				
+			
+				$i++;
 				$c_namrr=$Company_array1[$key];
 				$bill_to_bill=@$Company_array2[$key];
 				?>
@@ -70,6 +74,7 @@
 							) ?>
 							<?php }  ?>
 						</td>
+						
 					</tr>
 				<?php  } ?>
 				</tbody>
