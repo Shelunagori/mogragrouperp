@@ -2767,6 +2767,22 @@ class InvoicesController extends AppController
 												return $q->where(['InvoiceBookingRows.igst != '=>0]);
 							}])
 							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							
+							
+				$VoucherInterStates = $this->Invoices->LedgerAccounts->find()->where(['account_second_subgroup_id'=>6,'source_model'=>'SaleTaxes','company_id'=>$st_company_id]);
+				
+				//$voucherLedgerData=[];
+				$where="";
+				foreach($VoucherInterStates as $VoucherInterState){
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where(['ledger_account_id'=>$VoucherInterState['id'],'company_id'=>$st_company_id])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData){
+							pr($voucherLedgerData);
+						}
+					//pr($voucherLedgerData->toArray());
+					
+					
+				} exit;
+				
 				
 			}
 		}
