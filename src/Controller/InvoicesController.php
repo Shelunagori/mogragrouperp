@@ -962,7 +962,7 @@ class InvoicesController extends AppController
 				$ledger->company_id = $invoice->company_id;
 				$ledger->transaction_date = $invoice->date_created;
 				$ledger->voucher_source = 'Invoice';
-				if($ledger_saletax>0)
+				if($ledger_saletax > 0)
 				{
 					$this->Invoices->Ledgers->save($ledger); 
 				}
@@ -2473,6 +2473,15 @@ class InvoicesController extends AppController
 			$where1['InvoiceBookings.created_on <=']=$To;
 		}
 		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where3['Ledgers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where3['Ledgers.transaction_date <=']=$To;
+		}
+		
 		
 		if(!empty($item_name)){ 
 			$invoices = $this->Invoices->find()
@@ -2510,6 +2519,63 @@ class InvoicesController extends AppController
 								}
 						)
 			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			
+			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
 		}
 		else {
@@ -2537,6 +2603,7 @@ class InvoicesController extends AppController
 					->group('Invoices.id')
 					->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 					
+					
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 						->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 								return $q->where(['InvoiceBookingRows.igst = '=>0]);
@@ -2559,6 +2626,62 @@ class InvoicesController extends AppController
 					->order(['InvoiceBookings.id' => 'DESC'])
 					->group('InvoiceBookings.id')
 					->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
 			}
 		else if(!empty($item_group) && empty($item_sub_group) && empty($item_category)){ 
@@ -2606,6 +2729,63 @@ class InvoicesController extends AppController
 			->order(['InvoiceBookings.id' => 'DESC'])
 			->group('InvoiceBookings.id')
 			->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			
+			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
 		}
 		else if(!empty($item_sub_group && empty($item_group) && empty($item_category))){
@@ -2654,6 +2834,64 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							
+			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
 		}else if(!empty($item_category) && !empty($item_group) && !empty($item_sub_group)){  
 				$invoices = $this->Invoices->find()
 						->contain(['Customers','InvoiceRows'=>['Items']])
@@ -2699,6 +2937,62 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+				$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 			}else if(!empty($item_category) && !empty($item_group) && empty($item_sub_group)){  
 			
 				$invoices = $this->Invoices->find()
@@ -2745,6 +3039,63 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
+				$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
+				
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+					
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
 			}
 			else{
 				$invoices = $this->Invoices->find()
@@ -2763,6 +3114,12 @@ class InvoicesController extends AppController
 							}])
 							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
+				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				//pr($PurchaseIgst->toArray()); exit;
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 												return $q->where(['InvoiceBookingRows.igst != '=>0]);
@@ -2770,23 +3127,64 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 							
 							
-				$VoucherInterStates = $this->Invoices->LedgerAccounts->find()->where(['account_second_subgroup_id'=>6,'source_model'=>'SaleTaxes','company_id'=>$st_company_id]);
+				$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				//pr($SaleTaxeIgst->toArray()); exit;
 				
-				//$voucherLedgerData=[];
-				$where="";
-				foreach($VoucherInterStates as $VoucherInterState){
-					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where(['ledger_account_id'=>$VoucherInterState['id'],'company_id'=>$st_company_id])->toArray();
-						foreach($voucherLedgerDatas as $voucherLedgerData){
-							pr($voucherLedgerData);
-						}
-					//pr($voucherLedgerData->toArray());
+				$voucherLedgerDetailIgst=[];
+				$voucherSourceIgst=[];
+				$LedgerAccountDetailIgst=[];
+				foreach($SaleTaxeIgst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
 					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
 					
-				} exit;
-				
-				
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{ 
+								$voucherLedgerDetailIgst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceIgst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+						
+						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				} 
+				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])->orWhere(['account_second_subgroup_id'=>5,'sgst'=>'Yes']);
+				$voucherLedgerDetailsGst=[];
+				$voucherSourceGst=[];
+				$LedgerAccountDetails=[];
+			//	pr($SaleTaxeGst->toArray()); 
+				foreach($SaleTaxeGst as $SaleTaxe)
+				{ 
+					$LedgerAccount = $this->Invoices->LedgerAccounts->find()->where(['source_id'=>$SaleTaxe->id,'source_model'=>'SaleTaxes','company_id'=>$st_company_id,'account_second_subgroup_id'=>5])->first();
+					
+					$voucherLedgerDatas = $this->Invoices->Ledgers->find()->where($where3)->where(['Ledgers.ledger_account_id'=>$LedgerAccount['id'],'Ledgers.company_id'=>$st_company_id])->contain(['LedgerAccounts'])->toArray();
+						foreach($voucherLedgerDatas as $voucherLedgerData)
+						{ 
+							if($voucherLedgerData->voucher_source=="Payment Voucher" ||$voucherLedgerData->voucher_source=="Contra Voucher" ||$voucherLedgerData->voucher_source=="Journal Voucher" ||$voucherLedgerData->voucher_source=="Non Print Payment Voucher" ||$voucherLedgerData->voucher_source=="Petty Cash Payment Voucher" ||$voucherLedgerData->voucher_source=="Receipt Voucher" )
+							{
+								$voucherLedgerDetailsGst[$voucherLedgerData->id]=$voucherLedgerData;
+								$voucherSourceGst[$voucherLedgerData->id]=$voucherLedgerData->voucher_source;
+							}
+						} 
+					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
+				}
 			}
 		}
+		
+		//pr($LedgerAccountDetails); 
+		//pr($voucherSourceGst);
+		//exit;
+		
 		$this->set(compact('From','To','salesman_id','item_category','item_group','item_sub_group','item_name'));
 		//pr($invoices->toArray()); exit;
 		
@@ -2795,7 +3193,7 @@ class InvoicesController extends AppController
 		$ItemSubGroups = $this->Invoices->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->Invoices->Items->find('list')->order(['Items.name' => 'ASC']);
 		//pr($invoiceBookingsInterState->toArray()); exit;
-		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings','invoiceBookingsInterState','Items','ItemGroups','ItemCategories','ItemSubGroups'));
+		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings','invoiceBookingsInterState','Items','ItemGroups','ItemCategories','ItemSubGroups','voucherLedgerDetails','voucherSource','voucherLedgerDetailsGst','voucherSourceGst','voucherLedgerDetailIgst','voucherSourceIgst','SaleTaxeGst','LedgerAccountDetails','LedgerAccountDetailIgst','PurchaseIgst'));
 	}
 	
 	public function salesManReport(){
