@@ -66,9 +66,7 @@ class InventoryVouchersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 	   $inventoryVoucher = $this->InventoryVouchers->get($id, [
-            'contain' =>  ['Invoices'=>['InvoiceRows'=>function ($q){
-				return $q->where(['InvoiceRows.inventory_voucher_applicable'=>'Yes'])->contain(['Items']);
-			},'Customers'],'InventoryVoucherRows'=>['Items'=>['ItemSerialNumbers','ItemCompanies' =>function($q) use($st_company_id){
+            'contain' =>  ['Invoices'=>['InvoiceRows'=>['Items'],'Customers'],'InventoryVoucherRows'=>['Items'=>['ItemSerialNumbers','ItemCompanies' =>function($q) use($st_company_id){
 									return $q->where(['company_id'=>$st_company_id]);
 								}]],'Creator', 'Companies']
         ]);

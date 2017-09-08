@@ -11,7 +11,7 @@
 		
 	
 	<div class="portlet-body form">
-		<form method="GET" >
+		<form method="GET">
 			<table width="50%" class="table table-condensed">
 				<tbody>
 					<tr>
@@ -52,8 +52,8 @@
 		<div class="col-md-12">
 			<table class="table table-bordered table-condensed">
 				<thead>
-					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<tr><?php $col=count($GstTaxes->toArray()); $col=$col+4; ?>
+						<td colspan="<?php echo $col;?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Invoice</h4>
 						</td>
 					</tr>
@@ -67,15 +67,30 @@
 						<th style="text-align:right;">Sales @ 28 % GST</th>
 						<th style="text-align:right;">Sales @ 12 % IGST</th>
 						<th style="text-align:right;">Sales @ 18 % IGST</th>
-						<th style="text-align:right;">Sales @ 28 % IGST</th>
+						<th style="text-align:right;">Sales @ 28 % IGST</th> 
+						<?php 
+						$CGST6;$CGST9;$CGST14;$IGST12;$IGST18;$IGST28;
+						$CGST6='CGST 6%';
+						$CGST9='CGST 9%';
+						$CGST14='CGST 14%';
+						$IGST12='IGST 12%';
+						$IGST18='IGST 18%';
+						$IGST28='IGST 28%';
+						$td_no=0;
+						foreach($GstTaxes as $GstTaxe){ 
+							if($GstTaxe->invoice_description == $CGST6 || $GstTaxe->invoice_description == $CGST9 || $GstTaxe->invoice_description == $CGST14 ||$GstTaxe->invoice_description == $IGST12 ||$GstTaxe->invoice_description == $IGST18 ||$GstTaxe->invoice_description == $IGST28){ }else{
+						?>
+							<th style="text-align:right;"><?php echo $GstTaxe->invoice_description; ?></th>
+						<?php $td_no++; }}?>
+						
 					</tr>
 				</thead>
 				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
 							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; 
-							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; 
-				foreach ($invoices as $invoice):  
-					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0;
-					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; 
+							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; $salesTotalOther=0;
+				foreach ($invoices as $invoice):  //pr($invoice);
+					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0; $salesOthers=0;
+					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; $salesIGstRowTotalOthers=0; 
 					foreach($invoice->invoice_rows as $invoice_row){
 						if($invoice_row['cgst_percentage']==8 && $invoice_row['sgst_percentage']==11){
 								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
@@ -99,6 +114,11 @@
 								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
 								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->row_total;
 							}
+						else if($invoice_row['igst_percentage']!=16 || $invoice_row['igst_percentage']!=15 || $invoice_row['igst_percentage']!=14 || $invoice_row['cgst_percentage']!=10 || $invoice_row['sgst_percentage']!=13 || $invoice_row['cgst_percentage']!=9 || $invoice_row['sgst_percentage']!=12 || $invoice_row['cgst_percentage']!=8 || $invoice_row['sgst_percentage']!=11){
+							$salesOthers=$salesOthers+($invoice_row->igst_amount);
+								 $salesIGstRowTotalOthers=$salesIGstRowTotalOthers+$invoice_row->row_total;
+							
+							}		
 						}
 						?>
 				<tbody>
@@ -159,7 +179,22 @@
 									echo "-";
 								} ?>
 						</td>
-						
+						<?php
+						$x=1;
+						while($x <= $td_no) 
+						{
+							?>
+							<td align="right">
+								<?php  if($salesIGstRowTotalOthers > 0){
+										echo $salesIGstRowTotalOthers;
+										$salesTotalOther=$salesTotalOther+$salesIGstRowTotalOthers;
+								}else{
+									echo "-";
+								} ?>
+						    </td>
+						<?php	$x++;	
+						} 
+						?>
 					</tr>
 				<?php $i++; endforeach; ?>
 				<tr>
@@ -170,14 +205,27 @@
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></b></td>
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></b></td>
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></b></td>
+					<?php
+						$x=1;
+						while($x <= $td_no) 
+						{
+							?>
+							<td align="right"><b><?php echo $this->Number->format($salesTotalOther,['places'=>2]); ?></b></td>
+						<?php	$x++;	
+						} 
+						?>
+					
+					
+					
 				</tr>
 				</tbody>
 				</table>
+				
 		
 		<table class="table table-bordered table-condensed">
 				<thead>
-					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<tr><?php $col=count($GstTaxes->toArray()); $col=$col+5; ?>
+						<td colspan="<?php echo $col; ?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Order Booked</h4>
 						</td>
 					</tr>
@@ -192,15 +240,29 @@
 						<th style="text-align:right;">Sales @ 12 % IGST</th>
 						<th style="text-align:right;">Sales @ 18 % IGST</th>
 						<th style="text-align:right;">Sales @ 28 % IGST</th>
+						<?php 
+						$CGST6;$CGST9;$CGST14;$IGST12;$IGST18;$IGST28;
+						$CGST6='CGST 6%';
+						$CGST9='CGST 9%';
+						$CGST14='CGST 14%';
+						$IGST12='IGST 12%';
+						$IGST18='IGST 18%';
+						$IGST28='IGST 28%';
+						$td_no=0;
+						foreach($GstTaxes as $GstTaxe){ 
+							if($GstTaxe->invoice_description == $CGST6 || $GstTaxe->invoice_description == $CGST9 || $GstTaxe->invoice_description == $CGST14 ||$GstTaxe->invoice_description == $IGST12 ||$GstTaxe->invoice_description == $IGST18 ||$GstTaxe->invoice_description == $IGST28){ }else{
+						?>
+							<th style="text-align:right;"><?php echo $GstTaxe->invoice_description; ?></th>
+						<?php $td_no++; }}?>
 						<th style="text-align:right;">Expected Delivery Date</th>
 					</tr>
 				</thead>
-				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
-							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; 
+				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;$salesTotalOther=0;
+							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; $salesTotalOthers=0; 
 							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; 
 				foreach ($SalesOrders as $SalesOrder):  //pr($SalesOrder->sales_order_rows); 
-					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0;
-					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; 
+					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0; $salesOthers=0;
+					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; $salesIGstRowTotalOthers=0; 
 					foreach($SalesOrder->sales_order_rows as $invoice_row){
 						if($invoice_row['cgst_per']==8 && $invoice_row['sgst_per']==11){ 
 								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
@@ -225,6 +287,11 @@
 								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
 								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->total;
 							}
+						else if($invoice_row['igst_per']!=16 || $invoice_row['igst_per']!=15 || $invoice_row['igst_per']!=14 || $invoice_row['cgst_per']!=10 || $invoice_row['sgst_per']!=13 || $invoice_row['cgst_per']!=9 || $invoice_row['sgst_per']!=12|| $invoice_row['cgst_per']!=8 || $invoice_row['sgst_per']!=11){
+								$salesOthers=$salesOthers+($invoice_row->igst_amount);
+								 $salesIGstRowTotalOthers=$salesIGstRowTotalOthers+$invoice_row->total;
+							}
+							
 						}
 						?>
 				<tbody>
@@ -285,6 +352,22 @@
 									echo "-";
 								} ?>
 						</td>
+						<?php
+						$x=1;
+						while($x <= $td_no) 
+						{
+							?>
+							<td align="right">
+								<?php  if($salesIGstRowTotalOthers > 0){
+										echo $salesIGstRowTotalOthers;
+										$salesTotalOther=$salesTotalOther+$salesIGstRowTotalOthers;
+								}else{
+									echo "-";
+								} ?>
+						    </td>
+						<?php	$x++;	
+						} 
+						?>
 						<td><?php echo date("d-m-Y",strtotime($SalesOrder->expected_delivery_date)); ?></td>
 						
 					</tr>
@@ -297,6 +380,17 @@
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></b></td>
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></b></td>
 					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></b></td>
+					
+					<?php
+						$x=1;
+						while($x <= $td_no) 
+						{
+							?>
+							<td align="right"><b><?php echo $this->Number->format($salesTotalOther,['places'=>2]); ?></b></td>
+						<?php	$x++;	
+						} 
+						?>
+					
 					<td></td>
 				</tr>
 				</tbody>

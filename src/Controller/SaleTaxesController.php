@@ -69,9 +69,9 @@ class SaleTaxesController extends AppController
 		$sale_tax_ledger_accounts=[];
 		$sale_tax_ledger_accounts1=[];
 			foreach($st_LedgerAccounts as $st_LedgerAccount){
-				$SaleTaxes = $this->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->source_id])->first();
-				$sale_tax_ledger_accounts[$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
-				$sale_tax_ledger_accounts1[$st_LedgerAccount->source_id]=$SaleTaxes->freeze;
+				@$SaleTaxes = $this->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->source_id])->first();
+				@$sale_tax_ledger_accounts[$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
+				@$sale_tax_ledger_accounts1[$st_LedgerAccount->source_id]=$SaleTaxes->freeze;
 				
 			}
 
