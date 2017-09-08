@@ -906,6 +906,7 @@ class LedgersController extends AppController
 				}	
 			}else{
 				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <'=>$transaction_from_date]);
+		
 				$opening_balance_ar=[];
 				foreach($OB as $Ledger)
 					{
@@ -914,7 +915,6 @@ class LedgersController extends AppController
 							@$opening_balance_ar['credit']+=$Ledger->credit;
 					}	
 			}
-			
 			
 			$Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
