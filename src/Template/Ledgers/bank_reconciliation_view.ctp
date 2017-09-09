@@ -7,7 +7,7 @@
 		</div>
 		<div align="right">
 			<?php $today =date('d-m-Y');
-						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Bank Reconciliation Add',array('controller'=>'Ledgers','action'=>'bankReconciliationAdd','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Bank Reconcilation Add',array('controller'=>'Ledgers','action'=>'bankReconciliationAdd','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 		</div>
 	
 	
@@ -24,9 +24,15 @@
 							<div class="col-md-4">
 								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @date('01-04-Y');  ?>" required data-date-format="dd-mm-yyyy" >
 							</div>
+							<?php if(empty($To)){ ?>
+								<div class="col-md-4">
+									<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To"  value="<?php echo @date('d-m-Y'); ?>" required  data-date-format="dd-mm-yyyy" >
+								</div>
+							<?php }else{ ?>
 							<div class="col-md-4">
-								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To"  value="<?php echo @date('d-m-Y'); ?>" required  data-date-format="dd-mm-yyyy" >
-							</div>
+								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To"  value="<?php echo $To; ?>" required  data-date-format="dd-mm-yyyy" >
+							</div>	
+							<?php } ?>	
 						</div>
 					</td>
 					<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
@@ -48,7 +54,7 @@
 						<th style="text-align:right;">Dr</th>
 						<th style="text-align:right;">Cr</th>
 						<th>Reconcilation Date</th>
-
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -65,13 +71,20 @@
 							$total_debit+=$ledger->debit; ?></td>
 						<td align="right"><?= $this->Number->format($ledger->credit,[ 'places' => 2]); 
 							$total_credit+=$ledger->credit; ?></td>
-						<td class="reconciliation_date"><?php echo $this->Form->input('reconciliation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker reconciliation_date','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => '+0d','data-date-end-date' => '+60d','placeholder' => 'Reconcilation Date','ledger_id'=>$ledger->id,'value'=>date("d-m-Y",strtotime($ledger->reconciliation_date))]); ?></td>
+						<td>
+							<?php echo date("d-m-Y",strtotime($ledger->reconciliation_date)); ?>
+						</td>
+						<?php echo $this->Form->input('reconciliation_date', ['type' => 'hidden','label' => false,'class' => 'form-control input-sm date-picker reconciliation_date','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => '+0d','data-date-end-date' => '+60d','placeholder' => 'Reconcilation Date','ledger_id'=>$ledger->id,'value'=>date("d-m-Y",strtotime($ledger->reconciliation_date))]); ?>
+						<td>
+							<button type="button" ledger_id=<?php echo $ledger->id ?> class="btn btn-primary btn-sm subdate"><i class="fa  fa-arrow-left" ></i></button>	
+						</td>
 				</tr>
 				<?php  endforeach; ?>
 				<tr>
 					<td colspan="2" align="right">Total</td>
-					<td align="right" ><?= $total_debit ;?> Dr</td>
-					<td align="right" ><?= $total_credit; ?> Cr</td>
+					<td align="right" ><?php echo $this->Number->format($total_debit,['places'=>2]) ;?> Dr</td>
+					<td align="right" ><?php echo $this->Number->format($total_credit,['places'=>2]); ?> Cr</td>
+					<td align="right" ></td>
 					<td align="right" ></td>
 				<tr>
 				</tbody>
@@ -84,17 +97,20 @@
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>
 $(document).ready(function() {
-	$('.reconciliation_date').die().change("blur",function() { 
+	$('.subdate').die().click(function() {  
 	var t=$(this);
 		var ledger_id=$(this).attr('ledger_id');
-		var reconciliation_date=$(this).val();
-		//alert(finalisation_date);
+		
+		var date= '00-00-0000';
+		var reconciliation_date="yes";
 		var url="<?php echo $this->Url->build(['controller'=>'Ledgers','action'=>'dateUpdate']); ?>";
 		url=url+'/'+ledger_id+'/'+reconciliation_date,
+		
 		$.ajax({
 			url: url,
 		}).done(function(response) { 
-			$(this).html(response);
+			t.closest("tr").hide();
+			 window.location.reload(true); 
 		});
     });
 	
