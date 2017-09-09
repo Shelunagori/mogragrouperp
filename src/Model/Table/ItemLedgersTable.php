@@ -64,6 +64,9 @@ class ItemLedgersTable extends Table
 		$this->belongsTo('InvoiceBookings');
 		$this->belongsTo('Rivs');
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('PurchaseOrders');
+		$this->belongsTo('Quotations');
+		$this->belongsTo('ItemBuckets');
 		
     }
 

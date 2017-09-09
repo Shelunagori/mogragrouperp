@@ -138,24 +138,11 @@ class MaterialIndentsController extends AppController
 		}
 		
         if ($this->request->is('post')) {
-			
             $materialIndent = $this->MaterialIndents->patchEntity($materialIndent, $this->request->data);
 			$materialIndent->created_by=$s_employee_id; 
 			$materialIndent->created_on=date("Y-m-d");
 			$materialIndent->company_id=$st_company_id;
-			
-			//pr($materialIndent); exit;
-			
             if ($this->MaterialIndents->save($materialIndent)) {
-				//pr($materialIndent); exit;
-				/* foreach($materialIndent)
-					{
-						$query2 = $this->DebitNotes->ReferenceBalances->query();
-						$query2->update()
-							->set(['credit' => $this->request->data['credit'][$row]+$data[0]->credit])
-							->where(['reference_no' => $this->request->data['reference_no'][$row],'ledger_account_id' => $this->request->data['sales_acc_id']])
-							->execute();
-					} */
 				
                 $this->Flash->success(__('The material indent has been saved.'));
 
@@ -185,6 +172,36 @@ class MaterialIndentsController extends AppController
      * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
+	 public function AddToCart($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+		$s_employee_id=$this->viewVars['s_employee_id'];
+		$materialIndent = $this->MaterialIndents->newEntity();
+		
+		if ($this->request->is('post')) { 
+            $materialIndent = $this->MaterialIndents->patchEntity($materialIndent, $this->request->data);
+			$materialIndent->created_by=$s_employee_id; 
+			$materialIndent->created_on=date("Y-m-d");
+			$materialIndent->company_id=$st_company_id;
+            if ($this->MaterialIndents->save($materialIndent)) {
+				$this->MaterialIndents->ItemBuckets->deleteAll();
+                $this->Flash->success(__('The material indent has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            } else { 
+                $this->Flash->error(__('The material indent could not be saved. Please, try again.'));
+            }
+        }
+		
+		$ItemBuckets = $this->MaterialIndents->ItemBuckets->find()->contain(['Items'])->toArray();
+		
+
+		//pr($ItemBuckets);exit;
+		$this->set(compact('ItemBuckets','materialIndent'));
+	}
+	 
     public function edit($id = null)
     {
 		$this->viewBuilder()->layout('index_layout');

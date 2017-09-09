@@ -645,13 +645,12 @@ class ItemLedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout'); 
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-		//$Items = $this->ItemLedgers->Items->find()->where(['source'=>'Purchessed/Manufactured'])->orWhere(['source'=>'Purchessed']); 
-		/* $material_items_for_purchase=[];
-		$material_items_for_purchase[]=array('item_name'=>'Kgn212','item_id'=>'144','quantity'=>'25','company_id'=>'25','employee_name'=>'Gopal','company_name'=>'STL','material_indent_id'=>'2');
+		$item_name=$this->request->query('item_name');
+		$item_category=$this->request->query('item_category');
+		$item_group=$this->request->query('item_group_id');
+		$item_sub_group=$this->request->query('item_sub_group_id');
+		//pr($item_name); exit;
 		
-		$to=json_encode($material_items_for_purchase);
-		//pr($to); exit;
-		$this->redirect(['controller'=>'PurchaseOrders','action' => 'add/'.$to.'']); */
 		$mit=$this->ItemLedgers->newEntity();
 		
 		if ($this->request->is(['post'])) {
@@ -661,10 +660,7 @@ class ItemLedgersController extends AppController
 			foreach($check as $item_id){
 				$to_send[$item_id]=$suggestindent[$item_id];
 			}
-
 			$to=json_encode($to_send); 
-			//rwjihf dfgdf?3qrrg
-			//$this->redirect(['controller'=>'PurchaseOrders','action' => 'add/'.$to.'']);
 			$this->redirect(['controller'=>'MaterialIndents','action' => 'add/'.$to.'']);
 		}
 		
@@ -702,7 +698,45 @@ class ItemLedgersController extends AppController
 				$job_card_items[$job_card_row->item_id]=@$job_card_items[$job_card_row->item_id]+$job_card_row->quantity;
 			}
 		}		
-		//pr($job_card_items); exit;
+		
+		//$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()
+			//->contain(['PurchaseOrderRows']);			
+			
+			$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items']])->select(['total_rows' => 
+				$this->ItemLedgers->PurchaseOrders->find()->func()->count('PurchaseOrderRows.id')])
+				->leftJoinWith('PurchaseOrderRows', function ($q) {
+					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
+				})
+				->group(['PurchaseOrders.id'])
+				->autoFields(true)
+				->where(['company_id'=>$st_company_id])
+				->order(['PurchaseOrders.id' => 'DESC']);			
+			//pr($PurchaseOrders->toArray());exit;
+		
+		$purchase_order_items=[];
+		foreach($PurchaseOrders as $PurchaseOrder){
+			foreach($PurchaseOrder->purchase_order_rows as $purchase_order_rows){
+				$item_id=$purchase_order_rows->item_id;
+				$quantity=$purchase_order_rows->quantity;
+				$processed_quantity=$purchase_order_rows->processed_quantity;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$purchase_order_items[$purchase_order_rows->item_id]=@$purchase_order_items[$purchase_order_rows->item_id]+$Sales_Order_stock;
+			}
+		}	
+
+		$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);
+		
+		$quotation_items=[];
+		foreach($Quotations as $Quotation){
+			foreach($Quotation->quotation_rows as $quotation_row){
+				$item_id=$quotation_row->item_id;
+				$quantity=$quotation_row->quantity;
+				$processed_quantity=$quotation_row->proceed_qty;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$quotation_items[$quotation_row->item_id]=@$quotation_items[$quotation_row->item_id]+$Sales_Order_stock;
+			}
+		}	
+		//pr($Quotations->toArray()); exit;
 		
 		$ItemLedgers = $this->ItemLedgers->find();
 				$totalInCase = $ItemLedgers->newExpr()
@@ -737,11 +771,16 @@ class ItemLedgersController extends AppController
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
-			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id]);
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id]);
 			}
 		} 
+		
+		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
+		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
+		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
+		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
 			
-		$this->set(compact('material_report','mit','url'));
+		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items'));
 			
 	 }
 	
@@ -996,8 +1035,6 @@ class ItemLedgersController extends AppController
 					$link1 = ['controller'=>'SaleReturns','action' => 'View'];
 					$link[$key]=$link1;
 				}
-				
-				
 			}
 			
 		}
@@ -1126,6 +1163,28 @@ class ItemLedgersController extends AppController
 	
 	
 	
+	public function addToBucket($item_id=null,$qty=null){
+		
+		$ItemBuckets = $this->ItemLedgers->ItemBuckets->newEntity();
+		$ItemBuckets->item_id=$item_id;
+		$ItemBuckets->quantity=$qty;
+		//pr()
+		$this->ItemLedgers->ItemBuckets->save($ItemBuckets);
+
+		$this->set(compact('ItemBuckets','item_id','qty'));
+		
+	}	
+	public function ItemBucket()
+	{
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+		$materialIndent = $this->MaterialIndents->newEntity();
+		
+		$ItemBuckets = $this->ItemLedgers->ItemBuckets->find()->contain(['Items'])->toArray();
+		
+		$this->set(compact('ItemBuckets'));
+	}
 	public function entryCount(){
 		$this->viewBuilder()->layout('');
 		
