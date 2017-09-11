@@ -650,7 +650,24 @@ class ItemLedgersController extends AppController
 		$item_group=$this->request->query('item_group_id');
 		$item_sub_group=$this->request->query('item_sub_group_id');
 		//pr($item_name); exit;
+		//filter code
+		$where=[];
 		
+		$this->set(compact('item_category','item_group','item_sub_group','item_name'));
+		if(!empty($item_name)){ 
+			$where['Item_id']=$item_name;
+			
+		}
+		if(!empty($item_category)){
+			$where['Items.item_category_id']=$item_category;
+		}
+		if(!empty($item_group)){
+			$where['Items.item_group_id ']=$item_group;
+		}
+		if(!empty($item_sub_group)){
+			$where['Items.item_sub_group_id ']=$item_sub_group;
+		}
+		//pr($where);exit;
 		$mit=$this->ItemLedgers->newEntity();
 		
 		if ($this->request->is(['post'])) {
@@ -666,14 +683,16 @@ class ItemLedgersController extends AppController
 		
 		$salesOrders=$this->ItemLedgers->SalesOrders->find()
 			->select(['total_rows'=>$this->ItemLedgers->SalesOrders->find()->func()->count('SalesOrderRows.id')])
-			->leftJoinWith('SalesOrderRows', function ($q) {
+			->leftJoinWith('SalesOrderRows', function ($q) use($where){
 				return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
 			})
 			->where(['company_id'=>$st_company_id])
 			->group(['SalesOrders.id'])
 			->autoFields(true)
 			->having(['total_rows >' => 0])
-			->contain(['SalesOrderRows'])
+			->contain(['SalesOrderRows.Items'=>function($q) use($where){
+				return $q->where($where);
+			} ])
 			->toArray();
 			//pr($salesOrders); exit; 
 			
@@ -690,7 +709,9 @@ class ItemLedgersController extends AppController
 				//$sales[$item_id]=@$sales[$item_id]+$Sales_Order_stock;
 			}
 			//pr($sales);exit;
-		$JobCards=$this->ItemLedgers->JobCards->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['JobCardRows']);
+		$JobCards=$this->ItemLedgers->JobCards->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['JobCardRows.Items'=>function ($q) use($where){
+			return $q->where($where);
+		}]);
 		
 		$job_card_items=[];
 		foreach($JobCards as $JobCard){
@@ -702,7 +723,9 @@ class ItemLedgersController extends AppController
 		//$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()
 			//->contain(['PurchaseOrderRows']);			
 			
-			$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items']])->select(['total_rows' => 
+			$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items'=>function($q) use($where){
+				return $q->where($where);
+			}]])->select(['total_rows' => 
 				$this->ItemLedgers->PurchaseOrders->find()->func()->count('PurchaseOrderRows.id')])
 				->leftJoinWith('PurchaseOrderRows', function ($q) {
 					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
@@ -710,6 +733,7 @@ class ItemLedgersController extends AppController
 				->group(['PurchaseOrders.id'])
 				->autoFields(true)
 				->where(['company_id'=>$st_company_id])
+				
 				->order(['PurchaseOrders.id' => 'DESC']);			
 			//pr($PurchaseOrders->toArray());exit;
 		
@@ -723,7 +747,33 @@ class ItemLedgersController extends AppController
 				$purchase_order_items[$purchase_order_rows->item_id]=@$purchase_order_items[$purchase_order_rows->item_id]+$Sales_Order_stock;
 			}
 		}	
-
+		/// Start Material Indent Report Cost
+				$MaterialIndents=$this->ItemLedgers->MaterialIndents->find()->contain(['MaterialIndentRows'=>['Items'=>function($q) use($where){
+				return $q->where($where);
+			}]])->select(['total_rows' => 
+				$this->ItemLedgers->MaterialIndents->find()->func()->count('MaterialIndentRows.id')])
+				->leftJoinWith('MaterialIndentRows', function ($q) {
+					return $q->where(['MaterialIndentRows.processed_quantity < MaterialIndentRows.required_quantity']);
+				})
+				->group(['MaterialIndents.id'])
+				->autoFields(true)
+				->where(['company_id'=>$st_company_id])
+				
+				->order(['MaterialIndents.id' => 'DESC']);			
+			//pr($MaterialIndents->toArray());exit;
+		
+		$material_indent_order_items=[];
+		foreach($MaterialIndents as $MaterialIndent){ 
+			foreach($MaterialIndent->material_indent_rows as $material_indent_rows){
+				$item_id=$material_indent_rows->item_id;
+				$quantity=$material_indent_rows->required_quantity;
+				$processed_quantity=$material_indent_rows->processed_quantity;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$material_indent_order_items[$material_indent_rows->item_id]=@$material_indent_order_items[$material_indent_rows->item_id]+$Sales_Order_stock;
+			}
+		}
+		/// End Material Indent Report Cost
+		
 		$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);
 		
 		$quotation_items=[];
@@ -758,12 +808,14 @@ class ItemLedgersController extends AppController
 				])
 				->group('item_id')
 				->autoFields(true)
-				->contain(['Items' => function($q) use($st_company_id){
-					return $q->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($st_company_id){
+				->where($where)
+				->contain(['Items' => function($q) use($st_company_id,$where){
+					return $q->where($where)->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($st_company_id){
 						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
 					}]);
 				}]);
 				//pr($ItemLedgers->toArray()); exit;
+				$material_report=[];
 		foreach ($ItemLedgers as $itemLedger){
 			if($itemLedger->company_id==$st_company_id){
 			$item_name=$itemLedger->item->name;
@@ -771,7 +823,7 @@ class ItemLedgersController extends AppController
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
-			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id]);
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
 			}
 		} 
 		
@@ -1161,11 +1213,14 @@ class ItemLedgersController extends AppController
 	
 	
 	public function addToBucket($item_id=null,$qty=null){
-		
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
 		$ItemBuckets = $this->ItemLedgers->ItemBuckets->newEntity();
 		$ItemBuckets->item_id=$item_id;
 		$ItemBuckets->quantity=$qty;
-		//pr()
+		
+		//$ItemBuckets->mi_number=$qty;
+		//pr($ItemBuckets);exit;
 		$this->ItemLedgers->ItemBuckets->save($ItemBuckets);
 
 		$this->set(compact('ItemBuckets','item_id','qty'));

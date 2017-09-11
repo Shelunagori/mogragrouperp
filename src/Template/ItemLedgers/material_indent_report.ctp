@@ -15,9 +15,9 @@
 			<?= $this->Html->link(
 					'Add To Cart',
 					'/MaterialIndents/AddToCart',
-					['class' => 'btn btn-primary']
+					['class' => 'btn btn-success']
 				); ?>
-			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Metarial-Export/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+			<!--<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Metarial-Export/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>-->
 		</div>
 		<div class="portlet-body">
 					<form method="GET" >
@@ -62,6 +62,7 @@
 							<th width="10%">Job card  </th>
 							<th width="10%">Open PO  </th>
 							<th width="10%">Open QO  </th>
+							<th width="10%">Open MI  </th>
 							<th width="15%">Suggested Indent</th>
 							<th width="10%">Action</th>
 						</tr>
@@ -76,22 +77,22 @@
 							$job_card_qty=$data['job_card_qty'];
 							$po_qty=$data['po_qty'];
 							$qo_qty=$data['qo_qty'];
-						
+							$mi_qty=$data['mi_qty'];
 
 						?>
 						<tr class="tr1" row_no='<?php echo @$i; ?>'>
 						<td ><?php echo $i; ?> </td>
 						<td><?php echo $item_name; ?></td>
-						<td style="text-align:center; valign:top" valign="top"><?php echo $Current_Stock; ?></td>
-						<td style="text-align:center"><?php echo @$sales_order; ?></td>
-						<td style="text-align:center"><?php echo $job_card_qty; ?></td>
-						<td style="text-align:center"><?php echo $po_qty; ?></td>
-						<td style="text-align:center"><?php echo $qo_qty; ?></td>
+						<td style="text-align:center; valign:top" valign="top"><?php if(!empty($Current_Stock)){ echo $Current_Stock; }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($sales_order)){ echo @$sales_order; }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($job_card_qty)){ echo $job_card_qty; }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($po_qty)){ echo $po_qty; }else{ echo "-"; }  ?></td>
+						<td style="text-align:center"><?php if(!empty($qo_qty)){ echo $qo_qty; }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($mi_qty)){ echo $mi_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center"><?php echo $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty; ?></td>
-
 						<td>
 							<label>
-								<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo abs($Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty); ?>">Add</button>
+								<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo abs($Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty); ?>">Add</button>
 							</label>
 						</td>						
 						</tr>
@@ -110,6 +111,35 @@
 
 <script>
 $(document).ready(function() {
+	////////
+	$('select[name="item_category"]').on("change",function() {
+		$('#item_group_div').html('Loading...');
+		var itemCategoryId=$('select[name="item_category"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemGroups','action'=>'ItemGroupDropdown']); ?>";
+		url=url+'/'+itemCategoryId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_group_div').html(response);
+			$('select[name="item_group_id"]').select2();
+		});
+	});	
+	//////
+	$('select[name="item_group_id"]').die().live("change",function() {
+		$('#item_sub_group_div').html('Loading...');
+		var itemGroupId=$('select[name="item_group_id"] option:selected').val();
+		var url="<?php echo $this->Url->build(['controller'=>'ItemSubGroups','action'=>'ItemSubGroupDropdown']); ?>";
+		url=url+'/'+itemGroupId,
+		$.ajax({
+			url: url,
+			type: 'GET',
+		}).done(function(response) {
+			$('#item_sub_group_div').html(response);
+			$('select[name="item_sub_group_id"]').select2();
+		});
+	});
+	////
 	$('.add_to_bucket').die().live("click",function() {
 		var t=$(this);
 		var item_id=$(this).attr('item_id');
@@ -117,13 +147,12 @@ $(document).ready(function() {
 		var suggestindent=$(this).attr('suggestindent');
 		var url="<?php echo $this->Url->build(['controller'=>'ItemLedgers','action'=>'addToBucket']); ?>";
 		url=url+'/'+item_id+'/'+suggestindent,
-		alert(url);
 		$.ajax({
 			url: url,
 			type: 'GET',
 		}).done(function(response) {
 			t.text('');
-			t.text('Added').removeClass('add_to_bucket').addClass('remove_bucket');
+			t.text('Added to Cart').removeClass('btn-primary add_to_bucket').addClass('btn-success remove_bucket');
 		});
  		
     })

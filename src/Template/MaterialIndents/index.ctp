@@ -44,7 +44,7 @@
             <tr>
 			   <td><?= h(++$page_no) ?></td>
 			   <td>
-				<?= h($materialIndent->mi_number) ?>
+				<?= h('#'.str_pad($materialIndent->mi_number, 4, '0', STR_PAD_LEFT)) ?>
 			    </td>
 				<td><?php echo date("d-m-Y",strtotime($materialIndent->created_on)); ?></td>
 				

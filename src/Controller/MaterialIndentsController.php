@@ -186,6 +186,12 @@ class MaterialIndentsController extends AppController
 			$materialIndent->created_by=$s_employee_id; 
 			$materialIndent->created_on=date("Y-m-d");
 			$materialIndent->company_id=$st_company_id;
+			$last_voucher_no=$this->MaterialIndents->find()->select(['mi_number'])->where(['MaterialIndents.company_id' => $st_company_id])->order(['mi_number' => 'DESC'])->first();
+			if($last_voucher_no){
+				$materialIndent->mi_number=$last_voucher_no->mi_number+1;
+			}else{
+				$materialIndent->mi_number=1;
+			}
 			//pr($materialIndent); 
             if ($this->MaterialIndents->save($materialIndent)) {
 				$this->MaterialIndents->ItemBuckets->deleteAll(array('1 = 1'));
@@ -245,7 +251,7 @@ class MaterialIndentsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        //$this->request->allowMethod(['post', 'delete']);
         $ItemBucket = $this->MaterialIndents->ItemBuckets->get($id);
         if ($this->MaterialIndents->ItemBuckets->delete($ItemBucket)) {
             $this->Flash->success(__('The Item has been deleted.'));

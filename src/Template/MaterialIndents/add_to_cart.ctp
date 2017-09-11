@@ -29,7 +29,7 @@
 					<?php 
 					$q=0;
 					
-					foreach ($ItemBuckets as $ItemBucket):
+					foreach ($ItemBuckets as $ItemBucket){
 						//pr($ItemBucket); exit;
 					 ?>
 					
@@ -42,10 +42,18 @@
 							<td><?php echo $ItemBucket['quantity']; ?></td>
 							<td><?php echo $this->Form->input('material_indent_rows.'.$q.'.required_quantity', ['label' => false,'type'=>'text','required']); ?></td>
 							<td>
-							<?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $ItemBucket->id], ['confirm' => __('Are you sure you want to delete # {0}?', $ItemBucket->id)]) ?>
+							<?= $this->Html->link('Delete ',
+									['action' => 'delete', $ItemBucket->id], 
+									[
+										'escape' => false,
+									
+										'confirm' => __('Are you sure, you want to delete {0}?', $ItemBucket->id)
+									]
+								) ?>
+						
 							</td>
 					</tr>
-					<?php endforeach;  ?>
+					<?php } ?>
 					
 				</tbody>
 				
@@ -82,20 +90,6 @@ $(document).ready(function() {
 		errorElement: 'span', //default input error message container
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
-		
-		rules: {
-			rules: {
-				packing:{
-					required: true,
-				},
-				required_date : {
-					  required: true,
-				},
-				remark : {
-					  required: true,
-				},
-			},
-		},
 	});
 	
 	$('.quantity').die().live("keyup",function() {
