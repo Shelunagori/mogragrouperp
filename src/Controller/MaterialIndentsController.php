@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 
+
 /**
  * MaterialIndents Controller
  *
@@ -185,10 +186,13 @@ class MaterialIndentsController extends AppController
 			$materialIndent->created_by=$s_employee_id; 
 			$materialIndent->created_on=date("Y-m-d");
 			$materialIndent->company_id=$st_company_id;
+			//pr($materialIndent); 
             if ($this->MaterialIndents->save($materialIndent)) {
-				$this->MaterialIndents->ItemBuckets->deleteAll();
+				$this->MaterialIndents->ItemBuckets->deleteAll(array('1 = 1'));
+				//$this->MaterialIndents->ItemBuckets->deleteAll(['is_spam' => true]);
+				///$this->MaterialIndents->ItemBuckets->deleteAll();
                 $this->Flash->success(__('The material indent has been saved.'));
-
+			
                 return $this->redirect(['action' => 'index']);
             } else { 
                 $this->Flash->error(__('The material indent could not be saved. Please, try again.'));
@@ -242,15 +246,17 @@ class MaterialIndentsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $materialIndent = $this->MaterialIndents->get($id);
-        if ($this->MaterialIndents->delete($materialIndent)) {
-            $this->Flash->success(__('The material indent has been deleted.'));
+        $materialIndent = $this->MaterialIndents->ItemBuckets->get($id);
+        if ($this->MaterialIndents->ItemBuckets->delete($materialIndent)) {
+            $this->Flash->success(__('The Item has been deleted.'));
         } else {
-            $this->Flash->error(__('The material indent could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The Item could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);
     }
+	
+	
 	
 	public function report()
 	{

@@ -1151,10 +1151,7 @@ class ItemLedgersController extends AppController
 					$link1 = ['controller'=>'SaleReturns','action' => 'View'];
 					$link[$key]=$link1;
 				}
-				
-				
 			}
-			
 		}
 	
 	//pr($link);exit;

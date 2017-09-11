@@ -22,6 +22,7 @@
 						<th>Items name</th>
 						<th>Suggested Indent Quantity</th>
 						<th>Quantity</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -40,6 +41,9 @@
 							<?php echo $ItemBucket['item']['name']; ?></td>
 							<td><?php echo $ItemBucket['quantity']; ?></td>
 							<td><?php echo $this->Form->input('material_indent_rows.'.$q.'.required_quantity', ['label' => false,'type'=>'text','required']); ?></td>
+							<td>
+							<?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $ItemBucket->id], ['confirm' => __('Are you sure you want to delete # {0}?', $ItemBucket->id)]) ?>
+							</td>
 					</tr>
 					<?php endforeach;  ?>
 					
