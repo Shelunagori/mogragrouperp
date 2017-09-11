@@ -246,8 +246,8 @@ class MaterialIndentsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $materialIndent = $this->MaterialIndents->ItemBuckets->get($id);
-        if ($this->MaterialIndents->ItemBuckets->delete($materialIndent)) {
+        $ItemBucket = $this->MaterialIndents->ItemBuckets->get($id);
+        if ($this->MaterialIndents->ItemBuckets->delete($ItemBucket)) {
             $this->Flash->success(__('The Item has been deleted.'));
         } else {
             $this->Flash->error(__('The Item could not be deleted. Please, try again.'));
