@@ -123,7 +123,7 @@ $(document).ready(function() {
 			type: 'GET',
 		}).done(function(response) {
 			t.text('');
-			t.text('Remove').removeClass('add_to_bucket').addClass('remove_bucket');
+			t.text('Added').removeClass('add_to_bucket').addClass('remove_bucket');
 		});
  		
     })
