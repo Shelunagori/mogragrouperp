@@ -702,11 +702,8 @@ $RoutQty=0;
 	}
 	
 	 public function materialindentreport(){
-<<<<<<< HEAD
-=======
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
->>>>>>> 03d241ef7e70cd079b36f0f15fcd1ba9aa485741
 		$this->viewBuilder()->layout('index_layout'); 
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
