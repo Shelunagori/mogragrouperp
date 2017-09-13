@@ -1,0 +1,1 @@
+<?php echo $st_company_id; ?>

@@ -300,8 +300,69 @@ class ItemLedgersController extends AppController
 		}
 			//pr($where);exit;
 		$item_stocks =[];$items_names =[];
-		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date))]);
-				//pr($query->toArray()); exit;
+		
+		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id])->order(['ItemLedgers.processed_on' => 'ASC']);
+	//	pr($query->toArray()); exit;
+		$array_in=[];
+		foreach($query as $data){
+			if($data->in_out=='In'){
+				if(@$data->item_id==1160){ 
+				$array_in[$data->item_id][]=['quantity'=>$data->quantity,'rate'=>$data->rate];
+				//pr($array_in);
+				}
+			}else if($data->in_out=='Out'){
+				$i=0;
+				$outQty=$data->quantity;
+				if(sizeof(@$array_in[$data->item_id]) > 0){
+$RoutQty=0;					
+					while( $i < sizeof($array_in[$data->item_id])){
+						
+						//echo $i;
+						if(@$data->item_id==1160){
+							//echo @$outQty;
+							$remind=@$array_in[$data->item_id][$i]['quantity']-$outQty;
+							
+							if(@$array_in[$data->item_id][$i]['quantity']<=0){ 
+								unset($array_in[$data->item_id][$i]);
+							}
+						}
+						if(@$data->item_id==1160){ 
+							if($remind < 0){ 
+								@$array_in[$data->item_id][$i]['quantity']=@$array_in[$data->item_id][$i]['quantity']-abs($array_in[$data->item_id][$i]['quantity']);
+								$j=$i+1;
+								repeat:
+								$remind1=@$array_in[$data->item_id][$j]['quantity']-abs($remind);
+									if($remind1 < 0){
+										@$array_in[$data->item_id][$j]['quantity']=@$array_in[$data->item_id][$j]['quantity']-abs($array_in[$data->item_id][$j]['quantity']);
+										$j++;
+										$remind=$remind1;
+										goto repeat;
+										
+									}else{
+										@$array_in[$data->item_id][$j]['quantity']=@$array_in[$data->item_id][$j]['quantity']-abs($remind);
+										goto outOfForLoop;
+									}
+								@$array_in[$data->item_id][$i+1]['quantity']=@$array_in[$data->item_id][$i+1]['quantity']-abs($remind);
+								if(@$array_in[$data->item_id][$i]['quantity']<=0){
+									$RoutQty=abs(@$array_in[$data->item_id][$i]['quantity']);
+									$outQty=$outQty+$RoutQty;
+								}
+							}else{
+								@$array_in[$data->item_id][$i]['quantity']=@$array_in[$data->item_id][$i]['quantity']-abs($outQty);
+								goto outOfForLoop;
+							}
+						}
+						$i++;
+					}
+				outOfForLoop:
+
+				}
+			}
+		}
+		pr($array_in);
+		exit;
+		
+		
 		$totalInCase = $query->newExpr()
 			->addCase(
 				$query->newExpr()->add(['in_out' => 'In']),
@@ -330,6 +391,8 @@ class ItemLedgersController extends AppController
 		
 		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
+		
+		pr($results); exit;
 		
 		
 		if($stock == "Negative"){
@@ -639,9 +702,8 @@ class ItemLedgersController extends AppController
 	}
 	
 	 public function materialindentreport(){
-		 $url=$this->request->here();
+		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
-		
 		$this->viewBuilder()->layout('index_layout'); 
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
@@ -1240,18 +1302,29 @@ class ItemLedgersController extends AppController
 	public function entryCount(){
 		$this->viewBuilder()->layout('');
 		
-		$ItemLedgers=$this->ItemLedgers->find()->distinct(['item_id'])->where(['company_id'=>25]);
-		//echo $ItemLedgers->count();
+		$Items=$this->ItemLedgers->Items->find()->contain(['ItemCategories','ItemGroups','ItemSubGroups']);
+		//pr($Items->toArray()); exit;
 		?>
 		<table border="1">
-		<?php foreach($ItemLedgers as $ItemLedger){ 
-			$countItemLedgers=$this->ItemLedgers->find()->where(['company_id'=>25,'item_id'=>$ItemLedger->item_id]);
-		?>
 			<tr>
-				<td><?php echo $ItemLedger->item_id; ?></td>
-				<td><?php echo $countItemLedgers->count(); ?></td>
+				<th>Item Id</td>
+				<th>Item Name</td>
+				<th>Item Category</td>
+				<th>Item Group</td>
+				<th>Item Sub Group</td>
+				<th>HSN Code</td>
+			</tr>
+		<?php foreach($Items as $Item){ ?>
+			<tr>
+				<td><?php echo $Item->id; ?></td>
+				<td><?php echo $Item->name; ?></td>
+				<td><?php echo $Item->item_category->name; ?></td>
+				<td><?php echo $Item->item_group->name; ?></td>
+				<td><?php echo $Item->item_sub_group->name; ?></td>
+				<td><?php echo $Item->hsn_code; ?></td>
+				<td></td>
 			</tr>
 		<?php } ?>
-		<table> <?php exit;
+		</table> <?php exit;
 	}
 }

@@ -137,10 +137,13 @@ class AppController extends Controller
 		}
 		
 		
-
-
-		
-    }
+			$coreVariable = [
+				'st_company_id' =>$session->read('st_company_id'),
+			];
+			
+			$this->coreVariable = $coreVariable;
+			$this->set(compact('coreVariable'));
+	  }
 
     /**
      * Before render callback.
