@@ -43,10 +43,13 @@ class LoginsController extends AppController
 					return $this->redirect(['action' => 'Switch-Company']);
 				}
 				if(!empty($emp_mobile)){
+					return $this->redirect(['controller'=>'Logins', 'action' => 'SwitchCompany']);
+				}
+				/* if(!empty($emp_mobile)){
 					return $this->redirect(['controller'=>'Logins', 'action' => 'otpCodeConfirm',$employee_id,$login_id]);
 				}else{
 					return $this->redirect(['controller'=>'Logins', 'action' => 'errorOtp',$employee_id]);
-				}
+				} */
 				
 			}
 		}
@@ -70,6 +73,18 @@ class LoginsController extends AppController
 		$session->delete('st_login_id');
 		return $this->redirect("/login");
 	}
+	
+	public function checkSession()
+	{
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		echo $st_company_id; 
+		exit;
+	//	$this->set(compact('st_company_id'));
+	}
+	
+	
 	
 	public function add()
     {

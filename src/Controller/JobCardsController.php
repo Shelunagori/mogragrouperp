@@ -302,15 +302,15 @@ class JobCardsController extends AppController
 			$where['Customers.customer_name LIKE']='%'.$customer.'%';
 		}
 		if(!empty($po_no)){
-			$where['JobCards.customer_po_no LIKE']='%'.$po_no.'%';
+			$where['SalesOrders.customer_po_no LIKE']='%'.$po_no.'%';
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['JobCards.created_on >=']=$From;
+			$where['SalesOrders.created_on >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['JobCards.created_on <=']=$To;
+			$where['SalesOrders.created_on <=']=$To;
 		}
 		
 		$this->paginate = [

@@ -874,6 +874,9 @@ select
 <div class="page-footer">
 	<div class="page-footer-inner">
 		 <a href="http://phppoets.com/" target="_blank" style="color:#FFF;">2016 &copy; PHPPOETS IT SOLUTION PVT LTD.</a>
+		 
+		<?php echo $this->Form->input('company_id', ['type' => 'hidden','label' => false,'class' => 'form-control input-sm','value' => $coreVariable['st_company_id'],'readonly']); ?>
+					
 	</div>
 	<div class="scroll-to-top">
 		<i class="icon-arrow-up"></i>
@@ -962,6 +965,27 @@ select
 <?php echo $this->Html->script('/assets/global/plugins/bootstrap-summernote/summernote.min.js'); ?>
 <?php echo $this->Html->script('/assets/admin/pages/scripts/components-editors.js'); ?>
 <!-- END PAGE LEVEL SCRIPTS -->
+<script>
+	$(document).ready(function() { 
+	setInterval(function(){  abc(); }, 5000);
+	 function abc(){
+		var old_company= $('input[name="company_id"]').val();
+		var url="<?php echo $this->Url->build(['controller'=>'Logins','action'=>'checkSession']); ?>";
+			$.ajax({
+				url: url,
+				type: 'GET',
+				dataType: 'json'
+			}).done(function(response) {
+					if(old_company == response){
+					}else{
+						var a="<?php echo $this->Url->build(['controller'=>'Logins','action'=>'dashbord']); ?>";
+						alert("You have switch Company, Go to Dashboard !");
+						window.location=a;
+					}
+			});
+		}
+	});
+</script>
 <script>
 jQuery(document).ready(function() {    
 	Metronic.init(); // init metronic core components
