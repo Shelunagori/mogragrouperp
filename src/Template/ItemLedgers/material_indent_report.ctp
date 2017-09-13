@@ -4,7 +4,7 @@
     margin-bottom:0px !important;
 }
 </style>
-<?php $url_excel="/?".$url;?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -12,11 +12,15 @@
 			<span class="caption-subject font-blue-steel uppercase">Material Indent Report</span>
 		</div>
 		<div class="actions">
+		<?php 
+			if(sizeof($company_name)==1){
+			foreach($company_name as $names){			
+						if(@$names == @$st_company_id){ ?>
 			<?= $this->Html->link(
 					'Add To Cart',
 					'/MaterialIndents/AddToCart',
 					['class' => 'btn btn-success']
-				); ?>
+			); }}}?>
 			<!--<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Metarial-Export/'.$url_excel.'',['class' =>'btn btn-sm green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>-->
 		</div>
 		<div class="portlet-body">
@@ -24,6 +28,13 @@
 			<table width="50%" class="table table-condensed">
 				<tbody>
 					<tr>
+						<td width="35%">
+						<?php if(!empty($company_name)){ ?>
+								<?php echo $this->Form->input('company_name', ['empty'=>'---Companies---','options' => $Companies,'label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $company_name]); ?>
+						<?php }else{ ?>  
+							<?php echo $this->Form->input('company_name', ['empty'=>'---Companies---','options' => $Companies,'label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $st_company_id]); ?>
+						<?php } ?>		
+						</td>
 						<td width="15%">
 								<?php echo $this->Form->input('item_name', ['empty'=>'---Items---','options' => $Items,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Category','value'=> h(@$item_name) ]); ?>
 						</td>
@@ -78,7 +89,7 @@
 							$po_qty=$data['po_qty'];
 							$qo_qty=$data['qo_qty'];
 							$mi_qty=$data['mi_qty'];
-
+							$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 						?>
 						<tr class="tr1" row_no='<?php echo @$i; ?>'>
 						<td ><?php echo $i; ?> </td>
@@ -89,10 +100,24 @@
 						<td style="text-align:center"><?php if(!empty($po_qty)){ echo $po_qty; }else{ echo "-"; }  ?></td>
 						<td style="text-align:center"><?php if(!empty($qo_qty)){ echo $qo_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center"><?php if(!empty($mi_qty)){ echo $mi_qty; }else{ echo "-"; } ?></td>
-						<td style="text-align:center"><?php echo $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty; ?></td>
+						<td style="text-align:center">
+							<?php if($total < 0){
+								echo abs($total);
+							}else{
+								echo "-";
+							} ?>
+						</td>
 						<td>
 							<label>
-								<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo abs($Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty); ?>">Add</button>
+							<?php 
+							if(sizeof($company_name)==1){
+							foreach($company_name as $names){			
+										if(@$names == @$st_company_id){ ?>
+											<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo abs($total); ?>">Add</button>
+										<?php 		}						
+							else{ ?>
+								
+							<?php }} } ?>	
 							</label>
 						</td>						
 						</tr>

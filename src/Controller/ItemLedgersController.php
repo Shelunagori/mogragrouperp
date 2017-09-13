@@ -639,9 +639,6 @@ class ItemLedgersController extends AppController
 	}
 	
 	 public function materialindentreport(){
-		 $url=$this->request->here();
-		$url=parse_url($url,PHP_URL_QUERY);
-		
 		$this->viewBuilder()->layout('index_layout'); 
 		$session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
@@ -649,15 +646,16 @@ class ItemLedgersController extends AppController
 		$item_category=$this->request->query('item_category');
 		$item_group=$this->request->query('item_group_id');
 		$item_sub_group=$this->request->query('item_sub_group_id');
-		//pr($item_name); exit;
-		//filter code
+		$company_name=$this->request->query('company_name');
+		
 		$where=[];
 		
-		$this->set(compact('item_category','item_group','item_sub_group','item_name'));
+		
+		$this->set(compact('item_category','item_group','item_sub_group','item_name','company_name'));
 		if(!empty($item_name)){ 
 			$where['Item_id']=$item_name;
-			
 		}
+		
 		if(!empty($item_category)){
 			$where['Items.item_category_id']=$item_category;
 		}
@@ -667,7 +665,7 @@ class ItemLedgersController extends AppController
 		if(!empty($item_sub_group)){
 			$where['Items.item_sub_group_id ']=$item_sub_group;
 		}
-		//pr($where);exit;
+
 		$mit=$this->ItemLedgers->newEntity();
 		
 		if ($this->request->is(['post'])) {
@@ -680,8 +678,41 @@ class ItemLedgersController extends AppController
 			$to=json_encode($to_send); 
 			$this->redirect(['controller'=>'MaterialIndents','action' => 'add/'.$to.'']);
 		}
+		$where1=[];$where2=[];$where3=[];
+		$where4=[];$where5=[];$where6=[];
+		$where7=[];
 		
-		$salesOrders=$this->ItemLedgers->SalesOrders->find()
+		if(!empty($company_name)){
+		
+		$company_names=array_filter($company_name);
+		
+			foreach($company_names as $names){  
+					$where1['SalesOrders.company_id IN'][]=$names;
+					$where2['JobCards.company_id IN'][]=$names;
+					$where3['PurchaseOrders.company_id IN'][]=$names;
+					$where4['MaterialIndents.company_id IN'][]=$names;
+					$where5['Quotations.company_id IN'][]=$names;
+					$where6['ItemLedgers.company_id IN'][]=$names;
+					$where7['ItemCompanies.company_id IN'][]=$names;
+			}
+		}
+		if(!empty($company_name)){  
+			$salesOrders=$this->ItemLedgers->SalesOrders->find()
+			->select(['total_rows'=>$this->ItemLedgers->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+			->leftJoinWith('SalesOrderRows', function ($q) use($where){
+				return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+			})
+			->where($where1)
+			->group(['SalesOrders.id'])
+			->autoFields(true)
+			->having(['total_rows >' => 0])
+			->contain(['SalesOrderRows.Items'=>function($q) use($where){
+				return $q->where($where);
+			} ])
+			->toArray();
+			
+		}else{
+			$salesOrders=$this->ItemLedgers->SalesOrders->find()
 			->select(['total_rows'=>$this->ItemLedgers->SalesOrders->find()->func()->count('SalesOrderRows.id')])
 			->leftJoinWith('SalesOrderRows', function ($q) use($where){
 				return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
@@ -696,7 +727,9 @@ class ItemLedgersController extends AppController
 			->toArray();
 			//pr($salesOrders); exit; 
 			
-			$sales=[];
+		}
+		
+		$sales=[];
 			foreach($salesOrders as $data){
 				foreach($data->sales_order_rows as $row){ 
 				//pr($row->quantity);
@@ -709,10 +742,18 @@ class ItemLedgersController extends AppController
 				//$sales[$item_id]=@$sales[$item_id]+$Sales_Order_stock;
 			}
 			//pr($sales);exit;
-		$JobCards=$this->ItemLedgers->JobCards->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['JobCardRows.Items'=>function ($q) use($where){
-			return $q->where($where);
-		}]);
-		
+			
+		if(!empty($company_name)){ 	
+			$JobCards=$this->ItemLedgers->JobCards->find()->where($where2)
+			->where(['status'=>'Pending'])->contain(['JobCardRows.Items'=>function ($q) use($where){
+				return $q->where($where);
+			}]);
+			
+		}else{
+			$JobCards=$this->ItemLedgers->JobCards->find()->where(['company_id'=>$st_company_id,'status'=>'Pending'])->contain(['JobCardRows.Items'=>function ($q) use($where){
+				return $q->where($where);
+			}]);
+		} 
 		$job_card_items=[];
 		foreach($JobCards as $JobCard){
 			foreach($JobCard->job_card_rows as $job_card_row){
@@ -722,7 +763,7 @@ class ItemLedgersController extends AppController
 		
 		//$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()
 			//->contain(['PurchaseOrderRows']);			
-			
+		if(!empty($company_name)){ 		
 			$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items'=>function($q) use($where){
 				return $q->where($where);
 			}]])->select(['total_rows' => 
@@ -730,13 +771,27 @@ class ItemLedgersController extends AppController
 				->leftJoinWith('PurchaseOrderRows', function ($q) {
 					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
 				})
+				->where($where3)
 				->group(['PurchaseOrders.id'])
 				->autoFields(true)
+				->order(['PurchaseOrders.id' => 'DESC']);			
+			//pr($PurchaseOrders->toArray());exit;
+		}else{
+			$PurchaseOrders=$this->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items'=>function($q) use($where){
+				return $q->where($where);
+			}]])->select(['total_rows' => 
+				$this->ItemLedgers->PurchaseOrders->find()->func()->count('PurchaseOrderRows.id')])
+				->leftJoinWith('PurchaseOrderRows', function ($q) {
+					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
+				})
 				->where(['company_id'=>$st_company_id])
+				->group(['PurchaseOrders.id'])
+				->autoFields(true)
+				->where($where1)
 				
 				->order(['PurchaseOrders.id' => 'DESC']);			
 			//pr($PurchaseOrders->toArray());exit;
-		
+		}
 		$purchase_order_items=[];
 		foreach($PurchaseOrders as $PurchaseOrder){
 			foreach($PurchaseOrder->purchase_order_rows as $purchase_order_rows){
@@ -748,6 +803,7 @@ class ItemLedgersController extends AppController
 			}
 		}	
 		/// Start Material Indent Report Cost
+		if(!empty($company_name)){
 				$MaterialIndents=$this->ItemLedgers->MaterialIndents->find()->contain(['MaterialIndentRows'=>['Items'=>function($q) use($where){
 				return $q->where($where);
 			}]])->select(['total_rows' => 
@@ -755,12 +811,27 @@ class ItemLedgersController extends AppController
 				->leftJoinWith('MaterialIndentRows', function ($q) {
 					return $q->where(['MaterialIndentRows.processed_quantity < MaterialIndentRows.required_quantity']);
 				})
+				->where($where4)
 				->group(['MaterialIndents.id'])
 				->autoFields(true)
+				->order(['MaterialIndents.id' => 'DESC']);	
+				//pr($MaterialIndents->toArray());exit;
+		}else{
+			$MaterialIndents=$this->ItemLedgers->MaterialIndents->find()->contain(['MaterialIndentRows'=>['Items'=>function($q) use($where){
+				return $q->where($where);
+			}]])->select(['total_rows' => 
+				$this->ItemLedgers->MaterialIndents->find()->func()->count('MaterialIndentRows.id')])
+				->leftJoinWith('MaterialIndentRows', function ($q) {
+					return $q->where(['MaterialIndentRows.processed_quantity < MaterialIndentRows.required_quantity']);
+				})
 				->where(['company_id'=>$st_company_id])
-				
-				->order(['MaterialIndents.id' => 'DESC']);			
-			//pr($MaterialIndents->toArray());exit;
+				->group(['MaterialIndents.id'])
+				->autoFields(true)
+				->where($where1)
+				->order(['MaterialIndents.id' => 'DESC']);	
+		}		
+						
+			
 		
 		$material_indent_order_items=[];
 		foreach($MaterialIndents as $MaterialIndent){ 
@@ -773,9 +844,12 @@ class ItemLedgersController extends AppController
 			}
 		}
 		/// End Material Indent Report Cost
-		
-		$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);
-		
+		if(!empty($company_name)){
+			$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending'])->where($where5)->contain(['QuotationRows']);
+				
+		}else{
+			$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);
+		}
 		$quotation_items=[];
 		foreach($Quotations as $Quotation){
 			foreach($Quotation->quotation_rows as $quotation_row){
@@ -787,7 +861,7 @@ class ItemLedgersController extends AppController
 			}
 		}	
 		//pr($Quotations->toArray()); exit;
-		
+		if(!empty($company_name)){
 		$ItemLedgers = $this->ItemLedgers->find();
 				$totalInCase = $ItemLedgers->newExpr()
 					->addCase(
@@ -809,30 +883,61 @@ class ItemLedgersController extends AppController
 				->group('item_id')
 				->autoFields(true)
 				->where($where)
-				->contain(['Items' => function($q) use($st_company_id,$where){
-					return $q->where($where)->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($st_company_id){
-						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+				->where($where6)
+				->contain(['Items' => function($q) use($where7,$where){
+					return $q->where($where)->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($where7){
+						return $p->where($where7)->where(['ItemCompanies.freeze' => 0]);
 					}]);
 				}]);
-				//pr($ItemLedgers->toArray()); exit;
+		}else{
+			$ItemLedgers = $this->ItemLedgers->find();
+				$totalInCase = $ItemLedgers->newExpr()
+					->addCase(
+						$ItemLedgers->newExpr()->add(['in_out' => 'In']),
+						$ItemLedgers->newExpr()->add(['quantity']),
+						'integer'
+					);
+				$totalOutCase = $ItemLedgers->newExpr()
+					->addCase(
+						$ItemLedgers->newExpr()->add(['in_out' => 'Out']),
+						$ItemLedgers->newExpr()->add(['quantity']),
+						'integer'
+					);
+
+				$ItemLedgers->select([
+					'total_in' => $ItemLedgers->func()->sum($totalInCase),
+					'total_out' => $ItemLedgers->func()->sum($totalOutCase),'id','item_id'
+				])
+				->group('item_id')
+				->autoFields(true)
+				->where($where)
+				->where(['company_id'=>$st_company_id])
+				->contain(['Items' => function($q) use($where,$st_company_id){
+					return $q->where($where)->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($st_company_id){
+						return $p->where(['company_id'=>$st_company_id,'ItemCompanies.freeze' => 0]);
+					}]);
+				}]);
+		}	
+		
 				$material_report=[];
 		foreach ($ItemLedgers as $itemLedger){
-			if($itemLedger->company_id==$st_company_id){
+			
 			$item_name=$itemLedger->item->name;
 			$item_id=$itemLedger->item->id;
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
 			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
-			}
+			
 		} 
 		
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
+		$Companies = $this->ItemLedgers->Companies->find('list')->order(['Companies.name' => 'ASC']);
 			
-		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items'));
+		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items','Companies','st_company_id'));
 			
 	 }
 	

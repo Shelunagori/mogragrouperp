@@ -713,7 +713,7 @@ select
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Daily Report',array('controller'=>'Ledgers','action'=>'index','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(39,$allowed_pages)){?>
-						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Material Indent Report','/Item-Ledgers/material-indent-report',array('escape'=>false)); ?></li>
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Material Indent Report','/Item-Ledgers/material-indent-report?company_name=&company_name%5B%5D='.$st_company_id,array('escape'=>false)); ?></li>
 						<?php } ?>
 						
 						<?php if(in_array(40,$allowed_pages)){?>

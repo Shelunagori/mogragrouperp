@@ -40,7 +40,7 @@ class GrnsController extends AppController
 			$where1['grn2 LIKE']=$grn_no;
 		}
 		if(!empty($po_no)){
-			$where1['PurchaseOrders.po3 LIKE']='%'.$po_no.'%';
+			$where1['PurchaseOrders.po2 LIKE']='%'.$po_no.'%';
 		}
 		
 		if(!empty($vendor)){

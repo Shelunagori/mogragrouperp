@@ -13,8 +13,6 @@
 		<!-- BEGIN FORM-->
 		 <?= $this->Form->create($materialIndent,['id'=>'form_sample_3']) ?>
 		<div class="form-body">
-
-			
 			<table class="table tableitm">
 				<thead>
 					<tr>
@@ -46,7 +44,6 @@
 									['action' => 'delete', $ItemBucket->id], 
 									[
 										'escape' => false,
-									
 										'confirm' => __('Are you sure, you want to delete {0}?', $ItemBucket->id)
 									]
 								) ?>

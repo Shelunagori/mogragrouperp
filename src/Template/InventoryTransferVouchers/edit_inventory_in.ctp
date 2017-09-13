@@ -108,7 +108,6 @@ if($transaction_date <  $start_date ) {
 									</div>
 									
 								</td>
-								
 								<td width="10%">
 									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'value'=>$inventory_transfer_voucher_row_in->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
 								</td>

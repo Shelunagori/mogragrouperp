@@ -120,7 +120,7 @@ class AppController extends Controller
 			foreach($UserRights as $qwe){
 				$allowed_pages[]=$qwe->page_id;
 			}
-			$this->set(compact('allowed_pages'));
+			$this->set(compact('allowed_pages','st_company_id'));
 		}
 
 		$this->loadModel('Pages');
