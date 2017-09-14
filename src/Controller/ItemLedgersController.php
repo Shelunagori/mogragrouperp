@@ -701,7 +701,7 @@ $RoutQty=0;
 			
 	}
 	
-	 public function materialindentreport(){
+	 public function materialindentreport($stockstatus=null){
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
 		$this->viewBuilder()->layout('index_layout'); 
@@ -712,11 +712,13 @@ $RoutQty=0;
 		$item_group=$this->request->query('item_group_id');
 		$item_sub_group=$this->request->query('item_sub_group_id');
 		$company_name=$this->request->query('company_name');
-		
+		$stock=$this->request->query('stock');
+		$stockstatus=$this->request->query('stockstatus');
+
 		$where=[];
 		
 		
-		$this->set(compact('item_category','item_group','item_sub_group','item_name','company_name'));
+		$this->set(compact('item_category','item_group','item_sub_group','item_name','company_name','stock'));
 		if(!empty($item_name)){ 
 			$where['Item_id']=$item_name;
 		}
@@ -995,14 +997,61 @@ $RoutQty=0;
 			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
 			
 		} 
-		
+		$total_indent=[];
+		if($stock == "Positive"){
+			foreach($material_report as $result){ 
+				$Current_Stock=$result['Current_Stock'];
+				$sales_order=$result['sales_order'];
+				$job_card_qty=$result['job_card_qty'];
+				$po_qty=$result['po_qty'];
+				$qo_qty=$result['qo_qty'];
+				$mi_qty=$result['mi_qty'];
+				$item_id=$result['item_id'];
+				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
+				if($total < 0){
+					$total_indent[$item_id]=$total;
+				}
+			}
+		}elseif($stock == "All"){
+			foreach($material_report as $result){ 
+				$Current_Stock=$result['Current_Stock'];
+				$sales_order=$result['sales_order'];
+				$job_card_qty=$result['job_card_qty'];
+				$po_qty=$result['po_qty'];
+				$qo_qty=$result['qo_qty'];
+				$mi_qty=$result['mi_qty'];
+				$item_id=$result['item_id'];
+				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
+				
+				if($total){
+					$total_indent[$item_id] = $total;
+				}
+			}
+		}elseif($stockstatus == "Positive"){
+			foreach($material_report as $result){ 
+					$Current_Stock=$result['Current_Stock'];
+					$sales_order=$result['sales_order'];
+					$job_card_qty=$result['job_card_qty'];
+					$po_qty=$result['po_qty'];
+					$qo_qty=$result['qo_qty'];
+					$mi_qty=$result['mi_qty'];
+					$item_id=$result['item_id'];
+					$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
+					
+					if($total >0 ){
+						$total_indent[$item_id] = $total;
+					}
+				}
+		}
+		//pr($total_indent[566]);
+		//exit;
 		$ItemCategories = $this->ItemLedgers->Items->ItemCategories->find('list')->order(['ItemCategories.name' => 'ASC']);
 		$ItemGroups = $this->ItemLedgers->Items->ItemGroups->find('list')->order(['ItemGroups.name' => 'ASC']);
 		$ItemSubGroups = $this->ItemLedgers->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
 		$Companies = $this->ItemLedgers->Companies->find('list')->order(['Companies.name' => 'ASC']);
 			
-		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items','Companies','st_company_id'));
+		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items','Companies','st_company_id','total_indent','stockstatus'));
 			
 	 }
 	

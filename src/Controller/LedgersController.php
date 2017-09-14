@@ -1013,7 +1013,10 @@ class LedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+        $st_year_id = $session->read('st_year_id');
 		$ledger_account_id=$this->request->query('ledger_account_id');
+		$financial_year = $this->Ledgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$SessionCheckDate = $this->FinancialYears->get($st_year_id);
 		$from=$this->request->query['From'];
 		$To=$this->request->query['To'];
 		$bankReconciliationAdd = $this->Ledgers->newEntity();
@@ -1025,7 +1028,7 @@ class LedgersController extends AppController
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date '=>'0000-00-00','voucher_source NOT IN'=>'Opening Balance'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
-				});
+				})->order('transaction_date','ASC');
 		}
 		
 		
@@ -1133,7 +1136,10 @@ class LedgersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+        $st_year_id = $session->read('st_year_id');
 		$ledger_account_id=$this->request->query('ledger_account_id');
+		$financial_year = $this->Ledgers->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		
 		$from =$this->request->query['From'];
 		$To =$this->request->query['To'];
 		$bankReconciliationAdd = $this->Ledgers->newEntity();
@@ -1182,7 +1188,7 @@ class LedgersController extends AppController
 		{
 		$bank_ledger_data=$this->Ledgers->LedgerAccounts->get($ledger_account_id);
 		}
-		$this->set(compact('bankReconciliationAdd','banks','Bank_Ledgers','ledger_account_id','bank_ledger_data','To'));
+		$this->set(compact('bankReconciliationAdd','banks','Bank_Ledgers','ledger_account_id','bank_ledger_data','To','financial_year'));
 	}
 	public function findDate($ledger_account_id=null){ 
 	

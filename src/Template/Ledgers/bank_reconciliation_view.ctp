@@ -22,15 +22,17 @@
 									<?php echo $this->Form->input('ledger_account_id', ['empty'=>'--Select--','options' => $banks,'empty' => "--Select Bank--",'label' => false,'class' => 'bank_data form-control input-sm select2me','required','value'=>@$ledger_account_id]); ?>
 							</div>
 							<div class="col-md-4">
-								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @date('01-04-Y');  ?>" required data-date-format="dd-mm-yyyy" >
+								
+								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @date('01-04-Y');  ?>" required data-date-format="dd-mm-yyyy" 
+								data-date-start-date="<?php echo date("d-m-Y",strtotime($financial_year->date_from)); ?>" data-date-end-date="<?php echo date("d-m-Y",strtotime($financial_year->date_to)) ?>">
 							</div>
 							<?php if(empty($To)){ ?>
 								<div class="col-md-4">
-									<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To"  value="<?php echo @date('d-m-Y'); ?>" required  data-date-format="dd-mm-yyyy" >
+									<?php echo $this->Form->input('	To', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y', strtotime($To)),'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
 								</div>
 							<?php }else{ ?>
 							<div class="col-md-4">
-								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To"  value="<?php echo $To; ?>" required  data-date-format="dd-mm-yyyy" >
+								<?php echo $this->Form->input('To', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @$To,'data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to))]); ?>
 							</div>	
 							<?php } ?>	
 						</div>

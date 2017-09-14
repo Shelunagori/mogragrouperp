@@ -37,7 +37,7 @@
 							
 							<td><?php echo $this->Form->input('material_indent_rows.'.$q.'.item_id', ['label' => false,'type'=>'hidden','value'=>$ItemBucket['item_id']]); ?>
 							<?php echo $ItemBucket['item']['name']; ?></td>
-							<td><?php echo $ItemBucket['quantity']; ?></td>
+							<td><?php echo abs(@$total_indent[$ItemBucket['item_id']]); ?></td>
 							<td><?php echo $this->Form->input('material_indent_rows.'.$q.'.required_quantity', ['label' => false,'type'=>'text','required']); ?></td>
 							<td>
 							<?= $this->Html->link('Delete ',
