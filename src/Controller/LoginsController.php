@@ -42,14 +42,14 @@ class LoginsController extends AppController
 				if($employee_id == 23){
 					return $this->redirect(['action' => 'Switch-Company']);
 				}
-				if(!empty($emp_mobile)){
+				/*if(!empty($emp_mobile)){
 					return $this->redirect(['controller'=>'Logins', 'action' => 'SwitchCompany']);
-				}
-				/* if(!empty($emp_mobile)){
+				}*/
+				 if(!empty($emp_mobile)){
 					return $this->redirect(['controller'=>'Logins', 'action' => 'otpCodeConfirm',$employee_id,$login_id]);
 				}else{
 					return $this->redirect(['controller'=>'Logins', 'action' => 'errorOtp',$employee_id]);
-				} */
+				} 
 				
 			}
 		}
@@ -168,7 +168,7 @@ class LoginsController extends AppController
 		 $sms=str_replace(' ', '+', 'Dear '.$Emp_name.', Your one time password is '.$randomString.'.');
           $working_key='A7a76ea72525fc05bbe9963267b48dd96';
         $sms_sender='MOGRAG';
-        $ch = curl_init('http://alerts.sinfini.com/api/web2sms.php?workingkey='.$working_key.'&sender='.$sms_sender.'&to='.$mobile_no.'&message='.$sms.'');
+        $ch = curl_init('http://103.39.134.40/api/mt/SendSMS?user=phppoetsit&password=9829041695&senderid='.$sms_sender.'&channel=Trans&DCS=0&flashsms=0&number='.$mobile_no.'&text='.$sms.'&route=7');
 		  
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -257,7 +257,7 @@ class LoginsController extends AppController
 		 $sms=str_replace(' ', '+', 'Dear '.$Emp_name.', Your one time password is '.$randomString.'.');
           $working_key='A7a76ea72525fc05bbe9963267b48dd96';
         $sms_sender='MOGRAG';
-        $ch = curl_init('http://alerts.sinfini.com/api/web2sms.php?workingkey='.$working_key.'&sender='.$sms_sender.'&to='.$mobile_no.'&message='.$sms.'');
+        $ch = curl_init('http://103.39.134.40/api/mt/SendSMS?user=phppoetsit&password=9829041695&senderid='.$sms_sender.'&channel=Trans&DCS=0&flashsms=0&number='.$mobile_no.'&text='.$sms.'&route=7');
 		  
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
