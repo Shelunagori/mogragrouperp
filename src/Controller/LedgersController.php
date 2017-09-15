@@ -1152,7 +1152,7 @@ class LedgersController extends AppController
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date >'=>'0000-00-00','voucher_source NOT IN'=>'Opening Balance'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
-				});
+				})->order('transaction_date','ASC');
 				//pr($Bank_Ledgers->toArray()); exit;
 		}
 

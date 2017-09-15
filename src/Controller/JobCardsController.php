@@ -306,11 +306,11 @@ class JobCardsController extends AppController
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['SalesOrders.created_on >=']=$From;
+			$where['SalesOrders.po_date >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['SalesOrders.created_on <=']=$To;
+			$where['SalesOrders.po_date <=']=$To;
 		}
 		
 		$this->paginate = [

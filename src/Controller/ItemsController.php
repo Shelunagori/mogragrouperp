@@ -675,5 +675,15 @@ public function CheckCompany($company_id=null,$item_id=null)
 
 	}
 	
+	public function updateHsnCode(){
+		$NewItems = $this->Items->NewItem->find();
+		foreach($NewItems as $newitem){
+			$query = $this->Items->query();
+			$query->update()
+				->set(['hsn_code' => $newitem->hsn_code])
+				->where(['id' => $newitem->id])
+				->execute();
+		}
+	}
 	
 }

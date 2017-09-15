@@ -63,7 +63,7 @@ class InvoicesController extends AppController
         ];
 		
 		if($inventory_voucher=='true'){
-			$where['inventory_voucher_status']='Pending';
+			$where['Invoices.inventory_voucher_status']='Pending';
 			
 		}else{
 			if($status=='Pending' || $status==''){
@@ -91,7 +91,7 @@ class InvoicesController extends AppController
 			$invoices=[]; 
 			$invoices=$this->paginate($this->Invoices->find()->where($where)->contain(['SalesOrders','InvoiceRows'=>['Items'=>function ($q) {
 				return $q->where(['source !='=>'Purchessed']);
-				}]])->where(['Invoices.company_id'=>$st_company_id,'inventory_voucher_status'=>'Pending','inventory_voucher_create'=>'Yes'])->order(['Invoices.id' => 'DESC']));
+				}]])->where(['Invoices.company_id'=>$st_company_id,'Invoices.inventory_voucher_status'=>'Pending','Invoices.inventory_voucher_create'=>'Yes'])->order(['Invoices.id' => 'DESC']));
 				//pr($invoices); exit;
 		}else if($sales_return=='true'){
 			

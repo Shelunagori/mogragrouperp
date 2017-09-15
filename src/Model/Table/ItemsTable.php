@@ -91,6 +91,7 @@ class ItemsTable extends Table
             'foreignKey' => 'item_id'
         ]);
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('NewItem');
     }
 
     /**
