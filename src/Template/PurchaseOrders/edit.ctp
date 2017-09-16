@@ -118,7 +118,7 @@
 									<span class="label label-sm label-warning ">Pulled from MI</span>
 									</td>
 									<?php }  ?>
-									<td><?php echo $this->Form->input('purchase_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$purchase_order_rows->quantity]); 
+									<td><?php echo $this->Form->input('purchase_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$purchase_order_rows->quantity,'max'=>$purchase_order_rows->quantity+$max_item_qty[$purchase_order_rows->item_id]]); 
 										
 									?></td>
 									<td><?php echo $this->Form->input('purchase_order_rows.'.$q.'.rate', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Rate','step'=>"0.01",'value'=>$purchase_order_rows->rate]); ?></td>

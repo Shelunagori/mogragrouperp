@@ -302,65 +302,267 @@ class ItemLedgersController extends AppController
 		$item_stocks =[];$items_names =[];
 		
 		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id])->order(['ItemLedgers.processed_on' => 'ASC']);
-	//	pr($query->toArray()); exit;
-		$array_in=[];
+		
+		$array_ins=[];
+		$array_outs=[];
 		foreach($query as $data){
-			if($data->in_out=='In'){
-				if(@$data->item_id==1160){ 
-				$array_in[$data->item_id][]=['quantity'=>$data->quantity,'rate'=>$data->rate];
-				//pr($array_in);
-				}
-			}else if($data->in_out=='Out'){
-				$i=0;
-				$outQty=$data->quantity;
-				if(sizeof(@$array_in[$data->item_id]) > 0){
-$RoutQty=0;					
-					while( $i < sizeof($array_in[$data->item_id])){
+				if($data->in_out=='In'){
 						
-						//echo $i;
-						if(@$data->item_id==1160){
-							//echo @$outQty;
-							$remind=@$array_in[$data->item_id][$i]['quantity']-$outQty;
-							
-							if(@$array_in[$data->item_id][$i]['quantity']<=0){ 
-								unset($array_in[$data->item_id][$i]);
-							}
-						}
-						if(@$data->item_id==1160){ 
-							if($remind < 0){ 
-								@$array_in[$data->item_id][$i]['quantity']=@$array_in[$data->item_id][$i]['quantity']-abs($array_in[$data->item_id][$i]['quantity']);
-								$j=$i+1;
-								repeat:
-								$remind1=@$array_in[$data->item_id][$j]['quantity']-abs($remind);
-									if($remind1 < 0){
-										@$array_in[$data->item_id][$j]['quantity']=@$array_in[$data->item_id][$j]['quantity']-abs($array_in[$data->item_id][$j]['quantity']);
-										$j++;
-										$remind=$remind1;
-										goto repeat;
-										
-									}else{
-										@$array_in[$data->item_id][$j]['quantity']=@$array_in[$data->item_id][$j]['quantity']-abs($remind);
-										goto outOfForLoop;
-									}
-								@$array_in[$data->item_id][$i+1]['quantity']=@$array_in[$data->item_id][$i+1]['quantity']-abs($remind);
-								if(@$array_in[$data->item_id][$i]['quantity']<=0){
-									$RoutQty=abs(@$array_in[$data->item_id][$i]['quantity']);
-									$outQty=$outQty+$RoutQty;
-								}
-							}else{
-								@$array_in[$data->item_id][$i]['quantity']=@$array_in[$data->item_id][$i]['quantity']-abs($outQty);
-								goto outOfForLoop;
-							}
-						}
-						$i++;
-					}
-				outOfForLoop:
-
+							$array_ins[$data->item_id][]=['quantity'=>$data->quantity,'rate'=>$data->rate,'item_id'=>$data->item_id,'in_out'=>$data->in_out];
+						 
 				}
+				else if($data->in_out=='Out'){
+						
+							$array_outs[$data->item_id][]=['quantity'=>$data->quantity,'rate'=>$data->rate,'item_id'=>$data->item_id,'in_out'=>$data->in_out];
+					
+				}
+				
+				//$array_datas[$data->item_id][$data->id]=['quantity'=>$data->quantity,'rate'=>$data->rate,'item_id'=>$data->item_id,'in_out'=>$data->in_out];
+			}
+			
+	//pr($array_ins); exit;
+	
+	$new_merge=array_merge($array_ins,$array_outs);	
+	
+	
+	$array_in_data=[]; $item_key=[]; $advance_qty=[];
+	foreach($new_merge as $datas){ 
+		$k=0;
+		foreach($datas as $data){
+			$flag=0;
+			if($data['in_out']=="In"){  
+				if(@$data['item_id']==1160){  
+					$qty=$data['quantity'];
+					$rate=$data['rate'];
+					$array_in_data[$data['item_id']][]=['quantity'=>$qty,'rate'=>$rate];
+				}
+			}else if($data['in_out']=="Out"){
+				
+				$i=0;
+				//pr(); 
+				
+				//$i=@$item_key[@$data['item_id']];
+				if(!empty($item_key[@$data['item_id']])){
+					$i=@$item_key[@$data['item_id']];
+				}				
+				
+				if(@$data['item_id']==1160){  
+						if(!empty($advance_qty[@$data['item_id']])){
+							//echo $k;
+							//pr($data['quantity']);
+							$data['quantity']=$data['quantity']+@$advance_qty[$data['item_id']]; 
+							@$advance_qty[$data['item_id']]=0;
+							//pr($data['quantity']); exit;
+							$remind=(@$array_in_data[@$data['item_id']][$i]['quantity']-@$data['quantity']);
+							
+							
+//pr($data['quantity']); //exit;
+						}
+						pr($array_in_data[@$data['item_id']][$i]['rate']);
+				
+				//echo $data['quantity'];  echo "<br>";
+					
+					$remind=(@$array_in_data[@$data['item_id']][$i]['quantity']-@$data['quantity']);
+					//pr($remind);
+					//echo $data['quantity'];
+					//echo $array_in_data[$data['item_id']][$i]['quantity'].'-'
+					//.$data['quantity'].'=>'. $remind; echo "<br>";
+					if($remind > 0){
+						//pr($array_in_data[$data['item_id']][$i]['quantity']);
+						$array_in_data[$data['item_id']][$i]['quantity']=$array_in_data[$data['item_id']][$i]['quantity']-$data['quantity'];
+						//$item_key[$data['item_id']]=$i+1;
+						//echo $item_key[$data['item_id']]; exit;
+						//pr($array_in_data[$data['item_id']][$i]['quantity']); 
+					} else if($remind == 0){ 
+						$array_in_data[$data['item_id']][$i]['quantity']=$array_in_data[$data['item_id']][$i]['quantity']-$data['quantity'];
+						$item_key[$data['item_id']]=$i+1;
+						if(@$array_in_data[$data['item_id']][$i]['quantity']==0){ 
+								unset($array_in_data[$data['item_id']][$i]);
+							}
+					}else{
+						$forward=$k+1;
+						
+						//pr($array_in_data[$data['item_id']][$i]['quantity']); 
+						//exit;
+						$temp =sizeof(@$datas)-1;
+						if($forward == $temp){ 
+						//	echo $i; 
+							$in_size =sizeof(@$array_in_data[@$data['item_id']])-1;
+							//echo $in_size; exit;
+							if($in_size==$i){ 
+								$add=@$data['quantity']-abs($remind);		
+								$array_in_data[@$data['item_id']]=['quantity'=>@abs($remind),'rate'=>0,'item_id'=>@$data->item_id,'in_out'=>'Out'];
+								
+							} else if($in_size > $i){
+								pr(@$array_in_data[$data['item_id']][$i]['quantity']);
+								@$array_in_data[$data['item_id']][$i]['quantity']=@$array_in_data[$data['item_id']][$i]['quantity']-@$array_in_data[$data['item_id']][$i]['quantity'];
+								//pr(@$array_in_data[$data['item_id']][$i]['quantity']); exit;
+								
+							}else{  
+								$add=@$data['quantity']-abs($remind);		
+							//pr(@$array_in_data[@$data['item_id']][$i]['quantity']); 	
+							@$array_in_data[@$data['item_id']][$i]['quantity']=@$array_in_data[@$data['item_id']][$i]['quantity']-@$array_in_data[@$data['item_id']][$i]['quantity'];
+							//pr(@$array_in_data[@$data['item_id']][$i]['quantity']); exit;	
+							//echo $add;	
+						//$array_in_data[@$data['item_id']]=['quantity'=>@abs($remind),'rate'=>0,'item_id'=>@$data->item_id,'in_out'=>'Out'];
+								$p=$i+1;
+								$out_data=abs(@$remind);
+								$item_id=$data['item_id'];
+						//	echo @$item_id;
+								$flag=1;
+							}
+						
+							
+							///echo @$data['quantity']; 
+						}else{ //echo @$remind; 
+							
+							//pr($array_in_data[$data['item_id']][$i]['quantity']);  exit;
+							//@$array_in_data[$data['item_id']][$i]['quantity']=@$array_in_data[$data['item_id']][$i]['quantity']-@$array_in_data[$data['item_id']][$i]['quantity'];
+							//pr($array_in_data[$data['item_id']][$i]['quantity']); exit;
+							//$array_in_data[$data['item_id']][$i]['quantity']=$array_in_data[$data['item_id']][$i]['quantity']-$data['quantity'];
+							//pr(@$datas[$k]['quantity']);  exit;
+							@$datas[$forward]['quantity']=@$datas[$forward]['quantity']+abs($remind);
+							//pr(@$datas[$forward]['quantity']);
+							$advance_qty[$data['item_id']]=abs($remind);
+							$item_key[$data['item_id']]=$i+1;
+							$temp1 =sizeof(@$datas)-1;
+								
+							if($temp1==$i){ 
+								$add=@$data['quantity']-abs($remind);		
+								$array_in_data[@$data['item_id']]=['quantity'=>@abs($remind),'rate'=>0,'item_id'=>@$data->item_id,'in_out'=>'Out'];
+								
+							}else if($temp1 > $i){
+								//pr($advance_qty[$data['item_id']]);
+								@$array_in_data[$data['item_id']][$i]['quantity']=@$array_in_data[$data['item_id']][$i]['quantity']-@$array_in_data[$data['item_id']][$i]['quantity'];
+								//pr($array_in_data[$data['item_id']][$i]['quantity']); exit;
+								
+							}else{  exit;
+								$add=@$data['quantity']-abs($remind);		
+								echo @$data['quantity']; 
+								echo $remind; exit;
+							//pr(@$array_in_data[@$data['item_id']][$i]['quantity']); 	
+							@$array_in_data[@$data['item_id']][$i]['quantity']=@$array_in_data[@$data['item_id']][$i]['quantity']-@$array_in_data[@$data['item_id']][$i]['quantity'];
+							//pr(@$array_in_data[@$data['item_id']][$i]['quantity']); exit;	
+							//	
+							//$array_in_data[@$data['item_id']]=['quantity'=>@abs($remind),'rate'=>0,'item_id'=>@$data->item_id,'in_out'=>'Out'];
+								$p=$i+1;
+								$out_data=abs(@$remind);
+								$item_id=$data['item_id'];
+						//	echo @$item_id;
+								$flag=1;
+									
+							}
+							//pr( $advance_qty); exit;
+						}
+						
+						//pr($array_in_data[$data['item_id']][$i]['quantity']); //
+						//echo "minus"; exit;
+					}
+				//$i++;
+				} 
+				$k++;
+			}
+			
+			if($flag==1){
+				repeat:
+				
+				if($out_data==0){
+					
+				}else{
+					
+					//pr($array_in_data[@$item_id][$p]['quantity']);
+					
+					$rem=$out_data-$array_in_data[@$item_id][$p]['quantity'];
+					//pr($out_data); exit;
+					
+					
+				if($rem > 0){ 
+				//pr($out_data);
+					$array_size=sizeof($array_in_data[@$item_id])-1;
+					if($array_size==$p){ 
+						$array_in_data[@$item_id]=['quantity'=>@abs($rem),'rate'=>0,'item_id'=>@$item_id,'in_out'=>'Out'];
+						goto out;
+					}else{ 
+					//pr($out_data); 
+					//pr($array_in_data[@$item_id][$p]['quantity']);
+					$temp2=$out_data-$array_in_data[@$item_id][$p]['quantity'];
+				//	pr($array_in_data[@$item_id][$p]['quantity']);
+						@$array_in_data[@$item_id][$p]['quantity']=0;
+						//pr($array_in_data[@$item_id][$p]['quantity']);
+				//	exit;
+						//echo "more"; 
+						$p=$p+1;
+						$out_data=$temp2;
+						 
+						goto repeat;
+					}
+					
+				}else{ 
+				//pr($array_in_data[@$item_id][$p]['quantity']); 
+				//pr($out_data); exit;
+					@$array_in_data[@$item_id][$p]['quantity']=@$array_in_data[@$item_id][$p]['quantity']-@abs($out_data);
+					pr($array_in_data[@$item_id][$p]['quantity']); 
+					goto out;
+				}
+				}
+				//echo "welcome"; //exit;
 			}
 		}
-		pr($array_in);
-		exit;
+		out:
+	}
+	pr($array_in_data);
+	exit;
+	
+/* 		$in_qty = []; $out_qty = 0; $my_val=0;
+		foreach($array_datas as $key=>$array_data){
+			foreach($array_data as $key1=>$arr_val)
+			{
+					if(@$arr_val['in_out'] == 'In')
+					{	
+						/* echo $key.' in-: '.$in_qty[$key] = @$in_qty[$key] + @$arr_val['quantity'].'<br>';	
+						echo @$arr_val['rate'].'<br><br>';
+						$in_qty[$key1][$key] = @$in_qty[$key1] + @$arr_val['quantity'];
+						
+					}
+					if(@$arr_val['in_out'] == 'Out')
+					{
+						 echo $key.' out-: '.$in_qty[$key] =@$in_qty[$key] - @$arr_val['quantity'].'<br>';
+						echo @$arr_val['rate'].'<br><br>';
+						$in_qty[$key1][$key] =@$in_qty[$key1] - @$arr_val['quantity'];
+					}	
+				
+			}
+		} */
+		
+		pr(@$in_qty); exit;
+		
+			
+	/* $advance_qty=[]; 
+	foreach($array_ins as $array_in){
+		$i=0;
+		foreach($array_in as $ary){
+			$j=0;
+			repeat:
+			
+			$remind=$ary['quantity']-$array_outs[$ary['item_id']][$j]['quantity'];
+			//echo $j;
+			if($remind > 0){
+				
+				$ary['quantity']=$ary['quantity']-$array_outs[$ary['item_id']][$j]['quantity'];
+				//pr($ary['quantity']); 
+				$j++;
+				goto repeat;
+			}else{ pr($ary['quantity']);
+				echo $remind;
+				exit;
+			}
+			//pr($array_outs[$ary['item_id']][$j]['quantity']);
+			
+			//pr($ary['quantity']);
+			$i++;
+		}
+	} */ exit;
+		
 		
 		
 		$totalInCase = $query->newExpr()
@@ -392,7 +594,7 @@ $RoutQty=0;
 		->order(['Items.name'=>'ASC']);
 		$results =$query->toArray();
 		
-		pr($results); exit;
+		//pr($results); exit;
 		
 		
 		if($stock == "Negative"){

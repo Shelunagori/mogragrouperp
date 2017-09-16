@@ -17,7 +17,7 @@
 			foreach($company_name as $names){			
 						if(@$names == @$st_company_id){ ?>
 			<?= $this->Html->link(
-					'Add To Bucket',
+					'Add To Cart',
 					'/MaterialIndents/AddToCart',
 					['class' => 'btn btn-success']
 			); }}}?>
@@ -30,9 +30,9 @@
 					<tr>
 						<td width="35%">
 						<?php if(!empty($company_name)){ ?>
-								<?php echo $this->Form->input('company_name', ['options' => $Companies,'label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $company_name]); ?>
+								<?php echo $this->Form->input('company_name', ['empty'=>'---Companies---','options' => $Companies,'label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $company_name]); ?>
 						<?php }else{ ?>  
-							<?php echo $this->Form->input('company_name', ['label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $st_company_id]); ?>
+							<?php echo $this->Form->input('company_name', ['empty'=>'---Companies---','options' => $Companies,'label' => false,'class'=>'form-control input-sm select2me','multiple'=>'multiple','value'=> $st_company_id]); ?>
 						<?php } ?>		
 						</td>
 						<td width="15%">
@@ -49,13 +49,7 @@
 							<div id="item_sub_group_div">
 							<?php echo $this->Form->input('item_sub_group_id', ['empty'=>'---Sub-Group---','options' =>$ItemSubGroups,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$item_sub_group)]); ?></div>
 						</td>
-						<td width="15%">
-							<div id="item_sub_group_div">
-							<?php 
-								$options = [];
-								$options = [['text'=>'All','value'=>'All'],['text'=>'Positive','value'=>'Positive']];
-							echo $this->Form->input('stock', ['empty'=>'--Indent--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Indent','value'=> h(@$stock)]); ?></div>
-						</td>
+					
 						<td width="10%">
 							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
 						</td>
@@ -85,8 +79,8 @@
 						</tr>
 					</thead>
 					<tbody  >
-						<?php  $i=0; foreach($material_report as $data){
-							
+						<?php $i=0; foreach($material_report as $data){
+							$i++;
 							$item_name=$data['item_name'];
 							$item_id=$data['item_id'];
 							$Current_Stock=$data['Current_Stock'];
@@ -96,10 +90,7 @@
 							$qo_qty=$data['qo_qty'];
 							$mi_qty=$data['mi_qty'];
 							$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
-							
-							if(@$total_indent[$item_id]){
 						?>
-						<?php $i++ ;?>
 						<tr class="tr1" row_no='<?php echo @$i; ?>'>
 						<td ><?php echo $i; ?> </td>
 						<td><?php echo $item_name; ?></td>
@@ -110,27 +101,27 @@
 						<td style="text-align:center"><?php if(!empty($qo_qty)){ echo $qo_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center"><?php if(!empty($mi_qty)){ echo $mi_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center">
-						<?php if(@$total_indent[$item_id] < 0){
-								 echo abs(@$total_indent[$item_id]);
-						}else{ echo "-";} ?>
+							<?php if($total < 0){
+								echo abs($total);
+							}else{
+								echo "-";
+							} ?>
 						</td>
-						<td align="center">
-							<label class="hello">
+						<td>
+							<label>
 							<?php 
-							if(@$total_indent[$item_id] < 0){
 							if(sizeof($company_name)==1){
 							foreach($company_name as $names){			
 										if(@$names == @$st_company_id){ ?>
-											<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo @$total_indent[$item_id];
-							 ?>"><i class="fa fa-plus"></i></button>
+											<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo abs($total); ?>">Add</button>
 										<?php 		}						
 							else{ ?>
 								
-							<?php }} }} ?>	
+							<?php }} } ?>	
 							</label>
 						</td>						
 						</tr>
-						<?php }} ?>
+						<?php } ?>
 					</tbody>
 				</table>
 					
@@ -175,7 +166,6 @@ $(document).ready(function() {
 	});
 	////
 	$('.add_to_bucket').die().live("click",function() {
-		
 		var t=$(this);
 		var item_id=$(this).attr('item_id');
 		var id=$(this).attr('id');
@@ -186,11 +176,8 @@ $(document).ready(function() {
 			url: url,
 			type: 'GET',
 		}).done(function(response) {
-			
 			t.text('');
-			//t.hide();
-			//t.text('Added To Bucket').css('color','#3ea49d');
-			t.removeClass('btn btn-primary btn-sm add_to_bucket').text('Added To Bucket').css('color','#3ea49d').css('border',' none').css('background',' none').css('cursor','unset').off('click');
+			t.text('Added to Cart').removeClass('btn-primary add_to_bucket').addClass('btn-success remove_bucket');
 		});
  		
     })
