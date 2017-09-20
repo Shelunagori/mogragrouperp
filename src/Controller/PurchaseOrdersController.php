@@ -339,7 +339,22 @@ class PurchaseOrdersController extends AppController
 		$purchaseOrder_old=$this->PurchaseOrders->get($id, [
             'contain' => ['PurchaseOrderRows'=>['Items']]
         ]);
-		
+		//pr($purchaseOrder_old); 
+		$max_item_qty=[];
+		foreach($purchaseOrder_old->purchase_order_rows as $purchaseOrder_old1){
+			$mir=$this->PurchaseOrders->MaterialIndents->find()
+			->contain(['MaterialIndentRows' => function ($q) use($purchaseOrder_old1) {
+						return $q->where(['MaterialIndentRows.item_id'=>$purchaseOrder_old1->item_id])->contain(['Items']);
+					}])
+			->where(['company_id'=>$st_company_id])->toArray();
+			
+			foreach($mir as $material_indent){
+				foreach($material_indent->material_indent_rows as $material_indent_row){
+					$due_qty=$material_indent_row['required_quantity']-$material_indent_row['processed_quantity'];
+				$max_item_qty[$material_indent_row->item_id]=@$max_item_qty[$material_indent_row->item_id]+$due_qty;
+				}
+			}
+		} 
 		
 		
         $Em = new FinancialYearsController;
@@ -355,7 +370,7 @@ class PurchaseOrdersController extends AppController
 			$purchaseOrder->edited_on = date("Y-m-d"); 
 			$purchaseOrder->edited_by=$this->viewVars['s_employee_id'];
 			
-			//pr($purchaseOrder); exit;
+			//pr($purchaseOrder_old); exit;
 			foreach($purchaseOrder_old->purchase_order_rows as $purchase_order_row){
 				if($purchase_order_row->pull_status=="PULLED_FROM_MI"){
 					$query = $this->PurchaseOrders->MaterialIndentRows->find()
@@ -511,7 +526,7 @@ class PurchaseOrdersController extends AppController
 		
 		$transporters = $this->PurchaseOrders->Transporters->find('list')->order(['Transporters.transporter_name' => 'ASC']);
        
-        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1','financial_month_first','financial_month_last'));
+        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1','financial_month_first','financial_month_last','max_item_qty'));
         $this->set('_serialize', ['purchaseOrder']);
     }
 

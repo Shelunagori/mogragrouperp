@@ -42,6 +42,7 @@ class PurchaseOrdersTable extends Table
 		$this->belongsTo('FinancialYears');
         $this->belongsTo('FinancialMonths');
 		$this->belongsTo('LedgerAccounts');
+		$this->belongsTo('MaterialIndents');
         $this->belongsTo('Companies', [
             'foreignKey' => 'company_id',
             'joinType' => 'INNER'
