@@ -280,6 +280,8 @@ class CustomersController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$request=$this->request->query('request');
+		
+		
 		$range_data=[];
 		if($request == 'vendor'){
 				if ($this->request->is(['post'])) {
@@ -291,7 +293,7 @@ class CustomersController extends AppController
 			$range_data['range5']=$this->request->data['range_5']; 
 			$range_data['range6']=$this->request->data['range_6']; 
 			$range_data['range7']=$this->request->data['range_7']; 
-			
+			$range_data['tdate']=$this->request->data['to'];
 			$to=json_encode($range_data);  
 			$this->redirect(['controller'=>'Vendors','action' => 'OverDueReport/'.$to.'']);
 		 }
@@ -306,6 +308,7 @@ class CustomersController extends AppController
 			$range_data['range5']=$this->request->data['range_5']; 
 			$range_data['range6']=$this->request->data['range_6']; 
 			$range_data['range7']=$this->request->data['range_7']; 
+			$range_data['tdate']=$this->request->data['to'];
 			
 		$to=json_encode($range_data);  
 		$this->redirect(['controller'=>'Customers','action' => 'OverDueReport/'.$to.'']);
@@ -323,7 +326,8 @@ class CustomersController extends AppController
 		//pr($stock); exit;
 		$to_range_datas =json_decode($to_send);
 		$LedgerAccounts =$this->Customers->LedgerAccounts->find()
-			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Customers']);
+			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Customers'])
+			->order(['LedgerAccounts.name'=>'ASC']);
 		$custmer_payment_terms=[];
 		foreach($LedgerAccounts as $LedgerAccount){
 			$Customer =$this->Customers->get($LedgerAccount->source_id);
@@ -498,7 +502,7 @@ class CustomersController extends AppController
 		foreach($ReferenceBalances as $ReferenceBalance){
 				$now=Date::now();
 				$now=date("Y-m-d",strtotime($now));
-				$over_date1=date("Y-m-d",strtotime($now));
+				$over_date1=date("Y-m-d",strtotime($to_range_datas->tdate));
 				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
 				$over_date3=date("Y-m-d",strtotime("-".$to_range_datas->range2."  day", strtotime($over_date1)));
 				$over_date4=date("Y-m-d",strtotime("-".$to_range_datas->range3."  day", strtotime($over_date1)));
@@ -506,18 +510,18 @@ class CustomersController extends AppController
 				$over_date6=date("Y-m-d",strtotime("-".$to_range_datas->range5."  day", strtotime($over_date1)));
 				$over_date7=date("Y-m-d",strtotime("-".$to_range_datas->range6."  day", strtotime($over_date1)));
 				$over_date8=date("Y-m-d",strtotime("-".$to_range_datas->range7."  day", strtotime($over_date1)));
-				//pr($over_date8); exit;
 				
 				$ReferenceBalance->due_date=date("Y-m-d",strtotime($ReferenceBalance->due_date));
 			
 				if($ReferenceBalance->due_date <= $over_date1 && $ReferenceBalance->due_date >=  $over_date2){
 					
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){
-				
-							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+							//pr($over_date1);
+							//pr($over_date2); exit;
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){ 
 								@$total_debit_1[$ReferenceBalance->ledger_account_id]+=@$ReferenceBalance->debit-@$ReferenceBalance->credit;
-							
-							}else{
+						
+							}else{ 
 								$total_credit_1[$ReferenceBalance->ledger_account_id]=@$total_credit_1[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
 							}
 					} 
@@ -592,7 +596,7 @@ class CustomersController extends AppController
 				
 			}
 			
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock','over_date1'));
         $this->set('_serialize', ['customers']);
 
    

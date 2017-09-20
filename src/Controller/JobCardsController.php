@@ -79,6 +79,7 @@ class JobCardsController extends AppController
 						return $q->where(['Items.id' =>$items]);
 					}
 				)
+			->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC'])	
 			);
 			
 		}else if($inventory_voucher_status=='true'){

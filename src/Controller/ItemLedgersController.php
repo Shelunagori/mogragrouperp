@@ -1038,10 +1038,24 @@ $RoutQty=0;
 					$item_id=$result['item_id'];
 					$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 					
-					if($total >0 ){
+					if($total < 0 ){
 						$total_indent[$item_id] = $total;
 					}
 				}
+		}else{
+			foreach($material_report as $result){ 
+				$Current_Stock=$result['Current_Stock'];
+				$sales_order=$result['sales_order'];
+				$job_card_qty=$result['job_card_qty'];
+				$po_qty=$result['po_qty'];
+				$qo_qty=$result['qo_qty'];
+				$mi_qty=$result['mi_qty'];
+				$item_id=$result['item_id'];
+				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
+				if($total < 0){
+					$total_indent[$item_id]=$total;
+				}
+			}
 		}
 		//pr($total_indent[566]);
 		//exit;

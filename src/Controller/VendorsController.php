@@ -283,7 +283,8 @@ class VendorsController extends AppController
 		$stock=$this->request->query('total');
 		$to_range_datas =json_decode($to_send);
 		$LedgerAccounts =$this->Vendors->LedgerAccounts->find()
-			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Vendors']);
+			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Vendors'])
+			->order(['LedgerAccounts.name'=>'ASC']);
 		
 		$custmer_payment_terms=[];
 		foreach($LedgerAccounts as $LedgerAccount){
@@ -483,7 +484,7 @@ class VendorsController extends AppController
 				$now=date("Y-m-d",strtotime($now));
 				
 				//pr($now); 
-				$over_date1=date("Y-m-d",strtotime($now));
+				$over_date1=date("Y-m-d",strtotime($to_range_datas->tdate));
 				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
 				
 				

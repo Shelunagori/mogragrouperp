@@ -53,7 +53,8 @@
 			<table class="table table-bordered table-condensed">
 				<thead>
 					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<?php $col=sizeof($invoicesGst->toArray()); $col=($col*1)+4;  ?>
+						<td colspan="<?php echo $col; ?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Invoice</h4>
 						</td>
 					</tr>
@@ -62,47 +63,35 @@
 						<th>Invoice No</th>
 						<th>Date</th>
 						<th>Customer</th>
-						<th style="text-align:right;">Sales @ 12 % GST</th>
-						<th style="text-align:right;">Sales @ 18 % GST</th>
-						<th style="text-align:right;">Sales @ 28 % GST</th>
-						<th style="text-align:right;">Sales @ 12 % IGST</th>
-						<th style="text-align:right;">Sales @ 18 % IGST</th>
-						<th style="text-align:right;">Sales @ 28 % IGST</th> 
-						
-						
+						<?php foreach($invoicesGst as $Key1=> $SaleTaxeGst){ 
+							if($SaleTaxeGst->cgst == 'Yes'){
+								$saletax=($SaleTaxeGst->tax_figure*2); ?>
+							<th style="text-align:right;">Sales GST @ <?php echo $saletax; ?> % </th>	
+						<?php	}else{
+								$saletax=$SaleTaxeGst->tax_figure; ?>
+							<th style="text-align:right;">Sales IGST @ <?php echo $saletax; ?> % </th>	
+						<?php }  } ?>
 					</tr>
 				</thead>
-				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
-							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; 
-							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; $salesTotalOther=0;
-				foreach ($invoices as $invoice):  //pr($invoice);
-					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0; $salesOthers=0;
-					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; $salesIGstRowTotalOthers=0; 
-					foreach($invoice->invoice_rows as $invoice_row){
-						if($invoice_row['cgst_percentage']==8 && $invoice_row['sgst_percentage']==11){
-								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->row_total;
-						}else if($invoice_row['cgst_percentage']==9 && $invoice_row['sgst_percentage']==12){
-								$salesGst18=$salesGst18+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal18=$salesGstRowTotal18+$invoice_row->row_total;
+				
+					<?php $SalesTotal=[];$SalesgstTotal=[];$gstRowTotal=[]; $gstTotal=[];$i=1; $SigstRowTotal=[];$SigstTotal=[];
+					foreach ($invoices as $invoice):
+						foreach($invoice->invoice_rows as $invoice_row)
+						{ 
+							 if($invoice_row['igst_percentage'] == 0){
+							
+							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
 							}
-						else if($invoice_row['cgst_percentage']==10 && $invoice_row['sgst_percentage']==13){
-								$salesGst28=$salesGst28+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal28=$salesGstRowTotal28+$invoice_row->row_total;
-							}
-						else if($invoice_row['igst_percentage']==14){
-								$salesIGst12=$salesIGst12+($invoice_row->igst_amount);
-								 $salesIGstRowTotal12=$salesIGstRowTotal12+$invoice_row->row_total;
-						}else if($invoice_row['igst_percentage']==15){
-								$salesIGst18=$salesIGst18+($invoice_row->igst_amount);
-								 $salesIGstRowTotal18=$salesIGstRowTotal18+$invoice_row->row_total;
-							}
-						else if($invoice_row['igst_percentage']==16){
-								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
-								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->row_total;
-							}
+							else if($invoice_row['igst_percentage'] > 0){
+								@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]=@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+$invoice_row->taxable_value;
+							} 
 						}
-						?>
+						
+						
+					?>
+				
+				
+					
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
@@ -112,66 +101,55 @@
 						</td>
 						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
 						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
-						<td align="right">
-							<?php  if($salesGstRowTotal12 > 0){
-										echo $salesGstRowTotal12;
-										$salesTotal12=$salesTotal12+$salesGstRowTotal12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesGstRowTotal18 > 0){
-										echo $salesGstRowTotal18;
-										$salesTotal18=$salesTotal18+$salesGstRowTotal18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesGstRowTotal28 > 0){
-										echo $salesGstRowTotal28;
-										$salesTotal28=$salesTotal28+$salesGstRowTotal28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGstRowTotal12 > 0){
-										echo $salesIGstRowTotal12;
-										$salesTotalIGST12=$salesTotalIGST12+$salesIGstRowTotal12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						
-						<td align="right">
-							<?php  if($salesIGstRowTotal18 > 0){
-										echo $salesIGstRowTotal18;
-										$salesTotalIGST18=$salesTotalIGST18+$salesIGstRowTotal18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGstRowTotal28 > 0){
-										echo $salesIGstRowTotal28;
-										$salesTotalIGST28=$salesTotalIGST28+$salesIGstRowTotal28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
+						<?php $k=0; $AllTaxs=[];
+							foreach($invoicesGst as $Key1=>$SaleTaxeGst){ 
+									$AllTaxs[$k]=$SaleTaxeGst->id;
+									$k++;
+							}
+							//pr($AllTaxs); exit;
+						?>
+						<?php foreach($AllTaxs as  $key=>$AllTax){ 
+							if(isset($gstTotal[$invoice->id][$AllTax]))
+							{?>
+								
+									<td style="text-align:right;"><?php echo $this->Number->format($gstTotal[$invoice->id][$AllTax],['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax];
+									?></td>
+									<?php 
+							}else if(isset($SigstTotal[$invoice->id][$AllTax])){  ?>
+								<td style="text-align:right;"><?php echo $this->Number->format($SigstTotal[$invoice->id][$AllTax],['places'=>2]); 
+									$gstRowTotal[$AllTax]=@$gstRowTotal[$AllTax]+$SigstTotal[$invoice->id][$AllTax];
+									?></td>
+							<?php }							
+							else 
+							{ 
+							?>
+								
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+							<?php 
+							} 
+							
+						}  ?>
 						
 					</tr>
 				<?php $i++; endforeach; ?>
 				<tr>
-					<td colspan="4" align="right"><b>Total</b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></b></td>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
+				<?php 
+					foreach($invoicesGst as $Key1=>$SaleTaxeGst){  
+						if(!empty($SalesgstTotal[$SaleTaxeGst->id])){
+					?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesgstTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }else if(!empty($gstRowTotal[$SaleTaxeGst->id])){ ?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$gstRowTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }
+					else{ ?>
+						<td style="text-align:right;"><b>-</b></td>
+						
+					<?php }} ?>
+				
 				</tr>
 				</tbody>
 				</table>
@@ -179,8 +157,8 @@
 		
 		<table class="table table-bordered table-condensed">
 				<thead>
-					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<tr><?php $col=sizeof($invoicesGst->toArray()); $col=($col*1)+5;  ?>
+						<td colspan="<?php echo $col; ?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Order Booked</h4>
 						</td>
 					</tr>
@@ -189,47 +167,34 @@
 						<th>Sales Order  No</th>
 						<th>Date</th>
 						<th>Customer</th>
-						<th style="text-align:right;">Sales @ 12 % GST</th>
-						<th style="text-align:right;">Sales @ 18 % GST</th>
-						<th style="text-align:right;">Sales @ 28 % GST</th>
-						<th style="text-align:right;">Sales @ 12 % IGST</th>
-						<th style="text-align:right;">Sales @ 18 % IGST</th>
-						<th style="text-align:right;">Sales @ 28 % IGST</th>
+						<?php foreach($invoicesGst as $Key1=> $SaleTaxeGst){ 
+							if($SaleTaxeGst->cgst == 'Yes'){
+								$saletax=($SaleTaxeGst->tax_figure*2); ?>
+							<th style="text-align:right;">Sales GST @ <?php echo $saletax; ?> % </th>	
+						<?php	}else{
+								$saletax=$SaleTaxeGst->tax_figure; ?>
+							<th style="text-align:right;">Sales IGST @ <?php echo $saletax; ?> % </th>	
+						<?php }  } ?>
 						<th style="text-align:right;">Expected Delivery Date</th>
 					</tr>
 				</thead>
-				<?php  $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;$salesTotalOther=0;
-							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; $salesTotalOthers=0; 
-							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; 
-				foreach ($SalesOrders as $SalesOrder):  //pr($SalesOrder->sales_order_rows); 
-					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0; $salesOthers=0;
-					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; $salesIGstRowTotalOthers=0; 
-					foreach($SalesOrder->sales_order_rows as $invoice_row){
-						if($invoice_row['cgst_per']==8 && $invoice_row['sgst_per']==11){ 
-								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								//pr($salesGst12); exit;
-								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->total;
-						}else if($invoice_row['cgst_per']==9 && $invoice_row['sgst_per']==12){
-								$salesGst18=$salesGst18+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal18=$salesGstRowTotal18+$invoice_row->total;
+				
+					<?php $SalesOrderTotal=[];$SalesOrdergstTotal=[];$SalesOrdergstRowTotal=[]; $SalesOrdergstTotal=[];$i=1; $SalesOrderigstRowTotal=[];$SalesOrderigstTotal=[];
+					foreach ($SalesOrders as $SalesOrder):
+						foreach($SalesOrder->sales_order_rows as $sales_order_rows)
+						{ 
+							 if($sales_order_rows['igst_per'] == 0){
+							
+							@$SalesOrderTotal[$SalesOrder->id][$sales_order_rows['cgst_per']]=@$SalesOrderTotal[$SalesOrder->id][$sales_order_rows['cgst_per']]+(@$sales_order_rows->taxable_value);
 							}
-						else if($invoice_row['cgst_per']==10 && $invoice_row['sgst_per']==13){
-								$salesGst28=$salesGst28+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal28=$salesGstRowTotal28+$invoice_row->total;
-							}
-						else if($invoice_row['igst_per']==14){
-								$salesIGst12=$salesIGst12+($invoice_row->igst_amount);
-								 $salesIGstRowTotal12=$salesIGstRowTotal12+$invoice_row->total;
-						}else if($invoice_row['igst_per']==15){
-								$salesIGst18=$salesIGst18+($invoice_row->igst_amount);
-								 $salesIGstRowTotal18=$salesIGstRowTotal18+$invoice_row->total;
-							}
-						else if($invoice_row['igst_per']==16){
-								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
-								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->total;
-							}
+							else if($sales_order_rows['igst_per'] > 0){
+								@$SalesOrderigstTotal[$SalesOrder->id][$sales_order_rows['igst_per']]=@$SalesOrderigstTotal[$SalesOrder->id][$sales_order_rows['igst_per']]+$sales_order_rows->taxable_value;
+							} 
 						}
-						?>
+						
+						
+					?>
+				
 				<tbody>
 					<tr>
 						<td><?php echo $i; ?></td>
@@ -239,70 +204,55 @@
 						</td>
 						<td><?php echo date("d-m-Y",strtotime($SalesOrder->created_on)); ?></td>
 						<td><?php echo $SalesOrder->customer->customer_name.'('.$SalesOrder->customer->alias.')'?></td>
-						<td align="right">
-							<?php  if($salesGstRowTotal12 > 0){
-										echo $salesGstRowTotal12;
-										$salesTotal12=$salesTotal12+$salesGstRowTotal12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesGstRowTotal18 > 0){
-										echo $salesGstRowTotal18;
-										$salesTotal18=$salesTotal18+$salesGstRowTotal18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesGstRowTotal28 > 0){
-										echo $salesGstRowTotal28;
-										$salesTotal28=$salesTotal28+$salesGstRowTotal28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGstRowTotal12 > 0){
-										echo $salesIGstRowTotal12;
-										$salesTotalIGST12=$salesTotalIGST12+$salesIGstRowTotal12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						
-						<td align="right">
-							<?php  if($salesIGstRowTotal18 > 0){
-										echo $salesIGstRowTotal18;
-										$salesTotalIGST18=$salesTotalIGST18+$salesIGstRowTotal18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGstRowTotal28 > 0){
-										echo $salesIGstRowTotal28;
-										$salesTotalIGST28=$salesTotalIGST28+$salesIGstRowTotal28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td><?php echo date("d-m-Y",strtotime($SalesOrder->expected_delivery_date)); ?></td>
-						
+						<?php $k=0; $AllTaxs=[];
+							foreach($invoicesGst as $Key1=>$SaleTaxeGst){ 
+									$AllTaxs[$k]=$SaleTaxeGst->id;
+									$k++;
+							}
+							//pr($AllTaxs); exit;
+						?>
+						<?php foreach($AllTaxs as  $key=>$AllTax){ 
+							if(isset($SalesOrderTotal[$SalesOrder->id][$AllTax]))
+							{?>
+								
+									<td style="text-align:right;"><?php echo $this->Number->format($SalesOrderTotal[$SalesOrder->id][$AllTax],['places'=>2]); 
+									$SalesOrdergstRowTotal[$AllTax]=@$SalesOrdergstRowTotal[$AllTax]+$SalesOrderTotal[$SalesOrder->id][$AllTax];
+									?></td>
+									<?php 
+							}else if(isset($SalesOrderigstTotal[$SalesOrder->id][$AllTax])){  ?>
+								<td style="text-align:right;"><?php echo $this->Number->format($SalesOrderigstTotal[$SalesOrder->id][$AllTax],['places'=>2]); 
+									$SalesOrderigstRowTotal[$AllTax]=@$SalesOrderigstRowTotal[$AllTax]+$SalesOrderigstTotal[$SalesOrder->id][$AllTax];
+									?></td>
+							<?php }							
+							else 
+							{ 
+							?>
+								
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+							<?php 
+							} 
+							
+						}  ?>
+						<td><?php echo date('d-m-Y',strtotime($SalesOrder->expected_delivery_date)); ?></td>
 					</tr>
 				<?php $i++; endforeach; ?>
 				<tr>
-					<td colspan="4" align="right"><b>Total</b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></b></td>
-					<td align="right"><b><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></b></td>
-					
-					
-					<td></td>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
+				<?php 
+					foreach($invoicesGst as $Key1=>$SaleTaxeGst){  
+						if(!empty($SalesOrdergstRowTotal[$SaleTaxeGst->id])){
+					?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesOrdergstRowTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }else if(!empty($SalesOrderigstRowTotal[$SaleTaxeGst->id])){ ?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesOrderigstRowTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }
+					else{ ?>
+						<td style="text-align:right;"><b>-</b></td>
+						
+					<?php }} ?>
+				<td></td>
 				</tr>
 				</tbody>
 				</table>

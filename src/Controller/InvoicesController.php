@@ -2493,6 +2493,13 @@ class InvoicesController extends AppController
 						->order(['Invoices.id' => 'DESC'])
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+			
+			$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);
+				
 			$interStateInvoice = $this->Invoices->find()->where($where)
 					->contain(['Customers','InvoiceRows'])
 					->matching('InvoiceRows.Items', function ($q) use($item_name) { 
@@ -2500,6 +2507,12 @@ class InvoicesController extends AppController
 								}
 						)
 			->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+			
+			$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
 			
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 			->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2511,6 +2524,12 @@ class InvoicesController extends AppController
 						)
 			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
+			$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);
+			
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst != '=>0]);
 			}])
@@ -2519,6 +2538,12 @@ class InvoicesController extends AppController
 								}
 						)
 			->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			
+			$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 			
 			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
@@ -2571,11 +2596,6 @@ class InvoicesController extends AppController
 						} 
 					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
 				}
-				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
-					'SaleTaxCompanies', function ($q) use($st_company_id) {
-						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
-					} 
-				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
 		}
 		else {
@@ -2591,6 +2611,12 @@ class InvoicesController extends AppController
 						->where($where)
 						->group('Invoices.id')
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+						
+			$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);			
 					
 					//$invoices=array_unique($invoices);
 			$interStateInvoice = $this->Invoices->find()->where($where)
@@ -2602,6 +2628,12 @@ class InvoicesController extends AppController
 					->order(['Invoices.id' => 'DESC'])
 					->group('Invoices.id')
 					->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+					
+			$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);		
 					
 					
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
@@ -2616,6 +2648,12 @@ class InvoicesController extends AppController
 						->group('InvoiceBookings.id')
 						->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
+			$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);
+			
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->			contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst != '=>0]);
 					}])
@@ -2626,6 +2664,14 @@ class InvoicesController extends AppController
 					->order(['InvoiceBookings.id' => 'DESC'])
 					->group('InvoiceBookings.id')
 					->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			
+			$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
+				
 			$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
@@ -2677,12 +2723,6 @@ class InvoicesController extends AppController
 						} 
 					$LedgerAccountDetails[$LedgerAccount->id]=$SaleTaxe->invoice_description;
 				}
-				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
-					'SaleTaxCompanies', function ($q) use($st_company_id) {
-						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
-					} 
-				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
-				
 			}
 		else if(!empty($item_group) && empty($item_sub_group) && empty($item_category)){ 
 			$invoices = $this->Invoices->find()
@@ -2696,6 +2736,12 @@ class InvoicesController extends AppController
 						->where($where)
 						->group('Invoices.id')
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+						
+			$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);			
 			
 			$interStateInvoice = $this->Invoices->find()->where($where)
 					->contain(['Customers','InvoiceRows'])
@@ -2706,6 +2752,12 @@ class InvoicesController extends AppController
 					->order(['Invoices.id' => 'DESC'])
 					->group('Invoices.id')
 					->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+					
+			$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);		
 			
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 			->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2719,6 +2771,12 @@ class InvoicesController extends AppController
 			->group('InvoiceBookings.id')
 			->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
 			
+			$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);
+				
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 											return $q->where(['InvoiceBookingRows.igst != '=>0]);
 			}])
@@ -2787,6 +2845,7 @@ class InvoicesController extends AppController
 					} 
 				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
+				
 		}
 		else if(!empty($item_sub_group && empty($item_group) && empty($item_category))){
 			$invoices = $this->Invoices->find()
@@ -2800,6 +2859,12 @@ class InvoicesController extends AppController
 						->group('Invoices.id')
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+			
+			$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);	
 						
 			$interStateInvoice = $this->Invoices->find()->where($where)
 								->contain(['Customers','InvoiceRows'])
@@ -2810,6 +2875,12 @@ class InvoicesController extends AppController
 								->order(['Invoices.id' => 'DESC'])
 								->group('Invoices.id')
 								->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+			
+			$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);	
 			
 			$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2822,6 +2893,12 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+			
+			$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);	
 			
 			$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2892,6 +2969,7 @@ class InvoicesController extends AppController
 					} 
 				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
 				
+				
 		}else if(!empty($item_category) && !empty($item_group) && !empty($item_sub_group)){  
 				$invoices = $this->Invoices->find()
 						->contain(['Customers','InvoiceRows'=>['Items']])
@@ -2904,6 +2982,13 @@ class InvoicesController extends AppController
 						->group('Invoices.id')
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+				
+				$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);
+				
 				$interStateInvoice = $this->Invoices->find()->where($where)
 								->contain(['Customers','InvoiceRows'])
 								->matching('InvoiceRows.Items', function ($q) use($item_category,$item_sub_group,$item_group) { 
@@ -2913,6 +2998,12 @@ class InvoicesController extends AppController
 								->order(['Invoices.id' => 'DESC'])
 								->group('Invoices.id')
 								->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+				
+					$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
 			
 				$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2925,6 +3016,12 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							
+				$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);			
 			
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -2993,8 +3090,9 @@ class InvoicesController extends AppController
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
 			}else if(!empty($item_category) && !empty($item_group) && empty($item_sub_group)){  
-			
+				
 				$invoices = $this->Invoices->find()
 							->contain(['Customers','InvoiceRows'=>['Items']])
 							->matching(
@@ -3006,6 +3104,13 @@ class InvoicesController extends AppController
 							->group('Invoices.id')
 							->where($where)
 							->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
+							
+				$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);
+				
 				$interStateInvoice = $this->Invoices->find()->where($where)
 									->contain(['Customers','InvoiceRows'])
 									->matching('InvoiceRows.Items', function ($q) use($item_category,$item_group) { 
@@ -3015,6 +3120,12 @@ class InvoicesController extends AppController
 									->order(['Invoices.id' => 'DESC'])
 									->group('Invoices.id')
 									->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
+			
+				$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
 			
 				$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -3027,6 +3138,12 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							
+				$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);			
 			
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -3039,11 +3156,14 @@ class InvoicesController extends AppController
 							->order(['InvoiceBookings.id' => 'DESC'])
 							->group('InvoiceBookings.id')
 							->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
+							
 				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
+				
 				
 				$SaleTaxeIgst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
@@ -3104,21 +3224,45 @@ class InvoicesController extends AppController
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount = '=>0,'invoice_type'=>'GST']);
 						
+				$invoiceGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes']);
+				
+						
 				$interStateInvoice = $this->Invoices->find()->where($where)
 									->contain(['Customers','InvoiceRows'])
 									->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'total_igst_amount > '=>0,'invoice_type'=>'GST']);
 			
+				$invoiceIGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>5,'igst'=>'Yes']);
+				
+				
+				
 				$invoiceBookings = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
 								return $q->where(['InvoiceBookingRows.igst = '=>0]);
 							}])
 							->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'yes']);
-			
+				//pr($invoiceBookings->toArray()); exit;
+				
+				$invoiceBookingsGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)->where(['account_second_subgroup_id'=>6,'cgst'=>'Yes']);
+				
 				$PurchaseIgst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
 					} 
 				)->where(['account_second_subgroup_id'=>6,'igst'=>'Yes']);
+				
+				
 				//pr($PurchaseIgst->toArray()); exit;
 				$invoiceBookingsInterState = $this->Invoices->InvoiceBookings->find()->where($where1)
 							->contain(['Vendors','InvoiceBookingRows'=>function($q){ 
@@ -3154,6 +3298,7 @@ class InvoicesController extends AppController
 						
 						$LedgerAccountDetailIgst[$LedgerAccount->id]=$SaleTaxe->invoice_description;
 				} 
+				
 				$SaleTaxeGst = $this->Invoices->SaleTaxes->find()->matching(
 					'SaleTaxCompanies', function ($q) use($st_company_id) {
 						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
@@ -3193,7 +3338,7 @@ class InvoicesController extends AppController
 		$ItemSubGroups = $this->Invoices->Items->ItemSubGroups->find('list')->order(['ItemSubGroups.name' => 'ASC']);
 		$Items = $this->Invoices->Items->find('list')->order(['Items.name' => 'ASC']);
 		//pr($invoiceBookingsInterState->toArray()); exit;
-		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings','invoiceBookingsInterState','Items','ItemGroups','ItemCategories','ItemSubGroups','voucherLedgerDetails','voucherSource','voucherLedgerDetailsGst','voucherSourceGst','voucherLedgerDetailIgst','voucherSourceIgst','SaleTaxeGst','LedgerAccountDetails','LedgerAccountDetailIgst','PurchaseIgst'));
+		$this->set(compact('invoices','SalesMans','SalesOrders','interStateInvoice','invoiceBookings','invoiceBookingsInterState','Items','ItemGroups','ItemCategories','ItemSubGroups','voucherLedgerDetails','voucherSource','voucherLedgerDetailsGst','voucherSourceGst','voucherLedgerDetailIgst','voucherSourceIgst','SaleTaxeGst','LedgerAccountDetails','LedgerAccountDetailIgst','PurchaseIgst','PurchaseCgst','invoiceIGst','invoiceGst','invoiceBookingsGst'));
 	}
 	
 	public function salesManReport(){
@@ -3245,6 +3390,14 @@ class InvoicesController extends AppController
 						->order(['Invoices.id' => 'DESC'])
 						->where($where)
 						->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+			
+			$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);	
 						
 			$SalesOrders = $this->Invoices->SalesOrders->find()
 								->contain(['Customers','SalesOrderRows'])
@@ -3287,6 +3440,14 @@ class InvoicesController extends AppController
 									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+									
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);					
 					
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
@@ -3331,6 +3492,14 @@ class InvoicesController extends AppController
 									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+									
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);					
 						
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
@@ -3376,6 +3545,14 @@ class InvoicesController extends AppController
 									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+									
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);					
 						
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
@@ -3422,6 +3599,14 @@ class InvoicesController extends AppController
 									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+									
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);					
 						
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
@@ -3467,6 +3652,14 @@ class InvoicesController extends AppController
 									->group('Invoices.id')
 									->where($where)
 									->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
+				
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);	
 						
 				$SalesOrders = $this->Invoices->SalesOrders->find()
 									->contain(['Customers','SalesOrderRows'])
@@ -3503,6 +3696,16 @@ class InvoicesController extends AppController
 			
 				$invoices = $this->Invoices->find()->where($where)->contain(['Customers','InvoiceRows'])->order(['Invoices.id' => 'DESC'])->where(['Invoices.company_id'=>$st_company_id,'invoice_type'=>'GST']);
 
+				$invoicesGst = $this->Invoices->SaleTaxes->find()->matching(
+					'SaleTaxCompanies', function ($q) use($st_company_id) {
+						return $q->where(['SaleTaxCompanies.company_id' => $st_company_id]);
+					} 
+				)
+				->where(['account_second_subgroup_id'=>5,'cgst'=>'Yes'])
+				->orWhere(['account_second_subgroup_id'=>5,'igst'=>'Yes']);	
+				
+			//pr($invoicesGst->toArray());exit;	
+			
 				$SalesOrders = $this->Invoices->SalesOrders->find()->contain(['Customers','SalesOrderRows'])->order(['SalesOrders.id' => 'DESC'])->where($where1)->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'yes']);
 
 				//Opened Quotation code start here 
@@ -3539,7 +3742,7 @@ class InvoicesController extends AppController
 				);
 		//pr($GstTaxes->toArray());exit;		
 		$Items = $this->Invoices->Items->find('list')->order(['Items.name' => 'ASC']);
-		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations','ItemCategories','ItemGroups','ItemSubGroups','Items','GstTaxes'));
+		$this->set(compact('invoices','SalesMans','SalesOrders','OpenQuotations','ClosedQuotations','ItemCategories','ItemGroups','ItemSubGroups','Items','GstTaxes','invoicesGst'));
 	}
 	
 	public function itemSerialMismatch()

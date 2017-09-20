@@ -682,14 +682,14 @@ select
 							<span class="arrow "></span>
 							</a>
 							<ul class="sub-menu">
-									<li><?php $today =date('d-m-Y');
+									<li><?php $today =date('d-m-Y'); $firstday =date('01-m-Y');
 										echo $this->Html->link('Non GST Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
 									</li>
 									<li><?php $today =date('d-m-Y');
-										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+										echo $this->Html->link('GST Sales Report',array('controller'=>'Invoices','action'=>'gstSalesReport','From'=>$firstday,'To'=>$today),array('escape'=>false)); ?>
 									</li>
 									<li><?php $today =date('d-m-Y');
-										echo $this->Html->link('GST Sales Man Report',array('controller'=>'Invoices','action'=>'salesManReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?>
+										echo $this->Html->link('GST Sales Man Report',array('controller'=>'Invoices','action'=>'salesManReport','From'=>$firstday,'To'=>$today),array('escape'=>false)); ?>
 									</li>
 							</ul>
 						</li>

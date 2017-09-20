@@ -20,8 +20,8 @@
 			<table width="50%" class="table table-bordered table-striped"  id="main_tble">
 					 <thead>
 						<tr>
-							<th>Range To</th>
 							<th>Range From</th>
+							<th>Range To</th>
 						</tr>
 					 </thead>
 					 <tbody>
@@ -30,37 +30,40 @@
 							<?php echo $this->Form->input('range_0', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','value'=>'0','readonly'=>'readonly']); ?>
 						</td>
 						<td>
-							<?php echo $this->Form->input('range_1', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
+							<?php echo $this->Form->input('range_1', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range','value'=>'30']); ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_2', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_2', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly','value'=>'31']); ?>
 						</td>
 						<td>
-							<?php echo $this->Form->input('range_3', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
+							<?php echo $this->Form->input('range_3', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range','value'=>'45']); ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_4', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_4', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly','value'=>'46']); ?>
 						</td>
 						<td>
-							<?php echo $this->Form->input('range_5', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
+							<?php echo $this->Form->input('range_5', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range','value'=>'60']); ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<?php echo $this->Form->input('range_6', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly']); ?>
+							<?php echo $this->Form->input('range_6', ['label' => false,'class' => 'form-control input-sm ','tabindex'=>'-1','readonly'=>'readonly','value'=>'61']); ?>
 						</td>
 						<td>
-							<?php echo $this->Form->input('range_7', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range']); ?>
+							<?php echo $this->Form->input('range_7', ['label' => false,'class' => 'form-control input-sm ','placeholder'=>'Enter Range','value'=>'75']); ?>
 						</td>
 					</tr>
-					 </tbody>
-					 
+				</tbody>
 			</table>
 		</div>
+		<div class="col-md-6"></div>
+		<div class="col-md-4">
+			<?php echo $this->Form->input('to', ['type' => 'text','label' => false,'class' => 	'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => @date('d-m-Y')]); ?>
+		</div>	
 		<button type="submit" class="btn btn-primary pull-right">Go</button>
 	</div>
 </div>

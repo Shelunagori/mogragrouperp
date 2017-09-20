@@ -10,17 +10,15 @@
 		<table width="100%">
 			<tbody>
 				<tr>
-				<td width="15%">
-						<label class="control-label">Stock</label>
-						<div id="item_sub_group_div">
-						<?php 
-							$options = [];
-							$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
-						echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?></div>
-					</td>
-				<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-					</td>
-					<td align="right" width="15%"><input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 100%;"></td>
+					<td width="15%">
+							<?php 
+								$options = [];
+								$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
+							echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?>
+						</td>
+						<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
+						</td>
+					   <td align="right"width="15%"><input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 100%;"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -47,7 +45,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php  $page_no=0;	$total_over_due_amount=0;				
+					<?php  $page_no=0;	$total_over_due_amount=0;			$total_due_amount=0;	$total_closing_amount=0;
 					foreach ($LedgerAccounts as $LedgerAccount){ 
 					@$hide ="style='display:;'";
 					if((!empty($total_debit_1)) || (!empty($total_credit_1))){
@@ -59,7 +57,12 @@
 					if((!empty($total_debit_4)) || (!empty($total_credit_4))){
 					$total4=@$total_credit_4[ $LedgerAccount->id] - @$total_debit_4[ $LedgerAccount->id];}
 					if((!empty($total_debit_5)) || (!empty($total_credit_5))){
-					$total5=@$total_credit_5[ $LedgerAccount->id] - @$total_debit_5[ $LedgerAccount->id];}
+					$total5=@$total_credit_5[ $LedgerAccount->id] - @$total_debit_5[ $LedgerAccount->id];
+					}
+					if((!empty($total_debit_6)) || (!empty($total_credit_6))){
+						$total6=@$total_credit_6[ $LedgerAccount->id] - @$total_debit_6[ $LedgerAccount->id];
+					}	
+					
 					$grand_total=$total1+$total2+$total3+$total4+$total5;
 					$on_acc=0;
 						$on_dr=@$ledger_debit[ $LedgerAccount->id]-@$ref_bal_debit[ $LedgerAccount->id];
@@ -83,10 +86,18 @@
 								 $total_data=number_format((float)$grand_total, 2, '.', '') - number_format((float)abs($on_acc), 2, '.', '');
 							}
 						}
+						$close_bal=0; 
+						if($total_data > 0){ 
+							$close_bal=$total6+$total_data;
+						}else{
+							$close_bal=$total6+$total_data;
+						}
 						if(empty($stock))
 						{
 							$page_no =++$page_no; 
 							$total_over_due_amount = $total_over_due_amount+$total_data;
+							$total_due_amount=$total_due_amount+$total6;
+							$total_closing_amount=$total_closing_amount+$close_bal;
 						}
 						if(@$stock=="Positive")
 						{ 
@@ -97,6 +108,8 @@
 							else{
 								$page_no =++$page_no;
 								$total_over_due_amount = $total_over_due_amount+$total_data;
+								$total_due_amount=$total_due_amount+$total6;
+								$total_closing_amount=$total_closing_amount+$close_bal;
 							}
 						}
 						if(@$stock=="Negative")
@@ -108,6 +121,8 @@
 							else{
 								$page_no =++$page_no;
 								$total_over_due_amount = $total_over_due_amount+$total_data;
+								$total_due_amount=$total_due_amount+$total6;
+								$total_closing_amount=$total_closing_amount+$close_bal;
 							}
 						}
 						if(@$stock=="Zero")
@@ -119,12 +134,19 @@
 							else{
 								$page_no =++$page_no;
 								$total_over_due_amount = $total_over_due_amount+$total_data;
+								$total_due_amount=$total_due_amount+$total6;
+								$total_closing_amount=$total_closing_amount+$close_bal;
 							}
 						}
 					?>
 					<tr <?php echo @$hide; ?>>
 						<td><?= h($page_no) ?></td>
-						<td><?php echo $LedgerAccount->name; ?></td>
+						<td>
+							<?php echo  $this->Html->link( $LedgerAccount->name,[
+							'controller'=>'Ledgers','action' => 'AccountStatementRefrence?status=completed&ledgerid='.$LedgerAccount->id],array('target'=>'_blank')); 
+							?>
+							
+						</td>
 						<td><?php echo $custmer_payment_terms[$LedgerAccount->id];?></td>
 						<?php if((!empty($total_debit_1)) || (!empty($total_credit_1))){
 									$total1=@$total_credit_1[ $LedgerAccount->id] - @$total_debit_1[ $LedgerAccount->id];
@@ -176,26 +198,24 @@
 						<td align="right" style="color:<?php echo $acc_color2; ?>">
 						<?php echo sprintf ("%.2f", $total_data); ?></td>
 						
-						<?php if((!empty($total_debit_6)) || (!empty($total_credit_6))){
-									$total6=@$total_credit_6[ $LedgerAccount->id] - @$total_debit_6[ $LedgerAccount->id];
-									if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
-									<td align="right" style=""><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php if(@$total_debit_6[ $LedgerAccount->id] > @$total_credit_6[ $LedgerAccount->id]){ ?>
+							<td align="right" style=""><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
 						<?php } else { ?>
-									<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
-						<?php } } ?>
-						<?php $close_bal=0; if($total_data > 0){ $close_bal=$total6+$total_data; ?>
+							<td align="right"><?php echo $this->Number->format($total6,['places'=>2]); ?></td>
+						<?php }  ?>
+						
 						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
-						<?php } else { $close_bal=$total6+$total_data; ?>
-						<td><?php echo $this->Number->format($close_bal,['places'=>2]); ?></td>
-						<?php } ?>
+						
 					</tr>
 					<?php }  ?>	
 				
 				</tbody>
 				<tfoot>
 				<tr>
-					<td colspan="9" align="right">Total : </td>
-					<td align="right"><?php echo @$total_over_due_amount;?></td>
+					<td colspan="9" align="right"><b>Total </b></td>
+					<td align="right"><b><?php echo $this->Number->format(@$total_over_due_amount,['places'=>2]);?></b></td>
+					<td  align="right"><b><?php echo $this->Number->format($total_due_amount,['places'=>2]);?></b></td>
+					<td  align="right"><b><?php echo $this->Number->format($total_closing_amount,['places'=>2]);?></b></td>
 				</tr>
 				</tfoot>
 			</table>

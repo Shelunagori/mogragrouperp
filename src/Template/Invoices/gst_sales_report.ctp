@@ -45,13 +45,13 @@
 			</form>
 		<!-- BEGIN FORM-->
 		<div class="row ">
-		
+		<?php $col=sizeof($invoiceGst->toArray()); $col=($col*2)+4;  ?>
 		
 		<div class="col-md-12">
 			<table class="table table-bordered table-condensed">
 				<thead>
 					<tr>
-						<td colspan="11" align="center"  valign="top">
+						<td colspan="<?php echo $col; ?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Invoice</h4>
 						</td>
 					</tr>
@@ -60,33 +60,27 @@
 						<th>Invoice No</th>
 						<th>Date</th>
 						<th>Customer</th>
-						<th style="text-align:right;">Sales @ 12 % GST</th>
-						<th style="text-align:right;">GST @ 12 % </th>
-						<th style="text-align:right;">Sales @ 18 % GST</th>
-						<th style="text-align:right;">GST @ 18 % </th>
-						<th style="text-align:right;">Sales @ 28 % GST</th>
-						<th style="text-align:right;">GST @ 28 % </th>
+					
+						<?php  foreach($invoiceGst as $Key1=>$SaleTaxeGst){ 
+						$saletax=($SaleTaxeGst->tax_figure*2);
+						?>
+						<th style="text-align:right;">Sales GST @ <?php echo $saletax; ?> % </th>
+						<th style="text-align:right;">GST @ <?php echo $saletax; ?>%</th>
+						<?php } ?>
 					</tr>
 				</thead>
-				<?php $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
-							$salesTotalGST12=0; $salesTotalGST18=0; $salesTotalGST28=0; 
-				foreach ($invoices as $invoice):  
-					$salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0;
-					foreach($invoice->invoice_rows as $invoice_row){
-						if($invoice_row['cgst_percentage']==8 && $invoice_row['sgst_percentage']==11){
-								$salesGst12=$salesGst12+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal12=$salesGstRowTotal12+$invoice_row->row_total;
-						}else if($invoice_row['cgst_percentage']==9 && $invoice_row['sgst_percentage']==12){
-								$salesGst18=$salesGst18+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal18=$salesGstRowTotal18+$invoice_row->row_total;
-							}
-						else if($invoice_row['cgst_percentage']==10 && $invoice_row['sgst_percentage']==13){
-								$salesGst28=$salesGst28+($invoice_row->cgst_amount+$invoice_row->sgst_amount);
-								 $salesGstRowTotal28=$salesGstRowTotal28+$invoice_row->row_total;
-							}
-						}	
-				?>
 				<tbody>
+				
+					<?php $SalesTotal=[];$SalesgstTotal=[];$gstRowTotal=[]; $gstTotal=[];$i=1;
+					foreach ($invoices as $invoice):
+						foreach($invoice->invoice_rows as $invoice_row)
+						{
+							if($invoice_row['igst_percentage'] == 0){
+							@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->cgst_amount*2);
+							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+							}
+						}
+					?>
 					<tr>
 						<td><?php echo $i; ?></td>
 						<td>
@@ -95,78 +89,59 @@
 						</td>
 						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
 						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
-						<td align="right">
-							<?php  	if($salesGstRowTotal12 > 0){
-										echo $salesGstRowTotal12;
-										$salesTotal12=$salesTotal12+$salesGstRowTotal12;
-									}else{
-										echo "-";
-									}
+						<?php $k=0; $AllTaxs=[];
+							foreach($invoiceGst as $Key1=>$SaleTaxeGst){ 
+									$AllTaxs[$k]=$SaleTaxeGst->id;
+									$k++;
+							}
+						?>
+						<?php foreach($AllTaxs as  $key=>$AllTax){ 
+							if(isset($gstRowTotal[$invoice->id][$AllTax]))
+							{?>
+									<td style="text-align:right;"><?php echo 
+									$this->Number->format(@$gstTotal[@$invoice->id][$AllTax],['places'=>2]); 
+									$SalesTotal[$AllTax]=@$SalesTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax];
+									?></td>
+									<td style="text-align:right;"><?php echo $this->Number->format($gstRowTotal[$invoice->id][$AllTax],['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstRowTotal[$invoice->id][$AllTax];
+									?></td>
+									<?php 
+							}							
+							else 
+							{
 							?>
-						</td>
-						<td align="right">
-							<?php  if($salesGst12 > 0){
-										echo $salesGst12;
-										$salesTotalGST12=$salesTotalGST12+$salesGst12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  
-									if($salesGstRowTotal18 > 0){
-										echo $salesGstRowTotal18;
-										$salesTotal18=$salesTotal18+$salesGstRowTotal18;
-									}else{
-										echo "-";
-									} 
-							?>
-						</td>
-						<td align="right">
-							<?php  
-									if($salesGst18 > 0){
-										echo $salesGst18;
-										$salesTotalGST18=$salesTotalGST18+$salesGst18;
-									}else{
-										echo "-";
-									} 
-							?>
-						</td>
-						<td align="right">
-						<?php  if($salesGstRowTotal28 > 0){
-							 echo $salesGstRowTotal28;
-							  $salesTotal28=$salesTotal28+$salesGstRowTotal28;
-						}else{
-							echo "-";
-						}?>
-						</td>
-						<td align="right">
-							<?php  if($salesGst28 > 0){
-										echo $salesGst28;
-										$salesTotalGST28=$salesTotalGST28+$salesGst28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-					</tr>
-				<?php $i++; endforeach; ?>
-					<tr>
-						<td colspan="4"></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGST12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGST18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGST28,['places'=>2]); ?></td>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+							<?php 
+							} 
+							
+						}  ?>
 						
 					</tr>
+				<?php $i++; endforeach; ?>
+				<tr>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
+				<?php 
+					foreach($invoiceGst as $Key1=>$SaleTaxeGst){  
+						if(!empty($SalesTotal[$SaleTaxeGst->id])){
+					?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesgstTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }else{ ?>
+						<td style="text-align:right;"><b>-</b></td>
+						<td style="text-align:right;"><b>-</b></td>
+					<?php }} ?>
+				
+				</tr>
 				</tbody>
 			</table>
 				
 			<table class="table table-bordered table-condensed">
 				<thead>
-					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<tr><?php $col=sizeof($invoiceIGst->toArray()); $col=($col*2)+4;  ?>
+						<td colspan="<?php echo $col;?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Sales Inter State</h4>
 						</td>
 					</tr>
@@ -175,104 +150,80 @@
 						<th>Invoice No</th>
 						<th>Date</th>
 						<th>Customer</th>
-						<th style="text-align:right;">Sales @ 12 % IGST</th>
-						<th style="text-align:right;">IGST @ 12 % </th>
-						<th style="text-align:right;">Sales @ 18 % IGST</th>
-						<th style="text-align:right;">IGST @ 18 % </th>
-						<th style="text-align:right;">Sales @ 28 % IGST</th>
-						<th style="text-align:right;">IGST @ 28 % </th>
+						<?php  foreach($invoiceIGst as $Key1=>$SaleTaxeGst){ ?>
+						<th style="text-align:right;">Sales IGST @<?php echo $SaleTaxeGst->tax_figure; ?> %</th>
+						<th style="text-align:right;">IGST @ <?php echo $SaleTaxeGst->tax_figure; ?> %</th>
+						<?php } ?>
 					</tr>
 				</thead>
-				<?php $i=1;  $salesTotal12=0; $salesTotal18=0; $salesTotal28=0;
-							$salesTotalIGST12=0; $salesTotalIGST18=0; $salesTotalIGST28=0; 
-				foreach ($interStateInvoice as $invoice):  
-					$salesIGstRowTotal12=0; $salesIGstRowTotal18=0; $salesIGstRowTotal28=0; $salesIGst12=0; $salesIGst18=0; $salesIGst28=0;
-					foreach($invoice->invoice_rows as $invoice_row){
-						if($invoice_row['igst_percentage']==14){
-								$salesIGst12=$salesIGst12+($invoice_row->igst_amount);
-								 $salesIGstRowTotal12=$salesIGstRowTotal12+$invoice_row->row_total;
-						}else if($invoice_row['igst_percentage']==15){
-								$salesIGst18=$salesIGst18+($invoice_row->igst_amount);
-								 $salesIGstRowTotal18=$salesIGstRowTotal18+$invoice_row->row_total;
+				<?php $SalesIgstTotal=[]; $SalesIgstRowTotal=[]; $j=1;
+				foreach ($interStateInvoice as $invoiceigst){  ?>
+				<tbody>
+					<?php $SigstRowTotal=[]; $SigstTotal=[];
+					if(!empty($invoiceigst->invoice_rows)){  
+					foreach($invoiceigst->invoice_rows as $invoice_rows_data){
+						if($invoice_rows_data['igst_percentage'] > 0){
+								@$SigstRowTotal[$invoiceigst->id][$invoice_rows_data['igst_percentage']]=@$SigstRowTotal[$invoiceigst->id][$invoice_rows_data['igst_percentage']]+@$invoice_rows_data->igst_amount;
 							}
-						else if($invoice_row['igst_percentage']==16){
-								$salesIGst28=$salesIGst28+($invoice_row->igst_amount);
-								 $salesIGstRowTotal28=$salesIGstRowTotal28+$invoice_row->row_total;
-							}
-						}	
-				?>
+						}
+						@$SigstTotal[$invoiceigst->id]=@$SigstTotal[$invoiceigst->id]+$invoice_rows_data->taxable_value;
+				 } ?>
 				<tbody>
 					<tr>
-						<td><?php echo $i; ?></td>
+						<td><?php echo $j++; ?></td>
 						<td>
-							<?php echo $this->Html->link( $invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4,[
-							'controller'=>'Invoices','action' => 'gstConfirm',$invoice->id],array('target'=>'_blank')); ?>
+							<?php echo $this->Html->link( $invoiceigst->in1.'/IN-'.str_pad($invoiceigst->in2, 3, '0', STR_PAD_LEFT).'/'.$invoiceigst->in3.'/'.$invoiceigst->in4,[
+							'controller'=>'Invoices','action' => 'gstConfirm',$invoiceigst->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($invoice->date_created)); ?></td>
-						<td><?php echo $invoice->customer->customer_name.'('.$invoice->customer->alias.')'?></td>
-						<td align="right">
-							<?php  	if($salesIGstRowTotal12 > 0){
-										echo $salesIGstRowTotal12;
-										$salesTotal12=$salesTotal12+$salesIGstRowTotal12;
-									}else{
-										echo "-";
-									}
+						<td><?php echo date("d-m-Y",strtotime($invoiceigst->date_created)); ?></td>
+						<td><?php echo $invoiceigst->customer->customer_name.'('.$invoiceigst->customer->alias.')'?></td>
+						<?php $k=0; $AllTaxs=[];
+							foreach($invoiceIGst as $Key1=>$SaleTaxeGst){ 
+									$AllTaxs[$k]=$SaleTaxeGst->id;
+									$k++;
+							}
+						?>
+						
+						<?php foreach($AllTaxs as  $key=>$AllTax){ 
+							if(isset($SigstRowTotal[$invoiceigst->id][$AllTax]))
+							{?>
+						<td style="text-align:right;"><?php echo 
+						$this->Number->format(@$SigstTotal[$invoiceigst->id],['places'=>2]); 
+									$SalesIgstTotal[$AllTax]=@$SalesIgstTotal[$AllTax]+$SigstTotal[$invoiceigst->id];
+									?></td>
+									<td style="text-align:right;"><?php echo $this->Number->format(@$SigstRowTotal[$invoiceigst->id][$AllTax],['places'=>2]); 
+									$SalesIgstRowTotal[$AllTax]=@$SalesIgstRowTotal[$AllTax]+$SigstRowTotal[$invoiceigst->id][$AllTax];
+									?></td>
+									<?php 
+							}							
+							else 
+							{
 							?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGst12 > 0){
-										echo $salesIGst12;
-										$salesTotalIGST12=$salesTotalIGST12+$salesIGst12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  	if($salesIGstRowTotal18 > 0){
-										echo $salesIGstRowTotal18;
-										$salesTotal18=$salesTotal18+$salesIGstRowTotal18;
-									}else{
-										echo "-";
-									}
-							?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGst18 > 0){
-										echo $salesIGst18;
-										$salesTotalIGST18=$salesTotalIGST18+$salesIGst18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-							<?php  	if($salesIGstRowTotal28 > 0){
-										echo $salesIGstRowTotal28;
-										$salesTotal28=$salesTotal28+$salesIGstRowTotal28;
-									}else{
-										echo "-";
-									}
-							?>
-						</td>
-						<td align="right">
-							<?php  if($salesIGst28 > 0){
-										echo $salesIGst28;
-										$salesTotalIGST28=$salesTotalIGST28+$salesIGst28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-					</tr>
-				<?php $i++; endforeach; ?>
-					<tr>
-						<td colspan="4"></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalIGST12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalIGST18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalIGST28,['places'=>2]); ?></td>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+							<?php 
+							} 
+							
+						}  ?>
 						
 					</tr>
+				<?php }  ?>
+					<tr>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
+				<?php 
+					//pr($PurchaseTotal); exit;
+					foreach($invoiceIGst as $Key1=>$SaleTaxeGst){  
+						if(!empty($SalesIgstTotal[$SaleTaxeGst->id])){ ?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesIgstTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$SalesIgstRowTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+				<?php }else{ ?>
+						<td style="text-align:right;"><b>-</b></td>
+						<td style="text-align:right;"><b>-</b></td>
+					<?php }} ?>
+				
+				</tr>
 				</tbody>
 			</table>
 				
@@ -280,8 +231,8 @@
 		
 			<table class="table table-bordered table-condensed">
 				<thead>
-					<tr>
-						<td colspan="11" align="center"  valign="top">
+					<tr><?php $col=sizeof($invoiceBookingsGst->toArray()); $col=($col*2)+4;  ?>
+						<td colspan="<?php echo $col;?>" align="center"  valign="top">
 							<h4 class="caption-subject font-black-steel uppercase">Purchase</h4>
 						</td>
 					</tr>
@@ -290,106 +241,84 @@
 						<th>Invoice Booking No</th>
 						<th>Date</th>
 						<th>Supplier</th>
-						<th style="text-align:right;">Purchase @ 12 % GST</th>
-						<th style="text-align:right;">GST @ 12 % </th>
-						<th style="text-align:right;">Purchase @ 18 % GST</th>
-						<th style="text-align:right;">GST @ 18 % </th>
-						<th style="text-align:right;">Purchase @ 28 % GST</th>
-						<th style="text-align:right;">GST @ 28 % </th>
+						<?php  foreach($invoiceBookingsGst as $Key1=>$inbookingsgst){ 
+						$inbookingsgsttax=($inbookingsgst->tax_figure*2);
+						?>
+						<th style="text-align:right;">Purchase GST @ <?php echo $inbookingsgsttax; ?> % </th>
+						<th style="text-align:right;">GST @ <?php echo $inbookingsgsttax; ?>%</th>
+						<?php } ?>
 					</tr>
 				</thead>
-<?php $salesTotalGst12=0; $salesTotalGst18=0; $salesTotalGst28=0; $salesTotal12=0; $salesTotal18=0; $salesTotal28=0; $i=0;
-				foreach ($invoiceBookingsInterState as $invoiceBooking):   ?>
 				<tbody>
-					<?php $salesGstRowTotal12=0; $salesGstRowTotal18=0; $salesGstRowTotal28=0; $salesGst12=0; $salesGst18=0; $salesGst28=0; 
-					if(!empty($invoiceBooking->invoice_booking_rows)){  $i++;
-						foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row)
-						{ 
-							if($invoice_booking_row['igst_per']==23){
-							$salesGst12=$salesGst12+($invoice_booking_row->igst);
-							$salesGstRowTotal12=$salesGstRowTotal12+$invoice_booking_row->total;
-								
-							}else if($invoice_booking_row['igst_per']==24){
-								$salesGst18=$salesGst18+($invoice_booking_row->igst);
-								$salesGstRowTotal18=$salesGstRowTotal18+$invoice_booking_row->total;
-								
-							}else if($invoice_booking_row['igst_per']==25){
-								$salesGst28=$salesGst28+($invoice_booking_row->igst);
-								$salesGstRowTotal28=$salesGstRowTotal28+$invoice_booking_row->total;
+					<?php $PurchaseBookingTotal=[];$PurchaseBookinggstTotal=[];$PurchaseBookingRowTotal=[]; $PurchaseBookingTotals=[];$i=1;$data=[];
+					foreach ($invoiceBookings as $invoicebooking):
+						foreach($invoicebooking->invoice_booking_rows as $invoice_booking_row_data)
+						{
+							
+							if($invoice_booking_row_data['igst_per'] == 0){
+									@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]=@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->cgst*2);
+									@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]=@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->taxable_value);
 							}
 						}
-						
-				?>
+					?>
+					<?php $k=0; $AllTaxs=[];
+							foreach($invoiceBookingsGst as $Key1=>$SaleTaxeGst){ 
+									$AllTaxs[$k]=$SaleTaxeGst->id;
+									$k++;
+							}
+								
+						?>
+					<?php if($invoicebooking->invoice_booking_rows){?>
 					<tr>
 						<td><?php echo $i; ?></td>
 						<td>
-						<?php echo $this->Html->link( $invoiceBooking->ib1.'/IB-'.str_pad($invoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->ib3.'/'.$invoiceBooking->ib4,[
-							'controller'=>'InvoiceBookings','action' => 'gst-invoice-booking-view',$invoiceBooking->id],array('target'=>'_blank')); ?>
+						<?php echo $this->Html->link( $invoicebooking->ib1.'/IB-'.str_pad($invoicebooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoicebooking->ib3.'/'.$invoicebooking->ib4,[
+							'controller'=>'InvoiceBookings','action' => 'gst-invoice-booking-view',$invoicebooking->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($invoiceBooking->created_on)); ?></td>
-						<td><?php echo $invoiceBooking->vendor->company_name; ?></td>
-												<td align="right">
-						<?php  if($salesGstRowTotal12 >0){
-							 echo $salesGstRowTotal12;
-							 $salesTotal12=$salesTotal12+$salesGstRowTotal12;
-						}else{
-							echo "-";
-						}?>
-						</td>
-						<td align="right">
-							<?php  if($salesGst12 >0){
-										echo $salesGst12;
-										$salesTotalGst12=$salesTotalGst12+$salesGst12;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-						<?php  if($salesGstRowTotal18 >0){
-							 echo $salesGstRowTotal18;
-							 $salesTotal18=$salesTotal18+$salesGstRowTotal18;
-						}else{
-							echo "-";
-						}?>
-						</td>
-						<td align="right">
-							<?php  if($salesGst18 >0){
-										echo $salesGst18;
-										$salesTotalGst18=$salesTotalGst18+$salesGst18;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-						<td align="right">
-						<?php  if($salesGstRowTotal28 >0){
-							 echo $salesGstRowTotal28;
-							 $salesTotal28=$salesTotal28+$salesGstRowTotal28;
-						}else{
-							echo "-";
-						}?>
-						</td>
-						<td align="right">
-							<?php  if($salesGst28 >0){
-										echo $salesGst28;
-										$salesTotalGst28=$salesTotalGst28+$salesGst28;
-								}else{
-									echo "-";
-								} ?>
-						</td>
-
+						<td><?php echo date("d-m-Y",strtotime($invoicebooking->created_on)); ?></td>
+						<td><?php echo $invoicebooking->vendor->company_name; ?></td>
+						
+						<?php foreach($AllTaxs as  $key=>$AllTax){ 
+							
+							if(isset($PurchaseBookingRowTotal[$invoicebooking->id][$AllTax]))
+							{?>
+									<td style="text-align:right;"><?php echo 
+									$this->Number->format(@$PurchaseBookingTotals[@$invoicebooking->id][$AllTax],['places'=>2]); 
+									$PurchaseBookingTotal[$AllTax]=@$PurchaseBookingTotal[$AllTax]+$PurchaseBookingTotals[$invoicebooking->id][$AllTax];
+									?></td>
+									<td style="text-align:right;"><?php echo $this->Number->format($PurchaseBookingRowTotal[$invoicebooking->id][$AllTax],['places'=>2]); 
+									$PurchaseBookinggstTotal[$AllTax]=@$PurchaseBookinggstTotal[$AllTax]+$PurchaseBookingRowTotal[$invoicebooking->id][$AllTax];
+									?></td>
+									<?php 
+							}							
+							else 
+							{
+							?>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+								<td style="text-align:right;"><?php echo "-"; ?></td>
+							<?php 
+							} 
+							
+						}  ?>
 						
 					</tr>
-				<?php }   endforeach; ?>
-					<tr>
-						<td colspan="4"></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGst12,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGst18,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotal28,['places'=>2]); ?></td>
-						<td align="right"><?php echo $this->Number->format($salesTotalGst28,['places'=>2]); ?></td>
-						
-					</tr>
+					<?php $i++; }  endforeach;  ?>
+				<tr>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
+				<?php 
+					foreach($invoiceBookingsGst as $Key1=>$SaleTaxeGst){  
+						if(!empty($PurchaseBookingTotal[$SaleTaxeGst->id])){
+					?>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$PurchaseBookingTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$PurchaseBookinggstTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+					<?php }else{ ?>
+						<td style="text-align:right;"><b>-</b></td>
+						<td style="text-align:right;"><b>-</b></td>
+					<?php }} ?>
+				
+				</tr>
 				</tbody>
 				
 				</table>
@@ -409,26 +338,26 @@
 						<th>Date</th>
 						<th>Supplier</th>
 						<?php  foreach($PurchaseIgst as $Key1=>$SaleTaxeGst){ ?>
-						<th style="text-align:right;">Purchase <?php echo $SaleTaxeGst->quote_description; ?></th>
-						<th style="text-align:right;"><?php echo $SaleTaxeGst->quote_description; ?></th>
+						<th style="text-align:right;">Purchase IGST @<?php echo $SaleTaxeGst->tax_figure; ?> %</th>
+						<th style="text-align:right;">IGST <?php echo $SaleTaxeGst->tax_figure; ?> %</th>
 						<?php } ?>
 					</tr>
 				</thead>
-				<?php $PurchaseIgstTotal=[]; $PurchaseTotal=[];
+				<?php $PurchaseIgstTotal=[]; $PurchaseTotal=[]; $i=1;
 				foreach ($invoiceBookingsInterState as $invoiceBooking):   ?>
 				<tbody>
 					<?php $igstRowTotal=[]; $igstTotal=[];
-					if(!empty($invoiceBooking->invoice_booking_rows)){  $i++;
+					if(!empty($invoiceBooking->invoice_booking_rows)){  
 						foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row)
 						{ 
 							if($invoice_booking_row['igst_per'] > 0){
 								@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]=@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]+@$invoice_booking_row->igst;
 							}
 						}
-						@$igstTotal[$invoiceBooking->id]=@$igstTotal[$invoiceBooking->id]+$invoiceBooking->total;
+						@$igstTotal[$invoiceBooking->id]=@$igstTotal[$invoiceBooking->id]+$invoiceBooking->taxable_value;
 				?>
 					<tr>
-						<td><?php echo $i; ?></td>
+						<td><?php echo $i++; ?></td>
 						<td>
 						<?php echo $this->Html->link( $invoiceBooking->ib1.'/IB-'.str_pad($invoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->ib3.'/'.$invoiceBooking->ib4,[
 							'controller'=>'InvoiceBookings','action' => 'gst-invoice-booking-view',$invoiceBooking->id],array('target'=>'_blank')); ?>
@@ -444,10 +373,10 @@
 						<?php foreach($AllTaxs as  $key=>$AllTax){ 
 							if(isset($igstRowTotal[$invoiceBooking->id][$AllTax]))
 							{?>
-									<td style="text-align:right;"><?php echo $igstTotal[$invoiceBooking->id]; 
+									<td style="text-align:right;"><?php echo $this->Number->format(@$igstTotal[$invoiceBooking->id],['places'=>2]); 
 									$PurchaseTotal[$AllTax]=@$PurchaseTotal[$AllTax]+$igstTotal[$invoiceBooking->id];
 									?></td>
-									<td style="text-align:right;"><?php echo $igstRowTotal[$invoiceBooking->id][$AllTax]; 
+									<td style="text-align:right;"><?php echo $this->Number->format(@$igstRowTotal[$invoiceBooking->id][$AllTax],['places'=>2]); 
 									$PurchaseIgstTotal[$AllTax]=@$PurchaseIgstTotal[$AllTax]+$igstRowTotal[$invoiceBooking->id][$AllTax];
 									?></td>
 									<?php 
@@ -464,15 +393,17 @@
 
 						
 					</tr>
-				<?php }   endforeach; ?>
+				<?php   }   endforeach; ?>
 					
 					<tr>
-				<td style="text-align:right;" colspan=4>Total</td>
+				<td style="text-align:right;" colspan=4><b>Total</b></td>
 				<?php 
 					//pr($PurchaseTotal); exit;
 					foreach($PurchaseIgst as $Key1=>$SaleTaxeGst){  ?>
-						<td style="text-align:right;"><?php echo @$PurchaseTotal[$SaleTaxeGst->id]; ?></td>
-						<td style="text-align:right;"><?php echo @$PurchaseIgstTotal[$SaleTaxeGst->id]; ?></td>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$PurchaseTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
+						<td style="text-align:right;"><b><?php echo 
+						$this->Number->format(@$PurchaseIgstTotal[$SaleTaxeGst->id],['places'=>2]); ?></b></td>
 				<?php } ?>
 				
 				</tr>
@@ -513,7 +444,7 @@
 					$url_path="/Nppayments/view/".$voucherLedgerDetailsGst->voucher_id;
 				}else if($voucherSourceGst[$key]=="Payment Voucher"){
 					$voucher_no="Payment Voucher";
-					$url_path="/PaymentVouchers/view/".$voucherLedgerDetailsGst->voucher_id;
+					$url_path="/Payments/view/".$voucherLedgerDetailsGst->voucher_id;
 				}else if($voucherSourceGst[$key]=="Contra Voucher"){
 					$voucher_no="Contra Voucher";
 					$url_path="/ContraVouchers/view/".$voucherLedgerDetailsGst->voucher_id;
@@ -602,7 +533,7 @@
 					$url_path="/Nppayments/view/".$voucherLedgerDetailIgst->voucher_id;
 				}else if($voucherSourceIgst[$key]=="Payment Voucher"){
 					$voucher_no="Payment Voucher";
-					$url_path="/PaymentVouchers/view/".$voucherLedgerDetailIgst->voucher_id;
+					$url_path="/Payments/view/".$voucherLedgerDetailIgst->voucher_id;
 				}else if($voucherSourceIgst[$key]=="Contra Voucher"){
 					$voucher_no="Contra Voucher";
 					$url_path="/ContraVouchers/view/".$voucherLedgerDetailIgst->voucher_id;
