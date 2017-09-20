@@ -684,6 +684,7 @@ public function CheckCompany($company_id=null,$item_id=null)
 				->where(['id' => $newitem->id])
 				->execute();
 		}
+		exit;
 	}
 	
 }
