@@ -301,9 +301,9 @@ class ItemLedgersController extends AppController
 			//pr($where);exit;
 		$item_stocks =[];$items_names =[];
 		
-		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id])->order(['ItemLedgers.processed_on' => 'ASC','ItemLedgers.quantity' => 'DESC']);
+		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id]);
 		
-		$array_ins=[];
+		/* $array_ins=[];
 		$array_outs=[];
 		foreach($query as $data){
 				if($data->in_out=='In'){
@@ -543,7 +543,7 @@ class ItemLedgersController extends AppController
 		out:
 	}
 	pr($array_in_data); echo "hello";
-	exit;
+	exit; */
 	
 /* 		$in_qty = []; $out_qty = 0; $my_val=0;
 		foreach($array_datas as $key=>$array_data){
@@ -566,7 +566,7 @@ class ItemLedgersController extends AppController
 			}
 		} */
 		
-		pr(@$in_qty); exit;
+		///pr(@$in_qty); exit;
 		
 			
 	/* $advance_qty=[]; 
@@ -593,7 +593,7 @@ class ItemLedgersController extends AppController
 			//pr($ary['quantity']);
 			$i++;
 		}
-	} */ exit;
+	} */ 
 		
 		
 		
