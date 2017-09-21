@@ -120,7 +120,7 @@ class AppController extends Controller
 			foreach($UserRights as $qwe){
 				$allowed_pages[]=$qwe->page_id;
 			}
-			$this->set(compact('allowed_pages'));
+			$this->set(compact('allowed_pages','st_company_id'));
 		}
 
 		$this->loadModel('Pages');
@@ -137,10 +137,13 @@ class AppController extends Controller
 		}
 		
 		
-
-
-		
-    }
+			$coreVariable = [
+				'st_company_id' =>$session->read('st_company_id'),
+			];
+			
+			$this->coreVariable = $coreVariable;
+			$this->set(compact('coreVariable'));
+	  }
 
     /**
      * Before render callback.

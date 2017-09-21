@@ -114,6 +114,62 @@ class SalesOrdersController extends AppController
 			);
 			
 		}	
+		if(!empty($gst)){
+			if(!empty($items)){
+				$salesOrders=	$this->paginate($this->SalesOrders->find()
+									->contain(['Quotations','SalesOrderRows'=>['Items']])
+									->leftJoinWith('SalesOrderRows', function ($q) {
+											return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);})
+									->matching(
+										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+											return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
+										})
+									->where(['SalesOrders.company_id'=>$st_company_id]));
+			}else{
+				$salesOrders=	$this->paginate(
+								$this->SalesOrders->find()
+								->contain(['Quotations','SalesOrderRows'=>['Items']])
+								->select(['total_rows' => 
+								  $this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+								->leftJoinWith('SalesOrderRows', function ($q) {
+									return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+									})
+								->group(['SalesOrders.id'])
+								->autoFields(true)
+								->having($having)
+								->where($where)
+								->where(['SalesOrders.company_id'=>$st_company_id])
+								->order(['SalesOrders.so2' => 'DESC']));
+				}
+		}
+		if(!empty($pull_request)){
+			if(!empty($items)){
+				$salesOrders=	$this->paginate($this->SalesOrders->find()
+									 ->contain(['Quotations','SalesOrderRows'=>['Items']])
+									->leftJoinWith('SalesOrderRows', function ($q) {
+										return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+											})
+									->matching(
+										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+										return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
+										})
+									->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'no']));
+			}else{
+				$salesOrders=$this->paginate(
+				$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
+					$this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+						->leftJoinWith('SalesOrderRows', function ($q) {
+							return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+						})
+						->group(['SalesOrders.id'])
+						->autoFields(true)
+						->having($having)
+						->where($where)
+						->where(['SalesOrders.company_id'=>$st_company_id,'gst'=>'no'])
+						->order(['SalesOrders.so2' => 'DESC'])
+				);
+			}
+		}
 		if(!empty($job_card)){
 			$salesOrders=$this->paginate(
 				$this->SalesOrders->find()->contain(['SalesOrderRows'])
@@ -443,6 +499,12 @@ class SalesOrdersController extends AppController
 						->set(['Quotations.status' => 'Pending'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
+					}else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
 					}
 				}
 				
@@ -626,6 +688,12 @@ class SalesOrdersController extends AppController
 						->set(['Quotations.status' => 'Pending'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
+					}else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
 					}
 					
 					$salesOrder->job_card_status='Pending';
@@ -659,7 +727,7 @@ class SalesOrdersController extends AppController
 			$transporters = $this->SalesOrders->Carrier->find('list', ['limit' => 200])->order(['Carrier.transporter_name' => 'ASC']);
 			$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 						'EmployeeCompanies', function ($q) use($st_company_id) {
-							return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
 						}
 					);
 			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);
@@ -832,7 +900,7 @@ class SalesOrdersController extends AppController
 				if(!empty($status_close)){
 				$query = $this->SalesOrders->Quotations->query();
 					$query->update()
-						->set(['status' => 'Closed'])
+						->set(['status' => 'Converted Into Sales Order'])
 						->where(['id' => $quotation_id])
 						->execute();
 				} else{
@@ -849,6 +917,13 @@ class SalesOrdersController extends AppController
 						$query_pending = $this->SalesOrders->Quotations->query();
 						$query_pending->update()
 						->set(['Quotations.status' => 'Pending'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
+					else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}
@@ -1028,6 +1103,13 @@ class SalesOrdersController extends AppController
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}
+					else{
+						$query_pending = $this->SalesOrders->Quotations->query();
+						$query_pending->update()
+						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->where(['id' => $salesOrder->quotation_id])
+						->execute();
+					}
 					
 					$salesOrder->job_card_status='Pending';
 					$query2 = $this->SalesOrders->query();
@@ -1060,7 +1142,7 @@ class SalesOrdersController extends AppController
 			$transporters = $this->SalesOrders->Carrier->find('list', ['limit' => 200])->order(['Carrier.transporter_name' => 'ASC']);
 			$employees = $this->SalesOrders->Employees->find('list')->where(['dipartment_id' => 1])->order(['Employees.name' => 'ASC'])->matching(
 						'EmployeeCompanies', function ($q) use($st_company_id) {
-							return $q->where(['EmployeeCompanies.company_id' => $st_company_id,'EmployeeCompanies.freeze' => 0]);
+							return $q->where(['EmployeeCompanies.company_id' => $st_company_id]);
 						}
 					);
 			$termsConditions = $this->SalesOrders->TermsConditions->find('all',['limit' => 200]);
@@ -1100,7 +1182,7 @@ class SalesOrdersController extends AppController
 		$this->set(compact('salesorder','id'));
     }
 	
-<<<<<<< HEAD
+
 	public function getClosedQuotations(){
 		
 		$Quotations =$this->SalesOrders->Quotations->find()->where(['Quotations.status' =>'Closed']);
@@ -1119,7 +1201,5 @@ class SalesOrdersController extends AppController
 		}
 		pr($data);exit;
 	}
-=======
 
->>>>>>> 28e58fe9f1bb624948a25f1756466d48e3a6d6d7
 }

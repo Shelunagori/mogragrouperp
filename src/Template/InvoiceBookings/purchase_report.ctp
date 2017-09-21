@@ -39,7 +39,7 @@
 				<thead>
 					<tr>
 						<th>Sr.No.</th>
-						<th>Invoice No</th>
+						<th>Invoice Book No</th>
 						<th>Date</th>
 						<th>Supplier</th>
 						<th style="text-align:right;">Purchase @ 5.50 %</th>
@@ -52,11 +52,11 @@
 				</thead>
 				<tbody><?php $totalvat5=0; $totalvat14=0; $totalvat2=0; $total_purchase5=0; $total_purchase14=0; $total_purchase2=0; ?>
 				<?php foreach ($InvoiceBookings as $InvoiceBooking):  
-				if($InvoiceBooking->purchase_ledger_account !=35){ 
+				if($InvoiceBooking->purchase_ledger_account != 35){ 
 				?>
 					<tr>
 						<td><?= h(++$page_no) ?></td>
-							<td><?= h(($InvoiceBooking->ib1.'/IN-'.str_pad($InvoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$InvoiceBooking->ib3.'/'.$InvoiceBooking->ib4)) ?></td>
+							<td><?= h(($InvoiceBooking->ib1.'/IB-'.str_pad($InvoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$InvoiceBooking->ib3.'/'.$InvoiceBooking->ib4)) ?></td>
 							<td><?php echo date("d-m-Y",strtotime($InvoiceBooking->created_on)); ?></td>
 							<td><?= h($InvoiceBooking->vendor->company_name) ?></td>
 							<?php  $vat5=0;  $vat14=0; $vat2=0;  $purchase5=0;   $purchase14=0; $purchase2=0;  ?>
@@ -86,7 +86,7 @@
 									$purchase5=$purchase5+$amount;
 									$total_amt=$amount/$invoice_booking_row->quantity;
 									
-								}else if($invoice_booking_row->sale_tax==14.5){
+								}else if($invoice_booking_row->sale_tax==14.5){ 
 									$amount=$invoice_booking_row->unit_rate_from_po*$invoice_booking_row->quantity;
 									$amount=$amount+$invoice_booking_row->misc;
 									if($invoice_booking_row->discount_per==1){
@@ -181,13 +181,13 @@
 						
 				<?php endforeach; ?>
 				<tr>
-					<td colspan="4" align="right">Total</td>
-					<td align="right"><?php echo number_format($total_purchase2-$totalvat2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat2,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($total_purchase14-$totalvat14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat14,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($total_purchase5-$totalvat5,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($totalvat5,2,'.',','); ?></td>
+					<td colspan="4" align="right"><b>Total</b></td>
+					<td align="right"><b><?php echo number_format($total_purchase2-$totalvat2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat2,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($total_purchase14-$totalvat14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat14,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($total_purchase5-$totalvat5,2,'.',','); ?></b></td>
+					<td align="right"><b><?php echo number_format($totalvat5,2,'.',','); ?></b></td>
 				</tr>
 				</tbody>
 			</table>

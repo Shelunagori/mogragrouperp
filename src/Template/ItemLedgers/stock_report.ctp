@@ -94,7 +94,7 @@
 					</thead>
 					<tbody>
 						<?php $total_inv=0; $page_no=0; 
-						foreach ($item_stocks as $key=> $item_stock){
+						foreach ($item_stocks as $key=> $item_stock){ 
 						if($item_stock!=0){
 							if(@$in_qty[$key]==0){ 
 								$per_unit=@$item_rate[$key];
@@ -130,7 +130,7 @@
 						</tr>
 						
 						<?php } ?>
-						<?php if($to_date == date('d-m-Y')){ ?>
+						<?php if($to_date == date('d-m-Y') && !($stockstatus== "Positive")){ ?>
 						<?php $page_no1=$page_no; foreach($ItemDatas as $key=>$ItemData){ ?>
 						
 						<tr class="main_tr1" id="<?= h($key) ?>">

@@ -27,7 +27,19 @@ $html = '
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
 	p{
-		margin:0;font-family: Lato;font-weight: 100;line-height: 1;
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
+	}
+	.addressdata p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:2px;
+	}
+	.showdata p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;
+	}
+	.even p{
+		    margin: 0;
+			font-family: Lato;
+			font-weight: 100;
+			line-height: 18px !important;
 	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
@@ -51,7 +63,7 @@ $html = '
 	}
 	</style>
 <body>
-  <div id="header">
+  <div id="header"><br/>
 		<table width="100%">
 			<tr>
 				<td width="35%" rowspan="2">
@@ -63,7 +75,7 @@ $html = '
 			</tr>
 			<tr>
 				<td width="30%" valign="top">
-				<div align="center" style="font-size: 28px;font-weight: bold;color: #0685a8;">SALES ORDER</div>
+				<div align="center" style="font-size: 22px;font-weight: bold;color: #0685a8;">SALES ORDER</div>
 				</td>
 				<td align="right" width="35%" style="font-size: 12px;">
 				<span>'. $this->Text->autoParagraph(h($salesOrder->company->address)) .'</span>
@@ -78,39 +90,47 @@ $html = '
 			</tr>-->
 		</table>
   </div>
-  <div id="footer">
-    <p class="page">Page : </p>
-  </div>
+  
 
   <div id="content"> ';
   
 $html.='
-	<table width="100%">
+	<table width="100%" class="table_rows itemrow" >
 		<tr>
-			<td width="53%">
-				<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
-				'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'<br/>
-				<span>Customer P.O. No. '. h($salesOrder->customer_po_no).' dated '. h(date("d-m-Y",strtotime($salesOrder->po_date))).'</span><br/><br/>
-			</td>
-			<td width="47%" valign="top" align="right">
-				<table>
-					<tr>
-						<td style="width:110px;" >Sales Order No</td>
-						<td style="width:5px;">:</td>
-						<td>'. h(($salesOrder->so1."/SO-".str_pad($salesOrder->so2, 3, "0", STR_PAD_LEFT)."/".$salesOrder->so3."/".$salesOrder->so4)) .'</td>
-					</tr>
-					<tr>
-						<td>Date</td>
-						<td width="2" align="center">:</td>
-						<td>'. h(date("d-m-Y",strtotime($salesOrder->created_on))) .'</td>
-					</tr>
-					
-				</table>
-			</td>
-		</tr>
-	</table>';
+			<td colspan=6 align="">';
+				$html.='
+					<table  valign="center" width="100%" style="margin-top: 0px;" class="table2">
+						<tr class="addressdata">
+							<td width="53%">
+								<span>'. h(($salesOrder->customer->customer_name)) .'</span><br/>
+								'. $this->Text->autoParagraph(h($salesOrder->customer_address)) .'<br/>
+								
+							</td>
+							<td width="47%" valign="top" align="right">
+								<table>
+									<tr>
+										<td style="width:110px;" >Sales Order No</td>
+										<td style="width:5px;">:</td>
+										<td>'. h(($salesOrder->so1."/SO-".str_pad($salesOrder->so2, 3, "0", STR_PAD_LEFT)."/".$salesOrder->so3."/".$salesOrder->so4)) .'</td>
+									</tr>
+									<tr>
+										<td>Date</td>
+										<td width="2" align="center">:</td>
+										<td>'. h(date("d-m-Y",strtotime($salesOrder->created_on))) .'</td>
+									</tr>
+									
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td style="font-size:14px; border-top:1px solid #000;" colspan="7">
+							Customer P.O. No. '. h($salesOrder->customer_po_no) .' dated '. h(date("d-m-Y",strtotime($salesOrder->po_date))) .'
+							</td>
+						</tr>
+					</table>';
  
-$html.='<br/>
+$html.='
+</table>
 <table width="100%" class="table_rows">
 		<tr>
 			<th style="white-space: nowrap;">S No</th>
@@ -128,10 +148,10 @@ $sr=0; foreach ($salesOrder->sales_order_rows as $salesOrderRows): $sr++;
 $html.='
 	<tr class="odd">
 		<td valign="top" align="center" style="padding-top:10px;">'. h($sr) .'</td>
-		<td style="padding-top:10px;" width="100%">';
+		<td style="padding-top:10px;" class="even" width="100%">';
 		
 		if(!empty($salesOrderRows->description)){
-			$html.= h($salesOrderRows->item->name);
+			$html.= h($salesOrderRows->item->name).$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div>';
 		}else{
 			$html.= h($salesOrderRows->item->name).'<div style="height:'.$salesOrderRows->height.'"></div> ';
 		}
@@ -145,13 +165,7 @@ $html.='
 		<td align="center" valign="top" style="padding-top:10px;">'. h($salesOrderRows->excise_duty) .'</td>
 		<td align="center" valign="top" style="padding-top:10px;">'. $salesOrderRows->sale_tax->tax_figure.'('.$salesOrderRows->sale_tax->invoice_description.')' .'</td>
 	</tr>';
-	if(!empty($salesOrderRows->description)){
-		$html.='
-		<tr class="even">
-			<td></td>
-			<td colspan="7" style="text-align: justify;"><b> </b>'.$salesOrderRows->description.'<div style="height:'.$salesOrderRows->height.'"></div></td>
-		</tr>';
-	}
+	
 endforeach;
 
 if($salesOrder->discount_type=='1'){ $discount_text='Discount @ '.$salesOrder->discount_per.'%'; }else{ $discount_text='Discount'; }
@@ -195,10 +209,10 @@ $html.='
 	</table>'; 
 	
 $html.='
-	<table width="100%">
+	<table width="100%" class="table_rows">
 		<tr>
 			<td width="60%" valign="top">
-				<table>
+				<table class="table2" width="100%">
 					<tr>
 						<td valign="top">Transporter</td>
 						<td>:</td>
@@ -214,15 +228,11 @@ $html.='
 						<td>:</td>
 						<td> '. h($salesOrder->delivery_description).'</td>
 					</tr>
-					<tr>
-						<td valign="top" width="35%">Additional Note</td>
-						<td width="5%">:</td>
-						<td width="50%"> '. h($salesOrder->additional_note).'</td>
-					</tr>
+					
 				</table>
 			</td>
 			<td valign="top">
-				<table>
+				<table class="table2" width="100%">
 					<tr>
 						<td valign="top">Form-49 Required</td>
 						<td>:</td>
@@ -243,32 +253,44 @@ $html.='
 			</td>
 		</tr>
 	</table>
-	<br/>
-	<b>Dispatch Details</b>
-	<table width="100%" >
+	<table width="100%" class="table_rows ">
 		<tr>
-			<td valign="top">Name</td>
-			<td valign="top"> : <td>
-			<td valign="top">'. h($salesOrder->dispatch_name).'</td>
-			<td width="10%"></td>
-			<td valign="top">Mobile</td>
-			<td valign="top"> : <td>
-			<td valign="top">'. h($salesOrder->dispatch_mobile).'</td>
-		</tr>
-		<tr>
-			<td valign="top">Address</td>
-			<td valign="top"> : <td>
-			<td valign="top" width="60%" >'. h($salesOrder->dispatch_address).'</td>
-			<td></td>
-			<td valign="top">Email</td>
-			<td valign="top"> : <td>
-			<td valign="top">'. h($salesOrder->dispatch_email).'</td>
+			<td valign="top" width="35%">Additional Note</td>
+			<td width="50%"> '. h($salesOrder->additional_note).'</td>
 		</tr>
 	</table>
+	<table width="100%" class="table_rows ">
+		<tr>
+			<td width="60%" valign="top">
+				<b style="font-size:13px;"><u>Dispatch Details</u></b>
+				<table class="table2" width="100%">
+					<tr>
+						<td valign="top">Name</td>
+						<td valign="top"> : <td>
+						<td valign="top">'. h($salesOrder->dispatch_name).'</td>
+						<td width="10%"></td>
+						<td valign="top">Mobile</td>
+						<td valign="top"> : <td>
+						<td valign="top">'. h($salesOrder->dispatch_mobile).'</td>
+					</tr>
+					<tr>
+						<td valign="top">Address</td>
+						<td valign="top"> : <td>
+						<td valign="top" width="60%" >'. h($salesOrder->dispatch_address).'</td>
+						<td></td>
+						<td valign="top">Email</td>
+						<td valign="top"> : <td>
+						<td valign="top">'. h($salesOrder->dispatch_email).'</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>	
+</table>	
 ';
 
-$html.='<table width="100%">
-		<tr><td width="40%" align="right"></td><td width="30%" align="right">';
+$html.='<table width="100%" class="table_rows ">
+		<tr><td width="30%" align="right">';
 		
 if(!empty($salesOrder->edited_by)){
 $html.='<div align="center">
@@ -282,7 +304,7 @@ $html.='<div align="center">
 }
 			
 $html.='</td>
-<td align="right">
+<td width="30%" align="right">
 			<div align="center">
 			<img src='.ROOT . DS  . 'webroot' . DS  .'signatures/'.$salesOrder->creator->signature.' height="50px" style="height:50px;"/>
 			<br/>

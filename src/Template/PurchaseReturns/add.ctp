@@ -16,23 +16,25 @@
 }
 </style>
 <?php 
-$this->Form->templates([
-				'inputContainer' => '{{content}}'
-			]);
-			?>
+$this->Form->templates(['inputContainer' => '{{content}}']); ?>
+
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Add Purchase Return</span>
 		</div>
-		
 	</div>
 	
 	
 	<div class="portlet-body form">
 		<?= $this->Form->create($purchaseReturn,['id'=> 'form_sample_3']) ?>
-		
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 			<div class="form-body">
 			
 				<div class="row">
@@ -63,7 +65,8 @@ $this->Form->templates([
 									<div class="form-group">
 										<label class="control-label">Transaction Date</label>
 										<br/>
-										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text']); ?>
+										<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','data-date-start-date' 
+										=>$start_date ,'data-date-end-date' => $end_date]); ?>
 										<br >
 											<span style="color: red;">
 												<?php if($chkdate == 'Not Found'){  ?>
@@ -354,9 +357,11 @@ $(document).ready(function() {
 			
 		});
 	}
+	
 	$('.quantity').die().live("keyup",function() {
 			calculate_total(); 
     });
+	
 	calculate_total();
 	function calculate_total(){
 		var grand_total=0;

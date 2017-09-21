@@ -79,6 +79,7 @@ class JobCardsController extends AppController
 						return $q->where(['Items.id' =>$items]);
 					}
 				)
+			->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC'])	
 			);
 			
 		}else if($inventory_voucher_status=='true'){
@@ -302,15 +303,15 @@ class JobCardsController extends AppController
 			$where['Customers.customer_name LIKE']='%'.$customer.'%';
 		}
 		if(!empty($po_no)){
-			$where['JobCards.customer_po_no LIKE']='%'.$po_no.'%';
+			$where['SalesOrders.customer_po_no LIKE']='%'.$po_no.'%';
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['JobCards.created_on >=']=$From;
+			$where['SalesOrders.po_date >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['JobCards.created_on <=']=$To;
+			$where['SalesOrders.po_date <=']=$To;
 		}
 		
 		$this->paginate = [

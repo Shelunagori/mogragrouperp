@@ -198,7 +198,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	}?>
 			
 	<div style="overflow: auto;">
-		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value="1"/>
+		<input type="text"  name="checked_row_length" id="checked_row_length" style="height: 0px;padding: 0;border: none;" value=""/>
 			<table  class="table tableitm" id="main_tb" border="1">
 				<thead>
 						<tr >
@@ -340,6 +340,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<tr class="tr3" row_no="<?= h($q) ?>">
 							<td></td>
 							<td colspan="<?php echo $tr2_colspan; ?>">
+							<label class="control-label">Item Serial Number <span class="required" aria-required="true">*</span></label>
 							<?php echo $this->Form->input('q', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control','style'=>'width:100%','value'=>$choosen,'readonly']);  ?></td>
 							</tr><?php } ?>
 						<?php } $q++;  } ?>
@@ -364,11 +365,11 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 						?>
 					<tr>
 						<td align="right" colspan="<?php echo $tr3_colspan; ?>">Fright Ledger Account</td>
-						<td align="right" ><?php echo $this->Form->input('fright_ledger_account', ['empty' => "--Fright Account--",'label' => false,'options' =>$ledger_account_details_for_fright,'class' => 'form-control input-sm select2me','required']); ?></td>
+						<td align="right" ></td>
 						<td><?php echo $this->Form->input('fright_amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm fright_amount','placeholder' => 'Fright Amount','step'=>0.01,'value'=>@$sales_order->fright_amount]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_percent', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm select2me row_textbox fright_cgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_cgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
-						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01,'required']); ?></td>
+						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_percent', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox sgst_percentage select2me fright_sgst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td style="<?php echo $gst_hide; ?>"><?php echo $this->Form->input('fright_sgst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_percent', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage select2me fright_igst_percent','placeholder'=>'%','step'=>0.01]); ?></td>
 						<td style="<?php echo $igst_hide; ?>"><?php echo $this->Form->input('fright_igst_amount', ['label' => false,'class' => 'form-control input-sm row_textbox','placeholder'=>'Amount','readonly','step'=>0.01]); ?></td>
@@ -556,6 +557,10 @@ $(document).ready(function() {
 		errorClass: 'help-block help-block-error', // default input error message class
 		focusInvalid: true, // do not focus the last invalid input
 		rules: {
+			checked_row_length: {
+				required: true,
+				min : 1,
+			},
 			company_id:{
 				required: true
 			},
@@ -585,24 +590,14 @@ $(document).ready(function() {
 			},
 			employee_id: {
 				  required: true
-			},
-			customer_tin: {
-				  required: true
-			},
-			checked_row_length: {
-				  required: true
-			},
-			
+			}
 		},
 
 		messages: { // custom messages for radio buttons and checkboxes
 			checked_row_length: {
-				required : "Please select atleast one row."
-			},
-			customer_tin: {
-				required: "Can't generate Invoice,Customer has not TIN"
+				required : "Please select atleast one row.",
+				min : "Please select atleast one row."
 			}
-			
 		},
 
 		errorPlacement: function (error, element) { // render error placement for each input type
@@ -705,7 +700,7 @@ $(document).ready(function() {
 
 	$('.fright_amount').die().live("keyup",function() {
 		var qty =$(this).val(); 
-		rename_rows(); calculate_total(); calculate_fright_amount_total(); do_ref_total();
+		rename_rows(); calculate_fright_amount_total(); calculate_total();  do_ref_total();
     });
 	
 	$('.total_fright_amount').die().live("keyup",function() {
@@ -748,26 +743,27 @@ $(document).ready(function() {
 	
 	function rename_rows(){
 		var list = new Array();
-		var p=0;
+		var p=0;var i=0;
 		$("#main_tb tbody tr.tr1").each(function(){  
 			var row_no=$(this).attr('row_no');
 			
 			var val=$(this).find('td:nth-child(18) input[type="checkbox"]:checked').val();
 			if(val){ 
+				i++;
 				$(this).find('td:nth-child(2) input').attr("name","invoice_rows["+val+"][item_id]").attr("id","invoice_rows-"+val+"-item_id").rules("add", "required");
 				$(this).find('td:nth-child(3) input').removeAttr("readonly").attr("name","invoice_rows["+val+"][quantity]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-quantity").rules("add", "required");
 				$(this).find('td:nth-child(4) input').attr("name","invoice_rows["+val+"][rate]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-rate").rules("add", "required");
 				$(this).find('td:nth-child(5) input').attr("name","invoice_rows["+val+"][amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-amount").rules("add", "required");
-				$(this).find('td:nth-child(6) input').attr("name","invoice_rows["+val+"][discount_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-discount_percentage").rules("add", "required");
+				$(this).find('td:nth-child(6) input').attr("name","invoice_rows["+val+"][discount_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-discount_percentage");
 				$(this).find('td:nth-child(7) input').attr("name","invoice_rows["+val+"][discount_amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-discount_amount").rules("add", "required");
-				$(this).find('td:nth-child(8) input').attr("name","invoice_rows["+val+"][pnf_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-pnf_percentage").rules("add", "required");
+				$(this).find('td:nth-child(8) input').attr("name","invoice_rows["+val+"][pnf_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-pnf_percentage");
 				$(this).find('td:nth-child(9) input').attr("name","invoice_rows["+val+"][pnf_amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-pnf_amount").rules("add", "required");
 				$(this).find('td:nth-child(10) input').attr("name","invoice_rows["+val+"][taxable_value]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-taxable_value").rules("add", "required");
-				$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-cgst_percentage");
+				$(this).find('td:nth-child(11) select').select2().attr("name","invoice_rows["+val+"][cgst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-cgst_percentage").rules("add", "required");;
 				$(this).find('td:nth-child(12) input').attr("name","invoice_rows["+val+"][cgst_amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-cgst_amount").rules("add", "required");
-				$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-sgst_percentage");
+				$(this).find('td:nth-child(13) select').select2().attr("name","invoice_rows["+val+"][sgst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-sgst_percentage").rules("add", "required");;
 				$(this).find('td:nth-child(14) input').attr("name","invoice_rows["+val+"][sgst_amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-sgst_amount").rules("add", "required");
-				$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-igst_percentage");
+				$(this).find('td:nth-child(15) select').select2().attr("name","invoice_rows["+val+"][igst_percentage]").removeAttr("readonly").attr("id","q"+val).attr("id","invoice_rows-"+val+"-igst_percentage").rules("add", "required");;
 				$(this).find('td:nth-child(16) input').attr("name","invoice_rows["+val+"][igst_amount]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-igst_amount").rules("add", "required");
 				$(this).find('td:nth-child(17) input').attr("name","invoice_rows["+val+"][row_total]").attr("id","q"+val).attr("id","invoice_rows-"+val+"-row_total").rules("add", "required");
 				
@@ -822,12 +818,12 @@ $(document).ready(function() {
 				//$('#main_tb tbody tr.tr2').attr({ name:"q", readonly:"readonly"}).rules( "remove", "required" );
 				$(uncheck).css('background-color','#FFF');
 				var serial_l=$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] td:nth-child(2) select').length;
-				if(serial_l>0){
-				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
-				$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
+					if(serial_l>0){
+						$('#main_tb tbody tr.tr3[row_no="'+row_no+'"] select').attr({ name:"q", readonly:"readonly"}).select2().rules( "remove", "required" );
+						$('#main_tb tbody tr.tr3[row_no="'+row_no+'"]').css('background-color','#FFF');
+					}
 				}
-				
-				}
+				$('input[name="checked_row_length"]').val(i);
 			});
 		}
 		
@@ -880,7 +876,13 @@ $(document).ready(function() {
 				$('input[name="fright_igst_amount"]').val(fright_igst_amount.toFixed(2));
 			}
 			var total_fright=fright_amount+fright_cgst_amount+fright_igst_amount+fright_sgst_amount;
-			$('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+			if(isNaN(total_fright)){
+				 var total_fright = 0; 
+				 $('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+			}else{
+				$('input[name="total_fright_amount"]').val(total_fright.toFixed(2));
+
+			}
 	}
 	
 	calculate_total();	

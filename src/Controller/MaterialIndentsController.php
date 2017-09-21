@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 
+
 /**
  * MaterialIndents Controller
  *
@@ -138,24 +139,11 @@ class MaterialIndentsController extends AppController
 		}
 		
         if ($this->request->is('post')) {
-			
             $materialIndent = $this->MaterialIndents->patchEntity($materialIndent, $this->request->data);
 			$materialIndent->created_by=$s_employee_id; 
 			$materialIndent->created_on=date("Y-m-d");
 			$materialIndent->company_id=$st_company_id;
-			
-			//pr($materialIndent); exit;
-			
             if ($this->MaterialIndents->save($materialIndent)) {
-				//pr($materialIndent); exit;
-				/* foreach($materialIndent)
-					{
-						$query2 = $this->DebitNotes->ReferenceBalances->query();
-						$query2->update()
-							->set(['credit' => $this->request->data['credit'][$row]+$data[0]->credit])
-							->where(['reference_no' => $this->request->data['reference_no'][$row],'ledger_account_id' => $this->request->data['sales_acc_id']])
-							->execute();
-					} */
 				
                 $this->Flash->success(__('The material indent has been saved.'));
 
@@ -185,6 +173,184 @@ class MaterialIndentsController extends AppController
      * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
+	 public function AddToCart($id = null)
+    {
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+		$s_employee_id=$this->viewVars['s_employee_id'];
+		$materialIndent = $this->MaterialIndents->newEntity();
+		if ($this->request->is('post')) { 
+            $materialIndent = $this->MaterialIndents->patchEntity($materialIndent, $this->request->data);
+			
+			$materialIndent->created_by=$s_employee_id; 
+			$materialIndent->created_on=date("Y-m-d");
+			$materialIndent->company_id=$st_company_id;
+			$last_voucher_no=$this->MaterialIndents->find()->select(['mi_number'])->where(['MaterialIndents.company_id' => $st_company_id])->order(['mi_number' => 'DESC'])->first();
+			if($last_voucher_no){
+				$materialIndent->mi_number=$last_voucher_no->mi_number+1;
+			}else{
+				$materialIndent->mi_number=1;
+			}
+			//pr($materialIndent); 
+            if ($this->MaterialIndents->save($materialIndent)) {
+				$this->MaterialIndents->ItemBuckets->deleteAll(array('1 = 1'));
+				//$this->MaterialIndents->ItemBuckets->deleteAll(['is_spam' => true]);
+				///$this->MaterialIndents->ItemBuckets->deleteAll();
+                $this->Flash->success(__('The material indent has been saved.'));
+			
+                return $this->redirect(['action' => 'index']);
+            } else { 
+                $this->Flash->error(__('The material indent could not be saved. Please, try again.'));
+            }
+        }
+		
+		$salesOrders=$this->MaterialIndents->ItemLedgers->SalesOrders->find()
+			->select(['total_rows'=>$this->MaterialIndents->ItemLedgers->SalesOrders->find()->func()->count('SalesOrderRows.id')])
+			->leftJoinWith('SalesOrderRows', function ($q) {
+				return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
+			})
+			->where(['company_id'=>$st_company_id])
+			->group(['SalesOrders.id'])
+			->autoFields(true)
+			->having(['total_rows >' => 0])
+			->contain(['SalesOrderRows.Items'])
+			->toArray();
+		
+		$sales=[];
+			foreach($salesOrders as $data){
+				foreach($data->sales_order_rows as $row){ 
+				//pr($row->quantity);
+				$item_id=$row->item_id;
+				$quantity=$row->quantity;
+				$processed_quantity=$row->processed_quantity;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$sales[$row->item_id]=@$sales[$row->item_id]+$Sales_Order_stock;
+				}
+				//$sales[$item_id]=@$sales[$item_id]+$Sales_Order_stock;
+			}
+		
+		$JobCards=$this->MaterialIndents->ItemLedgers->JobCards->find()->where(['company_id'=>$st_company_id,'status'=>'Pending'])->contain(['JobCardRows.Items']);
+		
+		$job_card_items=[];
+		foreach($JobCards as $JobCard){
+			foreach($JobCard->job_card_rows as $job_card_row){
+				$job_card_items[$job_card_row->item_id]=@$job_card_items[$job_card_row->item_id]+$job_card_row->quantity;
+			}
+		}
+
+		$PurchaseOrders=$this->MaterialIndents->ItemLedgers->PurchaseOrders->find()->contain(['PurchaseOrderRows'=>['Items']])->select(['total_rows' => 
+				$this->MaterialIndents->ItemLedgers->PurchaseOrders->find()->func()->count('PurchaseOrderRows.id')])
+				->leftJoinWith('PurchaseOrderRows', function ($q) {
+					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
+				})
+				->where(['company_id'=>$st_company_id])
+				->group(['PurchaseOrders.id'])
+				->autoFields(true)
+				->order(['PurchaseOrders.id' => 'DESC']);		
+		$ItemBuckets = $this->MaterialIndents->ItemBuckets->find()->contain(['Items'])->toArray();
+		
+		$purchase_order_items=[];
+		foreach($PurchaseOrders as $PurchaseOrder){
+			foreach($PurchaseOrder->purchase_order_rows as $purchase_order_rows){
+				$item_id=$purchase_order_rows->item_id;
+				$quantity=$purchase_order_rows->quantity;
+				$processed_quantity=$purchase_order_rows->processed_quantity;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$purchase_order_items[$purchase_order_rows->item_id]=@$purchase_order_items[$purchase_order_rows->item_id]+$Sales_Order_stock;
+			}
+		}	
+		
+		$MaterialIndents=$this->MaterialIndents->find()->contain(['MaterialIndentRows'=>['Items']])->select(['total_rows' => 
+				$this->MaterialIndents->find()->func()->count('MaterialIndentRows.id')])
+				->leftJoinWith('MaterialIndentRows', function ($q) {
+					return $q->where(['MaterialIndentRows.processed_quantity < MaterialIndentRows.required_quantity']);
+				})
+				->where(['company_id'=>$st_company_id])
+				->group(['MaterialIndents.id'])
+				->autoFields(true)
+				->order(['MaterialIndents.id' => 'DESC']);	
+		
+		$material_indent_order_items=[];
+		foreach($MaterialIndents as $MaterialIndent){ 
+			foreach($MaterialIndent->material_indent_rows as $material_indent_rows){
+				$item_id=$material_indent_rows->item_id;
+				$quantity=$material_indent_rows->required_quantity;
+				$processed_quantity=$material_indent_rows->processed_quantity;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$material_indent_order_items[$material_indent_rows->item_id]=@$material_indent_order_items[$material_indent_rows->item_id]+$Sales_Order_stock;
+			}
+		}
+
+		$Quotations=$this->MaterialIndents->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);		
+		//pr($ItemBuckets);exit;
+		
+		$quotation_items=[];
+		foreach($Quotations as $Quotation){
+			foreach($Quotation->quotation_rows as $quotation_row){
+				$item_id=$quotation_row->item_id;
+				$quantity=$quotation_row->quantity;
+				$processed_quantity=$quotation_row->proceed_qty;
+				$Sales_Order_stock=$quantity-$processed_quantity;
+				$quotation_items[$quotation_row->item_id]=@$quotation_items[$quotation_row->item_id]+$Sales_Order_stock;
+			}
+		}	
+		
+		$ItemLedgers = $this->MaterialIndents->ItemLedgers->find();
+				$totalInCase = $ItemLedgers->newExpr()
+					->addCase(
+						$ItemLedgers->newExpr()->add(['in_out' => 'In']),
+						$ItemLedgers->newExpr()->add(['quantity']),
+						'integer'
+					);
+				$totalOutCase = $ItemLedgers->newExpr()
+					->addCase(
+						$ItemLedgers->newExpr()->add(['in_out' => 'Out']),
+						$ItemLedgers->newExpr()->add(['quantity']),
+						'integer'
+					);
+
+				$ItemLedgers->select([
+					'total_in' => $ItemLedgers->func()->sum($totalInCase),
+					'total_out' => $ItemLedgers->func()->sum($totalOutCase),'id','item_id'
+				])
+				->group('item_id')
+				->autoFields(true)
+				->where(['company_id'=>$st_company_id])
+				->contain(['Items' => function($q) use($st_company_id){
+					return $q->where(['Items.source'=>'Purchessed/Manufactured'])->orWhere(['Items.source'=>'Purchessed'])->contain(['ItemCompanies'=>function($p) use($st_company_id){
+						return $p->where(['company_id'=>$st_company_id,'ItemCompanies.freeze' => 0]);
+					}]);
+				}]);
+		
+				$material_report=[];
+		foreach ($ItemLedgers as $itemLedger){
+			
+			$item_name=$itemLedger->item->name;
+			$item_id=$itemLedger->item->id;
+			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
+			
+			
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$job_card_items[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
+			
+		} 
+		$total_indent=[];
+		foreach($material_report as $result){ 
+			$Current_Stock=$result['Current_Stock'];
+				$sales_order=$result['sales_order'];
+				$job_card_qty=$result['job_card_qty'];
+				$po_qty=$result['po_qty'];
+				$qo_qty=$result['qo_qty'];
+				$mi_qty=$result['mi_qty'];
+				$item_id=$result['item_id'];
+				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
+			
+					$total_indent[$item_id]=$total;
+				
+		}
+		$this->set(compact('ItemBuckets','materialIndent','total_indent'));
+	}
+	 
     public function edit($id = null)
     {
 		$this->viewBuilder()->layout('index_layout');
@@ -224,16 +390,18 @@ class MaterialIndentsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $materialIndent = $this->MaterialIndents->get($id);
-        if ($this->MaterialIndents->delete($materialIndent)) {
-            $this->Flash->success(__('The material indent has been deleted.'));
+        //$this->request->allowMethod(['post', 'delete']);
+        $ItemBucket = $this->MaterialIndents->ItemBuckets->get($id);
+        if ($this->MaterialIndents->ItemBuckets->delete($ItemBucket)) {
+            $this->Flash->success(__('The Item has been deleted.'));
         } else {
-            $this->Flash->error(__('The material indent could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The Item could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'AddToCart']);
     }
+	
+	
 	
 	public function report()
 	{

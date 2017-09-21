@@ -231,24 +231,24 @@
 							</td>
 							
 							<td class="cgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->cgst_per]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst_per', ['label' => false,'empty'=>'Select','options'=>$cgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent cgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->cgst_per,'required']); ?>
 							</td>
 							
 							<td class="cgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->cgst]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.cgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->cgst,'required']); ?>
 							</td>
 							
-							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->sgst_per]); ?>
+							<td class="sgst_display"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst_per', ['label' => false,'empty'=>'Select','options'=>$sgst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent sgst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->sgst_per,'required']); ?>
 							</td>
 							
 							<td class="sgst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->sgst]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.sgst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->sgst,'required']); ?>
 							</td>
 							
-							<td class="igst_display" align="center"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->igst_per]); ?></td>
+							<td class="igst_display" align="center"><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst_per', ['label' => false,'empty'=>'Select','options'=>$igst_options,'class' => 'form-control input-sm row_textbox igst_percentage  fright_igst_percent igst_percent','placeholder'=>'%','step'=>0.01,'value' => $invoice_booking_row->igst_per,'required']); ?></td>
 							
 							<td class="igst_display" align="center">
-							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->igst_per]); ?>
+							<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.igst',['value'=>0,'type'=>'text','label'=>false,'class'=>'vattext rmvcls form-control input-sm row_textbox cal','readonly','value' => $invoice_booking_row->igst_per,'required']); ?>
 							</td>
 							
 							<td><?php echo $this->Form->input('invoice_booking_rows.'.$q.'.other_charges',['type'=>'text','label'=>false,'class'=>'form-control input-sm row_textbox cal','value' => $invoice_booking_row->other_charges]); ?>
@@ -490,7 +490,7 @@ $(document).ready(function() {
 	});
 	function calculate_total(){ 
 		var total_amount=0; var total_misc=0; var total_discount=0; 
-		var total_pnf=0; var total_ex=0; var total_rate_to_post=0; var total_other=0; var total_row_amount=0; 
+		var total_pnf=0; var total_ex=0; var total_rate_to_post=0; var total_other=0; var total_row_amount=0;  var taxable_value=0; 
 		var total_cgst=0;var total_sgst=0;var total_igst=0; var total_taxable_value=0;
 		$("#main_tb tbody tr.tr1").each(function(){ var row_total=0;
 			var urate=parseFloat($(this).find("td:nth-child(3) input").val());
@@ -567,11 +567,19 @@ $(document).ready(function() {
 				row_total=row_total+((taxable_value*igst_percentage)/100);
 			}
 			total_igst=total_igst+igst_amount;
-			
 			var other=parseFloat($(this).find("td:nth-child(18) input").val());
 			if(!other){ other=0; }
-			row_total=row_total+other;
+			//row_total=row_total+other;
 			total_other=total_other+other;
+			
+			var taxable_value=parseFloat($(this).find("td:nth-child(11) input").val());
+			taxable_value=parseFloat(taxable_value.toFixed(2));
+			cgst_amount=parseFloat(cgst_amount.toFixed(2));
+			sgst_amount=parseFloat(sgst_amount.toFixed(2));
+			igst_amount=parseFloat(igst_amount.toFixed(2));
+			other=parseFloat(other.toFixed(2));
+			
+			row_total=taxable_value+cgst_amount+sgst_amount+igst_amount+other;
 			var qty=parseFloat($(this).find("td:nth-child(4) input").val());
 			var taxable_amount=parseFloat($(this).find("td:nth-child(11) input").val());
 			$(this).find("td:nth-child(20) input").val((taxable_amount/qty).toFixed(5));

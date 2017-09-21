@@ -283,7 +283,8 @@ class VendorsController extends AppController
 		$stock=$this->request->query('total');
 		$to_range_datas =json_decode($to_send);
 		$LedgerAccounts =$this->Vendors->LedgerAccounts->find()
-			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Vendors']);
+			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Vendors'])
+			->order(['LedgerAccounts.name'=>'ASC']);
 		
 		$custmer_payment_terms=[];
 		foreach($LedgerAccounts as $LedgerAccount){
@@ -352,6 +353,19 @@ class VendorsController extends AppController
 				if($LedgerAccount->source_model=='Vendors'){
 					$Customer =$this->Vendors->get($LedgerAccount->source_id);
 					$date = date("Y-m-d", strtotime($Receipt->date_created));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Vendors->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->purchase_return_id !=0){ 
+				$Receipt =$this->Vendors->PurchaseReturns->get($ReferenceDetail->purchase_return_id);
+				$LedgerAccount =$this->Vendors->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Vendors'){
+					$Customer =$this->Vendors->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->transaction_date));
 					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
 					$query = $this->Vendors->ReferenceBalances->query();
 					$query->update()
@@ -469,8 +483,8 @@ class VendorsController extends AppController
 				$now=Date::now();
 				$now=date("Y-m-d",strtotime($now));
 				
-				//pr($now); exit;
-				$over_date1=date("Y-m-d",strtotime($now));
+				//pr($now); 
+				$over_date1=date("Y-m-d",strtotime($to_range_datas->tdate));
 				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
 				
 				
@@ -488,18 +502,19 @@ class VendorsController extends AppController
 			
 				if($ReferenceBalance->due_date <= $over_date1 && $ReferenceBalance->due_date >=  $over_date2){
 					
+					
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								@$total_debit_1[$ReferenceBalance->ledger_account_id]+=@$ReferenceBalance->debit-@$ReferenceBalance->credit;
 								
 							}else{
 								$total_credit_1[$ReferenceBalance->ledger_account_id]=@$total_credit_1[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
-								
 							}
-							
 					} 
 				}
-				else if($ReferenceBalance->due_date < $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
+				else if($ReferenceBalance->due_date <= $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
+					
+					
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_2[$ReferenceBalance->ledger_account_id]=@$total_debit_2[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -509,8 +524,10 @@ class VendorsController extends AppController
 						}
 						
 				}	
-				else if($ReferenceBalance->due_date < $over_date5 && $ReferenceBalance->due_date >=  $over_date6){
+				else if($ReferenceBalance->due_date <= $over_date5 && $ReferenceBalance->due_date >=  $over_date6){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+					
+					
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_3[$ReferenceBalance->ledger_account_id]=@$total_debit_3[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
 							}else{
@@ -519,7 +536,7 @@ class VendorsController extends AppController
 						}
 						
 				}
-				else if($ReferenceBalance->due_date < $over_date7 && $ReferenceBalance->due_date >=  $over_date8){ 
+				else if($ReferenceBalance->due_date <= $over_date7 && $ReferenceBalance->due_date >=  $over_date8){ 
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_4[$ReferenceBalance->ledger_account_id]=@$total_debit_4[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
@@ -528,20 +545,25 @@ class VendorsController extends AppController
 							}
 						}
 						
-				}else if($ReferenceBalance->due_date <  $over_date8){
+				}else if($ReferenceBalance->due_date <  $over_date8 && $ReferenceBalance->due_date < $over_date1){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit && $ReferenceBalance->due_date){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+								
 							}else{
 								$total_credit_5[$ReferenceBalance->ledger_account_id]=@$total_credit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+								
 							}
 						}
-				}else if($ReferenceBalance->due_date >= $over_date1){
+				}else if($ReferenceBalance->due_date > $over_date1){
 					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
 							if($ReferenceBalance->debit > $ReferenceBalance->credit){
 								$total_debit_6[$ReferenceBalance->ledger_account_id]=@$total_debit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+								
+								
 							}else{
 								$total_credit_6[$ReferenceBalance->ledger_account_id]=@$total_credit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+								
 							}
 						}
 				}
@@ -567,9 +589,11 @@ class VendorsController extends AppController
 			
 					
 			} 
-			
+			//pr($total_debit_3[477]);
+			//pr($total_credit_3[477]);
+			//exit;
 		
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','stock','total_debit_6','total_credit_6'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_3','total_credit_4','total_debit_4','total_debit_5','total_credit_5','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','stock','total_debit_6','total_credit_6'));
         $this->set('_serialize', ['Vendors']);
     }
 }

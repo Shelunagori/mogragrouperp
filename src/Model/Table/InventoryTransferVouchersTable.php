@@ -56,7 +56,8 @@ class InventoryTransferVouchersTable extends Table
 			'foreignKey' => 'created_by',
 			'propertyName' => 'creator',
 		]);
-
+		$this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');	
     }
 
     /**

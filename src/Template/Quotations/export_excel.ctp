@@ -27,7 +27,7 @@
 			<th>Product</th>
 			<th>Total</th>
 			<th>Finalisation Date</th>
-			
+			<th>Status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -40,7 +40,7 @@
 			<td><?= h($quotation->item_group->name) ?></td>
 			<td><?= h($quotation->total) ?></td>
 			<td><?php echo date("d-m-Y",strtotime($quotation->finalisation_date)); ?></td>
-			
+			<td><?php echo ucwords($quotation->status); ?></td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>

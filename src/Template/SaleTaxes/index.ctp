@@ -105,9 +105,37 @@
 						</div>
 					</div>
 				</div>
-				
-				
-					
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label col-md-3">CGST 
+								</label>
+								<div class="control-label col-md-3">
+									<?php echo $this->Form->input('cgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']); ?>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label col-md-3">SGST 
+								</label>
+								<div class="control-label col-md-3">
+									<?php echo $this->Form->input('sgst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']); ?>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label col-md-3">IGST 
+								</label>
+								<div class="control-label col-md-3">
+									<?php echo $this->Form->input('igst', ['type'=>'checkbox','label' => false,'class' => 'form-control input-sm ']); ?>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>	
 				<div class="row">
 					<div class="col-md-offset-4 col-md-8">
 						<button type="submit" class="btn btn-primary">Add Sale Tax</button>

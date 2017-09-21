@@ -232,10 +232,10 @@ if($transaction_date <  $start_date ) {
 					<?php if($chkdate == 'Not Found'){  ?>
 						<label class="btn btn-danger"> You are not in Current Financial Year </label>
 					<?php } else { ?>
-					<?php if(date("d-m-Y",strtotime($payment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($payment->transaction_date)) <= $end_date) { ?>
+					
 					<button type="submit" class="btn btn-primary">EDIT PAYMENT VOUCHER</button>
 					
-					<?php } } ?>	
+					<?php } ?>	
 				</td>
 				
 				<td></td>

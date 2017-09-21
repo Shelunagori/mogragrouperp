@@ -18,7 +18,12 @@
 	<thead>
 		<tr>
 			<th colspan="5" align="center">
-				 Account Statement Reference Report For <?php echo $Ledger_Account_data->name.' ('.$Ledger_Account_data->alias.')' ?>
+				 Account Statement Reference Report For <?php
+				if(!empty($Ledger_Account_data->alias)){	
+				 echo $Ledger_Account_data->name.' ('.$Ledger_Account_data->alias.')';
+				}else{
+					echo $Ledger_Account_data->name;
+				}				 ?>
 			</th>
 		</tr>
 		<tr>

@@ -104,7 +104,7 @@ With reference to your price list we are pleased to place an order for the follo
 										<span class="label label-sm label-warning ">Pulled from MI</span>
 									</td>
 									<td>
-										<?php echo $this->Form->input('purchase_order_rows.'.$q.'.quantity', ['label' => false,'type'=>'text','value'=>$data['qty'],'class'=>'form-control input-sm']); ?>
+										<?php echo $this->Form->input('purchase_order_rows.'.$q.'.quantity', ['label' => false,'type'=>'text','value'=>$data['qty'],'class'=>'form-control input-sm','max'=>$data['qty']]); ?>
 									</td>
 									<td>
 										<?php echo $this->Form->input('purchase_order_rows.'.$q.'.rate', ['label' => false,'type'=>'text','class'=>'form-control input-sm']); ?>

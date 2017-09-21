@@ -10,7 +10,8 @@ $dompdf = new Dompdf($options);
 $dompdf = new Dompdf();
 
 
-
+//$description =  wordwrap($invoice->delivery_description,25,'<br/>');
+//pr($description);exit;
 $html = '
 <html>
 <head>
@@ -31,6 +32,10 @@ $html = '
 		font-family: Lato;
 		src: url("https://fonts.googleapis.com/css?family=Lato");
 	}
+	p.test {
+		width: 11px; 
+    word-wrap: break-word;
+}
 	p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 12px !important;margin-top:-9px;
 	}
@@ -43,7 +48,9 @@ $html = '
 	.topdata p{
 		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;
 	}
-	
+	.des p{
+		margin:0;font-family: Lato;font-weight: 100;line-height: 17px !important;margin-bottom: 1px;width:291px;
+	}
 	table td{
 		margin:0;font-family: Lato;font-weight: 100;padding:0;line-height: 1;
 	}
@@ -135,7 +142,7 @@ $html = '
 				$html.='
 					<table  valign="center" width="100%"  class="table2">
 						<tr>
-							<td width="50%" valign="top" text-align="right" >
+							<td width="50%" valign="top" text-align="right">
 								<span><b>'. h($invoice->customer->customer_name) .'</b></span><br/>
 								
 								'. $this->Text->autoParagraph(h($invoice->customer_address));
@@ -152,12 +159,12 @@ $html = '
 								
 								
 							$html.=' </td>
-							<td style="white-space:nowrap"  width="30%" valign="top" text-align="right" >
+							<td style="white-space:nowrap;"  width="25%" valign="top">
 								<table width="100%">
 									<tr>
-										<td valign="top" style="vertical-align: top;" width="5%">Invoice No.</td>
-										<td  valign="top" width="4%">:</td>
-										<td valign="top" >'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
+										<td valign="top" style="vertical-align: top;" >Invoice No.</td>
+										<td  valign="top">:</td>
+										<td  valign="top" width="20%">'. h(("IN-".str_pad($invoice->in2, 3, "0", STR_PAD_LEFT)." / ".$invoice->in3)) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;">Date</td>
@@ -172,12 +179,12 @@ $html = '
 									<tr>
 										<td valign="top" style="vertical-align: top;">Carrier</td>
 										<td valign="top">:</td>
-										<td valign="top"><p>'. h($invoice->transporter->transporter_name) .'</p></td>
+										<td valign="top">'. h($invoice->transporter->transporter_name) .'</td>
 									</tr>
 									<tr>
 										<td valign="top" style="vertical-align: top;"></td>
 										<td valign="top">:</td>
-										<td width="25%" valign="top" >'. h($invoice->delivery_description) .'</td>
+										<td valign="top"><p class="test">'.wordwrap(h($invoice->delivery_description),25,'<br/>') .'</p></td>
 									</tr>
 								</table>
 							</td>
@@ -211,7 +218,7 @@ $gst_hide="style:display:;padding-top:8px;padding-bottom:5px;";
 	}
 //echo $igst_hide;
 $html.='
-<table width="100%" class="table_rows ">
+<table width="100%" class="table_rows">
 		<thead>
 			<tr>
 				<th rowspan="2" style="text-align: bottom;">Sr.No. </th>
@@ -242,11 +249,14 @@ $html.='
 		<tbody>
 ';
 
-$sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++; 
+$sr=0; $h="-"; $total_taxable_value=0; foreach ($invoice->invoice_rows as  $invoiceRows): $sr++;
+// pr($invoiceRows);
 $html.='
 	<tr class="odd">
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center" >'. h($sr) .'</td>
-		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top"><span>'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></span></td>
+		<td style="padding-top:8px;padding-bottom:5px;line-height:20px " valign="top">
+		<span> HSN Code : '.$invoiceRows->item->hsn_code .'<div style="height:'.$invoiceRows->height.'"></div></span>
+		<span>'.$invoiceRows->description .'<div style="height:'.$invoiceRows->height.'"></div></span></td>
 		<td style="padding-top:8px;padding-bottom:5px;" valign="top" align="center">'. h($invoiceRows->quantity) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->rate,[ 'places' => 2]) .'</td>
 		<td style="padding-top:8px;padding-bottom:5px;" align="right" valign="top">'. $this->Number->format($invoiceRows->amount,[ 'places' => 2]) .'</td>';
@@ -361,6 +371,7 @@ if(sizeof($grand_total)==2)
 }else{ $paisa_text=""; }
 
 $basic_value=$invoice->fright_amount+$total_taxable_value;
+
 $html.='
 <table width="100%" class="table_rows" >
 	<tbody>
@@ -482,7 +493,7 @@ $html.='
 </body>
 </html>';
 
-//echo $html; exit; 
+	//echo $html; exit; 
 
 $name='Invoice-'.h(($invoice->in1.'_IN'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'_'.$invoice->in3.'_'.$invoice->in4));
 $dompdf->loadHtml($html);

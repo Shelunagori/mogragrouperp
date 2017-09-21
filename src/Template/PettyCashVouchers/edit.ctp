@@ -173,8 +173,8 @@ if($transaction_date <  $start_date ) {
                                 <tr>
                                     <td><?php echo $this->Form->input('ref_types', ['empty'=>'--Select-','options'=>$ref_types,'label' => false,'class' => 'form-control input-sm ref_type','value'=>$old_ref_row->reference_type]); ?></td>
                                     <td class="ref_no">
-                                    <?php if($old_ref_row->reference_type=="Against Reference"){
-										echo $this->requestAction('JournalVouchers/fetchRefNumbersEdit/'.$petty_cash_voucher_row->auto_inc.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$petty_cash_voucher_row->cr_dr.'/'.$petty_cash_voucher_row->received_from_id);
+                                    <?php if($old_ref_row->reference_type=="Against Reference"){ 
+										echo $this->requestAction('PettyCashVouchers/fetchRefNumbersEdit/'.$petty_cash_voucher_row->auto_inc.'/'.$old_ref_row->reference_no.'/'.$old_ref_row->debit.'/'.$old_ref_row->credit.'/'.$petty_cash_voucher_row->cr_dr.'/'.$petty_cash_voucher_row->received_from_id); 
 									}else{  
                                         echo '<input type="text" class="form-control input-sm" placeholder="Ref No." value="'.$old_ref_row->reference_no.'" readonly="readonly" is_old="yes">';
                                     }?>

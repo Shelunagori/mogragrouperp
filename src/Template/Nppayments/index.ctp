@@ -3,7 +3,7 @@
 	$last="31";
 	$start_date=$first.'-'.$financial_month_first->month;
 	$end_date=$last.'-'.$financial_month_last->month;
-	///pr($end_date); exit;
+
 ?>
 <?php $url_excel="/?".$url; ?>
 
@@ -41,8 +41,8 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th >Sr. No.</th>
-                            <th >Transaction Date</th>
+                            <th>Sr. No.</th>
+                            <th>Transaction Date</th>
                             <th>Vocher No</th>
                             <th style="text-align:right;" >Amount</th>
                             <th class="actions"><?= __('Actions') ?></th>
@@ -50,9 +50,7 @@
                     </thead>
                     <tbody>
                         <?php $i=0;
-                         foreach ($nppayments as $nppayment): $i++; 
-                        
-                    ?>
+                         foreach ($nppayments as $nppayment): $i++; ?>
                         <tr>
                             <td><?= h(++$page_no) ?></td>
                             <td><?= h(date("d-m-Y",strtotime($nppayment->transaction_date)))?></td>
@@ -60,11 +58,9 @@
                             <td align="right"><?= h($this->Number->format($nppayment->nppayment_rows[0]->total_dr-$nppayment->nppayment_rows[0]->total_cr,[ 'places' => 2])) ?></td>
                             <td class="actions">
                             <?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $nppayment->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
-							<?php if(date("d-m-Y",strtotime($nppayment->transaction_date)) >= $start_date && date("d-m-Y",strtotime($nppayment->transaction_date)) <= $end_date) {
+							<?php 
                               echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $nppayment->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
-							}else{
-								echo "Financial Month has been Closed";
-							}							 ?>
+													 ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

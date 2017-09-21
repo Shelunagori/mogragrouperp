@@ -13,7 +13,8 @@
 			<span class="caption-subject font-blue-steel uppercase">Sales Order</span>
 			<?php if($pull_request=="true"){ ?>
 			: Select a Sales-Order to convert into Invoice
-		
+			<?php }elseif($gst=="true"){ ?>
+			: Select a Sales-Order to convert into GST Invoice
 			<?php }  elseif($copy_request=="copy"){?>
 			: Select a Sales-Order to Copy <?php }
 			  elseif($gst_copy_request=="copy"){ ?>
@@ -29,7 +30,7 @@
 			if($status==null or $status=='Pending'){ $class1='btn btn-primary'; }else{ $class1='btn btn-default'; }
 			if($status=='Converted Into Invoice'){ $class2='btn btn-primary'; }else{ $class2='btn btn-default'; }
 			?>
-			<?php if($pull_request!="true" and $copy_request!="copy" and $job_card!="true"){ ?>
+			<?php if($pull_request!="true" and $gst!="true" and $copy_request!="copy" and $job_card!="true"){ ?>
 				<?= $this->Html->link(
 					'Pending',
 					'/Sales-Orders/index/Pending',
@@ -40,7 +41,7 @@
 					'/Sales-Orders/index/Converted Into Invoice',
 					['class' => $class2]
 				); ?>
-				<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/SalesOrders/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+				<!--<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/SalesOrders/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>-->
 			<?php }?>
 			</div>
 		</div>
@@ -113,7 +114,7 @@
 							<td>
 							<?php echo $this->Html->link( $salesOrder->quotation->qt1.'/QT-'.str_pad($salesOrder->quotation->qt2, 3, '0', STR_PAD_LEFT).'/'.$salesOrder->quotation->qt3.'/'.$salesOrder->quotation->qt4,[
 							'controller'=>'Quotations','action' => 'confirm', $salesOrder->quotation->id],array('target'=>'_blank')); ?>
-							</td><?php }else{ ?><td></td><?php } ?>
+							</td><?php }else{ ?><td>-</td><?php } ?>
 							<td><?php echo $salesOrder->customer->customer_name.'('.$salesOrder->customer->alias.')' ?></td>
 							<td><?= h($salesOrder->customer_po_no); ?></td>
 							<td>
@@ -148,7 +149,7 @@
 								<?php if($job_card=="true"){
 									echo $this->Html->link('<i class="fa fa-repeat "></i>  Create Job Card','/JobCards/Add?Sales-Order='.$salesOrder->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 								} ?>
-								<?php if($status!='Converted Into Invoice' and in_array(4,$allowed_pages) and $pull_request!="true" && $copy_request!="copy" && $job_card!="true"){ 
+								<?php if($status!='Converted Into Invoice' and in_array(4,$allowed_pages) and $pull_request!="true" && $copy_request!="copy" && $job_card!="true" && $gst!="true"){ 
 								
 								 if(!in_array(date("m-Y",strtotime($salesOrder->created_on)),$closed_month))
 								 { 

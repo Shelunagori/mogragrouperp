@@ -21,6 +21,15 @@ $this->Form->templates([
 			]);
 			
  ?>
+ <?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		$transaction_date=strtotime($purchaseReturn->transaction_date);
+if($transaction_date <  $start_date ) {
+	echo "Financial Month has been Closed";
+} else { ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -33,7 +42,12 @@ $this->Form->templates([
 	
 	<div class="portlet-body form">
 		<?= $this->Form->create($purchaseReturn,['id'=> 'form_sample_3']) ?>
-		
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 			<div class="form-body">
 			
 				<div class="row">
@@ -64,7 +78,7 @@ $this->Form->templates([
 									<div class="form-group">
 										<label class="control-label">Transaction Date</label>
 										<br/>
-										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text','value'=>date("d-m-Y",strtotime($purchaseReturn->transaction_date))]); ?>
+										<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text','value'=>date("d-m-Y",strtotime($purchaseReturn->transaction_date)),'data-date-start-date' => $start_date,'data-date-end-date' => $end_date]); ?>
 										 <br/>
 									<span style="color: red;">
 										<?php if($chkdate == 'Not Found'){  ?>
@@ -126,6 +140,11 @@ $this->Form->templates([
 				</thead>
 				<tbody>
 					<?php
+					foreach($purchaseReturn->purchase_return_rows as $purchase_return_row){
+						//pr($purchase_return_row);
+					}
+					
+					
 					$q=0; foreach ($invoiceBooking->invoice_booking_rows as $invoice_booking_row): ?>
 						<tr class="tr1" row_no='<?php echo @$invoice_booking_row->id; ?>'>
 							<td ><?php echo ++$q; ?></td>
@@ -231,7 +250,7 @@ $this->Form->templates([
 	</div>	
 		<?= $this->Form->end() ?>
 </div>	
-						
+<?php } ?>	
 
 <style>
 .table thead tr th {

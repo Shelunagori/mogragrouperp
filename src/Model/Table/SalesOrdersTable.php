@@ -60,7 +60,7 @@ class SalesOrdersTable extends Table
 		]);
         $this->belongsTo('Quotations', [
             'foreignKey' => 'quotation_id',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);
 		$this->belongsTo('TermsConditions');
 		$this->belongsTo('TaxDetails');

@@ -500,8 +500,7 @@ class PaymentsController extends AppController
 		$st_year_id = $session->read('st_year_id');
 		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
 		 
-		$st_year_id = $session->read('st_year_id');
-		$financial_year = $this->Payments->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		
 		$financial_month_first = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
 		$financial_month_last = $this->Payments->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		

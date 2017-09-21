@@ -3,6 +3,23 @@
 	vertical-align: top !important;
 }
 </style>
+<?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		
+		$transaction_date=strtotime(date("Y-m-d",strtotime(@$InventoryVoucher_detail[0]->transaction_date)));
+		
+		//pr($start_date);
+		//pr(@$InventoryVoucher_detail);
+		//pr($transaction_date); exit;
+
+if($transaction_date <  $start_date && !empty(@$InventoryVoucher_detail[0]->transaction_date)) {
+	echo "Financial Month has been Closed";
+} else { ?>
+
+
 
 <div class="row">
 	<div class="col-md-12" style="background-color:#FFF;">
@@ -24,6 +41,12 @@
 			</div>
 			<div class="col-md-9"> 
 				<?= $this->Form->create($InventoryVoucher,['id'=>'form_sample_3']) ?>
+				<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 				<table class="table tableitm" id="main_tb">
 					<tbody id="m_tbody">
 
@@ -97,7 +120,7 @@
 								$t_date = date("d-m-Y",strtotime(@$InventoryVoucher_detail[0]->transaction_date));
 							   }
 							?>
-								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>@$t_date,'required']) ?>								
+								<?= $this->Form->input('transaction_date', ['type'=>'text','label' =>false,'class'=>'form-control date-picker input-sm','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','size'=>3,'value' =>@$t_date,'required','data-date-start-date' => $start_date,'data-date-end-date' => $end_date]) ?>								
 						</div>
 					</div>
 					<div class="col-md-3">
@@ -122,6 +145,7 @@
 		</div>
 	</div>
 </div>
+<?php } ?>	
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 <script>
 $(document).ready(function() {

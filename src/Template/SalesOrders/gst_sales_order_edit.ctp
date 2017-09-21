@@ -231,14 +231,9 @@
 						</td>
 						
 						<td width="100px;">
-						<?php if($salesOrder->quotation_id > 0){
-							
-							$max_val=@$qt_data[$sales_order_rows->item_id]-@$qt_data1[$sales_order_rows->item_id]+@$sales_order_rows->quantity;
-						}else{
-							$max_val='';
-						}?>
 						
-						<?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$sales_order_rows->quantity,'min'=>1,'max'=>$max_val]); ?>
+						
+						<?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$sales_order_rows->quantity,'min'=>1]); ?>
 						<?php 
 						 echo $this->Form->input('sales_order_rows.'.$q.'.old_quantity', ['type' => 'hidden','value'=>$sales_order_rows->quantity]);
 						?>

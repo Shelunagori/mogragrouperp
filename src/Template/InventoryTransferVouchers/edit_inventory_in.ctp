@@ -7,7 +7,15 @@
 	vertical-align: top !important;
 }
 </style>
-
+<?php 	$first="01";
+		$last="31";
+		$start_date=$first.'-'.$financial_month_first->month;
+		$end_date=$last.'-'.$financial_month_last->month;
+		$start_date=strtotime(date("Y-m-d",strtotime($start_date)));
+		$transaction_date=strtotime($inventoryTransferVouchers->transaction_date);
+if($transaction_date <  $start_date ) {
+	echo "Financial Month has been Closed";
+} else { ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption" >
@@ -18,9 +26,18 @@
 	</div>
 	<div class="portlet-body form">
 	<?= $this->Form->create($inventoryTransferVouchers,['id'=>'form_sample_3']) ?>
+	<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 	<div class="row">
 		<div class="col-md-3">
-		<label>Transaction Date</label><input type="text" name="transaction_date" required="required" class="form-control input-sm date-picker" placeholder="Transaction Date" data-date-format="dd-mm-yyyy" value="<?php echo date('d-m-Y',strtotime($inventoryTransferVouchers->transaction_date)); ?>">
+		<label>Transaction Date</label>
+		<?php echo $this->Form->input('transaction_date', ['label' => false,'class' => 'form-control  date-picker','data-date-format'=>'dd-mm-yyyy','placeholder'=>'dd-mm-yyyy','type' => 'text','value'=>date("d-m-Y",strtotime($inventoryTransferVouchers->transaction_date)),'data-date-start-date' => $start_date,'data-date-end-date' => $end_date]); ?>
+		
+		
 		</div>
 		<div class="col-md-3">
 			
@@ -91,7 +108,6 @@
 									</div>
 									
 								</td>
-								
 								<td width="10%">
 									<?php echo $this->Form->input('amount', ['type' => 'text','label' => false,'value'=>$inventory_transfer_voucher_row_in->amount,'class' => 'form-control input-sm ','placeholder' => 'Rate']); ?>
 								</td>
@@ -110,6 +126,7 @@
 <?= $this->Form->end() ?>		
 	</div>
 </div>	
+<?php } ?>
 
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 

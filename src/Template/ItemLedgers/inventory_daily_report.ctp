@@ -1,12 +1,14 @@
 <?php //echo $voucher_no->toArray(); exit;?>
-
+<?php $url_excel="/?".$url; ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Inventory Daily Report</span>
 		</div>
-		
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/ItemLedgers/Excel-Inventory/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+		</div>
 
 	<div class="portlet-body form">
 	<div class="row ">
@@ -45,7 +47,6 @@
 						<th width="5%">Serial No.</th>
 					</tr>
 				</thead>
-				<tbody>
 				<tbody>
 					<?php $srn=0; foreach ($itemDatas as $key=>$itemData){ 
 					

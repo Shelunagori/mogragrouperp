@@ -90,7 +90,7 @@ class JournalVouchersController extends AppController
        $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
 
         $this->set('journalVoucher');
-		$this->set(compact('journalVouchers','url'));
+		$this->set(compact('journalVouchers','url','From','To'));
 		$this->set('_serialize', ['journalVouchers']);
 	}	
 

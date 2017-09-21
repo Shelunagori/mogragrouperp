@@ -66,6 +66,8 @@ class SaleReturnsTable extends Table
             'foreignKey' => 'transporter_id',
             'joinType' => 'INNER'
         ]);
+        $this->belongsTo('FinancialYears');
+        $this->belongsTo('FinancialMonths');
         $this->belongsTo('Invoices');
 		$this->belongsTo('LedgerAccounts');
 		$this->belongsTo('AccountReferences');

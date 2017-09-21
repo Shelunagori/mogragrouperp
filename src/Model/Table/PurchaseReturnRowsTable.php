@@ -59,11 +59,11 @@ class PurchaseReturnRowsTable extends Table
             ->integer('id')
             ->allowEmpty('id', 'create');
 
-        $validator
+        /* $validator
             ->integer('quantity')
             ->requirePresence('quantity', 'create')
             ->notEmpty('quantity');
-
+ */
         return $validator;
     }
 

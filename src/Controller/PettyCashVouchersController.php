@@ -801,6 +801,7 @@ class PettyCashVouchersController extends AppController
 		$this->viewBuilder()->layout('');// pr($reference_no);
 		$ReferenceBalances=$this->PettyCashVouchers->ReferenceBalances->find()->where(['ledger_account_id'=>$received_from_id,'auto_inc'=>$auto_inc,'reference_no'=>$reference_no]);
 		$this->set(compact('ReferenceBalances', 'reference_no', 'debit','credit','cr_dr','received_from_id'));
+			
 	}
     
    	function checkRefNumberUnique($received_from_id,$i,$is_old,$auto_inc){

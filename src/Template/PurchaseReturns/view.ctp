@@ -168,7 +168,7 @@ margin-bottom: 0;
 				<?php foreach($ReferenceDetails as $ReferenceDetail){ ?>
 				<tr>
 					<td><?php echo $ReferenceDetail->reference_no; ?></td>
-					<td>:<?php echo $ReferenceDetail->credit; ?></td>
+					<td>:<?php echo $ReferenceDetail->debit; ?></td>
 				</tr>
 				<?php } ?>
 			</table>

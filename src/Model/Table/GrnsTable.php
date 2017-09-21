@@ -43,6 +43,7 @@ class GrnsTable extends Table
 		$this->belongsTo('PurchaseOrderRows');
 		$this->belongsTo('ItemLedgers');
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('FinancialMonths');
 		
         $this->belongsTo('PurchaseOrders', [
             'foreignKey' => 'purchase_order_id',

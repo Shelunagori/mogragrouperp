@@ -31,7 +31,7 @@
 							<td width="10%"> 
 								<input type="text" name="vouch_no" class="form-control input-sm" placeholder="Voucher No" value="<?php echo @$vouch_no; ?>">
 							</td>
-							<td width="10%"><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
+							<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button></td>
 
 							</tr>
 					</tbody>
@@ -60,11 +60,9 @@
 							<td align="right"><?= h($this->Number->format($receipt->receipt_rows[0]->total_cr-$receipt->receipt_rows[0]->total_dr,[ 'places' => 2])) ?></td>
 							<td class="actions">
 							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $receipt->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); ?>
-							<?php if(date("d-m-Y",strtotime($receipt->transaction_date)) >= $start_date && date("d-m-Y",strtotime($receipt->transaction_date)) <= $end_date) {
+							<?php 
 							  echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $receipt->id],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
-							}else{
-								echo "Financial Month has been Closed";
-							}							 ?>
+													 ?>
 							</td>
 						</tr>
 						<?php endforeach; ?>

@@ -3,7 +3,7 @@
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Invoice Book</span>
-			<?php if($purchase_return=="true"){ echo " :Select Invoice for Purchase Return"; } ?>
+			<?php if($purchase_return=="true"){ echo " :Select Invoice Booking for Purchase Return"; } ?>
 		</div>
 	<div class="portlet-body">
 		<div class="row">

@@ -47,8 +47,16 @@
 							
 							<td><?php echo date("d-m-Y",strtotime($purchaseReturn->created_on)); ?></td>
 						<td class="actions">
-							<?php echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'view', $purchaseReturn->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); 
-							echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit?invoiceBooking='.$purchaseReturn->invoice_booking_id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); ?>
+							<?php 
+							if($purchaseReturn->gst_type=="Gst"){
+								echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'gstView', $purchaseReturn->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); 	
+								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'gstEdit?purchaseReturn='.$purchaseReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
+							}
+							else{
+								echo $this->Html->link('<i class="fa fa-search"></i>',['action' => 'View', $purchaseReturn->id],array('escape'=>false,'target'=>'_blank','class'=>'btn btn-xs yellow tooltips','data-original-title'=>'View ')); 	
+								echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'Edit?purchaseReturn='.$purchaseReturn->id,],array('escape'=>false,'class'=>'btn btn-xs blue tooltips','data-original-title'=>'Edit')); 
+							}		?>
+							
 						</td>
 						</tr>
 						<?php endforeach; ?>

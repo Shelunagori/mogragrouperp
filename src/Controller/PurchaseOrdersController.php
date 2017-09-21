@@ -130,7 +130,7 @@ class PurchaseOrdersController extends AppController
      */
 	
     public function add($to_be_send=null)
-    {
+    { 
 		if($to_be_send){
 			$to_be_send=json_decode($to_be_send);
 			$to_be_send2=[];
@@ -209,45 +209,54 @@ class PurchaseOrdersController extends AppController
 				if($purchase_order_row->pull_status=="PULLED_FROM_MI"){
 					$query = $this->PurchaseOrders->MaterialIndentRows->find()
 					->where(['MaterialIndentRows.status'=>'Open','MaterialIndentRows.item_id'=>$purchase_order_row->item_id]);
+					
 					$MaterialIndentRows=$query->matching('MaterialIndents', function ($q) use($st_company_id){
 						return $q->where(['MaterialIndents.company_id' => $st_company_id]);
-					});
+					})->order(['MaterialIndents.created_on'=>'ASC']);
+					//pr($MaterialIndentRows->toArray()); exit;
 					
 					$material_rows[$purchase_order_row->item_id]=[];
 					foreach($MaterialIndentRows as $MaterialIndentRow){
-						$material_rows[$purchase_order_row->item_id][strtotime($MaterialIndentRow->_matchingData['MaterialIndents']->created_on)]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
+						$material_rows[$MaterialIndentRow->item_id][]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
 					}
+					//pr($material_rows); exit;
 				}
 			}
 			
-			foreach($purchaseOrder->purchase_order_rows as $purchase_order_row){
+			foreach($purchaseOrder->purchase_order_rows as $purchase_order_row){ 
+			
 				if($purchase_order_row->pull_status=="PULLED_FROM_MI"){
 					$mi_rows=$material_rows[$purchase_order_row->item_id];
 					ksort($mi_rows);
+					
 					$purchase_order_qty=$purchase_order_row->quantity;
-					foreach($mi_rows as $mi_row){
-						$mi_remaining_qty=$mi_row['required_quantity']-$mi_row['processed_quantity'];
+					//pr($purchase_order_qty);
+					foreach($mi_rows as $mi_row){  
+						$mi_remaining_qty=$mi_row['required_quantity']-$mi_row['processed_quantity']; 
+						//pr($mi_remaining_qty);
 						$reminder=$mi_remaining_qty-$purchase_order_qty;
+				
 						if($reminder>0){
-							
 							$mi_row = $this->PurchaseOrders->MaterialIndentRows->get($mi_row['id']);
 							$mi_row->processed_quantity=$mi_row->processed_quantity+$purchase_order_qty;
 							$mi_row->status='Open';
 							$this->PurchaseOrders->MaterialIndentRows->save($mi_row);
 							break;
-						}else if($reminder==0){
+						}else if($reminder==0){ 
 							$mi_row = $this->PurchaseOrders->MaterialIndentRows->get($mi_row['id']);
 							$mi_row->processed_quantity=$mi_row->processed_quantity+$purchase_order_qty;
 							$mi_row->status='Close';
 							$this->PurchaseOrders->MaterialIndentRows->save($mi_row);
 							goto send;
-						}else{
+						}else{   
 							$mi_row = $this->PurchaseOrders->MaterialIndentRows->get($mi_row['id']);
-							$mi_row->processed_quantity=$mi_row->processed_quantity+abs($mi_remaining_qty);
+							$mi_row->processed_quantity =$mi_row->processed_quantity+abs($mi_remaining_qty);
+							//pr($mi_row->processed_quantity); exit;
 							$mi_row->status='Close';
 							$this->PurchaseOrders->MaterialIndentRows->save($mi_row);
 						}
 						$purchase_order_qty=abs($reminder);
+							
 					}
 					send:
 				}
@@ -291,8 +300,8 @@ class PurchaseOrdersController extends AppController
 		$sale_tax_ledger_accounts1=[];
 			foreach($st_LedgerAccounts as $st_LedgerAccount){
 				$SaleTaxes = $this->PurchaseOrders->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->sale_tax_id])->first();
-				$sale_tax_ledger_accounts[$st_LedgerAccount->sale_tax_id]=$SaleTaxes->invoice_description;
-				$sale_tax_ledger_accounts1[$st_LedgerAccount->sale_tax_id]=$SaleTaxes->tax_figure;
+				@$sale_tax_ledger_accounts[@$st_LedgerAccount->sale_tax_id]=@$SaleTaxes->invoice_description;
+				@$sale_tax_ledger_accounts1[@$st_LedgerAccount->sale_tax_id]=@$SaleTaxes->tax_figure;
 				
 			}
 //pr($sale_tax_ledger_accounts); exit;
@@ -330,7 +339,22 @@ class PurchaseOrdersController extends AppController
 		$purchaseOrder_old=$this->PurchaseOrders->get($id, [
             'contain' => ['PurchaseOrderRows'=>['Items']]
         ]);
-		
+		//pr($purchaseOrder_old); 
+		$max_item_qty=[];
+		foreach($purchaseOrder_old->purchase_order_rows as $purchaseOrder_old1){
+			$mir=$this->PurchaseOrders->MaterialIndents->find()
+			->contain(['MaterialIndentRows' => function ($q) use($purchaseOrder_old1) {
+						return $q->where(['MaterialIndentRows.item_id'=>$purchaseOrder_old1->item_id])->contain(['Items']);
+					}])
+			->where(['company_id'=>$st_company_id])->toArray();
+			
+			foreach($mir as $material_indent){
+				foreach($material_indent->material_indent_rows as $material_indent_row){
+					$due_qty=$material_indent_row['required_quantity']-$material_indent_row['processed_quantity'];
+				$max_item_qty[$material_indent_row->item_id]=@$max_item_qty[$material_indent_row->item_id]+$due_qty;
+				}
+			}
+		} 
 		
 		
         $Em = new FinancialYearsController;
@@ -346,18 +370,18 @@ class PurchaseOrdersController extends AppController
 			$purchaseOrder->edited_on = date("Y-m-d"); 
 			$purchaseOrder->edited_by=$this->viewVars['s_employee_id'];
 			
-			//pr($purchaseOrder); exit;
+			//pr($purchaseOrder_old); exit;
 			foreach($purchaseOrder_old->purchase_order_rows as $purchase_order_row){
 				if($purchase_order_row->pull_status=="PULLED_FROM_MI"){
 					$query = $this->PurchaseOrders->MaterialIndentRows->find()
 					->where(['MaterialIndentRows.item_id'=>$purchase_order_row->item_id]);
 					$MaterialIndentRows=$query->matching('MaterialIndents', function ($q) use($st_company_id){
 						return $q->where(['MaterialIndents.company_id' => $st_company_id]);
-					});
+					})->order(['MaterialIndents.created_on'=>'ASC']);
 					$material_rows[$purchase_order_row->item_id]=[];
 					foreach($MaterialIndentRows as $MaterialIndentRow){
-						$material_rows[$purchase_order_row->item_id][strtotime($MaterialIndentRow->_matchingData['MaterialIndents']->created_on)]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
-					}
+						$material_rows[$purchase_order_row->item_id][]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
+					} 
 				}
 			}
 			
@@ -367,9 +391,10 @@ class PurchaseOrdersController extends AppController
 					krsort($mi_rows);
 					
 					$purchase_order_qty=$purchase_order_row->quantity;
-					
+					//pr($purchase_order_qty);
 					foreach($mi_rows as $mi_row){
 						$mi_remaining_qty=$mi_row['required_quantity']-$mi_row['processed_quantity'];
+						//pr($mi_remaining_qty);
 						if($mi_row['required_quantity']==$mi_remaining_qty){
 							
 						}else{
@@ -395,7 +420,7 @@ class PurchaseOrdersController extends AppController
 					go:
 				}
 			}
-			
+			//pr($purchase_order_qty); exit;
 			foreach($purchaseOrder->purchase_order_rows as $purchase_order_row){
 
 				if($purchase_order_row->pull_status=="PULLED_FROM_MI"){
@@ -403,11 +428,11 @@ class PurchaseOrdersController extends AppController
 					->where(['MaterialIndentRows.status'=>'Open','MaterialIndentRows.item_id'=>$purchase_order_row->item_id]);
 					$MaterialIndentRows=$query->matching('MaterialIndents', function ($q) use($st_company_id){
 						return $q->where(['MaterialIndents.company_id' => $st_company_id]);
-					});
+					})->order(['MaterialIndents.created_on'=>'ASC']);
 					$material_rows1[$purchase_order_row->item_id]=[];
 					foreach($MaterialIndentRows as $MaterialIndentRow){
 
-						$material_rows1[$purchase_order_row->item_id][strtotime($MaterialIndentRow->_matchingData['MaterialIndents']->created_on)]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
+						$material_rows1[$purchase_order_row->item_id][]=['id'=>$MaterialIndentRow->id,'item_id'=>$MaterialIndentRow->item_id,'required_quantity'=>$MaterialIndentRow->required_quantity,'processed_quantity'=>$MaterialIndentRow->processed_quantity];
 					}
 				}
 			}
@@ -419,10 +444,11 @@ class PurchaseOrdersController extends AppController
 					$mi_rows=$material_rows1[$purchase_order_row->item_id];
 										
 					ksort($mi_rows);
-
+					//pr($mi_rows);
 					$purchase_order_qty=$purchase_order_row->quantity;
 					foreach($mi_rows as $mi_row){
 						$mi_remaining_qty=$mi_row['required_quantity']-$mi_row['processed_quantity'];
+						//pr($mi_remaining_qty);
 						$reminder=$mi_remaining_qty-$purchase_order_qty;
 						if($reminder>0){
 							$mi_row = $this->PurchaseOrders->MaterialIndentRows->get($mi_row['id']);
@@ -474,8 +500,8 @@ class PurchaseOrdersController extends AppController
 		$sale_tax_ledger_accounts1=[];
 			foreach($st_LedgerAccounts as $st_LedgerAccount){
 				$SaleTaxes = $this->PurchaseOrders->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->source_id])->first();
-				$sale_tax_ledger_accounts[$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
-				$sale_tax_ledger_accounts1[$st_LedgerAccount->source_id]=$SaleTaxes->tax_figure;
+				@$sale_tax_ledger_accounts[@$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
+				@$sale_tax_ledger_accounts1[@$st_LedgerAccount->source_id]=$SaleTaxes->tax_figure;
 				
 			}
 		$vendor = $this->PurchaseOrders->Vendors->find('all')->order(['Vendors.company_name' => 'ASC'])->matching('VendorCompanies', function ($q) use($st_company_id) {
@@ -500,7 +526,7 @@ class PurchaseOrdersController extends AppController
 		
 		$transporters = $this->PurchaseOrders->Transporters->find('list')->order(['Transporters.transporter_name' => 'ASC']);
        
-        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1','financial_month_first','financial_month_last'));
+        $this->set(compact('purchaseOrder', 'Company', 'vendor','filenames','customers','SaleTaxes','transporters','items','financial_year_data','sale_tax_ledger_accounts','sale_tax_ledger_accounts1','financial_month_first','financial_month_last','max_item_qty'));
         $this->set('_serialize', ['purchaseOrder']);
     }
 

@@ -17,12 +17,13 @@
 	</thead>
 	<tbody>
 
-		<?php $page_no=0;
+		<?php $page_no=0; 
 		 foreach ($itemLedgers as $itemLedger): 
 		$rate = $itemLedger->rate;
 		$in_out_type=$itemLedger->in_out;
 		$party=$itemLedger->party_type;
 		$url_path="";
+		$data="";
 		$source_model=$itemLedger->source_model;
 		//pr($source_model);exit;
 		if($source_model=='Challan')
@@ -36,7 +37,7 @@
 		}
 		
 		else if($party=='Customer')
-		{
+		{ 
 			$party_name=$itemLedger->party_info->customer_name;
 			$voucher_no=$itemLedger->voucher_info->in1.'/IN-'.str_pad($itemLedger->voucher_info->in2, 3, '0', STR_PAD_LEFT).'/'.$itemLedger->voucher_info->in3.'/'.$itemLedger->voucher_info->in4;
 			if($itemLedger->voucher_info->invoice_type=='GST'){
@@ -78,12 +79,13 @@
 		}
 		else if($source_model=='Inventory Transfer Voucher')
 		{ 
-			//$party_name=$itemLedger->party_info->customer_name;
+			$party_name=$itemLedger->voucher_info;
+			//pr($party_name);
 			$party_name='-';
 			$voucher_no='#'.str_pad($itemLedger->voucher_info->voucher_no, 4, '0', STR_PAD_LEFT);
-			if($itemLedger->in_out=='in_out'){
+			if($itemLedger->voucher_info->in_out=='in_out'){
 				$url_path="/inventory-transfer-vouchers/view/".$itemLedger->voucher_info->id;
-			}else if($itemLedger->in_out=='In'){
+			}else if($itemLedger->voucher_info->in_out=='in'){
 				$url_path="/inventory-transfer-vouchers/inView/".$itemLedger->voucher_info->id;
 			}else{
 				$url_path="/inventory-transfer-vouchers/outView/".$itemLedger->voucher_info->id;

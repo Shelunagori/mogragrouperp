@@ -17,6 +17,12 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 	</div>
 	<div class="portlet-body form">
 		<?= $this->Form->create($saleReturn,['id'=>'form_sample_3']) ?>
+		<?php 	$first="01";
+				$last="31";
+				$start_date=$first.'-'.$financial_month_first->month;
+				$end_date=$last.'-'.$financial_month_last->month;
+				//pr($start_date); exit;
+		?>
 		
 		<div class="form-body">
 			<div class="row">
@@ -36,7 +42,8 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 					<div class="form-group">
 						<label class="col-md-6 control-label">Transaction Date</label>
 						<div class="col-md-6">
-							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required']); ?>
+							<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','required','data-date-start-date' 
+					=>$start_date ,'data-date-end-date' => $end_date,'placeholder'=>'Transaction Date']); ?>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
 							You are not in Current Financial Year
@@ -161,7 +168,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 				<tbody>
 					<?php 
 					$q=0; 
-					foreach ($invoice->invoice_rows as $invoice_row){ 
+					foreach (@$invoice->invoice_rows as $invoice_row){ 
 					if($invoice_row->quantity > $invoice_row->sale_return_quantity ){
 					?>
 						<tr class="tr1" row_no="<?= h($q) ?>">
@@ -169,7 +176,7 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							<td>
 								<?php 
 								echo $this->Form->input('sale_return_rows.'.$q.'.item_id', ['type'=>'hidden','value'=>$invoice_row->item_id]);
-								echo $invoice_row->item->name;
+								echo @$invoice_row->item->name;
 								?>
 							</td>
 							<td>
@@ -193,16 +200,16 @@ table > thead > tr > th, table > tbody > tr > th, table > tfoot > tr > th, table
 							</td>
 						</tr>
 						
-						<?php if($invoice_row->item->item_companies[0]->serial_number_enable==1){ ?>
+						<?php if(@$invoice_row->item->item_companies[0]->serial_number_enable==1){ ?>
 						<tr class="tr2" row_no="<?= h($q) ?>">
 							<?php $options1=[];
-								foreach($invoice_row->item->item_serial_numbers as $item_serial_number){
-									$options1[]=['text' =>$item_serial_number->serial_no, 'value' => $item_serial_number->id];
+								foreach(@$invoice_row->item->item_serial_numbers as  $item_serial_number){
+									$options1[]=['text' =>@$item_serial_number->serial_no, 'value' => $item_serial_number->id];
 								} 
-						?>
+							?>
 							<td></td>
 							<td colspan="6">
-							<?php echo $this->Form->input('item_serial_numbers', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
+							<?php echo $this->Form->input('itm_serial_number', ['label'=>false,'options' => $options1,'multiple' => 'multiple','class'=>'form-control select2me','style'=>'width:100%','readonly']);  ?></td>
 						</tr>
 					<?php }  ?>
 					<?php $q++; } }  ?>
@@ -430,8 +437,8 @@ $(document).ready(function() {
 		},
 
 		submitHandler: function (form3) {
-			$('#add_submit').prop('disabled', true);
-			$('#add_submit').text('Submitting.....');
+			//$('#add_submit').prop('disabled', true);
+			//$('#add_submit').text('Submitting.....');
 			success3.show();
 			error3.hide();
 			form3[0].submit();

@@ -115,7 +115,9 @@ margin-bottom: 0;
 	</thead>
 	
 	<tbody>
-		<?php foreach ($inventoryVoucher->invoice->invoice_rows as $invoice_row): ?>
+		<?php foreach ($inventoryVoucher->invoice->invoice_rows as $invoice_row): 
+       if($invoice_row->inventory_voucher_applicable=="Yes"){
+       ?>
 		<tr>
 			<td valign="top">
 			<b><?= $invoice_row->item->name ?> ( <?= h($invoice_row->quantity) ?> )</b>
@@ -155,7 +157,7 @@ margin-bottom: 0;
 				</table>
 			</td>
 		</tr>
-		<?php endforeach; ?>
+		<?php } endforeach; ?>
 	</tbody>
 	
 </table>

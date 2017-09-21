@@ -26,7 +26,21 @@ class SaleTaxesController extends AppController
 		$saleTax = $this->SaleTaxes->newEntity();
         if ($this->request->is('post')) {
             $saleTax = $this->SaleTaxes->patchEntity($saleTax, $this->request->data);
-			
+			if($saleTax->cgst ==  '1'){
+				$saleTax->cgst = 'Yes';
+			}else{
+				$saleTax->cgst = 'No';
+			}
+			if($saleTax->sgst ==  '1'){
+				$saleTax->sgst = 'Yes';
+			}else{
+				$saleTax->sgst = 'No';
+			}
+			if($saleTax->igst ==  '1'){
+				$saleTax->igst = 'Yes';
+			}else{
+				$saleTax->igst = 'No';
+			}
             if ($this->SaleTaxes->save($saleTax)) { 
 					foreach($saleTax->companies as $company){
 					$LedgerAccount = $this->SaleTaxes->LedgerAccounts->newEntity();
@@ -55,9 +69,9 @@ class SaleTaxesController extends AppController
 		$sale_tax_ledger_accounts=[];
 		$sale_tax_ledger_accounts1=[];
 			foreach($st_LedgerAccounts as $st_LedgerAccount){
-				$SaleTaxes = $this->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->source_id])->first();
-				$sale_tax_ledger_accounts[$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
-				$sale_tax_ledger_accounts1[$st_LedgerAccount->source_id]=$SaleTaxes->freeze;
+				@$SaleTaxes = $this->SaleTaxes->find()->where(['id'=>$st_LedgerAccount->source_id])->first();
+				@$sale_tax_ledger_accounts[$st_LedgerAccount->source_id]=$SaleTaxes->invoice_description;
+				@$sale_tax_ledger_accounts1[$st_LedgerAccount->source_id]=$SaleTaxes->freeze;
 				
 			}
 
@@ -133,7 +147,21 @@ class SaleTaxesController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $saleTax = $this->SaleTaxes->patchEntity($saleTax, $this->request->data);
-			
+			if($saleTax->cgst ==  '1'){
+				$saleTax->cgst = 'Yes';
+			}else{
+				$saleTax->cgst = 'No';
+			}
+			if($saleTax->sgst ==  '1'){
+				$saleTax->sgst = 'Yes';
+			}else{
+				$saleTax->sgst = 'No';
+			}
+			if($saleTax->igst ==  '1'){
+				$saleTax->igst = 'Yes';
+			}else{
+				$saleTax->igst = 'No';
+			}
             if ($this->SaleTaxes->save($saleTax)) {
 					$query = $this->SaleTaxes->LedgerAccounts->query();
 					$query->update()
@@ -189,6 +217,7 @@ class SaleTaxesController extends AppController
     {
 		$this->viewBuilder()->layout('index_layout');	
 		$Companies = $this->SaleTaxes->Companies->find();
+		
 		$Company_array=[];
 		$Company_array1=[];
 		$Company_array2=[];
@@ -205,11 +234,15 @@ class SaleTaxesController extends AppController
 				$Company_array[$Company->id]='No';
 				$Company_array1[$Company->id]=$Company->name;
 				$Company_array2[$Company->id]='1';
+				
 			}
 
-		} //exit;
+		} 
+		
+		$SaleTaxes = $this->SaleTaxes->find();
+			
 		$saletax_data= $this->SaleTaxes->get($saletax_id);
-		$this->set(compact('saletax_data','Companies','customer_Company','Company_array','saletax_id','Company_array1','Company_array2'));
+		$this->set(compact('saletax_data','Companies','customer_Company','Company_array','saletax_id','Company_array1','Company_array2','SaleTaxes'));
 
 	}
 
@@ -223,6 +256,9 @@ class SaleTaxesController extends AppController
 
 		return $this->redirect(['action' => 'EditCompany/'.$saletax_id]);
 	}
+	
+	
+	
 
 	public function CheckCompany($company_id=null,$saletax_id=null)
     {

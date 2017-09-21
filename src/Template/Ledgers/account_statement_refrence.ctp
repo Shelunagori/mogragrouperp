@@ -31,8 +31,11 @@
 			<div class="col-md-12">
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
-					<div class="col-md-12" style="text-align:center; font-size: 20px;">Statement of Account As on  <?php echo date('d-m-Y');?> of<div class="uppercase"><?php
-					echo $Ledger_Account_data->name.' ('.$Ledger_Account_data->alias.')'
+					<div class="col-md-12" style="text-align:center; font-size: 20px;">Statement of Account As on  <?php echo date('d-m-Y');?> of<div class="uppercase"><?php 
+					if(!empty($Ledger_Account_data->alias)){
+					echo $Ledger_Account_data->name.' ('.$Ledger_Account_data->alias.')'; }else{
+						echo $Ledger_Account_data->name;
+					}
 					?></div></div>
 				</div>
 				<div class="col-md-2"></div>
