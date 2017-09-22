@@ -320,30 +320,11 @@ class ItemLedgersController extends AppController
 				//$array_datas[$data->item_id][$data->id]=['quantity'=>$data->quantity,'rate'=>$data->rate,'item_id'=>$data->item_id,'in_out'=>$data->in_out];
 			}
 			
+	//pr($array_ins); 
 	
-	foreach($array_outs as $array_out){
-		foreach($array_out as $out_data){
-			if(@$array_ins[@$out_data['quantity']] > 0){
-				$i=0;
-				if(@$out_data['quantity']==@$array_ins[$out_data['item_id']][$i]['quantity']){
-					$array_ins[@$out_data['item_id']][$i]['quantity']=0;
-				}elseif(@$out_data['quantity'] < @$array_ins[$out_data['item_id']][$i]['quantity']){
-					echo "second"."</br>";	
-				}else{
-					echo "other"."</br>";	
-				}
-			}else{
-				$new_qty=@$out_data['quantity'];
-				$new_item=@$out_data['item_id'];
-				$array_ins[@$out_data['item_id']]=['quantity'=>@$new_qty,'rate'=>0,'item_id'=>@$new_item,'in_out'=>'Out'];
-			}
-		}
-	} 
-	pr($array_ins);   exit;
 	 
 	$new_merge=array_merge($array_ins,$array_outs);	
-	//pr($new_merge);  
-	exit;
+	pr($new_merge);  exit;
 	
 		
 		$totalInCase = $query->newExpr()
