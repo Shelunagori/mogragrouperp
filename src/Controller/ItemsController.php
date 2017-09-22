@@ -136,7 +136,7 @@ class ItemsController extends AppController
             $item = $this->Items->patchEntity($item, $this->request->data);
 			$item->ob_quantity=$item->ob_quantity;
             if ($this->Items->save($item)) {
-				$item_id=$item->id;
+				/* $item_id=$item->id;
 				$this->Items->ItemLedgers->deleteAll(['source_id' => $item_id, 'source_model' => 'Items']);
 				$this->Items->ItemSerialNumbers->deleteAll(['master_item_id' => $item_id,'status'=>'In']);
 				$itemLedger = $this->Items->ItemLedgers->newEntity();
@@ -150,7 +150,7 @@ class ItemsController extends AppController
 					if($item->ob_quantity>0)
 					{
 						$this->Items->ItemLedgers->save($itemLedger);
-					}
+					} */
 					
 				
                 $this->Flash->success(__('The item has been saved.'));
