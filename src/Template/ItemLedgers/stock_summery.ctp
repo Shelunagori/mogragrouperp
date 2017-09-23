@@ -1,4 +1,6 @@
-<?php $url_excel="/?".$url; ?>
+<?php
+//pr(@$itemSerialNumberStatus); exit;
+ $url_excel="/?".$url; ?>
 
 <div class="portlet light bordered">
 	<div class="portlet-title">
@@ -123,13 +125,28 @@
 							<td><?= h($items_unit_names[$key]) ?></td>
 							<td align="right">
 								<?php 
-								if($item_stock>0){
-									echo $UR=$sumValue[$key]/$item_stock;
-									$RowTotal=$UR*$item_stock;
+								//pr($key);
+								//pr(@$itemSerialNumberStatus[$key]);
+								 if(@$itemSerialNumberStatus[$key]==1){
+									if($item_stock > 0){
+										//echo @$unitRate[$key]."yes";
+										echo $this->Number->format(@$unitRate[$key],['places'=>2]);
+										$RowTotal=@$unitRate[$key]*$item_stock;
+									}else{
+										echo '0';
+										$RowTotal=0;
+									}
 								}else{
-									echo '0';
-									$RowTotal==0;
-								}
+									if($item_stock > 0){
+										$UR=@$sumValue[$key]/$item_stock;
+										echo $this->Number->format($UR,['places'=>2]);
+										$RowTotal=$UR*@$item_stock;
+									}else{
+										echo '0';
+										$RowTotal=0;
+									}
+								} 
+								
 								?>
 							</td>
 							<td align="right">
