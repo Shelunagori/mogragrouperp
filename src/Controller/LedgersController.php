@@ -1025,7 +1025,7 @@ class LedgersController extends AppController
 			$transaction_from_date= date('Y-m-d', strtotime($this->request->query['From']));
 			$transaction_to_date= date('Y-m-d', strtotime($this->request->query['To']));
 			$Bank_Ledgers = $this->Ledgers->find()
-				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'reconciliation_date '=>'0000-00-00','voucher_source NOT IN'=>'Opening Balance'])
+				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id,'voucher_source NOT IN'=>'Opening Balance'])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
 				})->order('transaction_date','ASC');
@@ -1070,7 +1070,7 @@ class LedgersController extends AppController
 			}
 			
 			$Ledgers = $this->Ledgers->find()
-				->where(['reconciliation_date'=>'0000-00-00','ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
+				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
 				})->order(['transaction_date' => 'DESC']);
