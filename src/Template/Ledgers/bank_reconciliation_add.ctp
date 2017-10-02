@@ -205,7 +205,10 @@ $(document).ready(function() {
 	var t=$(this);
 		var ledger_id=$(this).attr('ledger_id');
 		var reconciliation_date=$(this).closest('tr.main_tr').find('.reconciliation_date').val();
+<<<<<<< HEAD
 		//alert(reconciliation_date);
+=======
+>>>>>>> c77bf74f49b1a4a0a84ea6ae641186729858664f
 		if(reconciliation_date == ""){
 			alert("Please Select Reconcilation Date");
 		}else{

@@ -63,6 +63,7 @@ class LedgerAccountsTable extends Table
 		$this->belongsTo('Companies');
 		$this->belongsTo('AccountGroups');
 		$this->belongsTo('FinancialYears');
+		$this->belongsTo('ItemLedgers');
     }
 
     /**

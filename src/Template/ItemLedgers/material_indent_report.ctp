@@ -86,7 +86,7 @@
 					</thead>
 					<tbody  >
 						<?php  $i=0; foreach($material_report as $data){
-							
+							//pr($total_indent); exit;
 							$item_name=$data['item_name'];
 							$item_id=$data['item_id'];
 							$Current_Stock=$data['Current_Stock'];

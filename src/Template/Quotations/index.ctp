@@ -198,7 +198,11 @@ if(!empty($status)){
 								
 								<?php if($status == "Closed" && $pull_request=="true" && $close_status != "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
+<<<<<<< HEAD
 								}elseif($close_status == "close" && $gst_pull_request != "true"){ 
+=======
+								}elseif($close_status == "close" && $gst_pull_request != "true"){
+>>>>>>> c77bf74f49b1a4a0a84ea6ae641186729858664f
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								}elseif($gst_pull_request == "true"){ 

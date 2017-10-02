@@ -1023,7 +1023,6 @@ class InventoryTransferVouchersController extends AppController
 											'inventory_transfer_voucher_id'=>$inventoryTransferVoucher->id
 											])
 								->execute();
-								
 							}
 						}
 					$query21 = $this->InventoryTransferVouchers->InventoryTransferVoucherRows->query();
