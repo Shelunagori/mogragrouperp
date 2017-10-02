@@ -198,7 +198,7 @@ if(!empty($status)){
 								
 								<?php if($status == "Closed" && $pull_request=="true" && $close_status != "close"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id,array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
-								}elseif($close_status == "close"){
+								}elseif($close_status == "close" && $gst_pull_request != "true"){
 									echo $this->Html->link('<i class="fa fa-repeat"></i>  Convert Into Sales Order','/Sales-Orders/Add?quotation='.$quotation->id.'&&'.'status='.'close',array('escape'=>false,'class'=>'btn btn-xs default blue-stripe'));
 									
 								}elseif($gst_pull_request == "true"){

@@ -1,4 +1,57 @@
-<?php //pr($Ledgers_Assets); exit; ?>
+
+
+<?php if($date){ 
+
+	$TotalLiablitieAmt=0; $Total_exp_Dr=0; $Total_exp_Cr=0; 
+	foreach($Expense_groups as $Expense_group){ 
+			$TotalLiablitieAmt+=$Expense_group['debit']-$Expense_group['credit']; 
+			if($Expense_group['debit'] > $Expense_group['credit']){
+				$Total_exp_Dr+=$Expense_group['debit']-$Expense_group['credit']; 
+			} else { 
+				$Total_exp_Cr+=$Expense_group['debit']-$Expense_group['credit']; 
+			} 
+	}	
+	$Total_exp_Dr= abs($Total_exp_Dr);  
+	$Total_exp_Cr= abs($Total_exp_Cr);  
+	if($Total_exp_Dr > $Total_exp_Cr){	 
+		$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr);
+		$TotalLiablitieAmt=$Total_lib + $total_stock;
+	} else if($Total_exp_Dr<$Total_exp_Cr) { 
+		$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr); 
+		$TotalLiablitieAmt=$Total_lib + $total_stock;
+	}
+					
+	$TotalAssetAmt=0; $Total_Dr=0; $Total_Cr=0;
+	foreach($Income_groups as $Income_group){ 
+		$TotalAssetAmt+=$Income_group['debit']-$Income_group['credit']; 
+			if($Income_group['debit'] > $Income_group['credit']){
+				$Total_Dr+=$Income_group['debit']-$Income_group['credit']; 
+			}else { 
+				$Total_Cr+=$Income_group['debit']-$Income_group['credit']; 
+			}  
+	} 
+	$Total_Dr1= abs($Total_Dr); 
+	$Total_Cr1= abs($Total_Cr); 
+	if($Total_Dr1>$Total_Cr1){ 
+		$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1);  
+		$TotalAssetAmt=abs($TotalAmt1)+$closeStock;	
+	} else if($Total_Dr1 < $Total_Cr1) {
+		$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1); 
+		$TotalAssetAmt=abs($TotalAmt1)+$closeStock;
+	}
+	
+	//pr($TotalLiablitieAmt); 
+	//pr($TotalAssetAmt); exit;
+} ?>
+				
+
+
+
+
+
+ 
+ 
+ 
 <div class="row">
 	<div class="col-md-12">
 		<div class="portlet light bordered">
@@ -31,6 +84,11 @@
 						<div align="center"><h4>Expense</h4></div>
 						<table id="main_tble"  class="table table-condensed table-hover">
 							<tbody class="main_tbody">
+							<tr>
+									<td>Opening Stock</td>
+									
+									<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($total_stock ),['places'=>2])); ?></td>
+								</tr>
 							<?php
 							usort($Expense_groups, function ($a, $b) {
 								return $a['sequence'] - $b['sequence'];
@@ -40,6 +98,7 @@
 			
 							$Total_Liablities+=$Expense_group['debit']-$Expense_group['credit']; ?>
 								<tr group_id=<?php  echo $Expense_group['group_id'] ?> class="main_tr">
+									
 									<td> 
 									<a href='#' role='button' status='close' class="group_name" group_id='<?php echo $Expense_group['group_id']; ?>' style='color:black;'>
 									<?= h($Expense_group['name']) ?>
@@ -47,26 +106,43 @@
 									</td>
 									<?php if($Expense_group['debit'] > $Expense_group['credit']){?>
 										<td style=" text-align: right; "><?= h(
-										$this->Number->format($Expense_group['debit']-$Expense_group['credit'],['places'=>2])); echo "Dr" ;
+										$this->Number->format($Expense_group['debit']-$Expense_group['credit'],['places'=>2])); 
 										$Total_exp_Dr+=$Expense_group['debit']-$Expense_group['credit']; 
 										?></td>
 									<?php } else { ?>
 											
-										<td style=" text-align: right; "><?= h($this->Number->format(abs($Expense_group['debit']-$Expense_group['credit']),['places'=>2])); echo "Cr" ;
+										<td style=" text-align: right; "><?= h($this->Number->format(abs($Expense_group['debit']-$Expense_group['credit']),['places'=>2]));
 										$Total_exp_Cr+=$Expense_group['debit']-$Expense_group['credit']; 
 										?></td>
 									<?php } ?>
 								</tr>
 							<?php } ?>
-								<?php $Total_exp_Dr= abs($Total_exp_Dr);  $Total_exp_Cr= abs($Total_exp_Cr); ?>
+								<?php 
+								$Total_exp_Dr= abs($Total_exp_Dr);  $Total_exp_Cr= abs($Total_exp_Cr); 
+								
+								$netProfit=0;
+									if($TotalAssetAmt > $TotalLiablitieAmt){ 
+									$netProfit=$TotalAssetAmt - $TotalLiablitieAmt;
+								?>
+									
+								<tr>
+									<td>Gross Profit</td>
+									<td style=" text-align: right; "><?= h ($this->Number->format(abs($netProfit),['places'=>2])); ?></td>
+								</tr>
+								
+								<?php } ?>
 								<tr>
 									<th>Total Expense</th>
 									<?php  if($Total_exp_Dr>$Total_exp_Cr){ 
-										$Total_Liablities=abs($Total_exp_Dr)-abs($Total_exp_Cr);?>
-										<th style=" text-align: right; "><?= h ($this->Number->format(abs($Total_Liablities),['places'=>2])); ?>Dr</th>
+										$Total_Libs=abs($Total_exp_Dr)-abs($Total_exp_Cr);
+										$Total_Liablities=$Total_Libs+ $total_stock+ $netProfit;
+										?>
+										<th style=" text-align: right; "><?= h ($this->Number->format(abs($Total_Liablities ),['places'=>2])); ?></th>
 									<?php } else if($Total_exp_Dr<$Total_exp_Cr) { 
-										$Total_Liablities=abs($Total_exp_Dr)-abs($Total_exp_Cr); ?>
-										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Liablities),['places'=>2])); ?>Cr</th>
+										$Total_Libs=abs($Total_exp_Dr)-abs($Total_exp_Cr); 
+										$Total_Liablities=$Total_Libs+ $total_stock+ $netProfit;
+										?>
+										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Liablities ),['places'=>2])); ?></th>
 									<?php } else { ?>
 									<th style=" text-align: right; "><?php echo $this->Number->format("0",['places'=>2]); ?></th>
 									<?php } ?>
@@ -78,6 +154,10 @@
 						<div align="center"><h4>Income</h4></div>
 						<table id="main_tble1"  class="table table-condensed">
 							<tbody class="main_tbody1">
+								<tr>
+									<td>Closing Stock</td>
+									<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($closeStock ),['places'=>2])); ?></td>
+								</tr>
 							<?php 
 							usort($Income_groups, function ($a, $b) {
 								return $a['sequence'] - $b['sequence'];
@@ -92,26 +172,40 @@
 															 </a>  
 									</td>
 									<?php if($Income_group['debit'] > $Income_group['credit']){?>
-										<td style=" text-align: right; "><?= h($this->Number->format($Income_group['debit']-$Income_group['credit'],['places'=>2])); echo "Dr" ;
+										<td style=" text-align: right; "><?= h($this->Number->format($Income_group['debit']-$Income_group['credit'],['places'=>2])); 
 										$Total_Dr+=$Income_group['debit']-$Income_group['credit']; 
 										?></td>
 									<?php } else { ?>
 											
-										<td style=" text-align: right; "><?= h($this->Number->format(abs($Income_group['debit']-$Income_group['credit']),['places'=>2])); echo "Cr" ;
+										<td style=" text-align: right; "><?= h($this->Number->format(abs($Income_group['debit']-$Income_group['credit']),['places'=>2])); 
 										$Total_Cr+=$Income_group['debit']-$Income_group['credit']; 
 										?></td>
 									<?php } ?>
 								</tr>
 							<?php } ?>
 								<?php $Total_Dr= abs($Total_Dr); ?>
-								<?php $Total_Cr= abs($Total_Cr); ?>
+								<?php $Total_Cr= abs($Total_Cr);
+									$netLoss=0;
+									if($TotalAssetAmt < $TotalLiablitieAmt){ 
+									$netLoss=$TotalLiablitieAmt - $TotalAssetAmt;
+								?>
+									
+								<tr>
+									<td>Gross Loss</td>
+									<td style=" text-align: right; "><?= h ($this->Number->format(abs($netLoss),['places'=>2])); ?></td>
+								</tr>
 								
+								<?php } ?>
 								<tr>
 									<th>Total Income</th>
-									<?php  if($Total_Dr>$Total_Cr){ $Total_Assets=abs($Total_Dr)-abs($Total_Cr);  ?>
-										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Assets),['places'=>2])); ?>Dr</th>
-									<?php } else if($Total_Dr<$Total_Cr) { $Total_Assets=abs($Total_Dr)-abs($Total_Cr); ?>
-										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Assets),['places'=>2])); ?>Cr</th>
+									<?php  if($Total_Dr>$Total_Cr){ $TotalAmt=abs($Total_Dr)-abs($Total_Cr);  
+									$Total_Assets=abs($TotalAmt)+$closeStock+$netLoss;	
+									?>
+										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Assets),['places'=>2])); ?></th>
+									<?php } else if($Total_Dr<$Total_Cr) { $TotalAmt=abs($Total_Dr)-abs($Total_Cr); 
+									$Total_Assets=abs($TotalAmt)+$closeStock+$netLoss;
+									?>
+										<th style=" text-align: right; "><?= h($this->Number->format(abs($Total_Assets ),['places'=>2])); ?></th>
 									<?php } else { ?>
 									<th style=" text-align: right; "><?php echo $this->Number->format('0',['places'=>2]) ?></th>
 									<?php } ?>
@@ -224,6 +318,21 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
+	
+	
+
+	/* var url="<?php echo $this->Url->build(['controller'=>'Items','action'=>'openingStock']); ?>";
+	alert(url);
+	url=url,
+	$.ajax({
+		url: url,
+	}).done(function(response) {
+		$('.opening_balance').html(response);
+		alert(response);
+	}); */	
+	
+	
+	
 	$(".group_name").die().live('click',function(e){
 	   var current_obj=$(this);
 	   var group_id=$(this).attr('group_id');

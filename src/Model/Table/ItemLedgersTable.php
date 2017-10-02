@@ -68,6 +68,8 @@ class ItemLedgersTable extends Table
 		$this->belongsTo('Quotations');
 		$this->belongsTo('ItemBuckets');
 		$this->belongsTo('MaterialIndents');
+		$this->belongsTo('NewItems');
+		//$this->belongsTo('InventoryVouchers');
 		
     }
 

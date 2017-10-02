@@ -429,6 +429,7 @@
 				</thead>
 				<tbody>
 				<?php   $i=1; $TotalAmountDr=[]; $TotalAmountCr=[]; 
+				
 				foreach($voucherLedgerDetailsGst as  $key=>$voucherLedgerDetailsGst){  
 				if($voucherSourceGst[$key]=="Petty Cash Payment Voucher"){
 					$voucher_no="Petty Cash Payment Voucher";

@@ -420,9 +420,152 @@ class LedgerAccountsController extends AppController
 					=$Ledgers_Income->_matchingData['AccountGroups']->sequence;
 			}
 			
+		
+		$ItemLedgers=$this->LedgerAccounts->ItemLedgers->find()->where(['source_model'=>'Items','quantity !='=>0,'company_id'=>$st_company_id])->order(['ItemLedgers.processed_on']);
+		$total_stock=0;
+		foreach($ItemLedgers as $ItemLedger){
+				$total_stock+=$ItemLedger->rate*$ItemLedger->quantity;
+		}
+		
+		$item_stocks =[];$items_names =[];
+		
+		$query = $this->LedgerAccounts->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id]);
+		
+		$totalInCase = $query->newExpr()
+			->addCase(
+				$query->newExpr()->add(['in_out' => 'In']),
+				$query->newExpr()->add(['quantity']),
+				'integer'
+			);
+		$totalOutCase = $query->newExpr()
+			->addCase(
+				$query->newExpr()->add(['in_out' => 'Out']),
+				$query->newExpr()->add(['quantity']),
+				'integer'
+			);
+
 			
+		$query->select([
+			'total_in' => $query->func()->sum($totalInCase),
+			'total_out' => $query->func()->sum($totalOutCase),'id','item_id'
+		])
+		->where(['company_id'=>$st_company_id])
+		->group('item_id')
+		->autoFields(true);
+		$results =$query->toArray();
+		
+		foreach($results as $result){
+				$item_stocks[$result->item_id] = $result->total_in - $result->total_out;
+			}
+		
+		
+		$Items =$this->LedgerAccounts->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id){
+						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+		}]);
+		//pr($item_stocks); exit;
+		$stock=[];  $sumValue=[];
+		foreach($Items as $Item){
+			$StockLedgers=$this->LedgerAccounts->ItemLedgers->find()->where(['ItemLedgers.item_id'=>$Item->id,'ItemLedgers.company_id'=>$st_company_id])->order(['ItemLedgers.processed_on'=>'ASC']);
+			foreach($StockLedgers as $StockLedger){ 
+				if($StockLedger->in_out=='In'){
+					if(($StockLedger->source_model=='Grns' and $StockLedger->rate_updated=='Yes') or ($StockLedger->source_model!='Grns')){
+						for($inc=0;$inc<$StockLedger->quantity;$inc++){
+							$stock[$Item->id][]=$StockLedger->rate;
+						}
+					}
+				}
+			}
+			foreach($StockLedgers as $StockLedger){
+				if($StockLedger->in_out=='Out'){
+					if(sizeof(@$stock[$Item->id])>0){
+						$stock[$Item->id] = array_slice($stock[$Item->id], $StockLedger->quantity); 
+					}
+				}
+			}
+			//echo "hello"; exit;
+			if(sizeof(@$stock[$Item->id]) > 0){ 
+				foreach(@$stock[$Item->id] as $stockRate){
+					@$sumValue[$Item->id]+=@$stockRate;
+				}
+			}
+		}
+		//Stock valuation End//
+	//	pr($sumValue); exit;
+	
+	$itemSerialNumberStatus=[];
+		foreach($Items as $Item){ 
+			$ItemLedgersexists = $this->LedgerAccounts->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
+			$itemSerialNumberStatus[$Item->id]=@$Item->item_companies[0]->serial_number_enable;
 			
-			$this->set(compact('Expense_groups','Income_groups','from_date','to_date'));
+		}
+	
+	
+	$ItemSerialNumbers =$this->LedgerAccounts->ItemLedgers->Items->ItemSerialNumbers->find()->where(['ItemSerialNumbers.company_id' => $st_company_id,'ItemSerialNumbers.status'=>"In"]);
+	
+	$itemSerialRate=[]; $itemSerialQuantity=[]; $i=1;
+	foreach($ItemSerialNumbers as $ItemSerialNumber){
+		if(@$ItemSerialNumber->grn_id > 0){
+			$ItemLedgerData =$this->LedgerAccounts->ItemLedgers->find()->where(['source_id'=>$ItemSerialNumber->grn_id,'source_model'=>"Grns",'item_id'=>$ItemSerialNumber->item_id])->first();
+			@$itemSerialQuantity[@$ItemSerialNumber->item_id]=$itemSerialQuantity[@$ItemSerialNumber->item_id]+1;
+			@$itemSerialRate[@$ItemSerialNumber->item_id]+=@$ItemLedgerData['rate'];
+		}
+		else if(@$ItemSerialNumber->master_item_id > 0){
+			$ItemLedgerData =$this->LedgerAccounts->ItemLedgers->find()->where(['source_id'=>$ItemSerialNumber->item_id,'source_model'=>"Items",'item_id'=>$ItemSerialNumber->item_id])->first();
+			@$itemSerialRate[@$ItemSerialNumber->item_id]+=@$ItemLedgerData['rate'];
+			@$itemSerialQuantity[@$ItemSerialNumber->item_id]=$itemSerialQuantity[@$ItemSerialNumber->item_id]+1;
+		}else if(@$ItemSerialNumber->sale_return_id > 0){
+			$ItemLedgerData =$this->LedgerAccounts->ItemLedgers->find()->where(['source_id'=>$ItemSerialNumber->sale_return_id,'source_model'=>"Sale Return",'item_id'=>$ItemSerialNumber->item_id])->first();
+			@$itemSerialRate[@$ItemSerialNumber->item_id]+=@$ItemLedgerData['rate'];
+			@$itemSerialQuantity[@$ItemSerialNumber->item_id]=$itemSerialQuantity[@$ItemSerialNumber->item_id]+1;
+		}else if(@$ItemSerialNumber->inventory_transfer_voucher_id > 0){
+			$ItemLedgerData =$this->LedgerAccounts->ItemLedgers->find()->where(['source_id'=>$ItemSerialNumber->inventory_transfer_voucher_id,'source_model'=>"Inventory Transfer Voucher",'item_id'=>$ItemSerialNumber->item_id])->first();
+			@$itemSerialRate[@$ItemSerialNumber->item_id]+=@$ItemLedgerData['rate'];
+			@$itemSerialQuantity[@$ItemSerialNumber->item_id]=$itemSerialQuantity[@$ItemSerialNumber->item_id]+1;
+		}
+	}
+	
+	$unitRate=[]; $totalRate=[];
+		foreach ($item_stocks as $key=> $item_stock1){
+			$r=@$itemSerialRate[$key];
+			$q=@$itemSerialQuantity[$key];
+			if($q > 0){
+			$UR=$r/$q;
+			$unitRate[$key]=$UR;
+			$totalRate[$key]=$UR*$q;
+			}
+			
+		}
+	
+	
+	
+	//$unitRate=[]; 
+	$totalRate=[];
+	$total_inv=0; $closeStock=0; $page_no=0;  $RowTotal=0;
+	foreach ($item_stocks as $key=> $item_stock){
+		if(@$itemSerialNumberStatus[$key]==1){
+			if($item_stock > 0){
+				$RowTotal=@$unitRate[$key]*$item_stock;
+			}else{
+				$RowTotal=0;
+			}
+		}else{
+			if($item_stock > 0){
+				$UR1=@$sumValue[$key]/$item_stock;
+				$RowTotal=$UR1*@$item_stock;
+			}else{
+				$RowTotal=0;
+			}
+		} 
+		//pr($RowTotal); 
+			$closeStock+=$RowTotal;
+	}
+		
+//pr(@$totalColumn); 
+//exit;	
+//pr(@$totalRate); exit;	
+		
+		
+		$this->set(compact('total_stock','Expense_groups','Income_groups','from_date','to_date','closeStock'));
 			
 		}
 		$this->set(compact('date','to_date'));

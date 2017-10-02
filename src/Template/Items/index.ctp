@@ -38,14 +38,14 @@
 						<td class="actions">
 							<?php if(in_array(52,$allowed_pages)){ ?>
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'edit', $item->id],array('escape'=>false,'class'=>'btn btn-xs blue')); ?>
-							<?= $this->Form->postLink('<i class="fa fa-trash"></i> ',
+							<?php $this->Form->postLink('<i class="fa fa-trash"></i> ',
 								['action' => 'delete', $item->id], 
 								[
 									'escape' => false,
 									'class' => 'btn btn-xs btn-danger',
 									'confirm' => __('Are you sure ?', $item->id)
 								]
-							) ?>
+							); ?>
 							<?php } ?>
 							<?php if(in_array(53,$allowed_pages)){ ?>
 							<?php echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',['action' => 'EditCompany', $item->id],array('escape'=>false,'class'=>'btn btn-xs green tooltips','data-original-title'=>'Add/Remove in other companies, Freeze/Unfreeze, Serial Number Enable/Disable')); ?>
