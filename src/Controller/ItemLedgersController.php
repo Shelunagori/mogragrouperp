@@ -485,6 +485,7 @@ class ItemLedgersController extends AppController
 		$item_stocks =[];$items_names =[];
 		
 		$query = $this->ItemLedgers->find()->where(['ItemLedgers.processed_on >='=> date("Y-m-d",strtotime($from_date)), 'ItemLedgers.processed_on <=' =>date("Y-m-d",strtotime($to_date)),'company_id'=>$st_company_id]);
+		
 		$totalInCase = $query->newExpr()
 			->addCase(
 				$query->newExpr()->add(['in_out' => 'In']),

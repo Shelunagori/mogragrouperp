@@ -1,4 +1,103 @@
-<?php //pr($Ledgers_Assets); exit; ?>
+
+
+<?php 
+	if($date){ 
+
+		$TotalLiablitieAmt=0; $Total_exp_Dr=0; $Total_exp_Cr=0; 
+		foreach($Expense_groups as $Expense_group){ 
+				$TotalLiablitieAmt+=$Expense_group['debit']-$Expense_group['credit']; 
+				if($Expense_group['debit'] > $Expense_group['credit']){
+					$Total_exp_Dr+=$Expense_group['debit']-$Expense_group['credit']; 
+				} else { 
+					$Total_exp_Cr+=$Expense_group['debit']-$Expense_group['credit']; 
+				} 
+		}	
+		$Total_exp_Dr= abs($Total_exp_Dr);  
+		$Total_exp_Cr= abs($Total_exp_Cr);  
+		if($Total_exp_Dr > $Total_exp_Cr){	 
+			$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr);
+			$TotalLiablitieAmt=$Total_lib + $total_stock;
+		} else if($Total_exp_Dr<$Total_exp_Cr) { 
+			$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr); 
+			$TotalLiablitieAmt=$Total_lib + $total_stock;
+		}
+						
+		$TotalAssetAmt=0; $Total_Dr=0; $Total_Cr=0;
+		foreach($Income_groups as $Income_group){ 
+			$TotalAssetAmt+=$Income_group['debit']-$Income_group['credit']; 
+				if($Income_group['debit'] > $Income_group['credit']){
+					$Total_Dr+=$Income_group['debit']-$Income_group['credit']; 
+				}else { 
+					$Total_Cr+=$Income_group['debit']-$Income_group['credit']; 
+				}  
+		} 
+		$Total_Dr1= abs($Total_Dr); 
+		$Total_Cr1= abs($Total_Cr); 
+		if($Total_Dr1>$Total_Cr1){ 
+			$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1);  
+			$TotalAssetAmt=abs($TotalAmt1)+$closeStock;	
+		} else if($Total_Dr1 < $Total_Cr1) {
+			$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1); 
+			$TotalAssetAmt=abs($TotalAmt1)+$closeStock;
+		}
+		if($TotalAssetAmt > $TotalLiablitieAmt){ 
+			$profitLossAmt=$TotalAssetAmt-$TotalLiablitieAmt;
+		}else{
+			$profitLossAmt=$TotalLiablitieAmt-$TotalAssetAmt;
+		}
+		  
+	} 
+?>
+<?php 
+	$total_lib = 0;
+	$lib_tr = 0; $ass_tr = 0; $liablitie_tr =0; $assets_tr = 0; $Total_Liablities=0; $Total_lib_Dr=0; $Total_lib_Cr=0;
+	$i=0; 
+	foreach($liablitie_groups as $liablitie_group)
+	{ 
+		$i++;
+		$Total_Liablities=$liablitie_group['debit']-$liablitie_group['credit']; 
+			if($Total_Liablities>=0){
+				$Total_lib_Dr += $Total_Liablities;  
+			}else{ 
+				$Total_lib_Cr += $Total_Liablities; 
+			} 
+	} 
+	$Total_lib_Dr= abs($Total_lib_Dr);  
+	$Total_lib_Cr= abs($Total_lib_Cr); 
+										
+	$Total_Assets=0; $Total_Dr=0; $Total_Cr=0;
+	foreach($asset_groups as $asset_group)
+	{
+		$Total_Assets= $asset_group['debit'] - $asset_group['credit'];
+			if($Total_Assets>=0){ 
+				$Total_Dr += $Total_Assets;  	 
+			}else{ 
+				$Total_Cr += $Total_Assets; 	 
+			} 
+	}
+			
+	$Total_Dr= abs($Total_Dr);  
+	$Total_Cr= abs($Total_Cr);
+	 
+	if($Total_lib_Dr > $Total_lib_Cr){ 
+		$Total_Liablities=abs($Total_lib_Dr)-abs($Total_lib_Cr);
+	} else if ($Total_lib_Dr < $Total_lib_Cr){ 
+		$Total_Liablities=abs($Total_lib_Dr)-abs($Total_lib_Cr); 
+	} 
+
+
+	if($Total_Dr>$Total_Cr){ 
+		$Total_Assets=abs($Total_Dr)-abs($Total_Cr); 
+	} else if($Total_Dr<$Total_Cr){ 
+		$Total_Assets=abs($Total_Dr)-abs($Total_Cr); 
+	} 
+	
+	$OpeningBalanceDr=$total_stock+abs($OpeningBalanceDr);
+	$OpeningBalanceCr=abs($OpeningBalanceCr);
+	$diffInOpeningBalance=$OpeningBalanceDr-$OpeningBalanceCr;
+	
+	//pr($diffInOpeningBalance); 
+?>
 <div class="row">
 	<div class="col-md-12">
 		<div class="portlet box blue">
@@ -10,7 +109,9 @@
 			<div class="portlet-body">
 				<form method="get">
 					<div class="input-group input-medium">
-						<input type="text" name="date" class="form-control date-picker" placeholder="Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo $date; ?>">
+						
+						<input type="text" name="date" class="form-control date-picker date" placeholder="To Date" data-date-format='dd-mm-yyyy' data-date-end-date='0d' value="<?php  echo date("d-m-Y",strtotime($date)); ?>">
+						
 						<span class="input-group-btn">
 						<button class="btn blue" type="submit">Go</button>
 						</span>
@@ -31,8 +132,15 @@
 										<?php $total_lib = 0;
 										$lib_tr = 0; $ass_tr = 0; $liablitie_tr =0; $assets_tr = 0; $Total_Liablities=0; $Total_lib_Dr=0; $Total_lib_Cr=0;
 										//pr($liablitie_groups);exit;
-										$i=0;
-										
+										$i=0; 
+										if($TotalAssetAmt > $TotalLiablitieAmt){ 
+										?>
+										<tr>
+											<td>Profit & loss Acc.</td>
+											<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($profitLossAmt ),['places'=>2])); ?></td>
+										</tr>
+										<?php } ?>
+										<?php
 										usort($liablitie_groups, function ($a, $b) {
 										return $a['sequence'] - $b['sequence'];
 										});
@@ -69,6 +177,14 @@
 										<table id="main_tble1" class="table table-condensed">
 											<tbody class="main_tbody1">
 											<?php
+											if($TotalAssetAmt < $TotalLiablitieAmt){ 
+											?>
+												<tr>
+													<td>Profit & loss Acc.</td>
+													<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($profitLossAmt ),['places'=>2])); ?></td>
+												</tr>
+										<?php } ?>
+										<?php
 											usort($asset_groups, function ($a, $b) {
 											return $a['sequence'] - $b['sequence'];
 											});
@@ -88,6 +204,10 @@
 														</td>
 													</tr>
 											<?php } ?>
+											<tr>
+												<td>Diff in opening balance</td>
+												<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($diffInOpeningBalance ),['places'=>2])); ?></td>
+											</tr>
 												<?php $Total_Dr= abs($Total_Dr);  $Total_Cr= abs($Total_Cr); ?>
 											</tbody>
 									</table>
@@ -99,12 +219,17 @@
 							    <table style='width:100%;'>	
 									<tr> 
 										<th style='padding-left: 20px;'>Total Liablities </th>
-										<?php  if($Total_lib_Dr>$Total_lib_Cr){ 
+										<?php  if($Total_lib_Dr > $Total_lib_Cr){ 
 											$Total_Liablities=abs($Total_lib_Dr)-abs($Total_lib_Cr);?>
 											<th style=" text-align: right; "><?= h (
 											$this->Number->format(abs($Total_Liablities),['places'=>2])); ?> Dr</th>
 										<?php } else if ($Total_lib_Dr<$Total_lib_Cr) { 
-											$Total_Liablities=abs($Total_lib_Dr)-abs($Total_lib_Cr); ?>
+											$Total_Liablities=abs($Total_lib_Dr)-abs($Total_lib_Cr); 
+											if($TotalAssetAmt > $TotalLiablitieAmt){ 
+												$Total_Liablities=$Total_Liablities+abs($profitLossAmt);
+											}
+											
+											?>
 											<th style=" text-align: right;padding-right: 20px;"><?= h($this->Number->format(abs($Total_Liablities),['places'=>2])); ?>Cr</th>
 										<?php } else { ?>
 										<th style=" text-align: right;padding-right: 20px;"><?php echo $this->Number->format('0',['places'=>2]); ?></th>
@@ -117,7 +242,13 @@
 								<table style='width:100%;'>
 								  <tr>
 									<th style='padding-left: 20px;'>Total Assets</th>
-									<?php  if($Total_Dr>$Total_Cr){ $Total_Assets=abs($Total_Dr)-abs($Total_Cr);  ?>
+									<?php  if($Total_Dr>$Total_Cr){ 
+									$Total_Asset_amt=abs($Total_Dr)-abs($Total_Cr); 
+										$Total_Assets=$Total_Asset_amt+$diffInOpeningBalance;
+										if($TotalAssetAmt < $TotalLiablitieAmt){ 
+												$Total_Assets=$Total_Assets+abs($profitLossAmt);
+											}
+									?>
 										<th style=" text-align: right;padding-right: 20px;" width="200px"><?= h( $this->Number->format($Total_Assets,['places'=>2]) ); ?> Dr</th>
 									<?php } else if($Total_Dr<$Total_Cr){ $Total_Assets=abs($Total_Dr)-abs($Total_Cr); ?>
 										<th style=" text-align: right;padding-right: 20px;" width="200px"><?= h($this->Number->format(abs($Total_Assets),['places'=>2])); ?>Cr</th>

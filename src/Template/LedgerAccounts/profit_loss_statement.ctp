@@ -1,48 +1,50 @@
 
 
-<?php if($date){ 
+<?php 
+	if($date){ 
 
-	$TotalLiablitieAmt=0; $Total_exp_Dr=0; $Total_exp_Cr=0; 
-	foreach($Expense_groups as $Expense_group){ 
-			$TotalLiablitieAmt+=$Expense_group['debit']-$Expense_group['credit']; 
-			if($Expense_group['debit'] > $Expense_group['credit']){
-				$Total_exp_Dr+=$Expense_group['debit']-$Expense_group['credit']; 
-			} else { 
-				$Total_exp_Cr+=$Expense_group['debit']-$Expense_group['credit']; 
-			} 
-	}	
-	$Total_exp_Dr= abs($Total_exp_Dr);  
-	$Total_exp_Cr= abs($Total_exp_Cr);  
-	if($Total_exp_Dr > $Total_exp_Cr){	 
-		$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr);
-		$TotalLiablitieAmt=$Total_lib + $total_stock;
-	} else if($Total_exp_Dr<$Total_exp_Cr) { 
-		$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr); 
-		$TotalLiablitieAmt=$Total_lib + $total_stock;
-	}
-					
-	$TotalAssetAmt=0; $Total_Dr=0; $Total_Cr=0;
-	foreach($Income_groups as $Income_group){ 
-		$TotalAssetAmt+=$Income_group['debit']-$Income_group['credit']; 
-			if($Income_group['debit'] > $Income_group['credit']){
-				$Total_Dr+=$Income_group['debit']-$Income_group['credit']; 
-			}else { 
-				$Total_Cr+=$Income_group['debit']-$Income_group['credit']; 
-			}  
+		$TotalLiablitieAmt=0; $Total_exp_Dr=0; $Total_exp_Cr=0; 
+		foreach($Expense_groups as $Expense_group){ 
+				$TotalLiablitieAmt+=$Expense_group['debit']-$Expense_group['credit']; 
+				if($Expense_group['debit'] > $Expense_group['credit']){
+					$Total_exp_Dr+=$Expense_group['debit']-$Expense_group['credit']; 
+				} else { 
+					$Total_exp_Cr+=$Expense_group['debit']-$Expense_group['credit']; 
+				} 
+		}	
+		$Total_exp_Dr= abs($Total_exp_Dr);  
+		$Total_exp_Cr= abs($Total_exp_Cr);  
+		if($Total_exp_Dr > $Total_exp_Cr){	 
+			$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr);
+			$TotalLiablitieAmt=$Total_lib + $total_stock;
+		} else if($Total_exp_Dr<$Total_exp_Cr) { 
+			$Total_lib=abs($Total_exp_Dr)-abs($Total_exp_Cr); 
+			$TotalLiablitieAmt=$Total_lib + $total_stock;
+		}
+						
+		$TotalAssetAmt=0; $Total_Dr=0; $Total_Cr=0;
+		foreach($Income_groups as $Income_group){ 
+			$TotalAssetAmt+=$Income_group['debit']-$Income_group['credit']; 
+				if($Income_group['debit'] > $Income_group['credit']){
+					$Total_Dr+=$Income_group['debit']-$Income_group['credit']; 
+				}else { 
+					$Total_Cr+=$Income_group['debit']-$Income_group['credit']; 
+				}  
+		} 
+		$Total_Dr1= abs($Total_Dr); 
+		$Total_Cr1= abs($Total_Cr); 
+		if($Total_Dr1>$Total_Cr1){ 
+			$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1);  
+			$TotalAssetAmt=abs($TotalAmt1)+$closeStock;	
+		} else if($Total_Dr1 < $Total_Cr1) {
+			$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1); 
+			$TotalAssetAmt=abs($TotalAmt1)+$closeStock;
+		}
+		
+		//pr($TotalLiablitieAmt); 
+		//pr($TotalAssetAmt); exit;
 	} 
-	$Total_Dr1= abs($Total_Dr); 
-	$Total_Cr1= abs($Total_Cr); 
-	if($Total_Dr1>$Total_Cr1){ 
-		$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1);  
-		$TotalAssetAmt=abs($TotalAmt1)+$closeStock;	
-	} else if($Total_Dr1 < $Total_Cr1) {
-		$TotalAmt1=abs($Total_Dr1)-abs($Total_Cr1); 
-		$TotalAssetAmt=abs($TotalAmt1)+$closeStock;
-	}
-	
-	//pr($TotalLiablitieAmt); 
-	//pr($TotalAssetAmt); exit;
-} ?>
+?>
 				
 
 
@@ -84,9 +86,8 @@
 						<div align="center"><h4>Expense</h4></div>
 						<table id="main_tble"  class="table table-condensed table-hover">
 							<tbody class="main_tbody">
-							<tr>
+								<tr>
 									<td>Opening Stock</td>
-									
 									<td style=" text-align: right;" class="opening_balance"><?= h($this->Number->format(abs($total_stock ),['places'=>2])); ?></td>
 								</tr>
 							<?php
@@ -222,9 +223,9 @@
 </div>
 
 <?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
 <script type="text/javascript">
+
 $('tbody.main_tbody').sortable();	
 $(document).ready(function() { 
 	var isDragging = false;
