@@ -106,7 +106,7 @@
 								$close_dr=@$opening_balance_data+@$opening_balance_total['debit'];
 								$close_cr=@$opening_balance_total['credit'];
 							}
-							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ exit; 
+							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ 
 								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
 								$close_dr=@$opening_balance_total['debit'];
 							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
