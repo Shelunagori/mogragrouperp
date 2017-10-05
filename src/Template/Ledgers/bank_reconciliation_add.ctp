@@ -106,7 +106,7 @@
 								$close_dr=@$opening_balance_data+@$opening_balance_total['debit'];
 								$close_cr=@$opening_balance_total['credit'];
 							}
-							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){
+							else if(@$opening_balance_ar['credit'] < @$opening_balance_ar['debit']){ 
 								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
 								$close_dr=@$opening_balance_total['debit'];
 							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
@@ -163,13 +163,7 @@
 							$total_debit+=$ledger->debit; ?></td>
 						<td align="right"><?= $this->Number->format($ledger->credit,[ 'places' => 2]); 
 							$total_credit+=$ledger->credit; ?></td>
-						<td>
-						<?php if(empty($ledger->reconciliation_date)){  ?>
-						
-							<?php echo $this->Form->input('reconciliation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker reconciliation_date','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to)),'placeholder' => 'Reconcilation Date','ledger_id'=>$ledger->id,'required']); 
-						}else{  ?>
-							<?php echo $this->Form->input('reconciliation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker reconciliation_date','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to)),'placeholder' => 'Reconcilation Date','ledger_id'=>$ledger->id,'required','value'=>date('d-m-Y',strtotime($ledger->reconciliation_date))]); ?>
-						<?php } ?></td>
+						<td><?php echo $this->Form->input('reconciliation_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker reconciliation_date','data-date-format' => 'dd-mm-yyyy','data-date-start-date' => date("d-m-Y",strtotime($financial_year->date_from)),'data-date-end-date' => date("d-m-Y",strtotime($financial_year->date_to)),'placeholder' => 'Reconcilation Date','ledger_id'=>$ledger->id,'required']); ?></td>
 						<td>
 							<button type="button" ledger_id=<?php echo $ledger->id ?> class="btn btn-primary btn-sm subdate"><i class="fa fa-arrow-right" ></i></button>	
 						</td>
@@ -211,7 +205,6 @@ $(document).ready(function() {
 	var t=$(this);
 		var ledger_id=$(this).attr('ledger_id');
 		var reconciliation_date=$(this).closest('tr.main_tr').find('.reconciliation_date').val();
-
 		if(reconciliation_date == ""){
 			alert("Please Select Reconcilation Date");
 		}else{

@@ -1004,7 +1004,7 @@ class LedgersController extends AppController
 			return $q->where(['LedgerAccounts.name LIKE'=>'%'.$ledger_name.'%']);
 		}])
 		->where(['Ledgers.company_id'=>$st_company_id,'Ledgers.voucher_source'=>'Opening Balance']));
-		
+		//pr($OpeningBalanceViews->toArray()); exit;
 		$this->set(compact('OpeningBalanceViews', 'ledger_name'));
 	}
 	
