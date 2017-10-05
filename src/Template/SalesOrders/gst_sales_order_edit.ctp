@@ -420,7 +420,7 @@
 
 <table id="sample_tb" style="display:none;">
 	<tbody>
-		<tr class="tr1 preimp maintr">
+		<tr class="tr1 preimp main_tr">
 			<td rowspan="2" width="10">0</td>
 			<td width="280px;">
 				<div class="row">
@@ -457,7 +457,7 @@
 			<td width="200px;"><?php echo $this->Form->input('total[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Total']); ?></td>
 			<td width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
-		<tr class="tr2 preimp maintr">
+		<tr class="tr2 preimp main_tr">
 			<td colspan="16" class="main"></td>
 		</tr>
 		</tr>
@@ -684,17 +684,17 @@ $(document).ready(function() {
 		$(this).closest("td").find('input').val(description);
     });
 	
-	$('.deleterow').die().live("click",function() {
-		var l=$(this).closest("table tbody").find("tr").length;
-		if (confirm("Are you sure to remove row ?") == true) {
-			if(l>2){
-				var row_no=$(this).closest("tr").attr("row_no");
-				var del="tr[row_no="+row_no+"]";
-				$(del).remove();
-				rename_rows();
-			}
-		} 
-    });
+	//$('.deleterow').die().live("click",function() {
+		//var l=$(this).closest("table tbody").find("tr").length;
+		//if (confirm("Are you sure to remove row ?") == true) {
+			//if(l>2){
+				//var row_no=$(this).closest("tr").attr("row_no");
+				//var del="tr[row_no="+row_no+"]";
+				//$(del).remove();
+				//rename_rows();
+			//}
+		//} 
+    //});
 	
 	function add_row(){
 		var tr1=$("#sample_tb tbody tr.tr1").clone();
@@ -707,7 +707,10 @@ $(document).ready(function() {
 			$(this).attr("row_no",w);
 			r++;
 			if(r==2){ w++; r=0; }
+			
 		});
+		//var w=1; var r=0;
+		
 		
 		rename_rows();
 		calculate_total();
