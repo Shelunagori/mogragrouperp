@@ -459,4 +459,20 @@ class JobCardsController extends AppController
         
         return $this->redirect(['action' => 'index']);
     }
+	
+	public function dataRepair()
+    {
+		$this->viewBuilder()->layout('');
+		$JobCards = $this->JobCards->find();
+		foreach($JobCards as $JobCard){
+			$query = $this->JobCards->JobCardRows->query();
+					 $query->update()
+					->set(['sales_order_id' =>$JobCard->sales_order_id])
+					->where(['job_card_id' => $JobCard->id])
+					->execute(); 
+			//pr($JobCard->sales_order_id);
+		}
+		exit;
+	}
+	
 }

@@ -214,6 +214,8 @@
 							
 							<?php echo $this->Form->input('sales_order_rows.'.$q.'.source_type', ['type' => 'hidden','value'=>$sales_order_rows->source_type]); ?>
 							
+							<?php echo $this->Form->input('sales_order_rows.'.$q.'.id', ['type' => 'hidden','value'=>$sales_order_rows->id]); ?>
+							
 							<?php 
 							$job_card_row_ids=[];
 							$inventory_voucher_row_ids=[];
