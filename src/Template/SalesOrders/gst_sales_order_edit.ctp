@@ -115,7 +115,7 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label">PO Date <span class="required" aria-required="true">*</span></label>
 						<div class="col-md-9">
-							<?php echo $this->Form->input('po_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'PO Date','data-date-format'=>'dd-mm-yyyy','value'=>date("d-m-Y",strtotime($salesOrder->po_date))]); ?>
+							<?php echo $this->Form->input('po_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'PO Date','data-date-format'=>'dd-mm-yyyy','data-date-end-date'=>'0d','value'=>date("d-m-Y",strtotime($salesOrder->po_date))]); ?>
 						</div>
 					</div>
 				</div>

@@ -186,7 +186,7 @@ if(!empty($copy))
 								echo $this->Form->input('po_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm','value' => @$salesOrder->customer_po_no]);
 								
 							}else{
-								echo $this->Form->input('po_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'PO Date','data-date-format'=>'dd-mm-yyyy'
+								echo $this->Form->input('po_date', ['type'=>'text','label' => false,'class' => 'form-control input-sm date-picker','placeholder'=>'PO Date','data-date-format'=>'dd-mm-yyyy','data-date-end-date'=>'0d'
 							 ]);
 							} ?>
 						</div>
