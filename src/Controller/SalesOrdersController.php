@@ -1201,5 +1201,14 @@ class SalesOrdersController extends AppController
 		}
 		pr($data);exit;
 	}
+	
+	public function getproceedqty(){
+		$SalesOrders = $this->SalesOrders->SalesOrderRows->find()->where(['processed_quantity > quantity']);
+		$data=[];
+		foreach($SalesOrders as $salesorders){
+			$data[$salesorders->id]=$salesorders->sales_order_id;
+		}
+		pr($data);exit;
+	}
 
 }

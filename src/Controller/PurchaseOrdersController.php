@@ -603,4 +603,12 @@ class PurchaseOrdersController extends AppController
 		$this->set(compact('Customer'));
 	}
 
+	public function getproceedqty(){
+		$purchaseorderrows = $this->PurchaseOrders->PurchaseOrderRows->find()->where(['processed_quantity > quantity']);
+		$data=[];
+		foreach($purchaseorderrows as $purchaseorderrow){
+			$data[$purchaseorderrow->id]=$purchaseorderrow->purchase_order_id;
+		}
+		pr($data);exit;
+	}
 }
