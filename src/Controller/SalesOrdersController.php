@@ -685,13 +685,13 @@ class SalesOrdersController extends AppController
 					if($falg==1){
 						$query_pending = $this->SalesOrders->Quotations->query();
 						$query_pending->update()
-						->set(['Quotations.status' => 'Pending'])
+						->set(['status' => 'Pending'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}else{
 						$query_pending = $this->SalesOrders->Quotations->query();
 						$query_pending->update()
-						->set(['Quotations.status' => 'Converted Into Sales Order'])
+						->set(['status' => 'Converted Into Sales Order'])
 						->where(['id' => $salesOrder->quotation_id])
 						->execute();
 					}

@@ -1478,4 +1478,42 @@ class InvoiceBookingsController extends AppController
 		$this->set(compact('LedgerAccount', 'ReferenceDetails','purchase_acc','cgst_per','sgst_per','igst_per'));
         $this->set('_serialize', ['invoiceBooking']);
     }
+	
+	public function entryCount(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+
+		$InvoiceBookings=$this->InvoiceBookings->find()->contain(['InvoiceBookingRows']);
+		$i=1;
+		
+		  foreach($InvoiceBookings as $InvoiceBooking){ 
+			$ibQty=[]; $i=1;
+			foreach($InvoiceBooking->invoice_booking_rows as $invoice_booking_row){ 
+				@$ibQty[@$invoice_booking_row->item_id]+=@$i;
+			}
+			//pr($ibQty); 
+			$Grns = $this->InvoiceBookings->Grns->get($InvoiceBooking->grn_id, [
+				'contain' => ['GrnRows']
+				]);
+		/* 		$grnQty=[];
+			foreach($Grns->grn_rows as $grn_row){
+					if(!empty($grnQty[@$grn_row->item_id])){
+						echo "IB".$Grns->grn1;
+					}else{
+						//echo "IB".$Grns->grn1;
+					}
+			} */
+			
+			 foreach($ibQty as $key=>$ibQty){
+				if($ibQty > 1){
+					echo "IB".$InvoiceBooking->ib2;
+				}
+			} 
+			
+				
+			} 
+		  
+		 exit;
+	}
 }
