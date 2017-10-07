@@ -117,7 +117,7 @@
 						<td align="center">
 							<label class="hello">
 							<?php 
-							if(@$total_indent[$item_id] < 0){
+							/*if(@$total_indent[$item_id] < 0){ */
 							if(sizeof($company_name)==1){
 							foreach($company_name as $names){			
 										if(@$names == @$st_company_id){ ?>
@@ -126,7 +126,7 @@
 										<?php 		}						
 							else{ ?>
 								
-							<?php }} }} ?>	
+							<?php }} } ?>	
 							</label>
 						</td>						
 						</tr>
