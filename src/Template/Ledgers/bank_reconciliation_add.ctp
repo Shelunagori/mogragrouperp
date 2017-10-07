@@ -150,9 +150,13 @@
 					</tr>
 				</thead>
 				<tbody>
-				<?php  $total_balance_acc=0; $total_debit=0; $total_credit=0;
+				<?php
+				
+				$total_balance_acc=0; $total_debit=0; $total_credit=0;
 				//pr($Bank_Ledgers->toArray()); exit;
 				foreach($Bank_Ledgers as $ledger): 
+				
+				
 				
 				?>
 				<tr class="main_tr">

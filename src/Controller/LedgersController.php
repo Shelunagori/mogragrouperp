@@ -1029,7 +1029,8 @@ class LedgersController extends AppController
 				])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
 					$between = clone $exp;
-					return $exp->not($between->between('reconciliation_date', $transaction_from_date, $transaction_to_date, 'date'));
+					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date')
+					->not($between->between('reconciliation_date', $transaction_from_date, $transaction_to_date, 'date'));
 				})->order('transaction_date','ASC');
 		}
 		
