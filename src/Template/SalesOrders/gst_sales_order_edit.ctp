@@ -187,7 +187,9 @@
 					
 					?>
 					<tr class="tr1 <?php echo $disable_class; ?> main_tr" row_no='<?php echo @$sales_order_rows->id; ?>'>
-						<td rowspan="2"><?= h($q) ?></td>
+						<td rowspan="2"><?= h($q) ?>
+							
+						</td>
 						<td>						
 							<div class="row">
 								<div class="col-md-10 padding-right-decrease">
@@ -214,7 +216,7 @@
 							
 							<?php echo $this->Form->input('sales_order_rows.'.$q.'.source_type', ['type' => 'hidden','value'=>$sales_order_rows->source_type]); ?>
 							
-							<?php echo $this->Form->input('sales_order_rows.'.$q.'.id', ['type' => 'hidden','value'=>$sales_order_rows->id]); ?>
+							
 							
 							<?php 
 							$job_card_row_ids=[];
@@ -227,6 +229,8 @@
 							?> 
 							<?php //pr($job_card_row_ids); ?>
 							<?php echo $this->Form->input('sales_order_rows.'.$q.'.job_card_row_ids', ['type' => 'hidden','value'=>$job_card_row_ids]); ?>
+							
+							<?php echo $this->Form->input('sales_order_rows.'.$q.'.id', ['type' => 'hidden','value'=>$sales_order_rows->id]); ?>
 							
 							
 							
@@ -266,6 +270,7 @@
 					</tr>
 					<tr class="tr2 <?php echo $disable_class; ?> main_tr" row_no='<?php echo @$sales_order_rows->id; ?>'>
 						<td colspan="16" class="main">
+							
 							<div class="note-editable"><?php echo $sales_order_rows->description; ?></div>
 						</td>
 						
@@ -747,6 +752,8 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(2) input[type=hidden]:eq(1)").attr({name:"sales_order_rows["+i+"][processed_quantity]", id:"sales_order_rows-"+i+"-processed_quantity"});
 			$(this).find("td:nth-child(2) input[type=hidden]:eq(2)").attr({name:"sales_order_rows["+i+"][source_type]", id:"sales_order_rows-"+i+"-source_type"});
 			$(this).find("td:nth-child(2) input[type=hidden]:eq(3)").attr({name:"sales_order_rows["+i+"][job_card_row_ids]", id:"sales_order_rows-"+i+"-job_card_row_ids"});
+			
+			$(this).find("td:nth-child(2) input[type=hidden]:eq(4)").attr({name:"sales_order_rows["+i+"][id]", id:"sales_order_rows-"+i+"-id"});
 			
 			$(this).find("td:nth-child(2) a.popup_btn").attr("popup_id",i);
 			$(this).find("td:nth-child(2) div.modal").attr("popup_div_id",i);
