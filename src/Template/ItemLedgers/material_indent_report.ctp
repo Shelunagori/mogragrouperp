@@ -91,6 +91,10 @@
 							$item_id=$data['item_id'];
 							$Current_Stock=$data['Current_Stock'];
 							$sales_order=$data['sales_order'];
+							$job_card_id=$data['job_card_id'];
+							$po_id=$data['po_id'];
+							
+							$sales_order_id=$data['sales_order_id'];
 							$job_card_qty=$data['job_card_qty'];
 							$po_qty=$data['po_qty'];
 							$qo_qty=$data['qo_qty'];
@@ -104,9 +108,15 @@
 						<td ><?php echo $i; ?> </td>
 						<td><?php echo $item_name; ?></td>
 						<td style="text-align:center; valign:top" valign="top"><?php if(!empty($Current_Stock)){ echo $Current_Stock; }else{ echo "-"; } ?></td>
-						<td style="text-align:center"><?php if(!empty($sales_order)){ echo @$sales_order; }else{ echo "-"; } ?></td>
-						<td style="text-align:center"><?php if(!empty($job_card_qty)){ echo $job_card_qty; }else{ echo "-"; } ?></td>
-						<td style="text-align:center"><?php if(!empty($po_qty)){ echo $po_qty; }else{ echo "-"; }  ?></td>
+						<td style="text-align:center"><?php if(!empty($sales_order)){ 
+							echo $this->Html->link(@$sales_order ,'/ItemLedgers/material_indent?status=salesorder&&id='.@$sales_order_id,['target' => '_blank']); 
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($job_card_qty)){ 
+							echo $this->Html->link(@$job_card_qty ,'/ItemLedgers/material_indent?status=jobcard&&id='.@$job_card_id,['target' => '_blank']); 
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($po_qty)){ 
+							echo $this->Html->link(@$po_qty ,'/ItemLedgers/material_indent?status=purchaseorder&&id='.@$po_id,['target' => '_blank']); 
+						 }else{ echo "-"; }  ?></td>
 						<td style="text-align:center"><?php if(!empty($qo_qty)){ echo $qo_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center"><?php if(!empty($mi_qty)){ echo $mi_qty; }else{ echo "-"; } ?></td>
 						<td style="text-align:center">
