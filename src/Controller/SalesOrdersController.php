@@ -77,26 +77,31 @@ class SalesOrdersController extends AppController
             'contain' => ['Customers']
         ];
 		
-		
+		$where1=[];
 		
 		if($status==null or $status=='Pending'){
 			$having=['total_rows >' => 0];
+			$where1['status']='Pending';
 		}elseif($status=='Converted Into Invoice'){
 			$having=['total_rows =' => 0];
+			$where1['status']='Closed';
 		}
+		
+		
 		
 		if(!empty($items)){
 			
 			$salesOrders=$this->paginate($this->SalesOrders->find()
 			->contain(['Quotations','SalesOrderRows'=>['Items']])
-			->leftJoinWith('SalesOrderRows', function ($q) {
-						return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
-					})
+			
 			->matching(
 					'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
 						return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
 					}
 				)
+			
+			->where($where1)	
+			->where(['SalesOrders.company_id'=>$st_company_id])			
 				);
 		}else{ //exit;
 		$salesOrders=$this->paginate(

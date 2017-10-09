@@ -81,6 +81,8 @@ class PurchaseOrdersController extends AppController
 						return $q->where(['Items.id' =>$items]);
 					}
 				)
+			->where(['company_id'=>$st_company_id])
+			->having($having)
 				);
 		}
 		else{		

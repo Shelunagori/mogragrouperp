@@ -921,6 +921,9 @@ class ItemLedgersController extends AppController
 			else if($status == 'quotation'){
 				$salesOrders[]=$this->ItemLedgers->Quotations->find()->where(['Quotations.id'=>$id,'company_id'=>$st_company_id])->first();
 			}
+			else if($status == 'mi'){
+				$salesOrders[]=$this->ItemLedgers->MaterialIndents->find()->where(['MaterialIndents.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
 		}
 		
 		$this->set(compact('salesOrders','status'));
@@ -1035,8 +1038,10 @@ class ItemLedgersController extends AppController
 				$sales[$row->item_id]=@$sales[$row->item_id]+$Sales_Order_stock;
 				
 					if(array_search(@$item_id, @$sales_id)==false){
-					@$sales_id[$row->item_id].=@$row->sales_order_id.',';
-					}
+						if($row->quantity > $row->processed_quantity){
+							@$sales_id[$row->item_id].=@$row->sales_order_id.',';
+						}
+					}	
 				}
 				//$sales[$item_id]=@$sales[$item_id]+$Sales_Order_stock;
 			}
@@ -1059,13 +1064,13 @@ class ItemLedgersController extends AppController
 			$SalesOrders=$this->ItemLedgers->JobCards->SalesOrders->find()->contain(['SalesOrderRows'=>function ($q){ return $q->where(['source_type'=>'Manufactured']);
 			}]);
 		} 
-<<<<<<< HEAD
+
 		
 		$salesOrderQty=[]; $invoiceQty=[]; $jobcard_id=[];
-=======
-		pr($JobCards->toArray()); exit;
+
+		//pr($JobCards->toArray()); exit;
 		$salesOrderQty=[]; $invoiceQty=[];
->>>>>>> 0254f61368be2ee495e859de5bbc7ba7c6111ae7
+
 		foreach($SalesOrders as $SalesOrder){ 
 			if(!empty($SalesOrder->sales_order_rows)){
 				foreach($SalesOrder->sales_order_rows as $SalesOrderRow){ 
@@ -1086,7 +1091,7 @@ class ItemLedgersController extends AppController
 		
 		$jobCardQty=[];
 		foreach($JobCards as $JobCard){ 
-			pr($JobCard['sales_order']); exit;
+			//pr($JobCard['sales_order']); exit;
 			foreach($JobCard['sales_order']->sales_order_rows as $sales_order_row){ 
 				$sq=@$salesOrderQty[@$sales_order_row->sales_order_id][@$sales_order_row->item_id];
 				$iq=@$invoiceQty[@$sales_order_row->sales_order_id][@$sales_order_row->item_id]; 
@@ -1094,6 +1099,7 @@ class ItemLedgersController extends AppController
 						foreach($sales_order_row->job_card_rows as $job_card_row){
 							@$jobCardQty[$job_card_row->item_id]+=@$job_card_row->quantity;
 							if(array_search(@$job_card_row->item_id, @$jobcard_id)==false){
+									
 								@$jobcard_id[$job_card_row->item_id].=@$job_card_row->job_card_id.',';
 							}
 						}
@@ -1161,7 +1167,10 @@ class ItemLedgersController extends AppController
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$purchase_order_items[$purchase_order_rows->item_id]=@$purchase_order_items[$purchase_order_rows->item_id]+$Sales_Order_stock;
 				if(array_search(@$purchase_order_rows->item_id, @$po_id)==false){
-					@$po_id[$purchase_order_rows->item_id].=@$purchase_order_rows->purchase_order_id.',';
+					if($purchase_order_rows->quantity > $purchase_order_rows->processed_quantity){
+						@$po_id[$purchase_order_rows->item_id].=@$purchase_order_rows->purchase_order_id.',';
+					}
+					
 				}
 			}
 		}	
@@ -1205,8 +1214,10 @@ class ItemLedgersController extends AppController
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$material_indent_order_items[$material_indent_rows->item_id]=@$material_indent_order_items[$material_indent_rows->item_id]+$Sales_Order_stock;
 				if(array_search(@$material_indent_rows->item_id, @$mi_id)==false){
-					@$mi_id[$material_indent_rows->material_indent_rows].=@$quotation_row->quotation_id.',';
+					if($material_indent_rows->required_quantity > $material_indent_rows->processed_quantity){
+						@$mi_id[$material_indent_rows->item_id].=@$material_indent_rows->material_indent_id.',';
 					}
+				}	
 			}
 		}
 		/// End Material Indent Report Cost
@@ -1225,8 +1236,10 @@ class ItemLedgersController extends AppController
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$quotation_items[$quotation_row->item_id]=@$quotation_items[$quotation_row->item_id]+$Sales_Order_stock;
 				if(array_search(@$quotation_row->item_id, @$quotation_id)==false){
-					@$quotation_id[$quotation_row->item_id].=@$quotation_row->quotation_id.',';
+					if($quotation_row->quantity > $quotation_row->proceed_qty){
+						@$quotation_id[$quotation_row->item_id].=@$quotation_row->quotation_id.',';
 					}
+				}	
 			}
 		}	
 		//pr($Quotations->toArray()); exit;
@@ -1296,7 +1309,7 @@ class ItemLedgersController extends AppController
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
-			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'sales_order_id'=>@$sales_id[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'job_card_id'=>@$jobcard_id[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'po_id'=>@$po_id[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'sales_order_id'=>@$sales_id[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'job_card_id'=>@$jobcard_id[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'po_id'=>@$po_id[$item_id],'qo_qty'=>@$quotation_items[$item_id],'qo_id'=>@$quotation_id[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id],'mi_id'=>@$mi_id[$item_id]);
 			
 		} 
 		
@@ -1309,6 +1322,8 @@ class ItemLedgersController extends AppController
 				$sales_order_id=$result['sales_order_id'];
 				$job_card_id=$result['job_card_id'];
 				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
 				$job_card_qty=$result['job_card_qty'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
@@ -1326,6 +1341,8 @@ class ItemLedgersController extends AppController
 				$sales_order_id=$result['sales_order_id'];
 				$job_card_qty=$result['job_card_qty'];
 				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
 				$job_card_id=$result['job_card_id'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
@@ -1343,6 +1360,8 @@ class ItemLedgersController extends AppController
 					$sales_order=$result['sales_order'];
 					$job_card_qty=$result['job_card_qty'];
 					$po_id=$result['po_id'];
+					$qo_id=$result['qo_id'];
+					$mi_id=$result['mi_id'];
 					$sales_order_id=$result['sales_order_id'];
 					$job_card_id=$result['job_card_id'];
 					$po_qty=$result['po_qty'];
@@ -1362,6 +1381,8 @@ class ItemLedgersController extends AppController
 				$sales_order_id=$result['sales_order_id'];
 				$job_card_id=$result['job_card_id'];
 				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];
