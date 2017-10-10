@@ -1025,7 +1025,7 @@ class ItemLedgersController extends AppController
 			$SalesOrders=$this->ItemLedgers->JobCards->SalesOrders->find()->contain(['SalesOrderRows'=>function ($q){ return $q->where(['source_type'=>'Manufactured']);
 			}]);
 		} 
-		pr($JobCards->toArray()); exit;
+		//pr($JobCards->toArray()); exit;
 		$salesOrderQty=[]; $invoiceQty=[];
 		foreach($SalesOrders as $SalesOrder){ 
 			if(!empty($SalesOrder->sales_order_rows)){
@@ -1046,7 +1046,7 @@ class ItemLedgersController extends AppController
 		
 		$jobCardQty=[];
 		foreach($JobCards as $JobCard){ 
-			pr($JobCard['sales_order']); exit;
+			//pr($JobCard['sales_order']); exit;
 			foreach($JobCard['sales_order']->sales_order_rows as $sales_order_row){ 
 				$sq=@$salesOrderQty[@$sales_order_row->sales_order_id][@$sales_order_row->item_id];
 				$iq=@$invoiceQty[@$sales_order_row->sales_order_id][@$sales_order_row->item_id]; 

@@ -699,7 +699,7 @@ select
 						echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Inventory Daily Report',array('controller'=>'ItemLedgers','action'=>'inventoryDailyReport','From'=>$today,'To'=>$today),array('escape'=>false)); ?></li>
 						<?php } ?>
 						<?php if(in_array(36,$allowed_pages)){?>
-						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/Stock-Report?stockstatus=Positive',array('escape'=>false)); ?></li>	
+						<li><?php echo $this->Html->link('<i class="fa fa-truck"></i> Stock Report','/Item-Ledgers/stockSummery?stockstatus=Positive',array('escape'=>false)); ?></li>	
 						
 						<?php } ?>
 						<?php if(in_array(37,$allowed_pages)){?>
