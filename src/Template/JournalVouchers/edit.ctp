@@ -45,7 +45,7 @@ if($transaction_date <  $start_date ) {
 			<div class="col-md-3">
 				<div class="form-group">
 					<label class="control-label">Transaction Date<span class="required" aria-required="true">*</span></label>
-					<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y",strtotime($journalVoucher->transaction_date)),'data-date-start-date' => $start_date,'data-date-end-date' => $end_date]); ?>
+					<?php echo $this->Form->input('transaction_date', ['type' => 'text','label' => false,'class' => 'form-control input-sm date-picker','data-date-format' => 'dd-mm-yyyy','value' => date("d-m-Y",strtotime($journalVoucher->transaction_date)),'data-date-start-date' => $start_date,'data-date-end-date' => $end_date,'required']); ?>
 				</div>
 					<span style="color: red;">
 						<?php if($chkdate == 'Not Found'){  ?>
