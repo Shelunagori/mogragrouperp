@@ -104,7 +104,7 @@
 							$mi_qty=$data['mi_qty'];
 							$min_stock=$data['min_stock'];
 							$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
-							if($stock == 'Positive'){
+							if($stock == 'Positive' || $stockstatus=='Positive'){
 								if(@$total_indent[$item_id]){
 						?>
 						<?php $i++ ;?>
