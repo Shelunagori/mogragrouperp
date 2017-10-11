@@ -21,11 +21,35 @@ class InventoryVouchersController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		$iv_no=$this->request->query('iv_no');
+		$invoice_no=$this->request->query('invoice_no');
+		$customer=$this->request->query('customer');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('iv_no','customer','invoice_no','From','To'));
+		$where=[];
+		if(!empty($invoice_no)){
+			$where['Invoices.in2 LIKE']=$invoice_no;
+		}
+		if(!empty($iv_no)){
+			$where['InventoryVouchers.iv_number LIKE']=$iv_no;
+		}
+		if(!empty($customer)){
+			$where['Customers.customer_name LIKE']='%'.$customer.'%';
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['InventoryVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['InventoryVouchers.transaction_date <=']=$To;
+		}
         $this->paginate = [
             'contain' => ['Invoices'=>['Customers'],'InventoryVoucherRows']
         ];
 		
-		$inventoryVouchers = $this->paginate($this->InventoryVouchers->find()->contain(['Invoices'])->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']));
+		$inventoryVouchers = $this->paginate($this->InventoryVouchers->find()->contain(['Invoices'])->where($where)->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']));
 		
 
         $this->set(compact('inventoryVouchers'));

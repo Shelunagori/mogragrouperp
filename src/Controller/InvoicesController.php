@@ -83,6 +83,7 @@ class InvoicesController extends AppController
 						return $q->where(['Items.id' =>$items])->where($where);
 					}
 				)
+			->where(['Invoices.company_id'=>$st_company_id])	
 			);
 			
 		}

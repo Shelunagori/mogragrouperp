@@ -899,7 +899,40 @@ class ItemLedgersController extends AppController
 			
 	}
 	
+	public function materialIndent($id=null,$status=null){
+		$this->viewBuilder()->layout('index_layout'); 
+		$status = $this->request->query('status');
+		$id = $this->request->query('id');
+		$session = $this->request->session();
+        $st_company_id = $session->read('st_company_id');
+		$qty_ids = explode(',',$id);
+		$qty_ids = array_filter($qty_ids);
+		$salesOrders=[];
+		foreach($qty_ids as $id){
+			if($status == 'salesorder'){
+				$salesOrders[]=$this->ItemLedgers->SalesOrders->find()->where(['SalesOrders.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
+			else if($status == 'jobcard'){
+				$salesOrders[]=$this->ItemLedgers->JobCards->find()->where(['JobCards.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
+			else if($status == 'purchaseorder'){
+				$salesOrders[]=$this->ItemLedgers->PurchaseOrders->find()->where(['PurchaseOrders.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
+			else if($status == 'quotation'){
+				$salesOrders[]=$this->ItemLedgers->Quotations->find()->where(['Quotations.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
+			else if($status == 'mi'){
+				$salesOrders[]=$this->ItemLedgers->MaterialIndents->find()->where(['MaterialIndents.id'=>$id,'company_id'=>$st_company_id])->first();
+			}
+		}
+		
+		$this->set(compact('salesOrders','status'));
+		
+	}
+	
+	
 	 public function materialindentreport($stockstatus=null){
+		 
 		$url=$this->request->here();
 		$url=parse_url($url,PHP_URL_QUERY);
 		$this->viewBuilder()->layout('index_layout'); 
@@ -994,7 +1027,7 @@ class ItemLedgersController extends AppController
 			
 		}
 		
-		$sales=[];
+		$sales=[];$sales_id=[];
 			foreach($salesOrders as $data){
 				foreach($data->sales_order_rows as $row){ 
 				//pr($row->quantity);
@@ -1003,10 +1036,16 @@ class ItemLedgersController extends AppController
 				$processed_quantity=$row->processed_quantity;
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$sales[$row->item_id]=@$sales[$row->item_id]+$Sales_Order_stock;
+				
+					if(array_search(@$item_id, @$sales_id)==false){
+						if($row->quantity > $row->processed_quantity){
+							@$sales_id[$row->item_id].=@$row->sales_order_id.',';
+						}
+					}	
 				}
 				//$sales[$item_id]=@$sales[$item_id]+$Sales_Order_stock;
 			}
-			//pr($sales);exit;
+			//pr($sales_id);exit;
 			
 		if(!empty($company_name)){  	
 			//$JobCards=$this->ItemLedgers->JobCards->find()->where($where2)
@@ -1025,8 +1064,12 @@ class ItemLedgersController extends AppController
 			$SalesOrders=$this->ItemLedgers->JobCards->SalesOrders->find()->contain(['SalesOrderRows'=>function ($q){ return $q->where(['source_type'=>'Manufactured']);
 			}]);
 		} 
-		//pr($JobCards->toArray()); exit;
-		$salesOrderQty=[]; $invoiceQty=[];
+
+		
+		$salesOrderQty=[]; $invoiceQty=[]; $jobcard_id=[];
+
+
+
 		foreach($SalesOrders as $SalesOrder){ 
 			if(!empty($SalesOrder->sales_order_rows)){
 				foreach($SalesOrder->sales_order_rows as $SalesOrderRow){ 
@@ -1039,6 +1082,7 @@ class ItemLedgersController extends AppController
 				foreach($Invoices as $Invoice){ 
 					foreach($Invoice->invoice_rows as $invoice_row){ 
 						@$invoiceQty[@$Invoice->sales_order_id][@$invoice_row->item_id]+=@$invoice_row->quantity;
+						
 					}
 				}
 			}
@@ -1053,11 +1097,18 @@ class ItemLedgersController extends AppController
 					if(empty(@$invoiceQty[@$sales_order_row->sales_order_id][@$sales_order_row->item_id])){
 						foreach($sales_order_row->job_card_rows as $job_card_row){
 							@$jobCardQty[$job_card_row->item_id]+=@$job_card_row->quantity;
+							if(array_search(@$job_card_row->item_id, @$jobcard_id)==false){
+									
+								@$jobcard_id[$job_card_row->item_id].=@$job_card_row->job_card_id.',';
+							}
 						}
 					}else{
 						$due=$sq-$iq;
 						foreach($sales_order_row->job_card_rows as $job_card_row){
 							@$jobCardQty[$job_card_row->item_id]+=($due*@$job_card_row->quantity)/$sq;
+							if(array_search(@$invoice_row->item_id, @$jobcard_id)==false){
+								@$jobcard_id[$invoice_row->item_id].=@$job_card_row->job_card_id.',';
+							}
 						}
 					}
 						
@@ -1106,7 +1157,7 @@ class ItemLedgersController extends AppController
 				->order(['PurchaseOrders.id' => 'DESC']);			
 			//pr($PurchaseOrders->toArray());exit;
 		}
-		$purchase_order_items=[];
+		$purchase_order_items=[]; $po_id=[];
 		foreach($PurchaseOrders as $PurchaseOrder){
 			foreach($PurchaseOrder->purchase_order_rows as $purchase_order_rows){
 				$item_id=$purchase_order_rows->item_id;
@@ -1114,6 +1165,12 @@ class ItemLedgersController extends AppController
 				$processed_quantity=$purchase_order_rows->processed_quantity;
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$purchase_order_items[$purchase_order_rows->item_id]=@$purchase_order_items[$purchase_order_rows->item_id]+$Sales_Order_stock;
+				if(array_search(@$purchase_order_rows->item_id, @$po_id)==false){
+					if($purchase_order_rows->quantity > $purchase_order_rows->processed_quantity){
+						@$po_id[$purchase_order_rows->item_id].=@$purchase_order_rows->purchase_order_id.',';
+					}
+					
+				}
 			}
 		}	
 		/// Start Material Indent Report Cost
@@ -1147,7 +1204,7 @@ class ItemLedgersController extends AppController
 						
 			
 		
-		$material_indent_order_items=[];
+		$material_indent_order_items=[];$mi_id=[];
 		foreach($MaterialIndents as $MaterialIndent){ 
 			foreach($MaterialIndent->material_indent_rows as $material_indent_rows){
 				$item_id=$material_indent_rows->item_id;
@@ -1155,6 +1212,11 @@ class ItemLedgersController extends AppController
 				$processed_quantity=$material_indent_rows->processed_quantity;
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$material_indent_order_items[$material_indent_rows->item_id]=@$material_indent_order_items[$material_indent_rows->item_id]+$Sales_Order_stock;
+				if(array_search(@$material_indent_rows->item_id, @$mi_id)==false){
+					if($material_indent_rows->required_quantity > $material_indent_rows->processed_quantity){
+						@$mi_id[$material_indent_rows->item_id].=@$material_indent_rows->material_indent_id.',';
+					}
+				}	
 			}
 		}
 		/// End Material Indent Report Cost
@@ -1164,7 +1226,7 @@ class ItemLedgersController extends AppController
 		}else{
 			$Quotations=$this->ItemLedgers->Quotations->find()->where(['status'=>'Pending','company_id'=>$st_company_id])->contain(['QuotationRows']);
 		}
-		$quotation_items=[];
+		$quotation_items=[]; $quotation_id=[];
 		foreach($Quotations as $Quotation){
 			foreach($Quotation->quotation_rows as $quotation_row){
 				$item_id=$quotation_row->item_id;
@@ -1172,6 +1234,11 @@ class ItemLedgersController extends AppController
 				$processed_quantity=$quotation_row->proceed_qty;
 				$Sales_Order_stock=$quantity-$processed_quantity;
 				$quotation_items[$quotation_row->item_id]=@$quotation_items[$quotation_row->item_id]+$Sales_Order_stock;
+				if(array_search(@$quotation_row->item_id, @$quotation_id)==false){
+					if($quotation_row->quantity > $quotation_row->proceed_qty){
+						@$quotation_id[$quotation_row->item_id].=@$quotation_row->quotation_id.',';
+					}
+				}	
 			}
 		}	
 		//pr($Quotations->toArray()); exit;
@@ -1241,7 +1308,7 @@ class ItemLedgersController extends AppController
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
-			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'qo_qty'=>@$quotation_items[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id]);
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'sales_order_id'=>@$sales_id[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'job_card_id'=>@$jobcard_id[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'po_id'=>@$po_id[$item_id],'qo_qty'=>@$quotation_items[$item_id],'qo_id'=>@$quotation_id[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id],'mi_id'=>@$mi_id[$item_id]);
 			
 		} 
 		
@@ -1251,6 +1318,11 @@ class ItemLedgersController extends AppController
 			foreach($material_report as $result){ 
 				$Current_Stock=$result['Current_Stock'];
 				$sales_order=$result['sales_order'];
+				$sales_order_id=$result['sales_order_id'];
+				$job_card_id=$result['job_card_id'];
+				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
 				$job_card_qty=$result['job_card_qty'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
@@ -1265,7 +1337,12 @@ class ItemLedgersController extends AppController
 			foreach($material_report as $result){ 
 				$Current_Stock=$result['Current_Stock'];
 				$sales_order=$result['sales_order'];
+				$sales_order_id=$result['sales_order_id'];
 				$job_card_qty=$result['job_card_qty'];
+				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
+				$job_card_id=$result['job_card_id'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];
@@ -1281,6 +1358,11 @@ class ItemLedgersController extends AppController
 					$Current_Stock=$result['Current_Stock'];
 					$sales_order=$result['sales_order'];
 					$job_card_qty=$result['job_card_qty'];
+					$po_id=$result['po_id'];
+					$qo_id=$result['qo_id'];
+					$mi_id=$result['mi_id'];
+					$sales_order_id=$result['sales_order_id'];
+					$job_card_id=$result['job_card_id'];
 					$po_qty=$result['po_qty'];
 					$qo_qty=$result['qo_qty'];
 					$mi_qty=$result['mi_qty'];
@@ -1295,6 +1377,11 @@ class ItemLedgersController extends AppController
 				$Current_Stock=$result['Current_Stock'];
 				$sales_order=$result['sales_order'];
 				$job_card_qty=$result['job_card_qty'];
+				$sales_order_id=$result['sales_order_id'];
+				$job_card_id=$result['job_card_id'];
+				$po_id=$result['po_id'];
+				$qo_id=$result['qo_id'];
+				$mi_id=$result['mi_id'];
 				$po_qty=$result['po_qty'];
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];

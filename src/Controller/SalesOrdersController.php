@@ -77,27 +77,29 @@ class SalesOrdersController extends AppController
             'contain' => ['Customers']
         ];
 		
-		
-		
-		if($status==null or $status=='Pending'){
+		$where1=[];
+		if($status==null or $status=='Pending'){ 
 			$having=['total_rows >' => 0];
-		}elseif($status=='Converted Into Invoice'){
+			$where1=['SalesOrderRows.processed_quantity < SalesOrderRows.quantity'];
+		}elseif($status=='Converted Into Invoice'){ 
 			$having=['total_rows =' => 0];
+			$where1=['SalesOrderRows.processed_quantity = SalesOrderRows.quantity'];
 		}
+		
+	
 		
 		if(!empty($items)){
 			
-			$salesOrders=$this->paginate($this->SalesOrders->find()
-			->contain(['Quotations','SalesOrderRows'=>['Items']])
-			->leftJoinWith('SalesOrderRows', function ($q) {
-						return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);
-					})
-			->matching(
-					'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
-						return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
-					}
-				)
-				);
+			$salesOrders=	$this->paginate($this->SalesOrders->find()
+									->contain(['Quotations','SalesOrderRows'=>['Items']])
+									->leftJoinWith('SalesOrderRows', function ($q) use($where1){
+											return $q->where($where1);})
+									->matching(
+										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
+											return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);
+										})
+									->where(['SalesOrders.company_id'=>$st_company_id]));
+				
 		}else{ //exit;
 		$salesOrders=$this->paginate(
 			$this->SalesOrders->find()->contain(['Quotations','SalesOrderRows'=>['Items']])->select(['total_rows' => 
@@ -114,12 +116,12 @@ class SalesOrdersController extends AppController
 			);
 			
 		}	
-		if(!empty($gst)){
+		if(!empty($gst)){ pr($salesOrders->toArray());exit;
 			if(!empty($items)){
 				$salesOrders=	$this->paginate($this->SalesOrders->find()
 									->contain(['Quotations','SalesOrderRows'=>['Items']])
-									->leftJoinWith('SalesOrderRows', function ($q) {
-											return $q->where(['SalesOrderRows.processed_quantity < SalesOrderRows.quantity']);})
+									->leftJoinWith('SalesOrderRows', function ($q) use($where1){
+											return $q->where($where1);})
 									->matching(
 										'SalesOrderRows.Items', function ($q) use($items,$st_company_id) {
 											return $q->where(['Items.id' =>$items,'company_id'=>$st_company_id]);

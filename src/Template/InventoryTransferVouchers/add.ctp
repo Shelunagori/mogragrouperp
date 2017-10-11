@@ -89,7 +89,7 @@
 		</table>
 	</div>
 	
-		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="submit" id='submitbtn' class="btn btn-primary">Submit</button>
 <?= $this->Form->end() ?>		
 	</div>
 </div>	
@@ -187,6 +187,8 @@ $(document).ready(function() {
 
 		submitHandler: function (form) {
 			validate_serial();
+			$('#submitbtn').prop('disabled', true);
+			$('#submitbtn').text('Submitting.....');
 			success3.show();
 			error3.hide();
 			form[0].submit(); // submit the form
