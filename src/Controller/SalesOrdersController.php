@@ -116,7 +116,7 @@ class SalesOrdersController extends AppController
 			);
 			
 		}	
-		if(!empty($gst)){ pr($salesOrders->toArray());exit;
+		if(!empty($gst)){ //pr($salesOrders->toArray());exit;
 			if(!empty($items)){
 				$salesOrders=	$this->paginate($this->SalesOrders->find()
 									->contain(['Quotations','SalesOrderRows'=>['Items']])

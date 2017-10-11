@@ -1068,8 +1068,7 @@ class ItemLedgersController extends AppController
 		
 		$salesOrderQty=[]; $invoiceQty=[]; $jobcard_id=[];
 
-		//pr($JobCards->toArray()); exit;
-		$salesOrderQty=[]; $invoiceQty=[];
+
 
 		foreach($SalesOrders as $SalesOrder){ 
 			if(!empty($SalesOrder->sales_order_rows)){
