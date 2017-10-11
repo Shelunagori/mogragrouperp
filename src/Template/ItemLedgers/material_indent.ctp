@@ -3,8 +3,8 @@
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Material Indent For
-				<?php echo  ?>
+			<span class="caption-subject font-blue-steel uppercase">Material Indent 
+				
 			</span>
 			
 		</div>
