@@ -158,13 +158,13 @@
 						if((@$opening_balance_ar['debit'] > 0) || (@$opening_balance_ar['credit'] > 0)){  
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
 								
-									$close_dr=@$opening_balance_data+@$total_debit;
-									$close_cr=@$total_credit;
+									 $close_dr=@$opening_balance_data-@$total_debit;
+									 $close_cr=@$total_credit;
 								
 							}
 							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ 
 							
-								$close_cr=@$opening_balance_data+@$total_credit;
+								$close_cr=@$opening_balance_data-@$total_credit;
 								$close_dr=@$total_debit;
 							 
 							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
@@ -192,7 +192,7 @@
 			
 				///////
 				
-				$closing_balance=@$close_dr-@$close_cr;
+				$closing_balance=@$close_dr+@$close_cr;
 					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
 						if($closing_balance>0){
