@@ -30,10 +30,32 @@ class PettyCashVouchersController extends AppController
 		$financial_month_first = $this->PettyCashVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
 		$financial_month_last = $this->PettyCashVouchers->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
 		
+		$where = [];
+		$vouch_no = $this->request->query('vouch_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['PettyCashVouchers.voucher_no LIKE']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['PettyCashVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['PettyCashVouchers.transaction_date <=']=$To;
+		}
+		
+		
+		
         $this->paginate = [
             'contain' => []
         ];
-        $pettycashvouchers = $this->paginate($this->PettyCashVouchers->find()->where(['company_id'=>$st_company_id])->contain(['PettyCashVoucherRows'])->order(['voucher_no'=>'DESC']));
+        $pettycashvouchers = $this->paginate($this->PettyCashVouchers->find()->where(['company_id'=>$st_company_id])->where($where)->contain(['PettyCashVoucherRows'])->order(['voucher_no'=>'DESC']));
         $this->set(compact('pettycashvouchers','url','financial_month_first','financial_month_last'));
         $this->set('_serialize', ['pettycashvouchers']);
     }

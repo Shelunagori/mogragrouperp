@@ -64,25 +64,31 @@ class PurchaseOrdersController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['PurchaseOrders.date_created <=']=$To;
 		}
-		
+		$where1=[];
 		
 		if($status==null or $status=='Pending'){
 			$having=['total_rows >' => 0];
+			$where1=['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity'];
 		}elseif($status=='Converted-Into-GRN'){
 			$having=['total_rows =' => 0];
+			$where1=['PurchaseOrderRows.processed_quantity = PurchaseOrderRows.quantity'];
 		}
 		
 		
 		if(!empty($items)){ 
 			$purchaseOrders=$this->paginate($this->PurchaseOrders->find()
 			->contain(['PurchaseOrderRows'=>['Items']])
+			
+				->leftJoinWith('PurchaseOrderRows', function ($q) use($where1){
+					return $q->where($where1);
+				})
 			->matching(
 					'PurchaseOrderRows.Items', function ($q) use($items) {
 						return $q->where(['Items.id' =>$items]);
 					}
 				)
-			->where(['company_id'=>$st_company_id])
-			->having($having)
+			
+				->where(['PurchaseOrders.company_id'=>$st_company_id])
 				);
 		}
 		else{		

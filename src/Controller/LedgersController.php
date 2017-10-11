@@ -1049,8 +1049,22 @@ class LedgersController extends AppController
 			$transaction_to_date= date('Y-m-d', strtotime($this->request->query['To']));
 			
 			$this->set(compact('from','To','transaction_from_date','transaction_to_date'));
+			
+			
+			$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  <='=>$transaction_to_date]);
+					
+				$opening_balance_ar=[];
+			foreach($OB as $Ledger)
+				{
+					
+						@$opening_balance_ar['debit']+=$Ledger->debit;
+						@$opening_balance_ar['credit']+=$Ledger->credit;
+					
+				}	
+				//pr($opening_balance_ar);exit;
+				//pr($opening_balance_ar);exit;
 			//pr($from); exit;
-			if($from == '01-04-2017'){
+			/* if($from == '01-04-2017'){
 				$OB = $this->Ledgers->find()->where(['ledger_account_id'=>$ledger_account_id,'transaction_date  '=>$transaction_from_date]);
 				$opening_balance_ar=[];
 			foreach($OB as $Ledger)
@@ -1070,13 +1084,15 @@ class LedgersController extends AppController
 							@$opening_balance_ar['debit']+=$Ledger->debit;
 							@$opening_balance_ar['credit']+=$Ledger->credit;
 					}	
-			}
+			} */
 			
 			$Ledgers = $this->Ledgers->find()
 				->where(['ledger_account_id'=>$ledger_account_id,'company_id'=>$st_company_id])
 				->where(function($exp) use($transaction_from_date,$transaction_to_date){
-					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date');
-				})->order(['transaction_date' => 'DESC']);
+					$between = clone $exp;
+					return $exp->between('transaction_date', $transaction_from_date, $transaction_to_date, 'date')
+					->not($between->between('reconciliation_date', $transaction_from_date, $transaction_to_date, 'date'));
+				})->order('transaction_date','ASC');
 				//pr($Ledgers->toArray()); exit;
 		
 			

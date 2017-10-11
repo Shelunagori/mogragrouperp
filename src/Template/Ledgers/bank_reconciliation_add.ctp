@@ -15,16 +15,10 @@
 	{
 		foreach($Ledgers as $Ledger)
 		{
-			if($Ledger->voucher_source == 'Opening Balance')
-			{
-				@$opening_balance_ar1['debit']+=$Ledger->debit;
-				@$opening_balance_ar1['credit']+=$Ledger->credit;
-			}
-			else
-			{
+			
 				@$opening_balance_total['debit']+=$Ledger->debit;
 				@$opening_balance_total['credit']+=$Ledger->credit;			
-			}
+			
 			
 			@$closing_balance_ar['debit']+=$Ledger->debit;
 			@$closing_balance_ar['credit']+=$Ledger->credit;
@@ -87,7 +81,7 @@
 			<div class="col-md-4 caption-subject " align="left" style="background-color:#E7E2CB; font-size: 16px;"><b>Opening Balance : 
 				<?php 
 						$opening_balance_data=0;
-//	pr($opening_balance_ar); exit;
+	
 						if(!empty(@$opening_balance_ar)){ 
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){ 
 								$opening_balance_data=@$opening_balance_ar['debit'] - @$opening_balance_ar['credit'];
@@ -99,39 +93,7 @@
 							}					
 						}
 						else {   echo $this->Number->format('0',[ 'places' => 2]); }
-						$close_dr=0;
-						$close_cr=0;
-						if((@$opening_balance_ar['debit'] > 0) || (@$opening_balance_ar['credit'] > 0)){  
-							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){  
-								$close_dr=@$opening_balance_data+@$opening_balance_total['debit'];
-								$close_cr=@$opening_balance_total['credit'];
-							}
-							else if(@$opening_balance_ar['credit'] < @$opening_balance_ar['debit']){ 
-								$close_cr=@$opening_balance_data+@$opening_balance_total['credit'];
-								$close_dr=@$opening_balance_total['debit'];
-							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
-								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){ 
-								$close_dr=@$closing_balance_ar['debit'];
-								$close_cr=@$closing_balance_ar['credit'];
-								}else{
-									$close_dr=@$closing_balance_ar['debit'];
-									$close_cr=@$closing_balance_ar['credit'];
-								}
-							}
-							}else if((@$opening_balance_ar['debit']== 0) && (@$opening_balance_ar['credit']== 0)){ 
-								$close_dr=@$opening_balance_total['debit'];
-								$close_cr=@$opening_balance_total['credit'];
-								
-							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
-								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){ 
-								$close_dr=@$closing_balance_ar['debit'];
-								$close_cr=@$closing_balance_ar['credit'];
-								}else{
-									$close_dr=@$closing_balance_ar['debit'];
-									$close_cr=@$closing_balance_ar['credit'];
-								}
-							}	
-						//pr($close_dr); exit;
+						
 				?>  
 			</b>
 			
@@ -193,6 +155,44 @@
 				<div class="col-md-8"></div>	
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:  </b>
 				<?php 
+				/////
+				$close_dr=0;
+						$close_cr=0;
+						if((@$opening_balance_ar['debit'] > 0) || (@$opening_balance_ar['credit'] > 0)){  
+							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){  
+									$close_dr=@$opening_balance_data+@$total_debit;
+									$close_cr=@$total_credit;
+								
+							}
+							else if(@$opening_balance_ar['credit'] < @$opening_balance_ar['debit']){ 
+							 
+								$close_cr=@$opening_balance_data+@$total_credit;
+								$close_dr=@$total_debit;
+							 
+							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
+								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){ 
+								$close_dr=@$closing_balance_ar['debit'];
+								$close_cr=@$closing_balance_ar['credit'];
+								}else{
+									$close_dr=@$closing_balance_ar['debit'];
+									$close_cr=@$closing_balance_ar['credit'];
+								}
+							}
+							}else if((@$opening_balance_ar['debit']== 0) && (@$opening_balance_ar['credit']== 0)){ 
+								$close_dr=@$total_debit;
+								$close_cr=@$total_credit;
+								
+							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
+								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){ 
+								$close_dr=@$closing_balance_ar['debit'];
+								$close_cr=@$closing_balance_ar['credit'];
+								}else{
+									$close_dr=@$closing_balance_ar['debit'];
+									$close_cr=@$closing_balance_ar['credit'];
+								}
+							}
+			
+				///////
 				$closing_balance=@$close_dr-@$close_cr;
 					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
