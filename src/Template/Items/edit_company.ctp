@@ -8,8 +8,8 @@
 	<div class="portlet-body" >
 		
 			<div class="row">
-			 <div class="col-md-8">
-			 <table class="table table-hover">
+			 <div class="col-md-12">
+			 <table class="table table-hover" id='main_table'>
 				 <thead>
 					<tr>
 						<th width="15%">Sr. No.</th>
@@ -17,6 +17,8 @@
 						<th width="10%">Action</th>
 						<th width="10%">Freeze</th>
 						<th width="10%">Serial Number</th>
+						<th width='10%'>Min. Selling Factor</th>
+						<th width='10%'>Minimum Stock</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -24,10 +26,15 @@
 				$c_namrr=$Company_array1[$key];
 				$bill_to_bill=@$Company_array2[$key];
 				$item_serial_no=@$Company_array3[$key];
+				$selling_factor=@$Company_array4[$key];
+				$stock=@$Company_array5[$key];
 				?>
-					<tr>
+					<tr class='main_tr'>
+						<input type='hidden' class='form-control item_id' value='<?php echo $item_data->id ?>'>
 						<td><?= h($i) ?></td>
-						<td><?php echo $c_namrr; ?></td>
+						<td><?php echo $c_namrr; ?>
+							<input type='hidden' class='company_id' value='<?php echo $key; ?>'>
+						</td>
 						<td class="actions">
 						 	<?php if($Company_array =='Yes') { ?>
 							 <?= $this->Form->postLink('Added ',
@@ -92,6 +99,16 @@
 							) ?>
 							<?php }  ?>
 						</td>	
+						<td>
+						<?php if($Company_array=='Yes') {
+							 echo $this->Form->input('minimum_selling_price_factor', ['type' => 'text','style'=>'width:65%;','label' => false,'class' => 'form-control input-sm selling_factor','value'=>$selling_factor]); 
+						}?>
+						</td>
+						<td>
+						<?php if($Company_array=='Yes') { ?>
+							<?php echo $this->Form->input('minimum_stock', ['type' => 'text','style'=>'width:65%;','label' => false,'class' => 'form-control input-sm min_stock','value'=>$stock]); 
+						}?>	
+						</td>
 					</tr>
 				<?php  } ?>
 				</tbody>
@@ -102,4 +119,43 @@
 		
 	</div>
 </div>
+<?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
 
+
+<script>
+$(document).ready(function() {
+	$('.min_stock').live("blur",function() {
+		var sel=$(this).closest('tr.main_tr');
+		var min_stock =sel.find('.min_stock').val();
+		var company_id =sel.find('.company_id').val();
+		var item_id =$('.item_id').val();
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Items','action'=>'updateMinStock']); ?>";
+		url=url+'/'+item_id+'/'+min_stock+'/'+company_id,
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).done(function(response) {
+				
+				//alert("Save Minimum Stock");
+			});
+	});
+	/////minimum_selling_price_factor//////
+	$('.selling_factor').live("blur",function() {
+		var sel=$(this).closest('tr.main_tr');
+		var selling_factors =sel.find('.selling_factor').val();
+		var company_id =sel.find('.company_id').val();
+		var item_id =$('.item_id').val();
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Items','action'=>'updateMinSellingFactor']); ?>";
+		url=url+'/'+item_id+'/'+selling_factors+'/'+company_id,
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).done(function(response) {
+				
+				//alert("Save Minimum Selling Factor");
+			});
+	});
+});
+</script>

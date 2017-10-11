@@ -80,13 +80,15 @@
 							<th width="10%">Open PO  </th>
 							<th width="10%">Open QO  </th>
 							<th width="10%">Open MI  </th>
-							<th width="15%">Suggested Indent</th>
+							<th width="15%">Required Quantity</th>
+							<th width="15%">Minimum Stock</th>
+							<th width="15%">Suggested Quantity</th>
 							<th width="10%">Action</th>
 						</tr>
 					</thead>
 					<tbody  >
 						<?php  $i=0; foreach($material_report as $data){
-							//pr($total_indent); exit;
+							//pr($data['item_id']); 
 							$item_name=$data['item_name'];
 							$item_id=$data['item_id'];
 							$Current_Stock=$data['Current_Stock'];
@@ -100,9 +102,10 @@
 							$po_qty=$data['po_qty'];
 							$qo_qty=$data['qo_qty'];
 							$mi_qty=$data['mi_qty'];
+							$min_stock=$data['min_stock'];
 							$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
-							
-							if(@$total_indent[$item_id]){
+							if($stock == 'Positive'){
+								if(@$total_indent[$item_id]){
 						?>
 						<?php $i++ ;?>
 						<tr class="tr1" row_no='<?php echo @$i; ?>'>
@@ -129,6 +132,12 @@
 								 echo abs(@$total_indent[$item_id]);
 						}else{ echo "-";} ?>
 						</td>
+						<td>
+							<?php echo @$min_stock; ?>
+						</td>
+						<td>
+							<?php echo abs(@$total_indent[$item_id])+@$min_stock ?>
+						</td>
 						<td align="center">
 							<label class="hello">
 							<?php 
@@ -145,7 +154,77 @@
 							</label>
 						</td>						
 						</tr>
-						<?php }} ?>
+							<?php }}else{ ?>
+								
+								<?php $i++ ;?>
+						<tr class="tr1" row_no='<?php echo @$i; ?>'>
+						<td ><?php echo $i; ?> </td>
+						<td><?php echo $item_name; ?></td>
+						<td style="text-align:center; valign:top" valign="top"><?php if(!empty($Current_Stock)){ echo $Current_Stock; }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($sales_order)){ 
+							echo $this->Html->link(@$sales_order ,'/ItemLedgers/material_indent?status=salesorder&&id='.@$sales_order_id,['target' => '_blank']); 
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($job_card_qty)){ 
+							echo $this->Html->link(@$job_card_qty ,'/ItemLedgers/material_indent?status=jobcard&&id='.@$job_card_id,['target' => '_blank']); 
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($po_qty)){ 
+							echo $this->Html->link(@$po_qty ,'/ItemLedgers/material_indent?status=purchaseorder&&id='.@$po_id,['target' => '_blank']); 
+						 }else{ echo "-"; }  ?></td>
+						<td style="text-align:center"><?php if(!empty($qo_qty)){ 
+							echo $this->Html->link(@$qo_qty ,'/ItemLedgers/material_indent?status=quotation&&id='.@$qo_id,['target' => '_blank']);
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center"><?php if(!empty($mi_qty)){ 
+							echo $this->Html->link(@$mi_qty ,'/ItemLedgers/material_indent?status=mi&&id='.@$mi_id,['target' => '_blank']);
+						 }else{ echo "-"; } ?></td>
+						<td style="text-align:center">
+						<?php if(@$total_indent[$item_id] < 0){
+								 echo abs(@$total_indent[$item_id]);
+						}else{ echo "-";} ?>
+						</td>
+						<td style="text-align:center">
+							<?php echo @$min_stock; ?>
+						</td>
+						<td style="text-align:center">
+							<?php 
+							if(@$total_indent[$item_id] < 0){
+								echo abs(@$total_indent[$item_id])+@$min_stock; 
+							}else{ echo "-";} ?>
+						</td>
+						<td align="center">
+							<label class="hello">
+							<?php 
+							/*if(@$total_indent[$item_id] < 0){ */
+							if(sizeof($company_name)==1){
+							foreach($company_name as $names){			
+										if(@$names == @$st_company_id){ ?>
+											<button type="button" id="item<?php echo $item_id;?>" class="btn btn-primary btn-sm add_to_bucket" item_id="<?php echo $item_id; ?>" suggestindent="<?php echo @$total_indent[$item_id];
+							 ?>"><i class="fa fa-plus"></i></button>
+										<?php 		}						
+							else{ ?>
+								
+							<?php }} } ?>	
+							</label>
+						</td>						
+						</tr>
+							<?php }} ?>
+						<?php $page_no1=$i; foreach($ItemDatas as $key=>$ItemData){ ?>
+						<tr class='tr2'>
+							<td><?= h(++$page_no1) ?></td>
+							<td><?php echo $ItemData; ?></td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td style="text-align:center">
+							<?php echo @$ItemMiniStock[$key]; ?>
+							</td>
+							<td>-</td>
+							<td></td>
+						</tr>
+						<?php }  ?>
 					</tbody>
 				</table>
 					

@@ -947,21 +947,26 @@ class ItemLedgersController extends AppController
 		$stockstatus=$this->request->query('stockstatus');
 
 		$where=[];
+		$whereItem=[];
 		
 		
 		$this->set(compact('item_category','item_group','item_sub_group','item_name','company_name','stock'));
 		if(!empty($item_name)){ 
 			$where['Item_id']=$item_name;
+			$whereItem['id']=$item_name;
 		}
 		
 		if(!empty($item_category)){
 			$where['Items.item_category_id']=$item_category;
+			$whereItem['Items.item_category_id']=$item_category;
 		}
 		if(!empty($item_group)){
 			$where['Items.item_group_id ']=$item_group;
+			$whereItem['Items.item_group_id ']=$item_group;
 		}
 		if(!empty($item_sub_group)){
 			$where['Items.item_sub_group_id ']=$item_sub_group;
+			$whereItem['Items.item_sub_group_id ']=$item_sub_group;
 		}
 
 		$mit=$this->ItemLedgers->newEntity();
@@ -1300,6 +1305,14 @@ class ItemLedgersController extends AppController
 				}]);
 		}	
 		
+		$ItemMiniStock=[];
+		$Items =$this->ItemLedgers->Items->ItemCompanies->find()->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+			foreach($Items as $Item){ 
+				
+					$ItemMiniStock[$Item->item_id]=$Item->minimum_stock;
+				
+			}
+		
 				$material_report=[];
 		foreach ($ItemLedgers as $itemLedger){
 			
@@ -1308,13 +1321,19 @@ class ItemLedgersController extends AppController
 			$Current_Stock=$itemLedger->total_in-$itemLedger->total_out;
 			
 			
-			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'sales_order_id'=>@$sales_id[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'job_card_id'=>@$jobcard_id[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'po_id'=>@$po_id[$item_id],'qo_qty'=>@$quotation_items[$item_id],'qo_id'=>@$quotation_id[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id],'mi_id'=>@$mi_id[$item_id]);
+			$material_report[]=array('item_name'=>$item_name,'item_id'=>$item_id,'Current_Stock'=>$Current_Stock,'sales_order'=>@$sales[$item_id],'sales_order_id'=>@$sales_id[$item_id],'job_card_qty'=>@$jobCardQty[$item_id],'job_card_id'=>@$jobcard_id[$item_id],'po_qty'=>@$purchase_order_items[$item_id],'po_id'=>@$po_id[$item_id],'qo_qty'=>@$quotation_items[$item_id],'qo_id'=>@$quotation_id[$item_id],'mi_qty'=>@$material_indent_order_items[$item_id],'mi_id'=>@$mi_id[$item_id],'min_stock'=>@$ItemMiniStock[$item_id]);
 			
 		} 
+		
+		$ItemDatas=[];
+		
+		
 		
 		
 		$total_indent=[];
 		if($stock == "Positive"){
+			
+			
 			foreach($material_report as $result){ 
 				$Current_Stock=$result['Current_Stock'];
 				$sales_order=$result['sales_order'];
@@ -1328,12 +1347,26 @@ class ItemLedgersController extends AppController
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];
 				$item_id=$result['item_id'];
+				$min_stock=$result['min_stock'];
 				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 				if($total < 0){
 					$total_indent[$item_id]=$total;
 				}
 			}
 		}elseif($stock == "All"){
+			
+			$Items =$this->ItemLedgers->Items->find()->contain(['ItemCompanies'=>function($p) use($st_company_id,$where){
+						return $p->where(['ItemCompanies.company_id' => $st_company_id,'ItemCompanies.freeze' => 0]);
+				}])->where($whereItem);
+			foreach($Items as $Item){ 
+				$ItemLedgersexists = $this->ItemLedgers->exists(['item_id' => $Item->id,'company_id'=>$st_company_id]);
+				if(empty($ItemLedgersexists)){
+					$ItemDatas[$Item->id]=$Item->name;
+				}
+			}
+		
+			//pr($ItemDatas);exit;
+			
 			foreach($material_report as $result){ 
 				$Current_Stock=$result['Current_Stock'];
 				$sales_order=$result['sales_order'];
@@ -1347,6 +1380,7 @@ class ItemLedgersController extends AppController
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];
 				$item_id=$result['item_id'];
+				$min_stock=$result['min_stock'];
 				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 				
 				if($total){
@@ -1367,6 +1401,7 @@ class ItemLedgersController extends AppController
 					$qo_qty=$result['qo_qty'];
 					$mi_qty=$result['mi_qty'];
 					$item_id=$result['item_id'];
+					$min_stock=$result['min_stock'];
 					$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 						if($total < 0 ){
 							$total_indent[$item_id] = $total;
@@ -1386,6 +1421,7 @@ class ItemLedgersController extends AppController
 				$qo_qty=$result['qo_qty'];
 				$mi_qty=$result['mi_qty'];
 				$item_id=$result['item_id'];
+				$min_stock=$result['min_stock'];
 				$total = $Current_Stock-@$sales_order-$job_card_qty+$po_qty-$qo_qty+$mi_qty;
 				if($total < 0){
 					$total_indent[$item_id]=$total;
@@ -1400,7 +1436,7 @@ class ItemLedgersController extends AppController
 		$Items = $this->ItemLedgers->Items->find('list')->order(['Items.name' => 'ASC']);
 		$Companies = $this->ItemLedgers->Companies->find('list')->order(['Companies.name' => 'ASC']);
 			
-		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items','Companies','st_company_id','total_indent','stockstatus','jobCardQty'));
+		$this->set(compact('material_report','mit','url','ItemCategories','ItemGroups','ItemSubGroups','Items','Companies','st_company_id','total_indent','stockstatus','jobCardQty','ItemDatas','stock','ItemMiniStock'));
 			
 	 }
 	

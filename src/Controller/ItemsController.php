@@ -486,6 +486,8 @@ class ItemsController extends AppController
 				$Company_array1[$Company->id]=$Company->name;
 				$Company_array2[$Company->id]=$item_data->freeze;
 				$Company_array3[$Company->id]=$item_data->serial_number_enable;
+				$Company_array4[$Company->id]=$item_data->minimum_selling_price_factor;
+				$Company_array5[$Company->id]=$item_data->minimum_stock;
 				
 			}else{
 
@@ -493,13 +495,36 @@ class ItemsController extends AppController
 				$Company_array1[$Company->id]=$Company->name;
 				$Company_array2[$Company->id]=1;
 				$Company_array3[$Company->id]=0;
+				$Company_array4[$Company->id]=0;
+				$Company_array5[$Company->id]=0;
 			}
 
 		} 
 		$item_data= $this->Items->get($item_id);
-		$this->set(compact('item_data','Companies','customer_Company','Company_array','item_id','Company_array1','Company_array2','Company_array3'));
+		
+		$this->set(compact('item_data','Companies','customer_Company','Company_array','item_id','Company_array1','Company_array2','Company_array3','Company_array4','Company_array5'));
 
 	}
+	
+	public function updateMinStock($item_id,$stock,$company_id){
+		$query_update = $this->Items->ItemCompanies->query();
+							$query_update->update()
+								->set(['minimum_stock'=>$stock])
+								->where(['company_id' => $company_id,'item_id'=>$item_id])
+								->execute();
+		exit;						
+	}
+	
+	public function updateMinSellingFactor($item_id,$selling_factors,$company_id){
+	
+		$query_update = $this->Items->ItemCompanies->query();
+							$query_update->update()
+								->set(['minimum_selling_price_factor'=>$selling_factors])
+								->where(['company_id' => $company_id,'item_id'=>$item_id])
+								->execute();
+		exit;						
+	}
+	
 	public function ItemFreeze($company_id=null,$item_id=null,$freeze=null)
 	{
 		$query2 = $this->Items->ItemCompanies->query();
