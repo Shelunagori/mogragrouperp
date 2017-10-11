@@ -82,7 +82,7 @@
 				<?php 
 						$opening_balance_data=0;
 	
-						if(!empty(@$opening_balance_ar)){ 
+						if(!empty(@$opening_balance_ar)){  
 							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){ 
 								$opening_balance_data=@$opening_balance_ar['debit'] - @$opening_balance_ar['credit'];
 								echo $this->Number->format(@$opening_balance_data.'Dr',[ 'places' => 2]);	echo " Dr";
@@ -117,9 +117,6 @@
 				$total_balance_acc=0; $total_debit=0; $total_credit=0;
 				//pr($Bank_Ledgers->toArray()); exit;
 				foreach($Bank_Ledgers as $ledger): 
-				
-				
-				
 				?>
 				<tr class="main_tr">
 						<td><?php echo date("d-m-Y",strtotime($ledger->transaction_date)); ?></td>
@@ -156,21 +153,22 @@
 				<div class="col-md-4 caption-subject " align="left" style="background-color:#E3F2EE; font-size: 16px;"><b>Closing Balance:  </b>
 				<?php 
 				/////
-				$close_dr=0;
-						$close_cr=0;
+				$close_dr=0;$close_cr=0;
+				
 						if((@$opening_balance_ar['debit'] > 0) || (@$opening_balance_ar['credit'] > 0)){  
-							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){  
+							if(@$opening_balance_ar['debit'] > @$opening_balance_ar['credit']){
+								
 									$close_dr=@$opening_balance_data+@$total_debit;
 									$close_cr=@$total_credit;
 								
 							}
-							else if(@$opening_balance_ar['credit'] < @$opening_balance_ar['debit']){ 
-							 
+							else if(@$opening_balance_ar['credit'] > @$opening_balance_ar['debit']){ 
+							
 								$close_cr=@$opening_balance_data+@$total_credit;
 								$close_dr=@$total_debit;
 							 
 							}else if($opening_balance_ar['debit']== $opening_balance_ar['credit']){ 
-								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){ 
+								if(@$closing_balance_ar['debit'] > @$closing_balance_ar['credit']){   
 								$close_dr=@$closing_balance_ar['debit'];
 								$close_cr=@$closing_balance_ar['credit'];
 								}else{
@@ -193,6 +191,7 @@
 							}
 			
 				///////
+				
 				$closing_balance=@$close_dr-@$close_cr;
 					
 						echo $this->Number->format(abs($closing_balance),['places'=>2]);
