@@ -19,6 +19,9 @@ class InventoryTransferVouchersController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -42,20 +45,51 @@ class InventoryTransferVouchersController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['InventoryTransferVouchers.transaction_date <=']=$To;
 		}
-		
+		$this->paginate = [
+            'contain' => ['Companies']
+        ];
 		$inventory_transfer_vouchs = $this->paginate($this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']));
 		//pr($inventory_transfer_vouchs->toArray());exit;
 		
 		
-		$this->paginate = [
-            'contain' => ['Companies']
-        ];
-        $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC']));
+		
+        /* $inventoryTransferVouchers = $this->paginate($this->InventoryTransferVouchers->find()->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC'])); */
 
-        $this->set(compact('inventoryTransferVouchers','inventory_transfer_vouchs'));
+        $this->set(compact('inventoryTransferVouchers','inventory_transfer_vouchs','url'));
         $this->set('_serialize', ['inventoryTransferVouchers']);
     }
 
+	public function excelExport(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$where = [];
+        $vouch_no = $this->request->query('vouch_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		//pr($vouch_no);exit;
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['InventoryTransferVouchers.voucher_no LIKE']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['InventoryTransferVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['InventoryTransferVouchers.transaction_date <=']=$To;
+		}
+		
+		$inventory_transfer_vouchs =$this->InventoryTransferVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['InventoryTransferVouchers.voucher_no' => 'DESC'])->contain(['Companies']);
+		//pr($inventory_transfer_vouchs->toArray());exit;
+		
+
+        $this->set(compact('inventory_transfer_vouchs','url','From','To'));
+	}
     /**
      * View method
      *

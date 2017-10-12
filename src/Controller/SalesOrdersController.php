@@ -176,6 +176,7 @@ class SalesOrdersController extends AppController
 			$salesOrders=$this->paginate(
 				$this->SalesOrders->find()->contain(['SalesOrderRows'])
 				->where(['job_card'=>'Pending'])->order(['SalesOrders.id' => 'DESC'])
+				->where(['SalesOrders.company_id'=>$st_company_id])
 			);
 		}
 		$Items = $this->SalesOrders->SalesOrderRows->Items->find('list')->order(['Items.name' => 'ASC']);
@@ -197,6 +198,8 @@ class SalesOrdersController extends AppController
     {
 		$this->viewBuilder()->layout('');
 		$where=[];
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		$company_alise=$this->request->query('company_alise');
 		$sales_order_no=$this->request->query('sales_order_no');
 		$file=$this->request->query('file');
@@ -223,39 +226,39 @@ class SalesOrdersController extends AppController
 		}
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where['date >=']=$From;
+			$where['SalesOrders.created_on >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where['date <=']=$To;
+			$where['SalesOrders.created_on <=']=$To;
 		}
         $this->paginate = [
             'contain' => ['Customers','Employees','Categories', 'Companies']
         ];
 		
-        $this->paginate = [
-            'contain' => ['Customers']
-        ];
+       
 		
 		if($status==null or $status=='Pending'){
 			$having=['total_rows >' => 0];
 		}elseif($status=='Converted Into Invoice'){
 			$having=['total_rows =' => 0];
 		}
-		$salesOrders=$this->paginate(
+		$salesOrders=
 			$this->SalesOrders->find()->select(['total_rows' => 
 				$this->SalesOrders->find()->func()->count('SalesOrderRows.id')])
 				->leftJoinWith('SalesOrderRows', function ($q) {
-					return $q->where();
+					return $q->where('SalesOrderRows.processed_quantity < SalesOrderRows.quantity');
 				})
 				->group(['SalesOrders.id'])
 				->autoFields(true)
 				->having($having)
 				->where($where)
+				->where(['SalesOrders.company_id'=>$st_company_id])
 				->order(['SalesOrders.id' => 'DESC'])
-			);
+				->contain(['Quotations','Customers'])
+			;
 		
-        $this->set(compact('salesOrders','status'));
+        $this->set(compact('salesOrders','status','From','To'));
         $this->set('_serialize', ['salesOrders']);
     }
 	

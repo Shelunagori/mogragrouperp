@@ -1,9 +1,12 @@
- 
+ <?php $url_excel="/?".$url; ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Inventory Vouchers</span> 
+		</div>
+		<div class='actions'>
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/InventoryVouchers/Excel-Export/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
 	<div class="portlet-body">
 		<div class="row">
@@ -42,7 +45,7 @@
 					</tbody>
 				</table>
 				</form>
-				<?php $page_no=$this->Paginator->current('materialIndents'); $page_no=($page_no-1)*20; ?>
+				<?php $page_no=$this->Paginator->current('inventoryVouchers'); $page_no=($page_no-1)*20; ?>
 				<table class="table table-bordered table-striped table-hover">
 					<thead>
 						<tr>

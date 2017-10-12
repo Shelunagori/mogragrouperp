@@ -20,6 +20,12 @@
 <table border="1">
 	<thead>
 		<tr>
+			<td colspan="7" align="center">
+				<b> Quotation Report
+				<?php if(!empty($From) || !empty($To)){ echo date('d-m-Y',strtotime($From)); ?> TO <?php echo date('d-m-Y',strtotime($To));} ?> </b>
+			</td>
+		</tr>	
+		<tr>
 			<th>Sr. No.</th>
 			<th>Ref. No.</th>
 			<th>Customer</th>

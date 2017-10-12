@@ -182,9 +182,9 @@ class InvoicesController extends AppController
 		$this->set(compact('url'));
     }
 
-	public function exportInvoiceExcel()
+	public function excelExport($status=null)
 	{
-		$this->viewBuilder()->layout(''); 
+		$this->viewBuilder()->layout('');
 		$inventory_voucher=$this->request->query('inventory_voucher');
 		$sales_return=$this->request->query('sales_return');
 		//pr($sales_return); exit;
@@ -223,15 +223,34 @@ class InvoicesController extends AppController
 			$where['Invoices.total_after_pnf']=$total_From;
 		}
 		
-		  $this->paginate = [
-            'contain' => ['Customers', 'Companies']
-        ];
+		if($inventory_voucher=='true'){
+			$where['Invoices.inventory_voucher_status']='Pending';
+			
+		}else{
+			if($status=='Pending' || $status==''){
+				$where['status']='';
+			}
+			elseif($status=='Cancel'){
+				$where['status']='Cancel';
+			}	
+		}
 		
-		$invoices = $this->paginate($this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.in2' => 'DESC']));
+		if($inventory_voucher=='true'){  
+			$invoices=[]; 
+			$invoices=$this->Invoices->find()->where($where)->contain(['Customers', 'Companies','SalesOrders','InvoiceRows'=>['Items'=>function ($q) {
+				return $q->where(['source !='=>'Purchessed']);
+				}]])->where(['Invoices.company_id'=>$st_company_id,'Invoices.inventory_voucher_status'=>'Pending','Invoices.inventory_voucher_create'=>'Yes'])->order(['Invoices.id' => 'DESC']);
+				//pr($invoices); exit;
+		}else if($sales_return=='true'){
+			
+			$invoices = $this->Invoices->find()->contain(['Customers', 'Companies','SalesOrders','InvoiceRows'=>['Items']])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.id' => 'DESC']);
+		} else{ 
+			$invoices = $this->Invoices->find()->contain(['SalesOrders','InvoiceRows'=>['Items'],'Customers', 'Companies'])->where($where)->where(['Invoices.company_id'=>$st_company_id])->order(['Invoices.in2' => 'DESC']);
+		} 
 		
 		//$invoices = $this->paginate($this->Invoices->find()->where($where)->order(['Invoices.id' => 'DESC']));
 		//pr($invoices);exit;
-		$this->set(compact('invoices'));
+		$this->set(compact('invoices','From','To'));
 		$this->set('_serialize', ['invoices']);
 	}
 	

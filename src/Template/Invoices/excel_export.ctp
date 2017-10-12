@@ -13,8 +13,8 @@
 	header ("Content-Disposition: attachment; filename=".$filename.".xls");
 	header ("Content-Description: Generated Report" );
 
-?>	
-				<table border="1">
+?>
+<table border="1">
 					<thead>
 					<tr>
 						<td colspan="6" align="center">
@@ -27,7 +27,7 @@
 						<tr>
 							<th width="5%">Sr. No.</th>
 							<th width="10%">Invoice No.</th>
-							
+							<th width="10%">Sales Order No.</th>
 							<th width="12%">Customer</th>
 							<th width="8%">Created Date</th>
 							<th style="text-align:right;" width="10%">Total</th>
@@ -38,7 +38,17 @@
 						<tr>
 							<td><?= h(++$i) ?></td>
 							<td><?= h(($invoice->in1.'/IN-'.str_pad($invoice->in2, 3, '0', STR_PAD_LEFT).'/'.$invoice->in3.'/'.$invoice->in4)) ?></td>
-							
+							<?php if($invoice->sales_order_id != 0){ ?>
+							<td>
+							<?php 
+							if($invoice->sales_order->gst == 'yes'){
+								echo $invoice->sales_order->so1.'/SO-'.str_pad($invoice->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sales_order->so3.'/'.$invoice->sales_order->so4; 
+							}else{
+								echo $invoice->sales_order->so1.'/SO-'.str_pad($invoice->sales_order->so2, 3, '0', STR_PAD_LEFT).'/'.$invoice->sales_order->so3.'/'.$invoice->sales_order->so4; 
+							} ?>
+							</td>
+							<?php }else{?>
+							<td></td><?php } ?>
 							
 						
 							<td><?= h($invoice->customer->customer_name) ?></td>

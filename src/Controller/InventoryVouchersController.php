@@ -18,6 +18,9 @@ class InventoryVouchersController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -52,10 +55,45 @@ class InventoryVouchersController extends AppController
 		$inventoryVouchers = $this->paginate($this->InventoryVouchers->find()->contain(['Invoices'])->where($where)->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']));
 		
 
-        $this->set(compact('inventoryVouchers'));
+        $this->set(compact('inventoryVouchers','url'));
         $this->set('_serialize', ['inventoryVouchers']);
     }
 
+	public function excelExport(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$iv_no=$this->request->query('iv_no');
+		$invoice_no=$this->request->query('invoice_no');
+		$customer=$this->request->query('customer');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('iv_no','customer','invoice_no','From','To'));
+		$where=[];
+		if(!empty($invoice_no)){
+			$where['Invoices.in2 LIKE']=$invoice_no;
+		}
+		if(!empty($iv_no)){
+			$where['InventoryVouchers.iv_number LIKE']=$iv_no;
+		}
+		if(!empty($customer)){
+			$where['Customers.customer_name LIKE']='%'.$customer.'%';
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['InventoryVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['InventoryVouchers.transaction_date <=']=$To;
+		}
+        
+		
+		$inventoryVouchers = $this->InventoryVouchers->find()->contain(['Invoices'=>['Customers'],'InventoryVoucherRows'])->where($where)->where(['InventoryVouchers.company_id'=>$st_company_id])->order(['InventoryVouchers.id' => 'DESC']);
+		
+
+        $this->set(compact('inventoryVouchers','url','From','To'));
+	}
 	public function indexx()
     {
 		$inventerys =$this->InventoryVouchers->find()->where(['transaction_date'=>''])->order(['id'=>'asc'])->toArray();
