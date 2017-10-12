@@ -289,8 +289,13 @@ foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row){
 						</tr>
 						<tr class="tr2" row_no='<?php echo @$grn_rows->id; ?>'>
 							<td colspan="19">
-								<?php echo $this->Text->autoParagraph($grn->purchase_order->purchase_order_rows[$q]->description); ?>
-								<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$grn->purchase_order->purchase_order_rows[$q]->description]); ?>
+								<?php 
+								foreach($grn->purchase_order->purchase_order_rows as $purchase_order_row)
+								if($purchase_order_row->item_id==$grn_rows->item_id){
+								echo $this->Text->autoParagraph($purchase_order_row->description); ?>
+								<?php echo $this->Form->input('invoice_booking_rows.'.$q.'.description',['label' => false,'class' => 'form-control input-sm','type'=>'hidden','value'=>$grn->purchase_order->purchase_order_rows[$q]->description]); 
+								}
+								?>
 							</td>
 							
 						</tr>

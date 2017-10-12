@@ -1382,4 +1382,10 @@ class LedgersController extends AppController
 		
    }
 	
+	public function getAllLedgers(){
+		$Ledgers25 = $this->Ledgers->find()->where(['Ledgers.company_id'=>'25','voucher_source'=>'Opening Balance'])->contain(['LedgerAccounts']);
+		$Ledgers26 = $this->Ledgers->find()->where(['Ledgers.company_id'=>'26','voucher_source'=>'Opening Balance'])->contain(['LedgerAccounts']);
+		$Ledgers27 = $this->Ledgers->find()->where(['Ledgers.company_id'=>'27','voucher_source'=>'Opening Balance'])->contain(['LedgerAccounts']);
+		$this->set(compact('Ledgers25','Ledgers26','Ledgers27'));
+	}
 }

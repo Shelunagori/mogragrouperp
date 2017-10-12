@@ -172,11 +172,12 @@ class QuotationsController extends AppController
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
 			$where['finalisation_date <=']=$To;
 		}
-        $this->paginate = [
+		/*         $this->paginate = [
             'contain' => ['Customers','Employees','ItemGroups']
-        ];
+        ]; */
 		
-		$quotations = $this->paginate($this->Quotations->find()->where($where)->where(['company_id'=>$st_company_id])->order(['Quotations.id' => 'DESC']));
+		$quotations = $this->Quotations->find()->where($where)->where(['company_id'=>		  $st_company_id])->order(['Quotations.id' => 'DESC'])
+		->contain(['Customers','Employees','ItemGroups']);
 	
         //$quotations = $this->paginate($this->Quotations->find()->where($where)->order(['Quotations.id' => 'DESC']));
         $this->set(compact('quotations','status'));

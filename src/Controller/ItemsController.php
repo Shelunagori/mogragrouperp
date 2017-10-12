@@ -725,4 +725,45 @@ public function CheckCompany($company_id=null,$item_id=null)
 		exit;
 	}
 	
+	public function getItemsData(){
+		$this->viewBuilder()->layout('index_layout');
+		$Items=$this->Items->find()->contain(['ItemCategories']);
+		
+		$company25=[];$company26=[];$company27=[];
+		$item_name25=[];$item_name26=[];$item_cat25=[];$item_cat26=[];$item_data25=[];
+		$item_cat27=[];$item_name27=[];
+			foreach($Items as $item){
+				
+				//$ItemCategories= $this->Items->ItemCategories->find(['id' => $item->item_category_id]);
+				/* $Company_exist= $this->Items->ItemCompanies->exists(['item_id' => $item->id,'company_id'=>'25']);
+				if($Company_exist){
+					
+					$item_data= $this->Items->ItemCompanies->find()->where(['item_id' => $item->id,'company_id'=>'25'])->first();
+					$company25[$item_data->item_id]=$item_data->item_id;
+					$item_name25[$item_data->item_id]=$item->name;
+					$item_cat25[$item_data->item_id]=$item->item_category->name;
+					
+				}*/
+				/* $Company_exist1= $this->Items->ItemCompanies->exists(['item_id' => $item->id,'company_id'=>'26']); 
+				if($Company_exist1){
+					$item_data1= $this->Items->ItemCompanies->find()->where(['item_id' => $item->id,'company_id'=>'26'])->first();
+					
+					$company26[$item_data1->item_id]=$item_data1->item_id;
+					$item_name26[$item_data1->item_id]=$item->name;
+					$item_cat26[$item_data1->item_id]=$item->item_category->name;
+				} */
+				$Company_exist2= $this->Items->ItemCompanies->exists(['item_id' => $item->id,'company_id'=>'27']);
+				if($Company_exist2){
+					$item_data3= $this->Items->ItemCompanies->find()->where(['item_id' => $item->id,'company_id'=>'27'])->first();
+					$company27[$item_data3->item_id]=$item_data3->item_id;
+					$item_name27[$item_data3->item_id]=$item->name;
+					$item_cat27[$item_data3->item_id]=$item->item_category->name;
+				}
+				
+				//$item_cat[$item->id]=$ItemCategories->name;
+			}		
+	//pr($item_cat27);exit;
+		$this->set(compact('Items','company25','company26','company27','item_name25','item_cat25','item_name26','item_cat26','item_cat27','item_name27'));
+	}
+	
 }
