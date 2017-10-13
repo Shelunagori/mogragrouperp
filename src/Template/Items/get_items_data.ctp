@@ -6,13 +6,15 @@
 
 <table class="table table-bordered table-striped">
 	<tr>
-		<th colspan='5'>26</th>
+		<th colspan='8'>26</th>
 	</tr>
 	<tr>
 		<th>id</th>
 		<th>Item ID</th>
-		<th>Item Name</th>
 		<th>Item Category</th>
+		<th>Item Group</th>
+		<th>Item Subgroup</th>
+		<th>Item Name</th>
 		<th>Min Selling Factor</th>
 		<th>Min Stock</th>
 	</tr>
@@ -22,8 +24,11 @@
 	<tr>
 		<td><?php echo $i++; ?></td>
 		<td><?php  echo @$company27[$item->id]; ?></td>
-		<td><?php  echo @$item_name27[$item->id];  ?></td>
 		<td><?php  echo @$item_cat27[$item->id]; ?></td>
+		<td><?php  echo @$item_grp27[$item->id]; ?></td>
+		<td><?php  echo @$item_subgrp27[$item->id]; ?></td>
+		<td><?php  echo @$item_name27[$item->id];  ?></td>
+		
 		<td></td>
 		<td></td>
 	</tr>

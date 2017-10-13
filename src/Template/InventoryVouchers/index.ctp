@@ -45,7 +45,7 @@
 					</tbody>
 				</table>
 				</form>
-				<?php $page_no=$this->Paginator->current('inventoryVouchers'); $page_no=($page_no-1)*20; ?>
+				<?php $page_no=$this->Paginator->current('InventoryVouchers'); $page_no=($page_no-1)*20; ?>
 				<table class="table table-bordered table-striped table-hover">
 					<thead>
 						<tr>

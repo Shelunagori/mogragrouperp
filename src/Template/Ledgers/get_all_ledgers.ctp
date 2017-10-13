@@ -22,7 +22,13 @@
 	<tr>
 		<td><?php echo $i++; ?></td>
 		<td><?php  echo $ledgers->ledger_account_id; ?></td>
-		<td><?php  echo $ledgers->ledger_account->name; ?></td>
+	<td><?php 
+	if(!empty($ledgers->ledger_account->alias)){
+
+	echo $ledgers->ledger_account->name.'('.$ledgers->ledger_account->alias.')';
+	}else{
+	echo 	$ledgers->ledger_account->name;
+	}	?></td>
 		<td><?php  echo $ledgers->debit;  ?></td>
 		<td><?php  echo $ledgers->credit; ?></td>
 		<td></td>

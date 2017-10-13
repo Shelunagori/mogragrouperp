@@ -25,6 +25,27 @@ class MaterialIndentsController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
+		
+		$mi_no=$this->request->query('mi_no');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		
+		$this->set(compact('mi_no','From','To'));
+		$where=[];
+		
+		if(!empty($mi_no)){
+			$where['MaterialIndents.mi_number LIKE']=$mi_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['MaterialIndents.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['MaterialIndents.created_on <=']=$To;
+		}
 	
 	 if($status==null or $status=='Open' ){
 			$having=['total_open_rows >' => 0];
@@ -42,6 +63,7 @@ class MaterialIndentsController extends AppController
 					->group(['MaterialIndents.id'])
 					->autoFields(true)
 					->having($having)
+					->where($where)
 					->where(['company_id'=>$st_company_id])
 					->order(['MaterialIndents.id' => 'DESC'])
 			);
@@ -53,6 +75,9 @@ class MaterialIndentsController extends AppController
         $this->set('_serialize', ['materialIndents']);
     }
 	
+	public function excelExport(){
+		
+	}
 /**
      * View method
      *

@@ -26,7 +26,32 @@
 			
 			</div>
 		</div>
-				 
+				 <form method="GET" >
+				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
+				<input type="hidden" name="gst" value="<?php echo @$gst; ?>">
+				<input type="hidden" name="job-card" value="<?php echo @$job_card; ?>">
+				<table class="table table-condensed">
+					<tbody>
+						<tr>
+							<td width="17%">
+								<div class="input-group" id="pnf_text">
+									<span class="input-group-addon">MI-</span><input type="text" name="mi_no" class="form-control input-sm" placeholder="Material Indent No" value="<?php echo @$mi_no; ?>">
+								</div>
+							</td>
+							
+							<td width="9%">
+								<input type="text" name="From" class="form-control input-sm date-picker" placeholder="From" value="<?php echo @$From; ?>" data-date-format="dd-mm-yyyy" >
+							</td>
+							<td width="9%">
+								<input type="text" name="To" class="form-control input-sm date-picker" placeholder="To" value="<?php echo @$To; ?>" data-date-format="dd-mm-yyyy" >
+							</td>
+							<td>
+								<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</form>
 <?php $page_no=$this->Paginator->current('MaterialIndentS'); $page_no=($page_no-1)*20; ?>
 	<table class="table table-bordered table-striped table-hover">
 		<tbody>
