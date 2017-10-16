@@ -110,13 +110,9 @@ class NppaymentsController extends AppController
             $To=date("Y-m-d",strtotime($this->request->query('To')));
             $where['Nppayments.transaction_date <=']=$To;
         }
+       
         
-        $this->paginate = [
-            'contain' => []
-        ];
-        
-        
-        $nppayments = $this->paginate($this->Nppayments->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['NppaymentRows'=>function($q){
+        $nppayments = $this->Nppayments->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['NppaymentRows'=>function($q){
             $NppaymentRows = $this->Nppayments->NppaymentRows->find();
             $totalCrCase = $NppaymentRows->newExpr()
                 ->addCase(
@@ -138,7 +134,7 @@ class NppaymentsController extends AppController
                 
                 ->autoFields(true);
             
-        }])->order(['voucher_no'=>'DESC']));
+        }])->order(['voucher_no'=>'DESC']);
         
 
         $this->set(compact('nppayments','From','To'));

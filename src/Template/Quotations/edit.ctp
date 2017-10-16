@@ -210,12 +210,18 @@
 								
 							</td>
 							<td width="130">
-								<?php echo $this->Form->input('quotation_rows['.$q.'][rate]', ['label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate', 'min'=>'0.01','value' => $quotation_row->rate,'required','r_popup_id'=>$q]); ?>
+								<?php echo $this->Form->input('quotation_rows['.$q.'][rate]', ['label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate','value' => $quotation_row->rate,'required','r_popup_id'=>$q ,'step'=>'0.01']); ?>
 							</td>
 							<td width="130">
 								<?php echo $this->Form->input('quotation_rows['.$q.'][amount]', ['label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount','value' => $quotation_row->amount]); ?>
 							</td>
-							<td  width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
+							<td  width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a>
+							<?php if($quotation_row->proceed_qty > 0){ ?>
+						
+							<?php }else{ ?>
+							<a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a>
+							<?php } ?>
+							</td>
 						</tr>
 						<tr class="tr2 preimp" row_no='<?php echo @$quotation_row->id; ?>'>
 							<td colspan="4" class="main">
@@ -304,7 +310,7 @@
 				</div>
 			</td>
 			<td width="100"><?php echo $this->Form->input('quantity[]', ['label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity']); ?></td>
-			<td width="130"><?php echo $this->Form->input('rate[]', ['type' => 'text', 'min'=>'0.01','label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate']); ?></td>
+			<td width="130"><?php echo $this->Form->input('rate[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate']); ?></td>
 			<td width="130"><?php echo $this->Form->input('amount[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount']); ?></td>
 			<td  width="70"><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
 		</tr>
@@ -533,8 +539,7 @@ $(document).ready(function() {
 					});
 			$(this).find("td:nth-child(4) input").attr({name:"quotation_rows["+i+"][rate]", id:"quotation_rows-"+i+"-rate",r_popup_id:i}).rules('add', {
 						required: true,
-						number: true,
-						min: 0.01
+						number: true
 					});
 			
 			$(this).find("td:nth-child(5) input").attr({name:"quotation_rows["+i+"][amount]", id:"quotation_rows-"+i+"-amount"});
@@ -723,6 +728,7 @@ $(document).ready(function() {
 	$("select.item_box").each(function(){
 		var popup_id=$(this).attr('popup_id');
 		var item_id=$(this).val();
+	
 		if(popup_id){
 			last_three_rates_onload(popup_id,item_id);
 		}
@@ -731,29 +737,60 @@ $(document).ready(function() {
 	$("select.item_box").die().live("change",function(){
 		var popup_id=$(this).attr('popup_id');
 		var item_id=$(this).val();
+		var obj = $(this);
+		var row_no = $(this).closest('tr.tr1');
+		var values= row_no.find('.rate').val();
+		//if(values){
+		//	row_no.find('.rate').val('');
+		//}else{
+		//	row_no.find('.rate').val('');
+		//}
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
+		if(item_id){
+			url=url+'/'+item_id,
+			$.ajax({
+				url: url
+			}).done(function(response) {
+				var values = parseFloat(response);
+					row_no.find('.rate').attr({ min:values}).rules('add', {
+							required:true,
+							min: values,
+							
+						});
+			});
+		}else{
+			$(this).val();
+		}
 		last_three_rates(popup_id,item_id);
-	})
+	});
 	
 	function last_three_rates_onload(popup_id,item_id){
 			var customer_id=$('select[name="customer_id"]').val();
 			$('div[popup_ajax_id='+popup_id+']').html('<div align="center"><?php echo $this->Html->image('/img/wait.gif', ['alt' => 'wait']); ?> Loading</div>');
 			if(customer_id){
-				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'RecentRecords']); ?>";
+				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
 				url=url+'/'+item_id+'/'+customer_id,
 				$.ajax({
 					url: url,
 					dataType: 'json',
 				}).done(function(response) {
-					$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-						min: response.minimum_selling_price,
+					var values = parseFloat(response);
+					$('input[r_popup_id='+popup_id+']').attr({ min:values}).rules('add', {
+						min: values,
 						messages: {
-							min: "Minimum selling price: "+response.minimum_selling_price
+							min: "Minimum selling price "+values
 						}
 					});
-					$('div[popup_ajax_id='+popup_id+']').html(response.html);
-					
+					$('div[popup_ajax_id='+popup_id+']').html(values.html);
 				});
 			}else{
+				$('input[r_popup_id='+popup_id+']').attr({ min:1}).rules('add', {
+						min: 0.01,
+						messages: {
+							min: "Rate can't be zero."
+						}
+					});
 				$('div[popup_ajax_id='+popup_id+']').html('Select customer first.');
 				$(".item_box[popup_id="+popup_id+"]").val('').select2();
 			}
@@ -770,20 +807,7 @@ $(document).ready(function() {
 					url: url,
 					dataType: 'json',
 				}).done(function(response) {
-					if(response.minimum_selling_price>0){
-						$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-							min: response.minimum_selling_price,
-							messages: {
-								min: "Minimum selling price: "+response.minimum_selling_price
-							}
-						});
-					}
-					else{
-						$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-							min: 0.01
-						});
-						
-					}
+					
 					$('div[popup_ajax_id='+popup_id+']').html(response.html);
 				});
 			}else{

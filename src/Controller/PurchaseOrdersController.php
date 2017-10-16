@@ -113,6 +113,78 @@ class PurchaseOrdersController extends AppController
 		$this->set(compact('url'));
     }
 
+	public function excelExport($status=null){
+		$this->viewBuilder()->layout('');
+       
+		$pull_request=$this->request->query('pull-request');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$st_year_id = $session->read('st_year_id');
+		$financial_year = $this->PurchaseOrders->FinancialYears->find()->where(['id'=>$st_year_id])->first();
+		$financial_month_first = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->first();
+		$financial_month_last = $this->PurchaseOrders->FinancialMonths->find()->where(['financial_year_id'=>$st_year_id,'status'=>'Open'])->last();
+		
+		
+		$where=[];
+		$purchase_no=$this->request->query('purchase_no');
+		$file=$this->request->query('file');
+		$vendor=$this->request->query('vendor');
+		$total=$this->request->query('total');
+		$items=$this->request->query('items');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('purchase_no','vendor','From','To','total','file','items'));
+		if(!empty($purchase_no)){
+			$where['po2 LIKE']=$purchase_no;
+		}
+		if(!empty($file)){
+			$where['po3 LIKE']='%'.$file.'%';
+		}
+		if(!empty($total)){
+			$where['total LIKE']=$total;
+		}
+		if(!empty($vendor)){
+			$where['Vendors.company_name LIKE']='%'.$vendor.'%';
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['PurchaseOrders.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['PurchaseOrders.date_created <=']=$To;
+		}
+		$where1=[];
+		$having=[];
+		if($status=='Pending'){
+			$having=['total_rows >' => 0];
+			
+		}elseif($status=='Converted-Into-GRN'){
+			$having=['total_rows =' => 0];
+			
+		}
+		
+				
+			$purchaseOrders=
+			$this->PurchaseOrders->find()->select(['total_rows' => 
+				$this->PurchaseOrders->find()->func()->count('PurchaseOrderRows.id')])
+				->leftJoinWith('PurchaseOrderRows', function ($q) {
+					return $q->where(['PurchaseOrderRows.processed_quantity < PurchaseOrderRows.quantity']);
+				})
+				->group(['PurchaseOrders.id'])
+				->autoFields(true)
+				->having($having)
+				->where($where)
+				->where(['company_id'=>$st_company_id])
+				->order(['PurchaseOrders.id' => 'DESC'])
+				->contain(['PurchaseOrderRows'=>['Items'],'Companies', 'Vendors'])
+			;
+
+		$this->set(compact('purchaseOrders','pull_request','status','PurchaseOrderRows','PurchaseItems','Items','financial_month_first','financial_month_last'));
+        $this->set('_serialize', ['purchaseOrders']);
+		$this->set(compact('url','purchaseOrders'));
+	}
     /**
      * View method
      *

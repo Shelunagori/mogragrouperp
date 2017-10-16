@@ -18,6 +18,8 @@ class PurchaseReturnsController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -49,10 +51,47 @@ class PurchaseReturnsController extends AppController
         ];
         $purchaseReturns = $this->paginate($this->PurchaseReturns->find()->where($where)->where(['PurchaseReturns.company_id'=>$st_company_id])->order(['PurchaseReturns.id' => 'DESC']));
 
-        $this->set(compact('purchaseReturns'));
+        $this->set(compact('purchaseReturns','url'));
         $this->set('_serialize', ['purchaseReturns']);
     }
 
+	
+	public function exportExcel(){
+		
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$where = [];
+		
+		$vouch_no = $this->request->query('vouch_no');
+		$From    = $this->request->query('From');
+		$To    = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['PurchaseReturns.voucher_no Like']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['PurchaseReturns.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['PurchaseReturns.created_on <=']=$To;
+		}
+		
+		
+        $this->paginate = [
+            'contain' => ['InvoiceBookings', 'Companies']
+        ];
+        $purchaseReturns = $this->PurchaseReturns->find()->where($where)->where(['PurchaseReturns.company_id'=>$st_company_id])->order(['PurchaseReturns.id' => 'DESC']);
+
+        $this->set(compact('purchaseReturns'));
+        $this->set('_serialize', ['purchaseReturns']);
+	}
     /**
      * View method
      *
@@ -1251,7 +1290,7 @@ class PurchaseReturnsController extends AppController
 		exit;
 	}
 	
-	public function purchaseReturnReport(){
+	public function exportSaleExcel(){
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$From=$this->request->query('From');
@@ -1268,7 +1307,7 @@ class PurchaseReturnsController extends AppController
 			$where['transaction_date <=']=$To;
 		}
 		
-		$this->viewBuilder()->layout('index_layout');
+		$this->viewBuilder()->layout('');
 		$PurchaseReturns = $this->PurchaseReturns->find()->contain(['InvoiceBookings'=>['InvoiceBookingRows'],'PurchaseReturnRows','Vendors'])->order(['PurchaseReturns.id' => 'DESC'])->where(['PurchaseReturns.company_id'=>$st_company_id]);
 		//$InvoiceBookings=$this->PurchaseReturns->InvoiceBookings->find()->contain(['InvoiceBookingRows','Vendors']);
 		/* foreach($PurchaseReturns->invoice_booking_rows as $invoice_booking_row ) {
@@ -1276,5 +1315,34 @@ class PurchaseReturnsController extends AppController
 		} */
 		//pr($PurchaseReturns->toArray()); exit;
 		$this->set(compact('PurchaseReturns'));
+	}
+	
+	public function purchaseReturnReport(){
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('From','To'));
+		$where=[];
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['PurchaseReturns.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['PurchaseReturns.transaction_date <=']=$To;
+		}
+		
+		$this->viewBuilder()->layout('index_layout');
+		$PurchaseReturns = $this->PurchaseReturns->find()->contain(['InvoiceBookings'=>['InvoiceBookingRows'],'PurchaseReturnRows','Vendors'])->order(['PurchaseReturns.id' => 'DESC'])->where(['PurchaseReturns.company_id'=>$st_company_id]);
+		//$InvoiceBookings=$this->PurchaseReturns->InvoiceBookings->find()->contain(['InvoiceBookingRows','Vendors']);
+		/* foreach($PurchaseReturns->invoice_booking_rows as $invoice_booking_row ) {
+			
+		} */
+		//pr($PurchaseReturns->toArray()); exit;
+		$this->set(compact('PurchaseReturns','url'));
 	}
 }

@@ -128,7 +128,11 @@
 									<td><?php echo $this->Form->input('purchase_order_rows.'.$q.'.rate', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Rate','step'=>"0.01",'value'=>$purchase_order_rows->rate]); ?></td>
 									<td><?php echo $this->Form->input('purchase_order_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount','value'=>$purchase_order_rows->amount]); ?></td>
 									
-									<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
+									<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a>
+									<?php if($purchase_order_rows->processed_quantity > 0){ }else{ ?>
+									<a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a>
+									<?php }?>
+									</td>
 								</tr>
 								<tr class="tr2 preimp main_tr" row_no='<?php echo @$purchase_order_rows->id; ?>'>
 									<td colspan="6">

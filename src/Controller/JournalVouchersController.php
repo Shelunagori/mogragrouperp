@@ -51,9 +51,13 @@ class JournalVouchersController extends AppController
 			$where['JournalVouchers.transaction_date <=']=$To;
 		}
 		
+		$this->paginate = [
+            'contain' => []
+        ];
+		
        $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
 
-        $this->set('journalVoucher');
+       
 		$this->set(compact('journalVouchers','url','financial_month_first','financial_month_last'));
 		$this->set('_serialize', ['journalVouchers']);
     }
@@ -87,7 +91,7 @@ class JournalVouchersController extends AppController
 			$where['JournalVouchers.transaction_date <=']=$To;
 		}
 		
-       $journalVouchers = $this->paginate($this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']));
+       $journalVouchers = $this->JournalVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->order(['transaction_date' => 'DESC']);
 
         $this->set('journalVoucher');
 		$this->set(compact('journalVouchers','url','From','To'));

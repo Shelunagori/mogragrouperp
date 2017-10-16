@@ -42,10 +42,9 @@
 			<td><?= date("d-m-Y",strtotime($jobCard->required_date));?></td>
 			<td><?= date("d-m-Y",strtotime($jobCard->created_on));?></td> 
 			<td><?php 
-			if($status==null or $status=='Pending'){ echo "Pending";
-			}else{
-				echo ucwords($status);
-			}
+			
+				echo ucwords($jobCard->status);
+			
 			 ?></td>			
 		</tr>
 		<?php endforeach; ?>

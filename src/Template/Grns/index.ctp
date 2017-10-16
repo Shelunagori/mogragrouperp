@@ -1,3 +1,12 @@
+<?php 
+
+	if(!empty($status)){
+		$url_excel=$status."/?".$url;
+	}else{
+		$url_excel="/?".$url;
+	}
+
+?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -13,6 +22,7 @@
 			if($status==null or $status=='Pending'){ $class1='btn btn-primary'; }else{ $class1='btn btn-default'; }
 			if($status=='Invoice-Booked'){ $class2='btn btn-primary'; }else{ $class2='btn btn-default'; }
 			?>
+			<?php if($pull_request!="true"){ ?>
 				<?= $this->Html->link(
 					'Pending',
 					'/Grns/index/Pending',
@@ -23,7 +33,8 @@
 					'/Grns/index/Invoice-Booked',
 					['class' => $class2]
 				); ?>
-			<?php  ?>
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Grns/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+			<?php } ?>
 			</div>
 			</div>
 
@@ -59,7 +70,7 @@
 				</table>
 			</form>
 			
-				<?php $page_no=$this->Paginator->current('Invoices'); $page_no=($page_no-1)*20; ?>
+				<?php $page_no=$this->Paginator->current('Grns'); $page_no=($page_no-1)*20; ?>
 				<table class="table table-bordered table-striped table-hover">
 					<thead>
 						<tr>

@@ -16,9 +16,10 @@
 		<div class="actions">
 			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/JournalVouchers/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
+	</div>	
 	<div class="portlet-body">
 		<div class="row">
-			<div class="col-md-12">
+			
 				<form method="GET" >
 					<table class="table table-condensed">
 						<tbody>
@@ -38,6 +39,7 @@
 						</tbody>
 					</table>
 				</form>
+				<div class="col-md-12">
 				<?php $page_no=$this->Paginator->current('JournalVouchers'); $page_no=($page_no-1)*20; ?>
 				<table class="table table-bordered table-striped table-hover">
 					<thead>
@@ -70,9 +72,7 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				</div>
-			</div>
-		</div>
+				
 				<div class="paginator">
 					<ul class="pagination">
 						<?= $this->Paginator->prev('< ' . __('previous')) ?>
@@ -80,8 +80,9 @@
 						<?= $this->Paginator->next(__('next') . ' >') ?>
 					</ul>
 					<p><?= $this->Paginator->counter() ?></p>
-				</div>
-			</div>
-		</div>
-	
+				 </div>
+            </div>
+        </div>
+    </div>
+</div>
 

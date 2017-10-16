@@ -276,7 +276,7 @@ if(!empty($copy))
 								</div>
 							</td>
 							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','max'=>@$quotation_rows->quantity-$quotation_rows->proceed_qty,'placeholder'=>'Quantity','value' => @$quotation_rows->quantity-$quotation_rows->proceed_qty]); ?></td>
-							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q]); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm rate','placeholder'=>'Rate','min'=>'0.01','value' => @$quotation_rows->rate,'r_popup_id'=>$q]); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$quotation_rows->amount]); ?></td>
 							<td width="110px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount Per','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount','value' => '']); ?></td>
@@ -334,7 +334,7 @@ if(!empty($copy))
 							
 							</td>
 							<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Quantity','value' => @$sales_order_rows->quantity]); ?></td>
-							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm quantity','placeholder'=>'Rate','value' => @$sales_order_rows->rate,'r_popup_id'=>$q]); ?></td>
+							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type'=>'text','label' => false,'class' => 'form-control input-sm rate','placeholder'=>'Rate','value' => @$sales_order_rows->rate,'r_popup_id'=>$q]); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Amount','value' => @$sales_order_rows->amount]); ?></td>
 							<td width="110px;"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount_per', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount Per','value' => '']); ?></td>
 							<td width="200Px"><?php echo $this->Form->input('sales_order_rows.'.$q.'.discount', ['type'=>'text','label' => false,'class' => 'form-control input-sm','placeholder'=>'Discount','value' => '']); ?></td>
@@ -571,7 +571,7 @@ if(!empty($copy))
 				</div>
 			</td>
 			<td width="100"><?php echo $this->Form->input('unit[]', ['type' => 'type','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity']); ?></td>
-			<td width="150px"><?php echo $this->Form->input('rate[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Rate','step'=>"0.01"]); ?>
+			<td width="150px"><?php echo $this->Form->input('rate[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate','step'=>"0.01"]); ?>
 			</td>
 			<td width="100"><?php echo $this->Form->input('amount[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount']); ?></td>
 			<td width="100"><?php 
@@ -882,8 +882,7 @@ $(document).ready(function() {
 					
 			$(this).find("td:nth-child(4) input").attr({name:"sales_order_rows["+i+"][rate]", id:"sales_order_rows-"+i+"-rate",r_popup_id:i}).rules('add', {
 						required: true,
-						number: true,
-						min: 0.01
+						number: true
 					});
 			$(this).find("td:nth-child(5) input").attr({name:"sales_order_rows["+i+"][amount]", id:"sales_order_rows-"+i+"-amount"}).rules("add", "required");
 			$(this).find("td:nth-child(6) input").attr({name:"sales_order_rows["+i+"][discount_per]", id:"sales_order_rows-"+i+"-discount_per"}).rules("required");
@@ -1276,11 +1275,47 @@ $(document).ready(function() {
 		}
 	});
 	
+	
 	$("select.item_box").die().live("change",function(){ 
 		var popup_id=$(this).attr('popup_id');
 		var item_id=$(this).val();
-		last_three_rates(popup_id,item_id);
-	})
+		var obj = $(this);
+		var row_no = $(this).closest('tr.tr1');
+		var values= row_no.find('.rate').val();
+		if(values){
+			row_no.find('.rate').val('');
+		}else{
+			row_no.find('.rate').val('');
+		}
+		//row_no.find('.rate').attr({ min:response}).rules('remove');
+		
+		//row_no.find('.rate');
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
+		if(item_id){
+			url=url+'/'+item_id,
+			$.ajax({
+				url: url
+			}).done(function(response) {
+				var values = parseFloat(response);
+					row_no.find('.rate').attr({ min:values}).rules('add', {
+							required:true,
+							min: values,
+							messages: {
+							min: "Minimum selling price : "+values
+						}
+						});
+			});
+		}else{
+			$(this).val();
+		}
+		//last_three_rates(popup_id,item_id);
+	});
+	
+	
+	
+	
+	
 	
 	function last_three_rates_onload(popup_id,item_id){
 		
@@ -1288,19 +1323,19 @@ $(document).ready(function() {
 			//$('.modal[popup_div_id='+popup_id+']').show();
 			$('div[popup_ajax_id='+popup_id+']').html('<div align="center"><?php echo $this->Html->image('/img/wait.gif', ['alt' => 'wait']); ?> Loading</div>');
 			if(customer_id){
-				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'RecentRecords']); ?>";
+				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
 				url=url+'/'+item_id+'/'+customer_id,
 				$.ajax({
-					url: url,
-					dataType: 'json',
+					url: url
 				}).done(function(response) {
-					$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-						min: response.minimum_selling_price,
+					var values = parseFloat(response);
+					$('input[r_popup_id='+popup_id+']').attr({ min:values}).rules('add', {
+						min: values,
 						messages: {
-							min: "Enter value greater than minimum selling price "+response.minimum_selling_price
+							min: "Minimum selling price "+values
 						}
 					});
-					$('div[popup_ajax_id='+popup_id+']').html(response.html);
+					$('div[popup_ajax_id='+popup_id+']').html(values.html);
 				});
 			}else{
 				$('div[popup_ajax_id='+popup_id+']').html('Select customer first.');
@@ -1318,23 +1353,17 @@ $(document).ready(function() {
 					url: url,
 					dataType: 'json',
 				}).done(function(response) {
-					if(response.minimum_selling_price>0){
-						$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-							min: response.minimum_selling_price,
+					var values = parseFloat(response);
+					
+					if(values>0){
+						$('input[r_popup_id='+popup_id+']').attr({ min:values}).rules('add', {
+							min: values,
 							messages: {
-								min: "Minimum selling price: "+response.minimum_selling_price
+								min: "Minimum selling price: "+values
 							}
 						});
 					}
-					else{
-						$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-							min: 0.01,
-							messages: {
-								min: "Rate Can't be 0 "
-							}
-						});
-						
-					}
+					
 					$('div[popup_ajax_id='+popup_id+']').html(response.html);
 				});
 			}else{

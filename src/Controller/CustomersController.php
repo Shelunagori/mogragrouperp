@@ -296,6 +296,7 @@ class CustomersController extends AppController
 			$range_data['tdate']=$this->request->data['to'];
 			$to=json_encode($range_data);  
 			$this->redirect(['controller'=>'Vendors','action' => 'OverDueReport/'.$to.'']);
+			//$this->redirect(['controller'=>'Vendors','action' => 'exportExcel/'.$to.'']);
 		 }
 		}
 		if($request == 'customer'){
@@ -312,12 +313,300 @@ class CustomersController extends AppController
 			
 		$to=json_encode($range_data);  
 		$this->redirect(['controller'=>'Customers','action' => 'OverDueReport/'.$to.'']);
+		//$this->redirect(['controller'=>'Customers','action' => 'exportExcel/'.$to.'']);
 		 }
 		}
 	}
 	
+	public function exportExcel($to_send = null){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$show_data = $this->request->query('total');
+		$stock=$this->request->query('total');
+		
+		$to_range_datas =json_decode($to_send);
+		
+		$LedgerAccounts =$this->Customers->LedgerAccounts->find()
+			->where(['LedgerAccounts.company_id'=>$st_company_id,'source_model'=>'Customers'])
+			->order(['LedgerAccounts.name'=>'ASC']);
+		$custmer_payment_terms=[];
+		foreach($LedgerAccounts as $LedgerAccount){
+			$Customer =$this->Customers->get($LedgerAccount->source_id);
+			$custmer_payment_terms[$LedgerAccount->id]=$Customer->payment_terms;
+		}
+		 
+		 
+		$ReferenceDetails =$this->Customers->ReferenceDetails->find();
+
+		 foreach($ReferenceDetails as $ReferenceDetail){
+			 if($ReferenceDetail->invoice_id !=0){ 
+				$Receipt =$this->Customers->Invoices->get($ReferenceDetail->invoice_id);
+				$Customer =$this->Customers->get($Receipt->customer_id);
+				$date = date("Y-m-d", strtotime($Receipt->date_created));
+				$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+				$query = $this->Customers->ReferenceBalances->query();
+				$query->update()
+						->set(['transaction_date' =>$date,'due_date'=>$due_date])
+						->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+						->execute();
+			}else if($ReferenceDetail->receipt_id !=0){ 
+				$Receipt =$this->Customers->Receipts->get($ReferenceDetail->receipt_id);
+				
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+				$Customer =$this->Customers->get($LedgerAccount->source_id);
+				$date = date("Y-m-d", strtotime($Receipt->created_on));
+				$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+				$query = $this->Customers->ReferenceBalances->query();
+				$query->update()
+						->set(['transaction_date' =>$date,'due_date'=>$due_date])
+						->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+						->execute();
+				}
+			}else if($ReferenceDetail->payment_id !=0){ 
+				$Receipt =$this->Customers->Payments->get($ReferenceDetail->payment_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+				$Customer =$this->Customers->get($LedgerAccount->source_id);
+				$date = date("Y-m-d", strtotime($Receipt->created_on));
+				$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+				$query = $this->Customers->ReferenceBalances->query();
+				$query->update()
+						->set(['transaction_date' =>$date,'due_date'=>$due_date])
+						->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+						->execute();
+				}
+			}
+			else if($ReferenceDetail->journal_voucher_id !=0){ 
+				$Receipt =$this->Customers->JournalVouchers->get($ReferenceDetail->journal_voucher_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}
+			else if($ReferenceDetail->sale_return_id !=0){ 
+				$Receipt =$this->Customers->SaleReturns->get($ReferenceDetail->sale_return_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->date_created));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}
+			else if($ReferenceDetail->petty_cash_voucher_id !=0){ 
+				$Receipt =$this->Customers->PettyCashVouchers->get($ReferenceDetail->petty_cash_voucher_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->nppayment_id !=0){ 
+				$Receipt =$this->Customers->Nppayments->get($ReferenceDetail->nppayment_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->contra_voucher_id !=0){ 
+				$Receipt =$this->Customers->ContraVouchers->get($ReferenceDetail->contra_voucher_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->debit_note_id !=0){ 
+				$Receipt =$this->Customers->DebitNotes->get($ReferenceDetail->debit_note_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->credit_note_id !=0){ 
+				$Receipt =$this->Customers->CreditNotes->get($ReferenceDetail->credit_note_id);
+				$LedgerAccount =$this->Customers->LedgerAccounts->get($ReferenceDetail->ledger_account_id);
+				if($LedgerAccount->source_model=='Customers'){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = date("Y-m-d", strtotime($Receipt->created_on));
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}else if($ReferenceDetail->receipt_id ==0 && $ReferenceDetail->payment_id ==0 &&	$ReferenceDetail->invoice_id == 0 && $ReferenceDetail->invoice_booking_id ==0 &&$ReferenceDetail->credit_note_id ==0 && $ReferenceDetail->journal_voucher_id ==0 &&	$ReferenceDetail->sale_return_id ==0 && $ReferenceDetail->purchase_return_id ==0 && $ReferenceDetail->petty_cash_voucher_id ==0 && $ReferenceDetail->nppayment_id ==0 &&$ReferenceDetail->contra_voucher_id ==0){ 
+				//$Receipt =$this->Customers->CreditNotes->get($ReferenceDetail->credit_note_id);
+				
+				@$LedgerAccount =$this->Customers->LedgerAccounts->get(@$ReferenceDetail->ledger_account_id);
+				
+				if($LedgerAccount->source_model=='Customers' && $LedgerAccount->source_id !=0){
+					$Customer =$this->Customers->get($LedgerAccount->source_id);
+					$date = '2017-04-01';
+					$due_date= date("Y-m-d",strtotime("+".$Customer->payment_terms."  day", strtotime($date)));
+					$query = $this->Customers->ReferenceBalances->query();
+					$query->update()
+							->set(['transaction_date' =>$date,'due_date'=>$due_date])
+							->where(['ledger_account_id' => $ReferenceDetail->ledger_account_id,'reference_no'=>$ReferenceDetail->reference_no])
+							->execute();
+				}
+			}
+		}
+		$ReferenceBalances =$this->Customers->ReferenceBalances->find()->where(['due_date !='=>'0000-00-00']);
+		
+		$total_debit_1=[];$total_credit_1=[];$due_1=[];
+		$total_debit_2=[];$total_credit_2=[];$due_2=[];
+		$total_debit_3=[];$total_credit_3=[];$due_3=[];
+		$total_debit_4=[];$total_credit_4=[];$due_4=[];	
+		$total_debit_5=[];$total_credit_5=[];$due_5=[];	
+		$total_debit_6=[];$total_credit_6=[];$due_6=[];	
+		$a=0;
+		$on_account_dr=[];
+		$on_account_cr=[];
+		
+		foreach($ReferenceBalances as $ReferenceBalance){
+				$now=Date::now();
+				$now=date("Y-m-d",strtotime($now));
+				
+				$over_date1=date("Y-m-d",strtotime($to_range_datas->tdate));
+				$over_date2=date("Y-m-d",strtotime("-".$to_range_datas->range1."  day", strtotime($over_date1)));
+				$over_date3=date("Y-m-d",strtotime("-".$to_range_datas->range2."  day", strtotime($over_date1)));
+				$over_date4=date("Y-m-d",strtotime("-".$to_range_datas->range3."  day", strtotime($over_date1)));
+				$over_date5=date("Y-m-d",strtotime("-".$to_range_datas->range4."  day", strtotime($over_date1)));
+				$over_date6=date("Y-m-d",strtotime("-".$to_range_datas->range5."  day", strtotime($over_date1)));
+				$over_date7=date("Y-m-d",strtotime("-".$to_range_datas->range6."  day", strtotime($over_date1)));
+				$over_date8=date("Y-m-d",strtotime("-".$to_range_datas->range7."  day", strtotime($over_date1)));
+				
+				$ReferenceBalance->due_date=date("Y-m-d",strtotime($ReferenceBalance->due_date));
+			
+				if($ReferenceBalance->due_date <= $over_date1 && $ReferenceBalance->due_date >=  $over_date2){
+					
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){
+							//pr($over_date1);
+							//pr($over_date2); exit;
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){ 
+								@$total_debit_1[$ReferenceBalance->ledger_account_id]+=@$ReferenceBalance->debit-@$ReferenceBalance->credit;
+						
+							}else{ 
+								$total_credit_1[$ReferenceBalance->ledger_account_id]=@$total_credit_1[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+					} 
+				}
+				else if($ReferenceBalance->due_date <= $over_date3 && $ReferenceBalance->due_date >=  $over_date4){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_2[$ReferenceBalance->ledger_account_id]=@$total_debit_2[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_2[$ReferenceBalance->ledger_account_id]=@$total_credit_2[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+						
+				}	
+				else if($ReferenceBalance->due_date <= $over_date5 && $ReferenceBalance->due_date >=  $over_date6){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_3[$ReferenceBalance->ledger_account_id]=@$total_debit_3[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_3[$ReferenceBalance->ledger_account_id]=@$total_credit_3[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+						
+				}
+				else if($ReferenceBalance->due_date <= $over_date7 && $ReferenceBalance->due_date >=  $over_date8){ 
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_4[$ReferenceBalance->ledger_account_id]=@$total_debit_4[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_4[$ReferenceBalance->ledger_account_id]=@$total_credit_4[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+						
+				}else if($ReferenceBalance->due_date <  $over_date8){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit && $ReferenceBalance->due_date){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_5[$ReferenceBalance->ledger_account_id]=@$total_debit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_5[$ReferenceBalance->ledger_account_id]=@$total_credit_5[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+				}else if($ReferenceBalance->due_date > $over_date1){
+					if($ReferenceBalance->debit != $ReferenceBalance->credit){	
+							if($ReferenceBalance->debit > $ReferenceBalance->credit){
+								$total_debit_6[$ReferenceBalance->ledger_account_id]=@$total_debit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->debit-$ReferenceBalance->credit);
+							}else{
+								$total_credit_6[$ReferenceBalance->ledger_account_id]=@$total_credit_6[@$ReferenceBalance->ledger_account_id]+($ReferenceBalance->credit-$ReferenceBalance->debit);
+							}
+						}
+				}
+				$ref_amt = $this->Customers->Ledgers->find()->where(['Ledgers.ledger_account_id'=>$ReferenceBalance->ledger_account_id]);
+				$ref_amt->select([
+					'Debit' => $ref_amt->func()->sum('Debit'),
+					'Credit' => $ref_amt->func()->sum('Credit')
+				]);
+				$ref_amt=@$ref_amt->first(); 
+				$ledger_debit[$ReferenceBalance->ledger_account_id]=$ref_amt['Debit'];
+				$ledger_credit[$ReferenceBalance->ledger_account_id]=$ref_amt['Credit'];
+				
+				$ref_amt1 = $this->Customers->ReferenceBalances->find()->where(['ReferenceBalances.ledger_account_id'=>$ReferenceBalance->ledger_account_id]);
+				$ref_amt1->select([
+					'debit' => $ref_amt1->func()->sum('debit'),
+					'credit' => $ref_amt1->func()->sum('credit')
+				]);
+				$ref_amt1=@$ref_amt1->first(); 
+				$ref_bal_debit[$ReferenceBalance->ledger_account_id]=$ref_amt1['debit'];
+				$ref_bal_credit[$ReferenceBalance->ledger_account_id]=$ref_amt1['credit'];
+				
+				/* $ledger=$this->Customers->Ledgers->find()->where(['ledger_account_id'=>$ReferenceBalance->ledger_account_id,'ref_no'=>$ReferenceBalance->reference_no])->first();
+				pr(@$ledger->debit);
+				pr(@$ledger->ledger_account_id); */
+			}
+			
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock','over_date1','url','to_send'));
+        $this->set('_serialize', ['customers']);
+	}
+	
+	
 	public function OverDueReport($to_send = null)
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('report_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -596,7 +885,7 @@ class CustomersController extends AppController
 				
 			}
 			
-        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock','over_date1'));
+        $this->set(compact('LedgerAccounts','Ledgers','over_due_report','custmer_name','custmer_payment','custmer_alise','custmer_payment_ctp','custmer_payment_range_ctp','over_due_report1','total_overdue','to_range_datas','total_debit_1','total_credit_1','total_debit_2','total_credit_2','total_debit_3','total_credit_4','total_debit_4','total_credit_4','total_debit_5','total_credit_5','total_debit_6','total_credit_6','custmer_payment_terms','ledger_debit','ledger_credit','ref_bal_debit','ref_bal_credit','show_data','stock','over_date1','url','to_send'));
         $this->set('_serialize', ['customers']);
 
    

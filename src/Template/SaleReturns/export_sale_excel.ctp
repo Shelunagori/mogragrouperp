@@ -1,52 +1,27 @@
-<?php $url_excel="/?".$url; ?>
-<div class="portlet light bordered">
-	<div class="portlet-title">
-		<div class="caption">
-			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Sales Return Report</span>
-		</div>
-		<div class="actions">
-			<?php $today =date('d-m-Y'); echo $this->Html->link('<i class="fa fa-puzzle-piece"></i> Sales Report',array('controller'=>'Invoices','action'=>'salesReport','From'=>$today,'To'=>$today),array('escape'=>false,'class'=>'btn btn-default')); ?>
-			<?php echo $this->Html->link('Sales Return Report','/SaleReturns/salesReturnReport',array('escape'=>false,'class'=>'btn btn-primary')); ?>
-			<?php echo $this->Html->link('Purchase Report','/InvoiceBookings/purchaseReport',array('escape'=>false,'class'=>'btn btn-default')); ?>
-			<?php echo $this->Html->link('Purchase Return Report','/PurchaseReturns/purchaseReturnReport',array('escape'=>false,'class'=>'btn btn-default')); ?>
-		</div>
-	<div class="portlet-body form">
-		<form method="GET" >
-			<table class="table table-condensed" width="50%">
-				<tbody>
+<?php 
+
+	$date= date("d-m-Y"); 
+	$time=date('h:i:a',time());
+
+	$filename="Sales_Return_report_".$date.'_'.$time;
+
+	header ("Expires: 0");
+	header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
+	header ("Cache-Control: no-cache, must-revalidate");
+	header ("Pragma: no-cache");
+	header ("Content-type: application/vnd.ms-excel");
+	header ("Content-Disposition: attachment; filename=".$filename.".xls");
+	header ("Content-Description: Generated Report" );
+
+?>			
+				<table border="1">
+					<thead>
 					<tr>
-						<td width="2%">
-						<?php if(!empty($From)){ ?>
-							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo @$From; ?>"  data-date-format="dd-mm-yyyy" >
-						<?php }else { ?>
-							<input type="text" name="From" class="form-control input-sm date-picker" placeholder="Transaction From" value="<?php echo date('1-m-Y'); ?>"  data-date-format="dd-mm-yyyy" >
-						<?php } ?>
-						</td>	
-						<td width="2%">
-						<?php if(!empty($To)){ ?>
-							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo @$To; ?>"  data-date-format="dd-mm-yyyy" >
-						<?php }else { ?>	
-							<input type="text" name="To" class="form-control input-sm date-picker" placeholder="Transaction To" value="<?php echo date('d-m-Y'); ?>"  data-date-format="dd-mm-yyyy" >
-						<?php } ?>	
-						</td>
-						<td width="10%">
-							<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-						</td>
-						<td width="8%" align='right'>
-							<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/SaleReturns/Export-Sale-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
+						<td colspan="11" align="center">
+						<b> Sales Return Report
+						<?php if(!empty($From) || !empty($To)){ echo date('d-m-Y',strtotime($From)); ?> TO <?php echo date('d-m-Y',strtotime($To));} ?> </b>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		</form>
-		<!-- BEGIN FORM-->
-		<div class="row ">
-			<div class="col-md-12">
-		
-			<?php $page_no=$this->Paginator->current('Ledgers'); $page_no=($page_no-1)*20; ?>
-			<table class="table table-bordered table-striped table-hover">
-				<thead>
 					<tr>
 						<th>Sr.No.</th>
 						<th>Invoice No</th>
@@ -61,10 +36,10 @@
 						<th style="text-align:right;">Sale NIL Tax</th>
 					</tr>
 				</thead>
-				<tbody><?php $sales5=0; $vat5=0; $sales14=0; $vat14=0; $sales2=0; $vat2=0; $sales0=0; ?>
+				<tbody><?php $i=1; $sales5=0; $vat5=0; $sales14=0; $vat14=0; $sales2=0; $vat2=0; $sales0=0; ?>
 				<?php foreach ($SaleReturns as $SaleReturn): ?>
 					<tr>
-						<td><?= h(++$page_no) ?></td>
+						<td><?= h($i++) ?></td>
 						<td><?= h(($SaleReturn->sr1.'/IN-'.str_pad($SaleReturn->sr2, 3, '0', STR_PAD_LEFT).'/'.$SaleReturn->sr3.'/'.$SaleReturn->sr4)) ?></td>
 						<td><?php echo date("d-m-Y",strtotime($SaleReturn->date_created)); ?></td>
 						<td><?= h($SaleReturn->customer->customer_name) ?></td>
@@ -127,14 +102,3 @@
 				</tr>
 				</tbody>
 			</table>
-		</div>
-		
-	</div>
-	</div>
-	</div>
-		
-	</div>
-		<!-- END FORM-->
-</div>
-
-</div>

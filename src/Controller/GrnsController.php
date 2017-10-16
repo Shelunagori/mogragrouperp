@@ -19,7 +19,8 @@ class GrnsController extends AppController
     public function index($status=null)
     {
 		$this->viewBuilder()->layout('index_layout');
-		
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
         $this->paginate = [
@@ -63,9 +64,57 @@ class GrnsController extends AppController
 		}
 		
 		$grns = $this->paginate($this->Grns->find()->where($where)->where($where1)->where(['Grns.company_id'=>$st_company_id])->order(['Grns.id' => 'DESC']));
-        $this->set(compact('grns','pull_request','status','grn_pull_request'));
+        $this->set(compact('grns','pull_request','status','grn_pull_request','url'));
         $this->set('_serialize', ['grns']);
     }
+	
+	public function exportExcel($status=null){
+		$this->viewBuilder()->layout('');
+		
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+        
+		$pull_request=$this->request->query('pull-request');
+		$grn_pull_request=$this->request->query('grn-pull-request');
+		
+		$where1=[];
+		$grn_no=$this->request->query('grn_no');
+		$po_no=$this->request->query('po_no');
+		$vendor=$this->request->query('vendor');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('grn_no','vendor','From','po_no','To','grn_pull_request','pull_request'));
+		if(!empty($grn_no)){
+			//pr($grn_no); exit;
+			$where1['grn2 LIKE']=$grn_no;
+		}
+		if(!empty($po_no)){
+			$where1['PurchaseOrders.po2 LIKE']='%'.$po_no.'%';
+		}
+		
+		if(!empty($vendor)){
+			$where1['Vendors.company_name LIKE']='%'.$vendor.'%';
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where1['Grns.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where1['Grns.date_created <=']=$To;
+		}
+      
+		$where=[];
+		if($status=='Pending'){
+			$where['status']='Pending';
+		}elseif($status=='Invoice-Booked'){
+			$where['status']='Invoice-Booked';
+		}
+		
+		$grns = $this->Grns->find()->where($where)->where($where1)->where(['Grns.company_id'=>$st_company_id])->order(['Grns.id' => 'DESC'])->contain(['PurchaseOrders', 'Companies','Vendors']);
+        $this->set(compact('grns','pull_request','status','grn_pull_request'));
+        $this->set('_serialize', ['grns']);
+	}
 
     /**
      * View method

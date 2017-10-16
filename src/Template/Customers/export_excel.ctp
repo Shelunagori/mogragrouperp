@@ -1,62 +1,44 @@
-<?php $url_excel="/?".$url; ?>
-<div class="portlet light bordered">
-	<div class="portlet-title">
-		<div class="caption">
-			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Overdues For CUSTOMERS</span>
-		</div>
-		<div class="actions">
-			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Customers/Export-Excel/'.$to_send.' '.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
-		</div>
-		
-					<form method="GET" >
-						<table class="table table-condensed">
-							<tbody>
-								<tr>
-									<td width="12%">
-										<?php 
-											$options = [];
-											$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
-										echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?>
-									</td>
-									<td width="15%">
-										<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-									</td>
-									<td width="25%">
-										<input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 30%;">
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</form>
-			
-		<?php 
-		    if($stock=="" || empty($stock))
-			{
-		?>
-	
-			<?php } ?>
-	<div class="portlet-body">
-	 
-		<div class="table-scrollable">
-			<table  style="font-size:11px;" class="table table-bordered table-striped" id="main_tble">
-				 <thead>
-					<tr>
-						<th>SN.</th>
-						<th>Customer Name</th>
-						<th style="text-align:center">Payment Terms</th>
-						<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?> Days</th>
-						<th style="text-align:center"><?php echo $to_range_datas->range2.'-'.$to_range_datas->range3?> Days</th>
-						<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?> Days</th>
-						<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?>Days</th>
-						<th style="text-align:center">Days > <?php echo $to_range_datas->range7?></th>
-						<th>On Account</th>
-						<th style="text-align: center;">Total Over-Due</th>
-						<th style="text-align: center;">No-Due</th>
-						<th style="text-align: center;">Close Bal</th>
-					</tr>
-				</thead>
-				<tbody>
+<?php 
+
+	$date= date("d-m-Y"); 
+	$time=date('h:i:a',time());
+
+	$filename="Overdue_Report_Customers".$date.'_'.$time;
+
+	header ("Expires: 0");
+	header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
+	header ("Cache-Control: no-cache, must-revalidate");
+	header ("Pragma: no-cache");
+	header ("Content-type: application/vnd.ms-excel");
+	header ("Content-Disposition: attachment; filename=".$filename.".xls");
+	header ("Content-Description: Generated Report" );
+
+?>
+<table border="1">
+	<thead>
+		<thead>
+		<tr>
+			<td colspan="12" align="center">
+				Overdue Report For Customers
+				
+			</td>
+		</tr>
+			<tr>
+				<th>SN.</th>
+				<th>Customer Name</th>
+				<th style="text-align:center">Payment Terms</th>
+				<th style="text-align:center"><?php echo $to_range_datas->range0.'-'.$to_range_datas->range1?> Days</th>
+				<th style="text-align:center"><?php echo $to_range_datas->range2.'-'.$to_range_datas->range3?> Days</th>
+				<th style="text-align:center"><?php echo $to_range_datas->range4.'-'.$to_range_datas->range5?> Days</th>
+				<th style="text-align:center"><?php echo $to_range_datas->range6.'-'.$to_range_datas->range7?>Days</th>
+				<th style="text-align:center">Days > <?php echo $to_range_datas->range7?></th>
+				<th>On Account</th>
+				<th style="text-align: center;">Total Over-Due</th>
+				<th style="text-align: center;">No-Due</th>
+				<th style="text-align: center;">Close Bal</th>
+			</tr>
+		</thead>
+		<tbody>
 					<?php  $page_no=0; $total_over_due_amount=0; $total_due_amount=0;					$total_closing_amount=0;
 					foreach ($LedgerAccounts as $LedgerAccount){
 						@$hide ="style='display:;'";
@@ -164,8 +146,7 @@
 							<?= h($page_no) ?>
 						</td>
 						<td>
-							<?php echo  $this->Html->link( $LedgerAccount->name." (". $LedgerAccount->alias.")",[
-							'controller'=>'Ledgers','action' => 'AccountStatementRefrence?status=completed&ledgerid='.$LedgerAccount->id],array('target'=>'_blank')); 
+							<?php echo   $LedgerAccount->name." (". $LedgerAccount->alias.")"; 
 							?>
 						</td>
 						<td>
@@ -266,28 +247,3 @@
 				</tr>
 				</tfoot>
 			</table>
-		</div>
-		</div>
-	</div>
-</div>
-<?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
-<script>
-$(document).ready(function() {
-var $rows = $('#main_tble tbody tr');
-	$('#search3').on('keyup',function() {
-	
-			var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-    		var v = $(this).val();
-    		if(v){ 
-    			$rows.show().filter(function() {
-    				var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-		
-    				return !~text.indexOf(val);
-    			}).hide();
-    		}else{
-    			$rows.show();
-    		}
-    	});
-});
-		
-</script>

@@ -999,7 +999,7 @@ class SalesOrdersController extends AppController
         $salesOrder = $this->SalesOrders->get($id, [
             'contain' => ['Quotations'=>['QuotationRows'],'SalesOrderRows' => ['Items','JobCardRows'],'Invoices' => ['InvoiceRows']]
         ]);
-		//pr($salesOrder->quotation->quotation_rows);
+		//pr($salesOrder); exit;
 		$qt_data=[];
 		$qt_data1=[];
 		

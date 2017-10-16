@@ -1,3 +1,4 @@
+ <?php $url_excel="/?".$url; ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
@@ -14,17 +15,18 @@
 			?>
 			<?= $this->Html->link(
 					'Open',
-					'/MaterialIndents/index/Open',
+					'/MaterialIndents/index?status=Open',
 					['class' => $class1]
 				); ?>
 			<?= $this->Html->link(
 					'Close',
-					'/MaterialIndents/index/Close',
+					'/MaterialIndents/index?status=Close',
 					['class' => $class2 ]
 				); ?>
 				
 			
 			</div>
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/MaterialIndents/Excel-Export/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
 				 <form method="GET" >
 				<input type="hidden" name="pull-request" value="<?php echo @$pull_request; ?>">
@@ -54,14 +56,14 @@
 				</form>
 <?php $page_no=$this->Paginator->current('MaterialIndentS'); $page_no=($page_no-1)*20; ?>
 	<table class="table table-bordered table-striped table-hover">
-		<tbody>
+		<thead>
 				<tr>
 				<td style="font-size:120%;">Sr.No.</td>
 				<td style="font-size:120%;">Material Indent No</td>
 				<td style="font-size:120%;">Created on</td>
 				<td style="font-size:120%;">Action</td>
 				</tr>
-		</tbody>
+		</thead>
         <tbody>
             <?php  foreach($materialIndents as $materialIndent): 
 			//pr($materialIndent->material_indent_rows);

@@ -1,38 +1,28 @@
-<?php $url_excel="/?".$url; ?>
-<div class="portlet light bordered">
-	<div class="portlet-title">
-		<div class="caption">
-			<i class="icon-globe font-blue-steel"></i>
-			<span class="caption-subject font-blue-steel uppercase">Overdues For Suppliers</span>
-		</div>
-		<div class="actions">
-			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/Vendors/Export-Excel/'.$to_send.' '.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
-		</div>
-	</div>
-	<form method="GET" >
-		<table width="100%">
-			<tbody>
-				<tr>
-					<td width="15%">
-							<?php 
-								$options = [];
-								$options = [['text'=>'Zero','value'=>'Zero'],['text'=>'Negative','value'=>'Negative'],['text'=>'Positive','value'=>'Positive']];
-							echo $this->Form->input('total', ['empty'=>'--Select--','options' => $options,'label' => false,'class' => 'form-control input-sm select2me','placeholder'=>'Sub-Group','value'=> h(@$stock)]); ?>
-						</td>
-						<td><button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filter</button>
-						</td>
-					   <td align="right"width="15%"><input type="text" class="form-control input-sm pull-right" placeholder="Search..." id="search3"  style="width: 100%;"></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-	
-	<div class="portlet-body">
-	 
-		<div class="table-scrollable">
-			<table style="font-size:11px;" class="table table-bordered table-striped" id="main_tble">
-				 <thead>
-					<tr>
+<?php 
+
+	$date= date("d-m-Y"); 
+	$time=date('h:i:a',time());
+
+	$filename="Overdue_Report_For_Vendors_".$date.'_'.$time;
+
+	header ("Expires: 0");
+	header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
+	header ("Cache-Control: no-cache, must-revalidate");
+	header ("Pragma: no-cache");
+	header ("Content-type: application/vnd.ms-excel");
+	header ("Content-Disposition: attachment; filename=".$filename.".xls");
+	header ("Content-Description: Generated Report" );
+
+?>
+<table border="1">
+	<thead>
+		<tr>
+			<td colspan="12" align="center">
+				Overdue Report For Vendors
+				
+			</td>
+		</tr>
+		<tr>
 						<th>Sr. No.</th>
 						<th>Suppliers Name</th>
 						<th style="text-align:center">Payment Terms</th>
@@ -145,8 +135,7 @@
 					<tr <?php echo @$hide; ?>>
 						<td><?= h($page_no) ?></td>
 						<td>
-							<?php echo  $this->Html->link( $LedgerAccount->name,[
-							'controller'=>'Ledgers','action' => 'AccountStatementRefrence?status=completed&ledgerid='.$LedgerAccount->id],array('target'=>'_blank')); 
+							<?php echo  $LedgerAccount->name ; 
 							?>
 							
 						</td>
@@ -222,29 +211,3 @@
 				</tr>
 				</tfoot>
 			</table>
-		</div>
-		
-	</div>
-</div>
-
-<?php echo $this->Html->script('/assets/global/plugins/jquery.min.js'); ?>
-<script>
-$(document).ready(function() {
-var $rows = $('#main_tble tbody tr');
-	$('#search3').on('keyup',function() {
-	
-			var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-    		var v = $(this).val();
-    		if(v){ 
-    			$rows.show().filter(function() {
-    				var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-		
-    				return !~text.indexOf(val);
-    			}).hide();
-    		}else{
-    			$rows.show();
-    		}
-    	});
-});
-		
-</script>

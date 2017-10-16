@@ -114,8 +114,8 @@ class JobCardsController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		
-		
-		if($status==null or $status=='Pending'){
+		$where=[];
+		if($status=='Pending'){
 			$where['status']='Pending';
 		}elseif($status=='Closed'){
 			$where['status']='Closed';
@@ -171,33 +171,10 @@ class JobCardsController extends AppController
 		}
 		//pr($inventory_voucher_status); exit;
         
-		if(!empty($items)){ 
 		
-			$jobCards=$this->JobCards->find()
-			->contain(['SalesOrders','JobCardRows'=>['Items']])
-			->matching(
-					'JobCardRows.Items', function ($q) use($items) {
-						return $q->where(['Items.id' =>$items]);
-					}
-				)
-			->where(['JobCards.company_id'=>$st_company_id])
-			->where($where)
-			->order(['JobCards.jc2' => 'DESC']);
-			
-		}else if($inventory_voucher_status=='true'){
-			$jobCards = $this->JobCards->find()->contain(['SalesOrders','JobCardRows'=>['Items']])->where($where)->where($where1)->where(['status' => 'Pending','JobCards.company_id'=>$st_company_id]);
-		}else if(!empty($customer_id)){
-			$jobCards = $this->JobCards->find()->contain(['SalesOrders'=>['Customers'],'JobCardRows'=>['Items']])
-			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC'])
-			->matching(
-					'SalesOrders.Customers', function ($q) use($customer_id) {
-						return $q->where(['Customers.id' =>$customer_id]);
-					}
-				);
-		}else{
 			$jobCards = $this->JobCards->find()->contain(['SalesOrders'=>['Customers'],'JobCardRows'=>['Items']])
 			->where($where)->where($where1)->where(['JobCards.company_id'=>$st_company_id])->order(['JobCards.jc2' => 'DESC']);
-		}
+	
 		
 		$Customers = $this->JobCards->Customers->find('list')->order(['Customers.customer_name' => 'ASC']);
 		$Items = $this->JobCards->JobCardRows->Items->find('list')->order(['Items.name' => 'ASC']);

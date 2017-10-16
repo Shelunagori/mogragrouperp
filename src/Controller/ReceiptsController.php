@@ -157,11 +157,7 @@ class ReceiptsController extends AppController
 			$where['Receipts.transaction_date <=']=$To;
 		}
 		
-		
-        $this->paginate = [
-            'contain' => []
-        ];
-        $receipts = $this->paginate($this->Receipts->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['ReceiptRows'=>function($q){
+        $receipts = $this->Receipts->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['ReceiptRows'=>function($q){
 			$ReceiptRows = $this->Receipts->ReceiptRows->find();
 			$totalCrCase = $ReceiptRows->newExpr()
 				->addCase(
@@ -182,7 +178,7 @@ class ReceiptsController extends AppController
 				->group('receipt_id')
 				->autoFields(true);
 			
-		}])->order(['transaction_date' => 'DESC']));
+		}])->order(['transaction_date' => 'DESC']);
 		
 		
         $this->set(compact('receipts','From','To'));

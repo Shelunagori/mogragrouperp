@@ -19,6 +19,7 @@
 		<tr>
 			<td colspan="4" align="center">
 				 PettyCash Vouchers Report 
+				 <?php if(!empty($From) || !empty($To)){ echo date('d-m-Y',strtotime($From)); ?> TO <?php echo date('d-m-Y',strtotime($To));} ?>
 			</td>
 		</tr>
 		<tr>

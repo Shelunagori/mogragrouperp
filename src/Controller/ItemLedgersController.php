@@ -615,7 +615,7 @@ class ItemLedgersController extends AppController
 			}
 		}
 	
-		//Stock valuation Start//
+		//Stock valuation Start// disable   fhgdf
 		$stock=[];  $sumValue=[];
 		foreach($Items as $Item){
 			$StockLedgers=$this->ItemLedgers->find()->where(['ItemLedgers.item_id'=>$Item->id,'ItemLedgers.company_id'=>$st_company_id])->order(['ItemLedgers.processed_on'=>'ASC']);
@@ -642,7 +642,7 @@ class ItemLedgersController extends AppController
 				}
 			}
 		}
-		
+		/////fdgdfgdrc disavble
 		
 	$ItemSerialNumbers =$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['ItemSerialNumbers.company_id' => $st_company_id,'ItemSerialNumbers.status'=>"In"]);
 	

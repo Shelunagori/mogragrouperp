@@ -26,9 +26,12 @@ class MaterialIndentsController extends AppController
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		
+		
+		$status=$this->request->query('status');
 		$mi_no=$this->request->query('mi_no');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
+		
 		
 		
 		$this->set(compact('mi_no','From','To'));
@@ -75,8 +78,61 @@ class MaterialIndentsController extends AppController
         $this->set('_serialize', ['materialIndents']);
     }
 	
-	public function excelExport(){
+	public function excelExport($status=null){ 
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
 		
+		
+		$status=$this->request->query('status');
+		$mi_no=$this->request->query('mi_no');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		
+		
+		
+		$this->set(compact('mi_no','From','To'));
+		$where=[];
+		
+		if(!empty($mi_no)){
+			$where['MaterialIndents.mi_number LIKE']=$mi_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['MaterialIndents.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['MaterialIndents.created_on <=']=$To;
+		}
+	
+	 if($status==null or $status=='Open' ){
+			$having=['total_open_rows >' => 0];
+		}elseif($status=='Close'){
+			$having=['total_open_rows =' => 0];
+		}
+	
+	
+	$materialIndents=
+			$this->MaterialIndents->find()->select(['total_open_rows' => 
+				$this->MaterialIndents->find()->func()->count('MaterialIndentRows.id')])
+					->leftJoinWith('MaterialIndentRows', function ($q) {
+						return $q->where(['MaterialIndentRows.required_quantity >MaterialIndentRows.processed_quantity']);
+					})	
+					->group(['MaterialIndents.id'])
+					->autoFields(true)
+					->having($having)
+					->where($where)
+					->where(['company_id'=>$st_company_id])
+					->order(['MaterialIndents.id' => 'DESC'])
+			;
+	 
+		//pr($MaterialIndents); exit;
+	  
+	
+        $this->set(compact('materialIndents','url','status'));
+        $this->set('_serialize', ['materialIndents']);
 	}
 /**
      * View method

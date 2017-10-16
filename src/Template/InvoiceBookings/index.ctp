@@ -1,9 +1,13 @@
+<?php 	$url_excel="/?".$url; ?>
 <div class="portlet light bordered">
 	<div class="portlet-title">
 		<div class="caption">
 			<i class="icon-globe font-blue-steel"></i>
 			<span class="caption-subject font-blue-steel uppercase">Invoice Book</span>
 			<?php if($purchase_return=="true"){ echo " :Select Invoice for Purchase Return"; } ?>
+		</div>
+		<div class="actions">
+			<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/InvoiceBookings/Export-Excel/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 		</div>
 	<div class="portlet-body">
 		<div class="row">

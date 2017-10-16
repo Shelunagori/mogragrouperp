@@ -18,6 +18,9 @@ class SaleReturnsController extends AppController
      */
     public function index()
     {
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$this->viewBuilder()->layout('index_layout');
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
@@ -55,10 +58,51 @@ class SaleReturnsController extends AppController
 		$saleReturns = $this->paginate($this->SaleReturns->find()->where($where)->where(['SaleReturns.company_id'=>$st_company_id])->contain(['Invoices'])->order(['SaleReturns.id' => 'DESC']));
 		//pr($saleReturns); exit;
 
-        $this->set(compact('saleReturns'));
+        $this->set(compact('saleReturns','url'));
         $this->set('_serialize', ['saleReturns']);
     }
 
+	public function exportExcel(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		
+		$where = [];
+		
+		$vouch_no = $this->request->query('vouch_no');
+		$in_no    = $this->request->query('in_no');
+		$From    = $this->request->query('From');
+		$To    = $this->request->query('To');
+		$total    = $this->request->query('total');
+       
+		$this->set(compact('vouch_no','in_no','salesman','From','To','total'));
+		
+		if(!empty($vouch_no)){
+			$where['SaleReturns.sr2 Like']=$vouch_no;
+		}
+		
+		if(!empty($in_no)){
+			$where['SaleReturns.sr3 Like']='%'.$in_no.'%';
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['SaleReturns.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['SaleReturns.date_created <=']=$To;
+		}
+		
+		if(!empty($total)){
+			$where['SaleReturns.total_after_pnf']=$total;
+		}
+		$saleReturns = $this->SaleReturns->find()->where($where)->where(['SaleReturns.company_id'=>$st_company_id])->contain(['Invoices'])->order(['SaleReturns.id' => 'DESC']);
+		//pr($saleReturns); exit;
+
+        $this->set(compact('saleReturns','url'));
+        $this->set('_serialize', ['saleReturns']);
+	}
     /**
      * View method
      *
@@ -950,17 +994,50 @@ class SaleReturnsController extends AppController
 		
 		exit;
 	}
-	public function salesReturnReport(){
+	
+	public function exportSaleExcel(){
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$From=$this->request->query('From');
 		$To=$this->request->query('To');
 		$this->set(compact('From','To'));
 		$where=[];
-		$this->viewBuilder()->layout('index_layout');
-		$SaleReturns = $this->SaleReturns->find()->contain(['SaleReturnRows','Customers'])->order(['SaleReturns.id' => 'DESC'])->where(['SaleReturns.company_id'=>$st_company_id,'sale_return_type'=>'Non-GST']);
+		$where=[];
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['SaleReturns.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['SaleReturns.date_created <=']=$To;
+		}
+		$this->viewBuilder()->layout('');
+		$SaleReturns = $this->SaleReturns->find()->where($where)->contain(['SaleReturnRows','Customers'])->order(['SaleReturns.id' => 'DESC'])->where(['SaleReturns.company_id'=>$st_company_id,'sale_return_type'=>'Non-GST']);
 		//pr($invoices->toArray()); exit;
-		$this->set(compact('SaleReturns'));
+		$this->set(compact('SaleReturns','From','To'));
+	}
+	
+	public function salesReturnReport(){
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		$this->viewBuilder()->layout('index_layout');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$this->set(compact('From','To'));
+		$where=[];
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['SaleReturns.date_created >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['SaleReturns.date_created <=']=$To;
+		}
+		$SaleReturns = $this->SaleReturns->find()->where($where)->contain(['SaleReturnRows','Customers'])->order(['SaleReturns.id' => 'DESC'])->where(['SaleReturns.company_id'=>$st_company_id,'sale_return_type'=>'Non-GST']);
+		//pr($invoices->toArray()); exit;
+		$this->set(compact('SaleReturns','url'));
 	}
 	public function GstSalesAdd(){
 		$this->viewBuilder()->layout('index_layout');

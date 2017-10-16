@@ -41,8 +41,10 @@
 					'/Purchase-Orders/index/Converted-Into-GRN',
 					['class' => $class2]
 				); ?>
+				<?php echo $this->Html->link( '<i class="fa fa-file-excel-o"></i> Excel', '/PurchaseOrders/Excel-Export/'.$url_excel.'',['class' =>'btn  green tooltips','target'=>'_blank','escape'=>false,'data-original-title'=>'Download as excel']); ?>
 			<?php } ?>
 			</div>
+			
 		</div>
 	
 	

@@ -90,12 +90,28 @@ class ContraVouchersController extends AppController
         
         $session = $this->request->session();
         $st_company_id = $session->read('st_company_id');
-        $this->paginate = [
-            'contain' => []
-        ];
         
+        $where = [];
+		$vouch_no = $this->request->query('vouch_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		
+		$this->set(compact('vouch_no','From','To'));
+		
+		if(!empty($vouch_no)){
+			$where['ContraVouchers.voucher_no LIKE']=$vouch_no;
+		}
+		
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['ContraVouchers.transaction_date >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['ContraVouchers.transaction_date <=']=$To;
+		}
         
-        $contravouchers = $this->paginate($this->ContraVouchers->find()->where(['company_id'=>$st_company_id])->contain(['ContraVoucherRows'=>function($q){
+        $contravouchers = $this->ContraVouchers->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['ContraVoucherRows'=>function($q){
             $ContraVoucherRows = $this->ContraVouchers->ContraVoucherRows->find();
             $totalCrCase = $ContraVoucherRows->newExpr()
                 ->addCase(
@@ -117,7 +133,7 @@ class ContraVouchersController extends AppController
                 
                 ->autoFields(true);
             
-        }])->order(['voucher_no'=>'DESC']));
+        }])->order(['voucher_no'=>'DESC']);
         
 
         $this->set(compact('contravouchers','url'));

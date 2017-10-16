@@ -113,13 +113,7 @@ class PaymentsController extends AppController
 		}
 		
 		
-		
-        $this->paginate = [
-            'contain' => []
-        ];
-		
-		
-		$payments = $this->paginate($this->Payments->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['PaymentRows'=>function($q){
+		$payments = $this->Payments->find()->where($where)->where(['company_id'=>$st_company_id])->contain(['PaymentRows'=>function($q){
 			$PaymentRows = $this->Payments->PaymentRows->find();
 			$totalCrCase = $PaymentRows->newExpr()
 				->addCase(
@@ -141,7 +135,7 @@ class PaymentsController extends AppController
 				
 				->autoFields(true);
 			
-		}])->order(['voucher_no'=>'DESC']));
+		}])->order(['voucher_no'=>'DESC']);
 		
 
         $this->set(compact('payments','From','To'));

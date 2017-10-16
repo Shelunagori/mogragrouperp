@@ -84,6 +84,63 @@ class InvoiceBookingsController extends AppController
 		$this->set(compact('url'));
     }
 	
+	public function exportExcel($status=null){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$purchase_return=$this->request->query('purchase-return');
+	    $where = [];
+		$book_no = $this->request->query('book_no');
+		$grn_no = $this->request->query('grn_no');
+		$file = $this->request->query('file');
+		$file_grn_no = $this->request->query('file_grn_no');
+		$in_no = $this->request->query('in_no');
+		$From = $this->request->query('From');
+		$To = $this->request->query('To');
+		$vendor_name = $this->request->query('vendor_name');
+		
+		$this->set(compact('book_no','grn_no','From','To','in_no','file_grn_no','file','vendor_name'));
+		
+		if(!empty($book_no)){
+			$where['InvoiceBookings.ib2 LIKE']=$book_no;
+		}
+		
+		if(!empty($file)){
+			$where['InvoiceBookings.ib3 LIKE']='%'.$file.'%';
+		}
+		
+		if(!empty($grn_no)){ 
+			$where['Grns.grn2 LIKE']=$grn_no;
+		}
+		
+		if(!empty($file_grn_no)){
+			$where['Grns.grn3 LIKE']='%'.$file_grn_no.'%';
+		}
+		
+		if(!empty($in_no)){
+			$where['InvoiceBookings.invoice_no LIKE']='%'.$in_no.'%';
+		}
+		
+		if(!empty($vendor_name)){
+			$where['Vendors.company_name LIKE']='%'.$vendor_name.'%';
+		}
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['InvoiceBookings.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['InvoiceBookings.created_on <=']=$To;
+		}
+		
+			$invoiceBookings = $this->InvoiceBookings->find()->where($where)->where(['InvoiceBookings.company_id'=>$st_company_id])->order(['InvoiceBookings.id' => 'DESC'])->contain(['Grns','Vendors']);
+		
+		//pr($invoiceBookings);exit;
+        $this->set(compact('invoiceBookings','status','purchase_return'));
+        $this->set('_serialize', ['invoiceBookings']);
+		$this->set(compact('url'));
+	}
+	
 	public function Report(){
 		$LedgerAccounts =$this->InvoiceBookings->LedgerAccounts->find()->where(['company_id'=>25]);
 		
@@ -863,7 +920,32 @@ class InvoiceBookingsController extends AppController
 		
 		exit;
 	}
+	public function exportSaleExcel(){
+		$this->viewBuilder()->layout('');
+		$session = $this->request->session();
+		$st_company_id = $session->read('st_company_id');
+		$From=$this->request->query('From');
+		$To=$this->request->query('To');
+		$where=[];
+		$this->set(compact('From','To'));
+		if(!empty($From)){
+			$From=date("Y-m-d",strtotime($this->request->query('From')));
+			$where['InvoiceBookings.created_on >=']=$From;
+		}
+		if(!empty($To)){
+			$To=date("Y-m-d",strtotime($this->request->query('To')));
+			$where['InvoiceBookings.created_on <=']=$To;
+		}
+		
+		
+		$InvoiceBookings = $this->InvoiceBookings->find()->contain(['InvoiceBookingRows','Vendors'])->where($where)->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'no']);
+		//pr($InvoiceBookings->toArray()); exit;
+		$this->set(compact('InvoiceBookings'));
+	}
 	public function purchaseReport(){
+		$url=$this->request->here();
+		$url=parse_url($url,PHP_URL_QUERY);
+		
 		$session = $this->request->session();
 		$st_company_id = $session->read('st_company_id');
 		$From=$this->request->query('From');
@@ -882,7 +964,7 @@ class InvoiceBookingsController extends AppController
 		$this->viewBuilder()->layout('index_layout');
 		$InvoiceBookings = $this->InvoiceBookings->find()->contain(['InvoiceBookingRows','Vendors'])->where($where)->order(['InvoiceBookings.id' => 'DESC'])->where(['InvoiceBookings.company_id'=>$st_company_id,'gst'=>'no']);
 		//pr($InvoiceBookings->toArray()); exit;
-		$this->set(compact('InvoiceBookings'));
+		$this->set(compact('InvoiceBookings','url'));
 	}
 	
 	public function gstInvoiceBooking()

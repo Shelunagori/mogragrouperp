@@ -138,11 +138,13 @@
 					<?php $item_ar=[];
 					foreach ($salesOrder->invoices as $invoice){
 						foreach ($invoice->invoice_rows as $invoice_row){
-							$item_ar[$invoice_row->item_id]=$invoice_row->quantity;
+							@$item_ar[$invoice_row->item_id]+=$invoice_row->quantity;
 						}
 					}
 					$q=0; foreach ($salesOrder->sales_order_rows as $sales_order_rows): 
+					
 					if(@$item_ar[$sales_order_rows->item_id]==$sales_order_rows->quantity){
+						
 						$disable_class="disabledbutton";
 					}else{ $disable_class=""; } 
 					
@@ -201,13 +203,13 @@
 							$max_val='';
 						}?>
 						
-						<?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$sales_order_rows->quantity,'min'=>1,'max'=>$max_val]); ?>
+						<?php echo $this->Form->input('sales_order_rows.'.$q.'.quantity', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity','value'=>$sales_order_rows->quantity,'min'=>$sales_order_rows->processed_quantity,'max'=>$max_val]); ?>
 						<?php 
 						 echo $this->Form->input('sales_order_rows.'.$q.'.old_quantity', ['type' => 'hidden','value'=>$sales_order_rows->quantity]);
 						?>
 						
 						</td>
-						<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Rate', 'min'=>'0.01','step'=>"0.01",'value'=>$sales_order_rows->rate,'r_popup_id'=>$q]); ?></td>
+						<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.rate', ['type' => 'text','label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate', 'min'=>'0.01','step'=>"0.01",'value'=>$sales_order_rows->rate,'r_popup_id'=>$q]); ?></td>
 						<td><?php echo $this->Form->input('sales_order_rows.'.$q.'.amount', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount','value'=>$sales_order_rows->amount]); ?></td>
 						<td><?php 
 							$options=['Yes'=>'Yes','No'=>'No'];
@@ -219,7 +221,13 @@
 						}
 						echo $this->Form->input('sales_order_rows.'.$q.'.sale_tax_id', ['options'=>$options,'label' => false,'class' => 'form-control input-sm change_des','value'=>$sales_order_rows->sale_tax_id]);?>
 						</td>
-						<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a><a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a></td>
+						<td><a class="btn btn-xs btn-default addrow" href="#" role='button'><i class="fa fa-plus"></i></a>
+						<?php if($sales_order_rows->processed_quantity > 0){ ?>
+						
+						<?php }else{ ?>
+						<a class="btn btn-xs btn-default deleterow" href="#" role='button'><i class="fa fa-times"></i></a>
+						<?php } ?>
+						</td>
 					</tr>
 					<tr class="tr2 <?php echo $disable_class; ?> main_tr" row_no='<?php echo @$sales_order_rows->id; ?>'>
 						<td colspan="6" class="main">
@@ -427,7 +435,7 @@
 				</div>
 			</td>
 			<td><?php echo $this->Form->input('unit[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm quantity','placeholder' => 'Quantity']); ?></td>
-			<td><?php echo $this->Form->input('rate[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Rate', 'min'=>'0.01','step'=>"0.01"]); ?></td>
+			<td><?php echo $this->Form->input('rate[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm rate','placeholder' => 'Rate', 'min'=>'0.01','step'=>"0.01"]); ?></td>
 			<td><?php echo $this->Form->input('amount[]', ['type' => 'text','label' => false,'class' => 'form-control input-sm','placeholder' => 'Amount']); ?></td>
 			<td><?php 
 			$options=['Yes'=>'Yes','No'=>'No'];
@@ -743,8 +751,7 @@ $(document).ready(function() {
 			$(this).find("td:nth-child(3) input[type=hidden]:eq(0)").attr({name:"sales_order_rows["+i+"][old_quantity]", id:"sales_order_rows-"+i+"-old_quantity"});
 			$(this).find("td:nth-child(4) input").attr({name:"sales_order_rows["+i+"][rate]", id:"sales_order_rows-"+i+"-rate",r_popup_id:i}).rules('add', {
 						required: true,
-						number: true,
-						min: 0.01
+						number: true
 					});
 			$(this).find("td:nth-child(5) input").attr({name:"sales_order_rows["+i+"][amount]", id:"sales_order_rows-"+i+"-amount"}).rules("add", "required");
 			$(this).find("td:nth-child(6) select").attr("name","sales_order_rows["+i+"][excise_duty]");
@@ -948,7 +955,34 @@ $(document).ready(function() {
 	$("select.item_box").die().live("change",function(){ 
 		var popup_id=$(this).attr('popup_id');
 		var item_id=$(this).val();
-		last_three_rates(popup_id,item_id);
+		var obj = $(this);
+		var row_no = $(this).closest('tr.tr1');
+		var values= row_no.find('.rate').val();
+		if(values){
+			row_no.find('.rate').val('');
+		}else{
+			row_no.find('.rate').val('');
+		}
+		
+		var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
+		if(item_id){
+			url=url+'/'+item_id,
+			$.ajax({
+				url: url
+			}).done(function(response) {
+				var values = parseFloat(response);
+					row_no.find('.rate').attr({ min:values}).rules('add', {
+							required:true,
+							min: values,
+							messages: {
+							min: "Minimum selling price : "+values
+						}
+						});
+			});
+		}else{
+			$(this).val();
+		}
+		//last_three_rates(popup_id,item_id);
 	})
 	
 	function last_three_rates_onload(popup_id,item_id){
@@ -956,19 +990,20 @@ $(document).ready(function() {
 			//$('.modal[popup_div_id='+popup_id+']').show();
 			$('div[popup_ajax_id='+popup_id+']').html('<div align="center"><?php echo $this->Html->image('/img/wait.gif', ['alt' => 'wait']); ?> Loading</div>');
 			if(customer_id){
-				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'RecentRecords']); ?>";
+				var url="<?php echo $this->Url->build(['controller'=>'Invoices','action'=>'getMinSellingFactor']); ?>";
 				url=url+'/'+item_id+'/'+customer_id,
 				$.ajax({
 					url: url,
 					dataType: 'json',
 				}).done(function(response) {
-					$('input[r_popup_id='+popup_id+']').attr({ min:response.minimum_selling_price}).rules('add', {
-						min: response.minimum_selling_price,
+					var values = parseFloat(response);
+					$('input[r_popup_id='+popup_id+']').attr({ min:values}).rules('add', {
+						min: values,
 						messages: {
-							min: "Enter value greate than minimum selling price "+response.minimum_selling_price
+							min: "Minimum selling price "+values
 						}
 					});
-					$('div[popup_ajax_id='+popup_id+']').html(response.html);
+					$('div[popup_ajax_id='+popup_id+']').html(values.html);
 				});
 			}else{
 				$('input[r_popup_id='+popup_id+']').attr({ min:1}).rules('add', {
