@@ -680,7 +680,7 @@ class ItemLedgersController extends AppController
 			}
 			//$RowTotal=$UR*$q;
 		}
-	//	pr($totalRate); exit;
+	//	pr($unitRate); exit;
 	
 	
 	
