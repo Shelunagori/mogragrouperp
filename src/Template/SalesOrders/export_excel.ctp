@@ -34,7 +34,7 @@
 					</thead>
 					<tbody>
 						<?php $i=0; foreach ($salesOrders as $salesOrder): ?>
-						<tr <?php if($status=='Converted Into Invoice'){ echo 'style="background-color:#f4f4f4"'; } ?> >
+						<tr>
 							<td><?= h(++$i) ?></td>
 							<td><?= h(($salesOrder->so1.'/SO-'.str_pad($salesOrder->so2, 3, '0', STR_PAD_LEFT).'/'.$salesOrder->so3.'/'.$salesOrder->so4)) ?></td>
 							<td><?= h($salesOrder->customer->customer_name) ?></td>

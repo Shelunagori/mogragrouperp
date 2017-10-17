@@ -238,9 +238,9 @@ class SalesOrdersController extends AppController
 		
        
 		
-		if($status==null or $status=='Pending'){
+		if($status=='Pending'){
 			$having=['total_rows >' => 0];
-		}elseif($status=='Converted Into Invoice'){
+		}else if($status=='Converted Into Invoice'){
 			$having=['total_rows =' => 0];
 		}
 		$salesOrders=
@@ -251,7 +251,7 @@ class SalesOrdersController extends AppController
 				})
 				->group(['SalesOrders.id'])
 				->autoFields(true)
-				->having($having)
+				
 				->where($where)
 				->where(['SalesOrders.company_id'=>$st_company_id])
 				->order(['SalesOrders.id' => 'DESC'])
