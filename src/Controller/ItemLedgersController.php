@@ -1646,9 +1646,11 @@ class ItemLedgersController extends AppController
 					
 					
 				}if($itemDetail['source_model']=='Inventory Vouchers'){
-					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['invoice_id'=>$itemDetail['source_id'],'item_id'=>$itemDetail['item_id']]);
+					//ww
 					$InventoryVoucher=$this->ItemLedgers->InventoryVouchers->find()->where(['InventoryVouchers.id'=>$itemDetail['source_id']])->first();
 					
+					$serialnoarray=$this->ItemLedgers->Items->ItemSerialNumbers->find()->where(['iv_invoice_id'=>$InventoryVoucher->invoice_id,'item_id'=>$itemDetail['item_id']]);
+									
 					$serial_nos[$key][$itemDetail->item_id]=$serialnoarray->toArray();
 					$voucher_no[$key][]=('#'.str_pad($InventoryVoucher->iv_number, 4, '0', STR_PAD_LEFT));
 					$link1 = ['controller'=>'InventoryVouchers','action' => 'View'];
@@ -1694,7 +1696,8 @@ class ItemLedgersController extends AppController
 			}
 			
 		}
-	
+	pr($serial_nos);
+	 exit;
 	//pr($link);exit;
 		$this->set(compact('itemDatas','serial_nos','voucher_no','From','To','link','url'));
 	}
