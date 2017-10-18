@@ -80,10 +80,10 @@
 						{ 
 							 if($invoice_row['igst_percentage'] == 0){
 							
-							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
 							}
 							else if($invoice_row['igst_percentage'] > 0){
-								@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]=@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+$invoice_row->taxable_value;
+								@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+=@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+$invoice_row->taxable_value;
 							} 
 						}
 						
