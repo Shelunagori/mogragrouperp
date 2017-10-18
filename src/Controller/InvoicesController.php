@@ -2704,11 +2704,11 @@ class InvoicesController extends AppController
 		
 		if(!empty($From)){
 			$From=date("Y-m-d",strtotime($this->request->query('From')));
-			$where1['InvoiceBookings.created_on >=']=$From;
+			$where1['InvoiceBookings.supplier_date >=']=$From;
 		}
 		if(!empty($To)){
 			$To=date("Y-m-d",strtotime($this->request->query('To')));
-			$where1['InvoiceBookings.created_on <=']=$To;
+			$where1['InvoiceBookings.supplier_date <=']=$To;
 		}
 		
 		if(!empty($From)){

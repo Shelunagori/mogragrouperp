@@ -112,13 +112,13 @@
 							if(isset($gstTotal[$invoice->id][$AllTax]))
 							{?>
 								
-									<td style="text-align:right;"><?php echo $this->Number->format($gstTotal[$invoice->id][$AllTax],['places'=>2]); 
-									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax];
+									<td style="text-align:right;"><?php echo $this->Number->format($gstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount),['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount);
 									?></td>
 									<?php 
 							}else if(isset($SigstTotal[$invoice->id][$AllTax])){  ?>
-								<td style="text-align:right;"><?php echo $this->Number->format($SigstTotal[$invoice->id][$AllTax],['places'=>2]); 
-									$gstRowTotal[$AllTax]=@$gstRowTotal[$AllTax]+$SigstTotal[$invoice->id][$AllTax];
+								<td style="text-align:right;"><?php echo $this->Number->format($SigstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount),['places'=>2]); 
+									$gstRowTotal[$AllTax]=@$gstRowTotal[$AllTax]+$SigstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount);
 									?></td>
 							<?php }							
 							else 

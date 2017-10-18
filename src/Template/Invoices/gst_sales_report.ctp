@@ -76,10 +76,13 @@
 						foreach($invoice->invoice_rows as $invoice_row)
 						{
 							if($invoice_row['igst_percentage'] == 0){
-							@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->cgst_amount*2);
+							@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->cgst_amount*2)
+							;
 							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
 							}
 						}
+						
+							
 					?>
 					<tr>
 						<td><?php echo $i; ?></td>
@@ -99,11 +102,11 @@
 							if(isset($gstRowTotal[$invoice->id][$AllTax]))
 							{?>
 									<td style="text-align:right;"><?php echo 
-									$this->Number->format(@$gstTotal[@$invoice->id][$AllTax],['places'=>2]); 
-									$SalesTotal[$AllTax]=@$SalesTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax];
+									$this->Number->format(@$gstTotal[@$invoice->id][$AllTax]+@$invoice->fright_amount,['places'=>2]); 
+									$SalesTotal[$AllTax]=@$SalesTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+@$invoice->fright_amount;
 									?></td>
-									<td style="text-align:right;"><?php echo $this->Number->format($gstRowTotal[$invoice->id][$AllTax],['places'=>2]); 
-									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstRowTotal[$invoice->id][$AllTax];
+									<td style="text-align:right;"><?php echo $this->Number->format($gstRowTotal[$invoice->id][$AllTax]+(@$invoice->fright_cgst_amount*2),['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstRowTotal[$invoice->id][$AllTax]+(@$invoice->fright_cgst_amount*2);
 									?></td>
 									<?php 
 							}							
@@ -118,7 +121,7 @@
 						}  ?>
 						
 					</tr>
-				<?php $i++; endforeach; ?>
+				<?php $i++; endforeach;  ?>
 				<tr>
 				<td style="text-align:right;" colspan=4><b>Total</b></td>
 				<?php 
@@ -188,11 +191,11 @@
 							if(isset($SigstRowTotal[$invoiceigst->id][$AllTax]))
 							{?>
 						<td style="text-align:right;"><?php echo 
-						$this->Number->format(@$SigstTotal[$invoiceigst->id],['places'=>2]); 
-									$SalesIgstTotal[$AllTax]=@$SalesIgstTotal[$AllTax]+$SigstTotal[$invoiceigst->id];
+						$this->Number->format(@$SigstTotal[$invoiceigst->id]+@$invoiceigst->fright_amount,['places'=>2]); 
+									$SalesIgstTotal[$AllTax]=@$SalesIgstTotal[$AllTax]+$SigstTotal[$invoiceigst->id]+@$invoiceigst->fright_amount;
 									?></td>
-									<td style="text-align:right;"><?php echo $this->Number->format(@$SigstRowTotal[$invoiceigst->id][$AllTax],['places'=>2]); 
-									$SalesIgstRowTotal[$AllTax]=@$SalesIgstRowTotal[$AllTax]+$SigstRowTotal[$invoiceigst->id][$AllTax];
+									<td style="text-align:right;"><?php echo $this->Number->format(@$SigstRowTotal[$invoiceigst->id][$AllTax]+@$invoiceigst->fright_igst_amount,['places'=>2]); 
+									$SalesIgstRowTotal[$AllTax]=@$SalesIgstRowTotal[$AllTax]+$SigstRowTotal[$invoiceigst->id][$AllTax]+@$invoiceigst->fright_igst_amount;
 									?></td>
 									<?php 
 							}							
@@ -275,7 +278,7 @@
 						<?php echo $this->Html->link( $invoicebooking->ib1.'/IB-'.str_pad($invoicebooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoicebooking->ib3.'/'.$invoicebooking->ib4,[
 							'controller'=>'InvoiceBookings','action' => 'gst-invoice-booking-view',$invoicebooking->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($invoicebooking->created_on)); ?></td>
+						<td><?php echo date("d-m-Y",strtotime($invoicebooking->supplier_date)); ?></td>
 						<td><?php echo $invoicebooking->vendor->company_name; ?></td>
 						
 						<?php foreach($AllTaxs as  $key=>$AllTax){ 
@@ -362,7 +365,7 @@
 						<?php echo $this->Html->link( $invoiceBooking->ib1.'/IB-'.str_pad($invoiceBooking->ib2, 3, '0', STR_PAD_LEFT).'/'.$invoiceBooking->ib3.'/'.$invoiceBooking->ib4,[
 							'controller'=>'InvoiceBookings','action' => 'gst-invoice-booking-view',$invoiceBooking->id],array('target'=>'_blank')); ?>
 						</td>
-						<td><?php echo date("d-m-Y",strtotime($invoiceBooking->created_on)); ?></td>
+						<td><?php echo date("d-m-Y",strtotime($invoiceBooking->supplier_date)); ?></td>
 						<td><?php echo $invoiceBooking->vendor->company_name; ?></td>
 						<?php $k=0; $AllTaxs=[];
 							foreach($PurchaseIgst as $Key1=>$SaleTaxeGst){ 
