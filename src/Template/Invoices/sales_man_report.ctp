@@ -75,15 +75,22 @@
 				</thead>
 				
 					<?php $SalesTotal=[];$SalesgstTotal=[];$gstRowTotal=[]; $gstTotal=[];$i=1; $SigstRowTotal=[];$SigstTotal=[];
-					foreach ($invoices as $invoice):
+					foreach ($invoices as $invoice): $frigtData=[]; $frigtAmount=[];$sfrigtData=[]; $sfrigtAmount=[];
 						foreach($invoice->invoice_rows as $invoice_row)
 						{ 
 							 if($invoice_row['igst_percentage'] == 0){
 							
-							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+								@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+								
+							
+								$frigtData[@$invoice->fright_cgst_percent]=@$invoice->fright_cgst_amount*2;
+								$frigtAmount[@$invoice->fright_cgst_percent]=@$invoice->fright_amount;
 							}
 							else if($invoice_row['igst_percentage'] > 0){
 								@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+=@$SigstTotal[$invoice->id][$invoice_row['igst_percentage']]+$invoice_row->taxable_value;
+								
+								$sfrigtData[@$invoice->fright_igst_percent]=@$invoice->fright_igst_amount;
+								$sfrigtAmount[@$invoice->fright_igst_percent]=@$invoice->fright_amount;
 							} 
 						}
 						
@@ -112,13 +119,13 @@
 							if(isset($gstTotal[$invoice->id][$AllTax]))
 							{?>
 								
-									<td style="text-align:right;"><?php echo $this->Number->format($gstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount),['places'=>2]); 
-									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount);
+									<td style="text-align:right;"><?php echo $this->Number->format($gstTotal[$invoice->id][$AllTax]+(@$frigtData[$AllTax]),['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+(@$frigtData[$AllTax]);
 									?></td>
 									<?php 
 							}else if(isset($SigstTotal[$invoice->id][$AllTax])){  ?>
-								<td style="text-align:right;"><?php echo $this->Number->format($SigstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount),['places'=>2]); 
-									$gstRowTotal[$AllTax]=@$gstRowTotal[$AllTax]+$SigstTotal[$invoice->id][$AllTax]+(@$invoice->fright_amount);
+								<td style="text-align:right;"><?php echo $this->Number->format($SigstTotal[$invoice->id][$AllTax]+(@$sfrigtData[$AllTax]),['places'=>2]); 
+									$gstRowTotal[$AllTax]=@$gstRowTotal[$AllTax]+$SigstTotal[$invoice->id][$AllTax]+(@$sfrigtData[$AllTax]);
 									?></td>
 							<?php }							
 							else 

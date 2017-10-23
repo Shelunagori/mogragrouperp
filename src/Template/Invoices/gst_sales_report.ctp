@@ -71,17 +71,20 @@
 				</thead>
 				<tbody>
 				
-					<?php $SalesTotal=[];$SalesgstTotal=[];$gstRowTotal=[]; $gstTotal=[];$i=1;
+					<?php $SalesTotal=[];$SalesgstTotal=[];$gstRowTotal=[]; $gstTotal=[];$i=1;$sfrigtData=[]; $sfrigtAmount=[];
 					foreach ($invoices as $invoice):
 						foreach($invoice->invoice_rows as $invoice_row)
 						{
 							if($invoice_row['igst_percentage'] == 0){
-							@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+=@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->cgst_amount*2)
+							@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstRowTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->cgst_amount*2)
 							;
-							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+							@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]=@$gstTotal[$invoice->id][$invoice_row['cgst_percentage']]+(@$invoice_row->taxable_value);
+							
+							$sfrigtData[@$invoice->fright_cgst_percent]=@$invoice->fright_cgst_amount*2;
+							$sfrigtAmount[@$invoice->fright_cgst_percent]=@$invoice->fright_amount;
 							}
 						}
-						
+						 
 							
 					?>
 					<tr>
@@ -102,11 +105,11 @@
 							if(isset($gstRowTotal[$invoice->id][$AllTax]))
 							{?>
 									<td style="text-align:right;"><?php echo 
-									$this->Number->format(@$gstTotal[@$invoice->id][$AllTax]+@$invoice->fright_amount,['places'=>2]); 
-									$SalesTotal[$AllTax]=@$SalesTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+@$invoice->fright_amount;
+									$this->Number->format(@$gstTotal[@$invoice->id][$AllTax]+@$sfrigtData[$AllTax],['places'=>2]); 
+									$SalesTotal[$AllTax]=@$SalesTotal[$AllTax]+$gstTotal[$invoice->id][$AllTax]+@$sfrigtData[$AllTax];
 									?></td>
-									<td style="text-align:right;"><?php echo $this->Number->format($gstRowTotal[$invoice->id][$AllTax]+(@$invoice->fright_cgst_amount*2),['places'=>2]); 
-									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstRowTotal[$invoice->id][$AllTax]+(@$invoice->fright_cgst_amount*2);
+									<td style="text-align:right;"><?php echo $this->Number->format($gstRowTotal[$invoice->id][$AllTax]+@$sfrigtAmount[$AllTax],['places'=>2]); 
+									$SalesgstTotal[$AllTax]=@$SalesgstTotal[$AllTax]+$gstRowTotal[$invoice->id][$AllTax]+@$sfrigtAmount[$AllTax];
 									?></td>
 									<?php 
 							}							
@@ -159,22 +162,27 @@
 						<?php } ?>
 					</tr>
 				</thead>
-				<?php $SalesIgstTotal=[]; $SalesIgstRowTotal=[]; $j=1;
+				<?php $SalesIgstTotal=[]; $SalesIgstRowTotal=[]; $j=1;	
 				foreach ($interStateInvoice as $invoiceigsts){  ?>
 				<tbody>
-					<?php $SigstRowTotal=[]; $SigstTotal=[];
+					<?php $SigstRowTotal=[]; $SigstTotal=[]; $frigtData=[]; $frigtAmount=[];
 					if(!empty($invoiceigsts->invoice_rows)){  
 					foreach($invoiceigsts->invoice_rows as $invoice_rows_data){
 						if($invoice_rows_data['igst_percentage'] > 0){
 								
-								
 								@$SigstRowTotal[$invoiceigsts->id][$invoice_rows_data['igst_percentage']]+=@$gstRowTotal[$invoiceigsts->id][$invoice_rows_data['igst_percentage']]+(@$invoice_rows_data->igst_amount);
 								
 								@$SigstTotal[$invoiceigsts->id][$invoice_rows_data['igst_percentage']]+=@$gstTotal[$invoiceigsts->id][$invoice_rows_data['igst_percentage']]+(@$invoice_rows_data->taxable_value);
+								
+								$frigtData[@$invoiceigsts->fright_igst_percent]=@$invoiceigsts->fright_igst_amount;
+								$frigtAmount[@$invoiceigsts->fright_igst_percent]=@$invoiceigsts->fright_amount;
 							}
 						}
 						
-				 } ?>
+				 }
+				
+				 
+				 ?>
 				<tbody>
 					<tr>
 						<td><?php echo $j++; ?></td>
@@ -197,11 +205,11 @@
 								
 									
 							<td style="text-align:right;"><?php echo 
-									$this->Number->format(@$SigstTotal[@$invoiceigsts->id][$AllTax]+@$invoiceigsts->fright_amount,['places'=>2]); 
-									$SalesIgstTotal[$AllTax]=@$SalesIgstTotal[$AllTax]+$SigstTotal[$invoiceigsts->id][$AllTax]+@$invoiceigsts->fright_amount;
+									$this->Number->format(@$SigstTotal[@$invoiceigsts->id][$AllTax]+@$frigtAmount[$AllTax],['places'=>2]); 
+									$SalesIgstTotal[$AllTax]=@$SalesIgstTotal[$AllTax]+$SigstTotal[$invoiceigsts->id][$AllTax]+@$frigtAmount[$AllTax];
 									?></td>
-									<td style="text-align:right;"><?php echo $this->Number->format($SigstRowTotal[$invoiceigsts->id][$AllTax]+(@$invoiceigsts->fright_igst_amount),['places'=>2]); 
-									$SalesIgstRowTotal[$AllTax]=@$SalesIgstRowTotal[$AllTax]+$SigstRowTotal[$invoiceigsts->id][$AllTax]+(@$invoiceigsts->fright_igst_amount);
+									<td style="text-align:right;"><?php echo $this->Number->format($SigstRowTotal[$invoiceigsts->id][$AllTax]+@$frigtData[$AllTax],['places'=>2]); 
+									$SalesIgstRowTotal[$AllTax]=@$SalesIgstRowTotal[$AllTax]+$SigstRowTotal[$invoiceigsts->id][$AllTax]+@$frigtData[$AllTax];
 									?></td>
 									
 									
@@ -268,8 +276,8 @@
 						{
 							
 							if($invoice_booking_row_data['igst_per'] == 0){
-									@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+=@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->cgst*2);
-									@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+=@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->taxable_value);
+									@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]=@$PurchaseBookingRowTotal[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->cgst*2);
+									@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]=@$PurchaseBookingTotals[$invoicebooking->id][$invoice_booking_row_data['cgst_per']]+(@$invoice_booking_row_data->taxable_value);
 							}
 						}
 					?>
@@ -355,8 +363,6 @@
 						<?php } ?>
 					</tr>
 				</thead>
-				
-				
 				<?php $PurchaseIgstTotal=[]; $PurchaseTotal=[]; $i=1;
 				foreach ($invoiceBookingsInterState as $invoiceBooking):   ?>
 				<tbody>
@@ -365,7 +371,7 @@
 						foreach($invoiceBooking->invoice_booking_rows as $invoice_booking_row)
 						{ 
 							if($invoice_booking_row['igst_per'] > 0){
-								@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]+=@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]+@$invoice_booking_row->igst;
+								@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]=@$igstRowTotal[$invoiceBooking->id][$invoice_booking_row['igst_per']]+@$invoice_booking_row->igst;
 							}
 						}
 						@$igstTotal[$invoiceBooking->id]=@$igstTotal[$invoiceBooking->id]+$invoiceBooking->taxable_value;
